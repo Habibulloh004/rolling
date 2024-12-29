@@ -57,6 +57,7 @@ const config = {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
+        thin: "hsl(var(--thin))",
         chart: {
           1: "hsl(var(--chart-1))",
           2: "hsl(var(--chart-2))",
@@ -76,6 +77,9 @@ const config = {
         "custom-gradient-top-bottom":
           "linear-gradient(to bottom, hsla(138, 28%, 19%, 1) 10%, hsla(140, 20%, 52%, 1) 40%, hsla(137, 25%, 50%, 1) 100%)",
       },
+      boxShadow:{
+        "custom":"-3px 0px 4.5px -2px #00000040"
+      }
     },
   },
   plugins: [require("tailwindcss-animate")],

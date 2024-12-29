@@ -1,0 +1,28 @@
+{
+  "Navbar": {
+    "main": "Bosh sahifa",
+    "news": "Yangiliklar",
+    "saved": "Tanlanganlar",
+    "about-us": "Biz haqimizda"
+  },
+  "HomePage": {
+    "intro": "Bizning bonus dasturimizda ishtirok etishni xohlaysizmi? Hozir ro'yxatdan o'ting va har bir buyurtma uchun 30% gacha bonuslarni yig'ishni boshlang!",
+    "title": "Salom dunyo!",
+    "about": "About sahifasiga kirish"
+  },
+  "NewsPage": {
+    "title": "Yangiliklar va Aksiyalar"
+  },
+  "AboutUsPage": {
+    "title": "Biz haqimizda",
+    "intro": "Rolling Sushi-ga xush kelibsiz!",
+    "introBottom": "Rolling Sushi — bu har bir detal sizga e’tibor va g‘amxo‘rlik bilan yaratilgan joy. Biz ishonamizki, taom zavq bag‘ishlashi va uzoq vaqt esda qoladigan maxsus lahzalarni yaratishi kerak.",
+    "descriptionTop": "Bizni nima bilan ajralib turamiz?",
+    "description": "Ta’m va sifatning mukammal uyg‘unligi. Biz faqat yangi mahsulotlardan foydalanamiz va har bir buyurtmani muhabbat bilan tayyorlaymiz, shunda u siz uchun haqiqiy zavq bo‘ladi. *** Hamma uchun ochiqlik. Biz yapon oshxonasini Toshkent aholisi uchun yaqinroq va tushunarliroq qilishga intilamiz. *** Har bir mayda detalga g‘amxo‘rlik. Biz nafaqat ta’m haqida, balki sizning tajribangizni oddiy va qulay qilish haqida ham o‘ylaymiz.",
+    "descriptionBottom": "Rolling Sushi — bu qulay oilaviy kechki ovqatlar, samimiy do‘stlar uchrashuvlari yoki o‘zingizni maxsus narsalar bilan siylash vaqti haqida. Biz har bir tashrifingiz yoki buyurtmangiz faqat yoqimli xotiralar qoldirishini xohlaymiz.",
+    "logoBottom": "Bizga kuningizni biroz yaxshiroq qilishga ishonch bildirganingiz uchun rahmat!",
+    "btnReview": "Fikrlar",
+    "btnVacansy": "Bo‘sh ish o‘rinlari",
+    "ourComand": "Bizning jamoa"
+  }
+}

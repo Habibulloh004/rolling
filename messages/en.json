@@ -1,0 +1,28 @@
+{
+  "Navbar": {
+    "main": "Main",
+    "news": "News",
+    "saved": "Chosen",
+    "about-us": "About us"
+  },
+  "HomePage": {
+    "intro": "Do you want to participate in our bonus program? Register now and start earning up to 30% bonuses on every order!",
+    "title": "Hello world!",
+    "about": "Go to the about page"
+  },
+  "NewsPage": {
+    "title": "News and Promotions"
+  },
+  "AboutUsPage": {
+    "title": "About Us",
+    "intro": "Welcome to Rolling Sushi!",
+    "introBottom": "Rolling Sushi is a place where every detail is thoughtfully designed with care and attention for you. We believe that food should bring joy and create special moments that stay in your memory for a long time.",
+    "descriptionTop": "What makes us special?",
+    "description": "The perfect combination of taste and quality. We use only fresh ingredients and prepare with love to make every order a true delight for you. *** Accessibility for everyone. We strive to bring Japanese cuisine closer and more understandable to the residents of Tashkent. *** Care in every detail. We think not only about taste but also about making your experience simple and comfortable.",
+    "descriptionBottom": "Rolling Sushi is about cozy family dinners, heartfelt gatherings with friends, or moments to treat yourself to something special. We want every visit or order to leave you with only pleasant memories.",
+    "logoBottom": "Thank you for trusting us to make your day a little better!",
+    "btnReview": "Reviews",
+    "btnVacansy": "Vacancies",
+    "ourComand": "Our Team"
+  }
+}

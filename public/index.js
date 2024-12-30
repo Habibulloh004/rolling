@@ -12,5 +12,24 @@ import hamburgerIcon from "./assets/hamburgerIcon.svg";
 import news from "./assets/news.svg";
 import aboutLogo from "./assets/aboutLogo.svg";
 import aboutCard from "./assets/aboutCard.svg";
+import appStoreIcon from "./assets/appStoreIcon.svg";
+import playMarketIcon from "./assets/playMarketIcon.svg";
 
-export { mainIcon, aboutCard, aboutIcon, navLogo, reviewIcon, saveIcon, ruIcon, enIcon, uzIcon, cartIcon, secondaryIcon, hamburgerIcon, news, aboutLogo };
+export {
+  appStoreIcon,
+  playMarketIcon,
+  mainIcon,
+  aboutCard,
+  aboutIcon,
+  navLogo,
+  reviewIcon,
+  saveIcon,
+  ruIcon,
+  enIcon,
+  uzIcon,
+  cartIcon,
+  secondaryIcon,
+  hamburgerIcon,
+  news,
+  aboutLogo,
+};

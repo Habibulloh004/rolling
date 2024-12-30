@@ -5,6 +5,21 @@
     "saved": "Tanlanganlar",
     "about-us": "Biz haqimizda"
   },
+  "Footer": {
+    "logoBottom": "Rolling Sushi — bu sizning tanlovingiz, yangi va sifatli taomlar. <br /> Biz sizning ishonchingizni qadrlaymiz va har bir buyurtmangizni o'zgacha qilishga intilamiz.",
+    "phone": "Telefon:",
+    "email": "Elektron pochta:",
+    "download": "Bizning ilovamizni yuklab oling!",
+    "addressName": "Filial manzillari:",
+    "address1": "Oltintepa ko'chasi, 253, Toshkent",
+    "address2": "Yangi Olmazor ko'chasi, 7A, Toshkent",
+    "address3": "Yakkasaroy ko'chasi, 7, Toshkent"
+  },
+  "FootNav": {
+    "aboutUs": "Biz haqimizda",
+    "reviews": "Sharhlar",
+    "vacansies": "Bo'sh ish o'rinlari"
+  },
   "HomePage": {
     "intro": "Bizning bonus dasturimizda ishtirok etishni xohlaysizmi? Hozir ro'yxatdan o'ting va har bir buyurtma uchun 30% gacha bonuslarni yig'ishni boshlang!",
     "title": "Salom dunyo!",

@@ -59,14 +59,14 @@ const AboutUs = async () => {
           <div className="flex flex-col gap-3 sm:hidden mt-4">
             <Link
               locale={locale}
-              href={"/review"}
+              href={"/reviews"}
               className="w-full rounded-md bg-primary text-white py-2 text-xs md:text-sm text-center"
             >
               {aboutUsT("btnReview")}
             </Link>
             <Link
               locale={locale}
-              href={"/vacansy"}
+              href={"/vacansies"}
               className="w-full rounded-md bg-primary text-white py-2 text-xs md:text-sm text-center"
             >
               {aboutUsT("btnVacansy")}
@@ -93,7 +93,7 @@ const AboutUs = async () => {
             </Link>
             <Link
               locale={locale}
-              href={"/vacansy"}
+              href={"/vacansies"}
               className="w-full lg:w-3/4 mx-auto rounded-md bg-primary text-white py-2 text-xs md:text-sm text-center"
             >
               {aboutUsT("btnVacansy")}

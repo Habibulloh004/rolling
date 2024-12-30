@@ -29,7 +29,7 @@ const Categories = ({ categories, locale }) => {
         className="relative w-full text-foreground mt-12 "
         paginate={"false"}
       >
-        <div className="absolute -right-1 -top-4 w-2 h-48 bg-[#F5F5F5] z-50 shadow-custom" />
+        {/* <div className="absolute -right-1 -top-4 w-2 h-48 bg-[#F5F5F5] z-50 shadow-custom" /> */}
         <CarouselContent className="relative">
           {categories.map((item, i) => {
             const localizedName = getLocalizedCategoryName(
@@ -39,15 +39,15 @@ const Categories = ({ categories, locale }) => {
             return (
               <CarouselItem
                 key={i}
-                className={`basis-[15%] p-0 mx-2 bg-white rounded-xl ${
+                className={`basis-[15%] p-0 mx-2 ${
                   i == 0 && "ml-4"
                 }`}
               >
-                <Link locale={locale} href={"/hey"} className="relative">
-                  <div className="relative w-full h-40 overflow-hidden rounded-md">
+                <Link locale={locale} href={"/hey"} className="relative w-full h-full">
+                  <div className="spanWrapper relative w-full aspect-square overflow-hidden">
                     <CustomImage
                       src={`${posterUrl}${item.category_photo}`}
-                      className="object-cover"
+                      className="w-full h-full"
                       alt={`${localizedName}`}
                     />
                   </div>

@@ -3,6 +3,7 @@ import { getData } from "@/service";
 import { getLocale, getTranslations } from "next-intl/server";
 import Categories from "./_components/categories";
 import Container from "@/components/shared/container";
+import Modals from "./_components/modals";
 
 export const metadata = {
   title: "Rolling Sushi - Свежие суши и роллы в Ташкенте",
@@ -32,6 +33,7 @@ export default async function HomePage() {
     <Container className={"flex-col"}>
       <Banner banners={banners} />
       <Categories categories={categories} locale={locale} />
+      <Modals />
     </Container>
   );
 }

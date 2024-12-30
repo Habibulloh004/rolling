@@ -41,7 +41,7 @@ const RenderInput = ({ field, className, props }) => {
             {...field}
             value={field.value || ""} // Ensure the input is controlled
             className={cn(
-              "textBig focus:border-primary",
+              "textBig focus:border-white/50",
               props.className,
               className
             )}
@@ -57,7 +57,7 @@ const RenderInput = ({ field, className, props }) => {
             {...field}
             value={field.value || ""} // Ensure the input is controlled
             className={cn(
-              "textBig focus:border-primary",
+              "textBig focus:border-white/50",
               props.className,
               className
             )}
@@ -72,7 +72,7 @@ const RenderInput = ({ field, className, props }) => {
             {...field}
             value={field.value || ""} // Ensure the input is controlled
             className={cn(
-              "textBig focus:border-primary",
+              "textBig focus:border-white/50",
               props.className,
               className
             )}
@@ -87,7 +87,7 @@ const RenderInput = ({ field, className, props }) => {
             {...field}
             value={field.value || ""} // Ensure the textarea is controlled
             className={cn(
-              "shad-textArea focus:border-primary",
+              "shad-textArea focus:border-white/50",
               props.className,
               className
             )}
@@ -104,7 +104,7 @@ const RenderInput = ({ field, className, props }) => {
             {...field}
             value={field.value || ""} // Ensure the input is controlled
             className={cn(
-              "textBig focus:border-primary",
+              "textBig focus:border-white/50",
               props.className,
               className
             )}
@@ -145,18 +145,14 @@ const RenderInput = ({ field, className, props }) => {
             withCountryCallingCode
             value={field.value || ""} // Ensure the phone input is controlled
             onChange={field.onChange}
-            className={cn(
-              "input-phone rounded-md ",
-              props.className,
-              className
-            )}
+            className={cn("input-phone rounded-md", props.className, className)}
             style={{ borderColor: "transparent" }} // or borderColor: 'initial' to reset
           />
         </FormControl>
       );
     case FormFieldType.CURRENCY:
       return (
-        (<FormControl>
+        <FormControl>
           <CurrencyInput
             placeholder={props.placeholder}
             className={cn(
@@ -188,7 +184,7 @@ const RenderInput = ({ field, className, props }) => {
               }
             }}
           />
-        </FormControl>)
+        </FormControl>
       );
 
     case FormFieldType.SKELETON:
@@ -208,10 +204,15 @@ const CustomFormField = (props) => {
       render={({ field }) => (
         <FormItem className="flex-1">
           {props.fieldType !== FormFieldType.CHECKBOX && label && (
-            <FormLabel className="text-xs lg:text-base">{label}</FormLabel>
+            <FormLabel className="text-white text-sm font-[400]">
+              {label}
+            </FormLabel>
           )}
           <RenderInput
-            className={cn(inputClass, "text-xs lg:text-base bg-transparent")}
+            className={cn(
+              inputClass,
+              "text-white focus:outline-none text-xs lg:text-base bg-transparent"
+            )}
             field={field}
             props={props}
           />

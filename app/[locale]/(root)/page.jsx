@@ -30,7 +30,7 @@ export default async function HomePage() {
   const [locale] = await Promise.all([getLocale()]);
 
   return (
-    <Container className={"flex-col"}>
+    <Container className={"w-full flex-col"}>
       <Banner banners={banners} />
       <Categories categories={categories} locale={locale} />
       <Modals />

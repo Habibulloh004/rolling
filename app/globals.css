@@ -20,6 +20,10 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.8);
 }
 
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -83,5 +87,41 @@ body {
   }
   body {
     @apply bg-background text-foreground;
+  }
+  .textSmall1 {
+    font-size: clamp(10px, 0.8vw, 13px);
+  }
+  .textSmall {
+    font-size: clamp(10px, 1vw, 12px);
+  }
+  .textSmall2 {
+    font-size: clamp(11px, 1.5vw, 14px);
+  }
+  .textSmall3 {
+    font-size: clamp(12px, 1.8vw, 16px);
+  }
+  .textNormal {
+    font-size: clamp(11px, 2vw, 21px);
+  }
+  .textNormal2 {
+    font-size: clamp(14px, 2.5vw, 18px);
+  }
+  .textNormal3 {
+    font-size: clamp(14px, 2.8vw, 22px);
+  }
+  .textNormal4 {
+    font-size: clamp(19px, 2.8vw, 24px);
+  }
+  .textNormal5 {
+    font-size: clamp(22px, 3vw, 32px);
+  }
+  .textBig {
+    font-size: clamp(22px, 3vw, 40px);
+  }
+  .textBig2 {
+    font-size: clamp(30px, 3.5vw, 40px);
+  }
+  .textBig3 {
+    font-size: clamp(50px, 3.5vw, 59px);
   }
 }

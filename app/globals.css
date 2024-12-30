@@ -7,6 +7,19 @@ body {
   background: hsla(0, 0%, 96%, 1);
 }
 
+.input-phone > * {
+  background-color: transparent;
+  border: 1px solid #ffffff;
+  height: 40px;
+  border-radius: 5px;
+  padding: 6px;
+}
+
+.input-phone > *:focus {
+  outline: none;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;

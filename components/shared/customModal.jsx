@@ -13,7 +13,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
-
+import CustomFormField from "./customFormField";
+import RegisterForm from "../pages/RegisterForm";
 
 export function ProductDialog({ product }) {
   const [isFavorite, setIsFavorite] = React.useState(product.isFavorite);
@@ -72,6 +73,50 @@ export function ProductDialog({ product }) {
             Add to Cart
           </Button>
         </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+export function LoginModal() {
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button>Login modal</Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px] p-10" mark="false">
+        <DialogHeader>
+          <DialogTitle>Ddd</DialogTitle>
+          <DialogDescription className="text-[#6B6B6B]">ddd</DialogDescription>
+        </DialogHeader>
+      </DialogContent>
+    </Dialog>
+  );
+}
+export function RegisterModal() {
+  return (
+    <Dialog className="w-full">
+      <DialogTrigger asChild>
+        <Button>Register modal</Button>
+      </DialogTrigger>
+      <DialogContent
+        className="bg-primary max-w-screen w-6/10 px-10 py-5 focus:outline-none border-0 rounded-sm sm:rounded-md"
+        mark="none"
+      >
+        <DialogHeader>
+          <DialogTitle className="text-md text-white">
+            Зарегистрируйтесь и получите ещё больше удовольствия от Rolling
+            Sushi!
+          </DialogTitle>
+          <DialogDescription className="text-white text-[12px] ml-4">
+            Только зарегистрированные пользователи участвуют в нашей бонусной
+            системе и получают до 30% бонусов с каждого заказа. Вы сможете
+            использовать их на 100% при оплате любого блюда! Кроме того, вам
+            откроется доступ к эксклюзивным скидкам и акциям. Оформление заказов
+            станет быстрее и удобнее. Не упустите возможность стать частью нашей
+            программы лояльности!
+          </DialogDescription>
+        </DialogHeader>
+        <RegisterForm />
       </DialogContent>
     </Dialog>
   );

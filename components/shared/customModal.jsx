@@ -15,6 +15,7 @@ import {
 import { cn } from "@/lib/utils";
 import CustomFormField from "./customFormField";
 import RegisterForm from "../pages/RegisterForm";
+import { useLocale, useTranslations } from "next-intl";
 
 export function ProductDialog({ product }) {
   const [isFavorite, setIsFavorite] = React.useState(product.isFavorite);
@@ -93,27 +94,23 @@ export function LoginModal() {
   );
 }
 export function RegisterModal() {
+  const locale = useLocale();
+  const register = useTranslations("Register");
   return (
     <Dialog className="w-full">
       <DialogTrigger asChild>
         <Button>Register modal</Button>
       </DialogTrigger>
       <DialogContent
-        className="bg-primary max-w-screen w-6/10 px-10 py-5 focus:outline-none border-0 rounded-sm sm:rounded-md"
+        className="no-scrollbar bg-primary max-h-screen overflow-y-scroll max-w-3xl w-6/10 px-10 py-5 focus:outline-none border-0 rounded-sm sm:rounded-md"
         mark="none"
       >
         <DialogHeader>
-          <DialogTitle className="text-md text-white">
-            Зарегистрируйтесь и получите ещё больше удовольствия от Rolling
-            Sushi!
+          <DialogTitle className="textSmall3 text-white">
+            {register("title")}
           </DialogTitle>
-          <DialogDescription className="text-white text-[12px] ml-4">
-            Только зарегистрированные пользователи участвуют в нашей бонусной
-            системе и получают до 30% бонусов с каждого заказа. Вы сможете
-            использовать их на 100% при оплате любого блюда! Кроме того, вам
-            откроется доступ к эксклюзивным скидкам и акциям. Оформление заказов
-            станет быстрее и удобнее. Не упустите возможность стать частью нашей
-            программы лояльности!
+          <DialogDescription className="text-white text-[12px] ml-3">
+            {register("description")}
           </DialogDescription>
         </DialogHeader>
         <RegisterForm />

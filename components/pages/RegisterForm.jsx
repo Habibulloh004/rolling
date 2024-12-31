@@ -9,7 +9,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Cookies from "js-cookie";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { RegisterValidation } from "@/lib/validation";
+import { UpdateRegisterValidation } from "@/lib/validation";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
@@ -30,8 +30,11 @@ import {
   InputOTPSeparator,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
+import { useLocale, useTranslations } from "next-intl";
 
 export default function RegisterForm() {
+  const RegisterValidation = UpdateRegisterValidation();
+  const register = useTranslations("Register");
   const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -115,7 +118,7 @@ export default function RegisterForm() {
             control={form.control}
             name="first_name"
             placeholder=""
-            label="Ismingiz"
+            label={register("first_name")}
             inputClass="rounded-md border-[1px]"
           />
           <CustomFormField
@@ -123,7 +126,7 @@ export default function RegisterForm() {
             control={form.control}
             name="last_name"
             placeholder=""
-            label="Familyangiz"
+            label={register("last_name")}
             inputClass="rounded-md border-[1px]"
           />
           <CustomFormField
@@ -131,14 +134,14 @@ export default function RegisterForm() {
             control={form.control}
             name="phone"
             placeholder=""
-            label="Telefon raqam"
+            label={register("phone")}
             inputClass="rounded-md border-[1px]"
           />
           <div className="h-full flex justify-start items-end w-ful">
             <AlertDialog>
               <AlertDialogTrigger asChild className="">
                 <Button className="w-6/10 bg-white hover:bg-white/90 text-black">
-                  Kodni olish
+                  {register("send_sms")}
                 </Button>
               </AlertDialogTrigger>
               <AlertDialogContent className="w-[365px]">
@@ -151,7 +154,7 @@ export default function RegisterForm() {
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <div className="w-full flex justify-center items-center">
-                  <InputOTP  maxLength={4}>
+                  <InputOTP maxLength={4}>
                     <InputOTPGroup>
                       <InputOTPSlot index={0} />
                       <InputOTPSlot index={1} />
@@ -163,7 +166,9 @@ export default function RegisterForm() {
                 <AlertDialogFooter
                   className={"flex justify-center items-center w-full"}
                 >
-                  <AlertDialogAction className="w-full hover:bg-primary hover:opacity-[0.9]">Continue</AlertDialogAction>
+                  <AlertDialogAction className="w-full hover:bg-primary hover:opacity-[0.9]">
+                    Continue
+                  </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
@@ -174,14 +179,14 @@ export default function RegisterForm() {
             control={form.control}
             name="email"
             placeholder=""
-            label="E-pochta"
+            label={register("email")}
             inputClass="rounded-md border-[1px]"
           />
           <CustomFormField
             fieldType={FormFieldType.PASSWORDINPUT}
             control={form.control}
             name="password"
-            label="Parol"
+            label={register("password")}
             placeholder=""
             inputClass="rounded-md border-[1px]"
           />
@@ -189,14 +194,16 @@ export default function RegisterForm() {
             fieldType={FormFieldType.DATE_PICKER}
             control={form.control}
             name="birthday"
-            label="Tug'ulgan kuni"
+            label={register("birthday")}
             placeholder=""
             inputClass="rounded-md border-[1px]"
           />
           <div className="col-span-2 flex flex-col space-y-2">
             <div className="flex justify-start items-center gap-1">
-              <span className="text-sm text-white">Выберите пол</span>
-              <span className="text-xs text-white/50">Необязательное поле</span>
+              <span className="text-sm text-white">{register("gender")}</span>
+              <span className="text-xs text-white/50">
+                {register("optional")}
+              </span>
             </div>
           </div>
           <div className="grid grid-cols-2 gap-2">
@@ -205,21 +212,27 @@ export default function RegisterForm() {
                 checked={gender.male}
                 onCheckedChange={() => handleCheckboxChange("male")}
               />
-              <span className="text-[13px] text-white">Мужской пол</span>
+              <span className="text-[13px] text-white">
+                {register("gender_male")}
+              </span>
             </label>
             <label className="flex items-center space-x-2">
               <Checkbox
                 checked={gender.female}
                 onCheckedChange={() => handleCheckboxChange("female")}
               />
-              <span className="text-[13px] text-white">Женский пол</span>
+              <span className="text-[13px] text-white">
+                {register("gender_fimale")}
+              </span>
             </label>
             <label className="flex items-center space-x-2">
               <Checkbox
                 checked={gender.none}
                 onCheckedChange={() => handleCheckboxChange("none")}
               />
-              <span className="text-[13px] text-white">Не выбрать</span>
+              <span className="text-[13px] text-white">
+                {register("gender_other")}
+              </span>
             </label>
           </div>
         </div>
@@ -229,8 +242,7 @@ export default function RegisterForm() {
             onCheckedChange={() => handleCheckboxChange("male")}
           />
           <span className="text-[13px] text-white">
-            Создавая учетную запись, я соглашаюсь с нашими Условиями
-            использования и Политикой конфиденциальности.
+            {register("privacy_policy")}
           </span>
         </div>
         <div className="flex justify-start gap-2 items-center">
@@ -238,12 +250,13 @@ export default function RegisterForm() {
             isLoading={isLoading}
             className="w-40 bg-white hover:bg-white"
           >
-            Kirish
+            {register("register")}
           </SubmitButton>
           <h1 className="text-[13px] text-white font-[400]">
-            Akkaunt mavjud emasmi?{" "}
+            {register("have_account")}
             <Link href="/register" className="font-bold">
-              Ro’yxatdan o’tish
+              {" "}
+              {register("login")}
             </Link>
           </h1>
         </div>

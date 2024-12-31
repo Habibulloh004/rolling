@@ -39,5 +39,32 @@
     "btnReview": "Reviews",
     "btnVacansy": "Vacancies",
     "ourComand": "Our Team"
+  },
+  "Register": {
+    "title": "Register and enjoy Rolling Sushi even more!",
+    "description": "Only registered users participate in our bonus system and receive up to 30% bonuses from each order. You will be able to use them 100% when paying for any dish! In addition, you will have access to exclusive discounts and promotions. Placing orders will become faster and more convenient. Do not miss the opportunity to become part of our loyalty program!",
+    "first_name": "First Name",
+    "first_name_v": "First Name required",
+    "last_name": "Last Name",
+    "last_name_v": "Last Name required",
+    "phone": "Phone Number",
+    "phone_v": "Phone Number required",
+    "password": "Password",
+    "password_v": "Password required",
+    "email": "Email",
+    "email_v": "Email required",
+    "birthday": "Birthday",
+    "gender": "Gender",
+    "gender_male": "Male",
+    "gender_fimale": "Fimale",
+    "gender_other": "Do not select",
+    "gender_v": "Gender required",
+    "optional": "Optional",
+    "send_sms": "Send sms",
+    "privacy_policy": "By creating an account, I agree to our Terms of Use and Privacy Policy.",
+    "privacy_policy_v": "Privacy Policy required",
+    "register": "Create Account",
+    "login": "Log in",
+    "have_account": "Already have an account?"
   }
 }

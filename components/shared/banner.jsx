@@ -29,16 +29,17 @@ const Banner = ({ banners }) => {
             ]}
             opts={{
               loop: true, // Loopni qo'shish
-              align: "start",
+              align: "center",
             }}
             className="w-full text-secondary"
           >
-            <CarouselContent className="my-0 py-0">
+            <CarouselContent className="my-0 py-0 px-2 md:px-4 lg:px-8 lg:gap-8">
               {banners.map((item, i) => {
                 return (
                   <CarouselItem key={i} className="">
-                    <Link locale={locale} className="mt-1" href={`/`}>
-                      <div className="relative mx-auto aspect-[16/6]">
+                    <Link locale={locale} className="mt-1" href={`/news`}>
+                      <div className="relative max-w-[1440px] mx-auto aspect-[16/6] lg:aspect-[15/5]">
+
                         <CustomImage
                           src={`${url}/banner/get_banner/${item.id}`}
                           alt={`banner-img`}

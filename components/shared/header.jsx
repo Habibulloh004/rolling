@@ -21,6 +21,16 @@ export default function Header() {
   const pathName = usePathname();
   const router = useRouter(); // Next.js router
   const navbar = useTranslations("Navbar");
+  const getPlace = (pathName) => {
+    if (pathName.startsWith("/web")) {
+      return "web";
+    } else if (pathName.startsWith("/branch")) {
+      return "branch";
+    } else {
+      return "unknown"; // Optional: to handle other cases
+    }
+  };
+
 
   const { toggleOpen, open } = useStore();
 
@@ -50,7 +60,7 @@ export default function Header() {
               <Link
                 locale={locale}
                 key={item.id}
-                href={`${item.path}`}
+                href={`/${getPlace(pathName)}${item.path}`}
                 onClick={toggleOpen}
                 className="flex-shrink-0 flex items-center gap-2 w-full"
               >
@@ -61,7 +71,9 @@ export default function Header() {
                   height={35}
                   className=""
                 />
-                <p className={`${item.path == pathName ? "font-semibold" : ""}`}>
+                <p
+                  className={`${item.path == pathName ? "font-semibold" : ""}`}
+                >
                   {navbar(`${item.title}`)}
                 </p>
               </Link>
@@ -122,7 +134,7 @@ export default function Header() {
               <Link
                 locale={locale}
                 key={item.id}
-                href={`${item.path}`}
+                href={`/${getPlace(pathName)}${item.path}`}
                 onClick={toggleOpen}
                 className="flex-shrink-0 flex items-center gap-2"
               >
@@ -133,7 +145,11 @@ export default function Header() {
                   height={33}
                   className=""
                 />
-                <p className={`${item.path == pathName ? "font-semibold" : ""}`}>{navbar(`${item.title}`)}</p>
+                <p
+                  className={`${item.path == pathName ? "font-semibold" : ""}`}
+                >
+                  {navbar(`${item.title}`)}
+                </p>
               </Link>
             );
           })}

@@ -1,4 +1,8 @@
 {
+  "All": {
+    "more": "See more",
+    "categories": "Categories"
+  },
   "Navbar": {
     "main": "Main",
     "news": "News",

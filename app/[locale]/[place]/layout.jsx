@@ -3,7 +3,7 @@ import { getMessages, getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { Link, routing } from "@/i18n/routing";
 import { Poppins } from "next/font/google";
-import "../globals.css";
+import "../../globals.css";
 import Header from "@/components/shared/header";
 import Marquee from "@/components/ui/marquee";
 import Footer from "@/components/shared/footer";

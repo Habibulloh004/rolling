@@ -1,6 +1,5 @@
 "use client";
 
-import Container from "./container";
 import {
   Carousel,
   CarouselContent,

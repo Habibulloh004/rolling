@@ -55,7 +55,9 @@ export default async function Layout({ children, params }) {
 
   return (
     <html lang={locale.locale}>
-      <body className={`${poppins.className} antialiased min-h-screen flex flex-col`}>
+      <body
+        className={`${poppins.className} antialiased min-h-screen flex flex-col`}
+      >
         <NextIntlClientProvider locale={locale.locale} messages={messages}>
           <Header />
           <div className="bg-secondary text-primary text-center">
@@ -66,7 +68,7 @@ export default async function Layout({ children, params }) {
             </div>
             <p className="hidden xl:block py-2">{introText}</p>
           </div>
-          {children}
+          <main className="grow mb-3">{children}</main>
           <Footer />
         </NextIntlClientProvider>
       </body>

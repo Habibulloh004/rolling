@@ -33,14 +33,7 @@ const Categories = ({ categories, locale }) => {
       >
         <div className="max-md:hidden absolute -right-1 -top-4 w-2 h-48 bg-[#F5F5F5] z-50 shadow-custom" />
         <CarouselContent className="relative max-md:px-4">
-          {categories.map((item, i) => {
-            const localizedName = getLocalizedCategoryName(
-              item.category_name,
-              locale
-            );
-            return (
-              <CarouselItem
-                key={i}
+
                 className={`basis-auto lg:basis-1/3 xl:basis-[25%] 2xl:basis-[15%] p-0 mx-2 rounded-xl ${
                   i == 0 && "ml-4"
                 }`}

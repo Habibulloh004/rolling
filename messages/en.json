@@ -5,6 +5,21 @@
     "saved": "Chosen",
     "about-us": "About us"
   },
+  "Footer": {
+    "logoBottom": "Rolling Sushi — your choice of freshness and quality. <br /> We value your trust and strive to make each order special.",
+    "phone": "Phone:",
+    "email": "Email:",
+    "download": "Download our app!",
+    "addressName": "Branch addresses:",
+    "address1": "253 Oltintepa Street, Tashkent",
+    "address2": "7A Yangi Olmazor Street, Tashkent",
+    "address3": "7 Yakkasaroy Street, Tashkent"
+  },
+  "FootNav": {
+    "aboutUs": "About Us",
+    "reviews": "Reviews",
+    "vacansies": "Vacancies"
+  },
   "HomePage": {
     "intro": "Do you want to participate in our bonus program? Register now and start earning up to 30% bonuses on every order!",
     "title": "Hello world!",

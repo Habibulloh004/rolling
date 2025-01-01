@@ -4,6 +4,15 @@ import { getLocale, getTranslations } from "next-intl/server";
 import Categories from "./_components/categories";
 import Container from "@/components/shared/container";
 import Modals from "./_components/modals";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Link } from "@/i18n/routing";
 
 export const metadata = {
   title: "Rolling Sushi - Свежие суши и роллы в Ташкенте",
@@ -31,7 +40,24 @@ export default async function HomePage() {
 
   return (
     <Container className={"w-full flex-col"}>
-      <Banner banners={banners} />
+      <Dialog>
+        <DialogTrigger asChild>
+          <span>
+            <Link locale={locale} href={"/web/categories"}>
+              Hello world
+            </Link>
+          </span>
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-[425px] p-10" mark="false">
+          <DialogHeader>
+            <DialogTitle>product.name</DialogTitle>
+            <DialogDescription className="text-[#6B6B6B]">
+              product.description
+            </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
+      {/* <Banner banners={banners} /> */}
       <Categories categories={categories} locale={locale} />
       <Modals />
     </Container>

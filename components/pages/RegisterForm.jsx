@@ -31,23 +31,38 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { useLocale, useTranslations } from "next-intl";
+import { DatePicker } from "../ui/date-picker";
+import { ArrowUpRight, Send } from "lucide-react";
 
 export default function RegisterForm() {
+  const optLang = useTranslations("Register.Message");
   const RegisterValidation = UpdateRegisterValidation();
-  const register = useTranslations("Register");
+  const t = useTranslations("Register");
+  const all = useTranslations("All");
+  const register = useTranslations("Register.Form");
   const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const form = useForm({
     resolver: zodResolver(RegisterValidation),
     defaultValues: {
+      first_name: "",
+      last_name: "",
+      email: "",
+      birthday: "",
+      genter: "male",
       phone: "",
       password: "",
+      privacy_policy: false,
     },
   });
 
   const onSubmit = async (values) => {
+    console.log(values);
+
+    return null;
     setIsLoading(true);
+
     try {
       const { phone, password } = values;
       console.log(phone, password, users);
@@ -91,7 +106,9 @@ export default function RegisterForm() {
       female: field === "female" ? true : false,
       none: field === "none" ? true : false,
     }));
+    form.setValue("gender", field);
   };
+  const { errors } = form.formState;
 
   useEffect(() => {
     (async () => {
@@ -110,16 +127,16 @@ export default function RegisterForm() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="w-full space-y-4 w-ful rounded-md"
+        className="w-full space-y-5 sm:space-y-4 w-ful rounded-md"
       >
-        <div className="w-full grid grid-cols-2 gap-3">
+        <div className="w-full flex flex-col sm:grid grid-cols-1 sm:grid-cols-2 gap-3">
           <CustomFormField
             fieldType={FormFieldType.INPUT}
             control={form.control}
             name="first_name"
             placeholder=""
             label={register("first_name")}
-            inputClass="rounded-md border-[1px]"
+            inputClass="rounded-md border-[1px] col-span-2 md:col-span-1"
           />
           <CustomFormField
             fieldType={FormFieldType.INPUT}
@@ -127,53 +144,63 @@ export default function RegisterForm() {
             name="last_name"
             placeholder=""
             label={register("last_name")}
-            inputClass="rounded-md border-[1px]"
+            inputClass="rounded-md border-[1px] col-span-2 md:col-span-1"
           />
-          <CustomFormField
-            fieldType={FormFieldType.PHONE_INPUT}
-            control={form.control}
-            name="phone"
-            placeholder=""
-            label={register("phone")}
-            inputClass="rounded-md border-[1px]"
-          />
-          <div className="h-full flex justify-start items-end w-ful">
-            <AlertDialog>
-              <AlertDialogTrigger asChild className="">
-                <Button className="w-6/10 bg-white hover:bg-white/90 text-black">
-                  {register("send_sms")}
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent className="w-[365px]">
-                <AlertDialogHeader>
-                  <AlertDialogTitle className="text-xl text-center">
-                    Смс подтверждения
-                  </AlertDialogTitle>
-                  <AlertDialogDescription className="text-black/60 text-center text-sm">
-                    Смс подтверждения отправлено на номер +998 99 ***-**-99{" "}
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <div className="w-full flex justify-center items-center">
-                  <InputOTP maxLength={4}>
-                    <InputOTPGroup>
-                      <InputOTPSlot index={0} />
-                      <InputOTPSlot index={1} />
-                      <InputOTPSlot index={2} />
-                      <InputOTPSlot index={3} />
-                    </InputOTPGroup>
-                  </InputOTP>
-                </div>
-                <AlertDialogFooter
-                  className={"flex justify-center items-center w-full"}
-                >
-                  <AlertDialogAction className="w-full hover:bg-primary hover:opacity-[0.9]">
-                    Continue
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
+          <div className="flex col-span-2 sm:grid grid-cols-2 justify-start items-end gap-2">
+            <CustomFormField
+              fieldType={FormFieldType.PHONE_INPUT}
+              control={form.control}
+              name="phone"
+              placeholder=""
+              label={register("phone")}
+              inputClass="rounded-md border-[1px]"
+            />
+            <div
+              className={`${
+                errors.phone && "pb-7"
+              } h-full flex justify-start items-end w-ful`}
+            >
+              <AlertDialog>
+                <AlertDialogTrigger asChild className="">
+                  <div>
+                    <Button className="max-sm:hidden w-6/10 h-10 bg-white hover:bg-white/90 text-black">
+                      {t("send_sms")}
+                    </Button>
+                    <Button className="sm:hidden h-10 bg-white hover:bg-white/90 text-black">
+                      <Send size={32} />
+                    </Button>
+                  </div>
+                </AlertDialogTrigger>
+                <AlertDialogContent className="rounded-md w-[365px]">
+                  <AlertDialogHeader>
+                    <AlertDialogTitle className="text-xl text-center">
+                      {optLang("title")}
+                    </AlertDialogTitle>
+                    <AlertDialogDescription className="text-black/60 text-center text-sm">
+                      {optLang("description")} <br /> +998 99 ***-**-99{" "}
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <div className="w-full flex justify-center items-center">
+                    <InputOTP maxLength={4}>
+                      <InputOTPGroup>
+                        <InputOTPSlot index={0} />
+                        <InputOTPSlot index={1} />
+                        <InputOTPSlot index={2} />
+                        <InputOTPSlot index={3} />
+                      </InputOTPGroup>
+                    </InputOTP>
+                  </div>
+                  <AlertDialogFooter
+                    className={"flex justify-center items-center w-full"}
+                  >
+                    <AlertDialogAction className="w-full hover:bg-primary hover:opacity-[0.9]">
+                      {optLang("validation")}
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </div>
           </div>
-
           <CustomFormField
             fieldType={FormFieldType.INPUT}
             control={form.control}
@@ -181,6 +208,7 @@ export default function RegisterForm() {
             placeholder=""
             label={register("email")}
             inputClass="rounded-md border-[1px]"
+            onChangeDatePicker={(date) => form.setValue("birthday", date)}
           />
           <CustomFormField
             fieldType={FormFieldType.PASSWORDINPUT}
@@ -190,31 +218,41 @@ export default function RegisterForm() {
             placeholder=""
             inputClass="rounded-md border-[1px]"
           />
+          <div className="sm:hidden flex items-center space-x-2">
+            <Checkbox
+              onCheckedChange={() =>
+                form.setValue(
+                  "privacy_policy",
+                  !form.getValues("privacy_policy")
+                )
+              }
+            />
+            <span className="text-[13px] text-white">
+              {register("privacy_policy")}
+            </span>
+          </div>
           <CustomFormField
             fieldType={FormFieldType.DATE_PICKER}
             control={form.control}
             name="birthday"
             label={register("birthday")}
-            placeholder=""
-            inputClass="rounded-md border-[1px]"
+            startYear={1900} // Set start year for range
+            endYear={new Date().getFullYear()} // Dynamically set the current year
+            optional={t("optional")}
           />
           <div className="col-span-2 flex flex-col space-y-2">
             <div className="flex justify-start items-center gap-1">
               <span className="text-sm text-white">{register("gender")}</span>
-              <span className="text-xs text-white/50">
-                {register("optional")}
-              </span>
+              <span className="text-xs text-white/50">{t("optional")}</span>
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid sm:grid-cols-2 gap-2">
             <label className="flex items-center space-x-2">
               <Checkbox
                 checked={gender.male}
                 onCheckedChange={() => handleCheckboxChange("male")}
               />
-              <span className="text-[13px] text-white">
-                {register("gender_male")}
-              </span>
+              <span className="text-[13px] text-white">{t("gender_male")}</span>
             </label>
             <label className="flex items-center space-x-2">
               <Checkbox
@@ -222,7 +260,7 @@ export default function RegisterForm() {
                 onCheckedChange={() => handleCheckboxChange("female")}
               />
               <span className="text-[13px] text-white">
-                {register("gender_fimale")}
+                {t("gender_fimale")}
               </span>
             </label>
             <label className="flex items-center space-x-2">
@@ -231,34 +269,44 @@ export default function RegisterForm() {
                 onCheckedChange={() => handleCheckboxChange("none")}
               />
               <span className="text-[13px] text-white">
-                {register("gender_other")}
+                {t("gender_other")}
               </span>
             </label>
           </div>
         </div>
-        <div className="flex items-center space-x-2">
+        <div className="max-sm:hidden flex items-center space-x-2">
           <Checkbox
-            checked={gender.male}
-            onCheckedChange={() => handleCheckboxChange("male")}
+            onCheckedChange={() =>
+              form.setValue("privacy_policy", !form.getValues("privacy_policy"))
+            }
           />
           <span className="text-[13px] text-white">
             {register("privacy_policy")}
           </span>
         </div>
-        <div className="flex justify-start gap-2 items-center">
+        <div className="flex w-full max-sm:flex-col items-center sm:justify-start gap-3 sm:items-center">
           <SubmitButton
             isLoading={isLoading}
-            className="w-40 bg-white hover:bg-white"
+            className="w-full sm:w-40 bg-white hover:bg-white"
           >
-            {register("register")}
+            {t("register")}
           </SubmitButton>
-          <h1 className="text-[13px] text-white font-[400]">
-            {register("have_account")}
+          <div className="sm:hidden w-full text-white flex items-center justify-center gap-2">
+            <div className="w-full h-[1.5px] bg-white" />
+            <h1 className="textNormal3">{all("or")}</h1>
+            <div className="w-full h-[1.5px] bg-white" />
+          </div>
+          <h1 className="max-sm:hidden text-[13px] text-white font-[400]">
+            {t("have_account")}
             <Link href="/register" className="font-bold">
               {" "}
-              {register("login")}
+              {t("login")}
             </Link>
           </h1>
+          <div className="sm:hidden flex justify-center items-center gap-2 text-white">
+            <h1>{t("login")}</h1>
+            <ArrowUpRight />
+          </div>
         </div>
       </form>
     </Form>

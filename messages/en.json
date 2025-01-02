@@ -1,4 +1,9 @@
 {
+  "All": {
+    "more": "See more",
+    "categories": "Categories",
+    "or": "OR"
+  },
   "Navbar": {
     "main": "Main",
     "news": "News",
@@ -40,31 +45,99 @@
     "btnVacansy": "Vacancies",
     "ourComand": "Our Team"
   },
+  "Months": {
+    "January": "January",
+    "February": "February",
+    "March": "March",
+    "April": "April",
+    "May": "May",
+    "June": "June",
+    "July": "July",
+    "August": "August",
+    "September": "September",
+    "October": "October",
+    "November": "November",
+    "December": "December",
+    "selectDate": "Pick a date"
+  },
   "Register": {
     "title": "Register and enjoy Rolling Sushi even more!",
+    "registration": "Registration",
     "description": "Only registered users participate in our bonus system and receive up to 30% bonuses from each order. You will be able to use them 100% when paying for any dish! In addition, you will have access to exclusive discounts and promotions. Placing orders will become faster and more convenient. Do not miss the opportunity to become part of our loyalty program!",
-    "first_name": "First Name",
-    "first_name_v": "First Name required",
-    "last_name": "Last Name",
-    "last_name_v": "Last Name required",
-    "phone": "Phone Number",
-    "phone_v": "Phone Number required",
-    "password": "Password",
-    "password_v": "Password required",
-    "email": "Email",
-    "email_v": "Email required",
-    "birthday": "Birthday",
-    "gender": "Gender",
+    "Form": {
+      "first_name": "First Name",
+      "last_name": "Last Name",
+      "phone": "Phone Number",
+      "password": "Password",
+      "email": "Email",
+      "birthday": "Birthday",
+      "gender": "Gender",
+      "privacy_policy": "By creating an account, I agree to our Terms of Use and Privacy Policy."
+    },
+    "Validation": {
+      "first_name": "First Name",
+      "last_name": "Last Name Required",
+      "phone": "Phone Number Required",
+      "password": "Password Required",
+      "email": "Email Required"
+    },
+    "Message": {
+      "title": "Message",
+      "description": "SMS confirmation sent to number",
+      "error": "An error occurred while registering. Please try again later.",
+      "validation": "Send code  "
+    },
+    "optional": "Optional",
     "gender_male": "Male",
     "gender_fimale": "Fimale",
     "gender_other": "Do not select",
-    "gender_v": "Gender required",
-    "optional": "Optional",
-    "send_sms": "Send sms",
-    "privacy_policy": "By creating an account, I agree to our Terms of Use and Privacy Policy.",
-    "privacy_policy_v": "Privacy Policy required",
+    "send_sms": "Send SMS",
     "register": "Create Account",
     "login": "Log in",
-    "have_account": "Already have an account?"
+    "have_account": "Already have an account?",
+    "password": "Secret"
+  },
+  "Login": {
+    "title": "Log In",
+    "Form": {
+      "phone": "Phone Number",
+      "password": "Password"
+    },
+    "Validation": {
+      "phone": "Phone Number Required",
+      "password": "Password Required"
+    },
+    "Message": {
+      "title": "Message",
+      "description": "SMS confirmation sent to number",
+      "error": "An error occurred while registering. Please try again later.",
+      "validation": "Send code  "
+    },
+    "send_sms": "Send SMS",
+    "register": "Create Account",
+    "login": "Log in",
+    "have_account": "Your havn't account?",
+    "password": "Secret"
+  },
+  "ResetPassword": {
+    "title": "Account Recovery",
+    "Form": {
+      "phone": "Phone Number",
+      "new_password": "New Password",
+      "confirm_password": "Repeat Password"
+    },
+    "Validation": {
+      "phone": "Phone Number is required",
+      "password": "Password is required"
+    },
+    "Message": {
+      "title": "Message",
+      "description": "SMS confirmation sent to the number",
+      "error": "An error occurred during registration. Please try again later.",
+      "validation": "Confirm"
+    },
+    "register": "Create a new account",
+    "reset": "Recover",
+    "password": "Hide"
   }
 }

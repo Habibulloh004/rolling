@@ -1,4 +1,9 @@
 {
+  "All": {
+    "more": "Ko‘proq ko‘rish",
+    "categories": "Kategoriyalar",
+    "or": "YOKI"
+  },
   "Navbar": {
     "main": "Bosh sahifa",
     "news": "Yangiliklar",
@@ -28,16 +33,99 @@
   "NewsPage": {
     "title": "Yangiliklar va Aksiyalar"
   },
-  "AboutUsPage": {
-    "title": "Biz haqimizda",
-    "intro": "Rolling Sushi-ga xush kelibsiz!",
-    "introBottom": "Rolling Sushi — bu har bir detal sizga e’tibor va g‘amxo‘rlik bilan yaratilgan joy. Biz ishonamizki, taom zavq bag‘ishlashi va uzoq vaqt esda qoladigan maxsus lahzalarni yaratishi kerak.",
-    "descriptionTop": "Bizni nima bilan ajralib turamiz?",
-    "description": "Ta’m va sifatning mukammal uyg‘unligi. Biz faqat yangi mahsulotlardan foydalanamiz va har bir buyurtmani muhabbat bilan tayyorlaymiz, shunda u siz uchun haqiqiy zavq bo‘ladi. *** Hamma uchun ochiqlik. Biz yapon oshxonasini Toshkent aholisi uchun yaqinroq va tushunarliroq qilishga intilamiz. *** Har bir mayda detalga g‘amxo‘rlik. Biz nafaqat ta’m haqida, balki sizning tajribangizni oddiy va qulay qilish haqida ham o‘ylaymiz.",
-    "descriptionBottom": "Rolling Sushi — bu qulay oilaviy kechki ovqatlar, samimiy do‘stlar uchrashuvlari yoki o‘zingizni maxsus narsalar bilan siylash vaqti haqida. Biz har bir tashrifingiz yoki buyurtmangiz faqat yoqimli xotiralar qoldirishini xohlaymiz.",
-    "logoBottom": "Bizga kuningizni biroz yaxshiroq qilishga ishonch bildirganingiz uchun rahmat!",
-    "btnReview": "Fikrlar",
-    "btnVacansy": "Bo‘sh ish o‘rinlari",
-    "ourComand": "Bizning jamoa"
+  "Months": {
+    "January": "Yanvar",
+    "February": "Fevral",
+    "March": "Mart",
+    "April": "Aprel",
+    "May": "May",
+    "June": "Iyun",
+    "July": "Iyul",
+    "August": "Avgust",
+    "September": "Sentyabr",
+    "October": "Oktyabr",
+    "November": "Noyabr",
+    "December": "Dekabr",
+    "selectDate": "Sana tanlash"
+  },
+  "Register": {
+    "title": "Ro‘yxatdan o‘ting va Rolling Sushi’dan yanada ko‘proq zavqlaning!",
+    "registration": "Ro‘yxatdan o‘tish",
+    "description": "Faqat ro‘yxatdan o‘tgan foydalanuvchilar bizning bonus tizimimizda ishtirok etadi va har bir buyurtmadan 30% gacha bonus olishadi. Siz ularni istalgan taomni to‘lashda 100% ishlatishingiz mumkin! Bundan tashqari, siz maxsus chegirmalar va aksiyalarga ega bo‘lasiz. Buyurtma berish yanada tez va qulay bo‘ladi. Bizning sodiqlik dasturimizning bir qismiga aylanib qolish imkoniyatini qo‘ldan boy bermang!",
+    "Form": {
+      "first_name": "Ism",
+      "last_name": "Familiya",
+      "phone": "Telefon raqami",
+      "password": "Parol",
+      "email": "Elektron pochta",
+      "birthday": "Tug‘ilgan sana",
+      "gender": "Jinsi",
+      "privacy_policy": "Hisob yaratish orqali men Foydalanish shartlari va Maxfiylik siyosatimizga roziman."
+    },
+    "Validation": {
+      "first_name": "Ism majburiy",
+      "last_name": "Familiya majburiy",
+      "phone": "Telefon raqami majburiy",
+      "password": "Parol majburiy",
+      "email": "Elektron pochta majburiy"
+    },
+    "Message": {
+      "title": "Xabar",
+      "description": "Tasdiqlash SMS yuborildi raqamga",
+      "error": "Ro‘yxatdan o‘tishda xatolik yuz berdi. Iltimos, keyinroq urinib ko‘ring.",
+      "validation": "Kodni yuboring"
+    },
+    "optional": "Majburiy emas",
+    "gender_male": "Erkak",
+    "gender_fimale": "Ayol",
+    "gender_other": "Ko‘rsatilmagan",
+    "send_sms": "SMS yuborish",
+    "register": "Hisob yaratish",
+    "login": "Kirish",
+    "have_account": "Hisobingiz bormi?",
+    "password": "Maxfiy"
+  },
+  "Login": {
+    "title": "Tizimga kirish",
+    "Form": {
+      "phone": "Telefon raqami",
+      "password": "Parol"
+    },
+    "Validation": {
+      "phone": "Telefon raqami majburiy",
+      "password": "Parol majburiy"
+    },
+    "Message": {
+      "title": "Xabar",
+      "description": "SMS tasdiq kodi raqamingizga yuborildi",
+      "error": "Ro‘yxatdan o‘tishda xatolik yuz berdi. Iltimos, keyinroq urinib ko‘ring.",
+      "validation": "Kod yuborish"
+    },
+    "send_sms": "SMS yuborish",
+    "register": "Hisob yaratish",
+    "login": "Kirish",
+    "have_account": "Hisobingiz yo‘qmi?",
+    "password": "Maxfiy kod"
+  },
+  "ResetPassword": {
+    "title": "Hisobni tiklash",
+    "Form": {
+      "phone": "Telefon raqami",
+      "new_password": "Yangi parol",
+      "confirm_password": "Parolni takrorlang"
+    },
+    "Validation": {
+      "phone": "Telefon raqami majburiy",
+      "password": "Parol majburiy"
+    },
+    "Message": {
+      "title": "Xabar",
+      "description": "Tasdiqlash SMS kodi raqamingizga yuborildi",
+      "error": "Ro‘yxatdan o‘tishda xatolik yuz berdi. Iltimos, keyinroq urinib ko‘ring.",
+      "validation": "Tasdiqlash"
+    },
+    "register": "Yangi hisob yaratish",
+    "reset": "Tiklash",
+    "password": "Yashirish"
   }
 }

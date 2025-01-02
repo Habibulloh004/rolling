@@ -1,4 +1,4 @@
-import { ProductDialog } from "@/components/shared/customModal";
+import { ProductDialog } from "@/components/modals/ProductModal";
 import { Modal } from "@/components/shared/modal";
 import { Fragment } from "react";
 

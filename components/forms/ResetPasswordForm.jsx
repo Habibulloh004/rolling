@@ -119,15 +119,13 @@ export default function ResetPasswordForm() {
         </div>
         <div className="flex w-full max-sm:flex-col items-center sm:justify-start gap-3 sm:items-center">
           <AlertDialog>
-            <AlertDialogTrigger className="">
-              <div>
+            <AlertDialogTrigger asChild className="">
                 <SubmitButton
                   isLoading={isLoading}
                   className="w-full sm:w-40 bg-white hover:bg-white"
                 >
                   {t("reset")}
                 </SubmitButton>
-              </div>
             </AlertDialogTrigger>
             <AlertDialogContent className="rounded-md w-[365px]">
               <AlertDialogHeader>

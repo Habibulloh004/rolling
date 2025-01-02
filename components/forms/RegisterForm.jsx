@@ -146,7 +146,7 @@ export default function RegisterForm() {
             label={register("last_name")}
             inputClass="rounded-md border-[1px] col-span-2 md:col-span-1"
           />
-          <div className="flex col-span-2 sm:grid grid-cols-2 justify-start items-end gap-2">
+          <div className="w-full flex col-span-2 sm:grid grid-cols-2 justify-start items-end gap-2">
             <CustomFormField
               fieldType={FormFieldType.PHONE_INPUT}
               control={form.control}
@@ -158,7 +158,7 @@ export default function RegisterForm() {
             <div
               className={`${
                 errors.phone && "pb-7"
-              } h-full flex justify-start items-end w-ful`}
+              } h-full flex justify-start items-end w-full`}
             >
               <AlertDialog>
                 <AlertDialogTrigger asChild className="">
@@ -166,12 +166,12 @@ export default function RegisterForm() {
                     <Button className="max-sm:hidden w-6/10 h-10 bg-white hover:bg-white/90 text-black">
                       {t("send_sms")}
                     </Button>
-                    <Button className="sm:hidden h-10 bg-white hover:bg-white/90 text-black">
+                    <Button className="sm:hidden h-10 bg-white hover:bg-white/90 text-black w-10">
                       <Send size={32} />
                     </Button>
                   </div>
                 </AlertDialogTrigger>
-                <AlertDialogContent className="rounded-md w-[365px]">
+                <AlertDialogContent className="rounded-md w-11/12 max-w-[365px]">
                   <AlertDialogHeader>
                     <AlertDialogTitle className="text-xl text-center">
                       {optLang("title")}

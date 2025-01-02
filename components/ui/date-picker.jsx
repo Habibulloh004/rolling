@@ -1,7 +1,14 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { format, getDate, getMonth, getYear, setMonth, setYear } from "date-fns";
+import {
+  format,
+  getDate,
+  getMonth,
+  getYear,
+  setMonth,
+  setYear,
+} from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -72,7 +79,7 @@ export function DatePicker({ startYear, endYear, value, onChange }) {
         <Button
           variant={"outline"}
           className={cn(
-            "h-11 w-full justify-start text-left font-normal",
+            "h-11 w-full justify-start text-left font-normal bg-transparent hover:bg-transparent text-white hover:text-white",
             !date && "text-muted-foreground"
           )}
         >

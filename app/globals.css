@@ -34,6 +34,7 @@ body {
     --popover-foreground: 0 0% 3.9%;
     --primary: 138, 21%, 33%;
     --primary-foreground: 0 0% 98%;
+    --primary-modal: 138, 21%, 33%, 0.9;
     --secondary: 139, 22%, 52%, 0.3;
     --secondary-foreground: 0 0% 9%;
     --muted: 167, 100%, 13%;

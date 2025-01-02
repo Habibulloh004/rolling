@@ -1,12 +1,16 @@
-import { LoginModal, RegisterModal } from "@/components/shared/customModal";
-import { Button } from "@/components/ui/button";
+import {
+  LoginModal,
+  RegisterModal,
+  ResetPasswordModal,
+} from "@/components/shared/customModal";
 import React from "react";
 
 const Modals = () => {
   return (
-    <div>
+    <div className="space-x-3">
       <LoginModal />
       <RegisterModal />
+      <ResetPasswordModal />
     </div>
   );
 };

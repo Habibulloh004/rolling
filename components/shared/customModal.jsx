@@ -16,6 +16,8 @@ import { cn } from "@/lib/utils";
 import CustomFormField from "./customFormField";
 import RegisterForm from "../pages/RegisterForm";
 import { useLocale, useTranslations } from "next-intl";
+import LoginForm from "../pages/LoginForm";
+import ResetPasswordForm from "../pages/ResetPasswordForm";
 
 export function ProductDialog({ product }) {
   const [isFavorite, setIsFavorite] = React.useState(product.isFavorite);
@@ -68,22 +70,58 @@ export function ProductDialog({ product }) {
   );
 }
 export function LoginModal() {
+  const login = useTranslations("Login");
+
   return (
-    <Dialog>
+    <Dialog className="w-full">
       <DialogTrigger asChild>
         <Button>Login modal</Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px] p-10" mark="false">
-        <DialogHeader>
-          <DialogTitle>Ddd</DialogTitle>
-          <DialogDescription className="text-[#6B6B6B]">ddd</DialogDescription>
+      <DialogContent
+        className="max-w-md w-11/12 no-scrollbar bg-primary-modal overflow-y-scroll py-5 focus:outline-none border-0 rounded-sm sm:rounded-md"
+        mark="none"
+      >
+        <DialogHeader className={""}>
+          <DialogTitle className="max-sm:hidden textSmall3 text-white">
+            {login("title")}
+          </DialogTitle>
+          <div className="sm:hidden text-white w-full flex justify-between items-center gap-2">
+            <h1 className="textNormal4 font-[400]">{login("title")}</h1>
+            <p>lang</p>
+          </div>
         </DialogHeader>
+        <LoginForm />
+      </DialogContent>
+    </Dialog>
+  );
+}
+export function ResetPasswordModal() {
+  const login = useTranslations("ResetPassword");
+
+  return (
+    <Dialog className="w-full">
+      <DialogTrigger asChild>
+        <Button>Reset Password modal</Button>
+      </DialogTrigger>
+      <DialogContent
+        className="max-w-md w-11/12 no-scrollbar bg-primary-modal overflow-y-scroll py-5 focus:outline-none border-0 rounded-sm sm:rounded-md"
+        mark="none"
+      >
+        <DialogHeader className={""}>
+          <DialogTitle className="max-sm:hidden textSmall3 text-white">
+            {login("title")}
+          </DialogTitle>
+          <div className="sm:hidden text-white w-full flex justify-between items-center gap-2">
+            <h1 className="textNormal4 font-[400]">{login("title")}</h1>
+            <p>lang</p>
+          </div>
+        </DialogHeader>
+        <ResetPasswordForm />
       </DialogContent>
     </Dialog>
   );
 }
 export function RegisterModal() {
-  const locale = useLocale();
   const register = useTranslations("Register");
   return (
     <Dialog className="w-full">
@@ -91,16 +129,20 @@ export function RegisterModal() {
         <Button>Register modal</Button>
       </DialogTrigger>
       <DialogContent
-        className="no-scrollbar bg-primary max-h-screen overflow-y-scroll max-w-3xl w-6/10 px-10 py-5 focus:outline-none border-0 rounded-sm sm:rounded-md"
+        className="max-w-md w-11/12 sm:max-w-2xl no-scrollbar bg-primary-modal max-h-screen overflow-y-scroll sm:w-10/12 xl:max-w-3xl sm:px-10 py-5 focus:outline-none border-0 rounded-sm sm:rounded-md"
         mark="none"
       >
-        <DialogHeader>
-          <DialogTitle className="textSmall3 text-white">
+        <DialogHeader className={""}>
+          <DialogTitle className="max-sm:hidden textSmall3 text-white">
             {register("title")}
           </DialogTitle>
-          <DialogDescription className="text-white text-[12px] ml-3">
+          <DialogDescription className="max-sm:hidden text-white text-[12px] ml-3">
             {register("description")}
           </DialogDescription>
+          <div className="sm:hidden text-white w-full flex justify-between items-center gap-2">
+            <h1 className="textNormal4 font-[400]">{register("registeration")}</h1>
+            <p>Lenguate</p>
+          </div>
         </DialogHeader>
         <RegisterForm />
       </DialogContent>

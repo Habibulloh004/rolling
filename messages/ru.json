@@ -1,7 +1,8 @@
 {
   "All": {
     "more": "Увидеть больше",
-    "categories": "Категории"
+    "categories": "Категории",
+    "or": "ИЛИ"
   },
   "Navbar": {
     "main": "Главное",
@@ -44,31 +45,99 @@
     "btnVacansy": "Вакансии",
     "ourComand": "Наша команда"
   },
+  "Months": {
+    "January": "Январь",
+    "February": "Февраль",
+    "March": "Март",
+    "April": "Апрель",
+    "May": "Май",
+    "June": "Июнь",
+    "July": "Июль",
+    "August": "Август",
+    "September": "Сентябрь",
+    "October": "Октябрь",
+    "November": "Ноябрь",
+    "December": "Декабрь",
+    "selectDate": "Выберите дату"
+  },
   "Register": {
-    "title": "Register and enjoy Rolling Sushi even more!",
-    "description": "Only registered users participate in our bonus system and receive up to 30% bonuses from each order. You will be able to use them 100% when paying for any dish! In addition, you will have access to exclusive discounts and promotions. Placing orders will become faster and more convenient. Do not miss the opportunity to become part of our loyalty program!",
-    "first_name": "First Name",
-    "first_name_v": "First Name required",
-    "last_name": "Last Name",
-    "last_name_v": "Last Name required",
-    "phone": "Phone Number",
-    "phone_v": "Phone Number required",
-    "password": "Password",
-    "password_v": "Password required",
-    "email": "Email",
-    "email_v": "Email required",
-    "birthday": "Birthday",
-    "gender": "Gender",
-    "gender_male": "Male",
-    "gender_fimale": "Fimale",
-    "gender_other": "Do not select",
-    "gender_v": "Gender required",
-    "optional": "Optional",
-    "send_sms": "Send sms",
-    "privacy_policy": "By creating an account, I agree to our Terms of Use and Privacy Policy.",
-    "privacy_policy_v": "Privacy Policy required",
-    "register": "Create Account",
-    "login": "Log in",
-    "have_account": "Already have an account?"
+    "title": "Зарегистрируйтесь и наслаждайтесь Rolling Sushi еще больше!",
+    "registeration": "Регистрация",
+    "description": "Только зарегистрированные пользователи участвуют в нашей бонусной системе и получают до 30% бонусов с каждого заказа. Вы сможете использовать их на 100% при оплате любого блюда! Кроме того, вам будут доступны эксклюзивные скидки и акции. Оформление заказов станет быстрее и удобнее. Не упустите возможность стать частью нашей программы лояльности!",
+    "Form": {
+      "first_name": "Имя",
+      "last_name": "Фамилия",
+      "phone": "Номер телефона",
+      "password": "Пароль",
+      "email": "Электронная почта",
+      "birthday": "Дата рождения",
+      "gender": "Пол",
+      "privacy_policy": "Создавая учетную запись, я соглашаюсь с нашими Условиями использования и Политикой конфиденциальности."
+    },
+    "Validation": {
+      "first_name": "Имя обязательно",
+      "last_name": "Фамилия обязательна",
+      "phone": "Номер телефона обязателен",
+      "password": "Пароль обязателен",
+      "email": "Электронная почта обязательна"
+    },
+    "Message": {
+      "title": "Сообщение",
+      "description": "Смс подтверждения отправлено на номер",
+      "error": "Произошла ошибка при регистрации. Пожалуйста, попробуйте позже.",
+      "validation": "Подтвердить"
+    },
+    "optional": "Необязательно",
+    "gender_male": "Мужчина",
+    "gender_fimale": "Женщина",
+    "gender_other": "Не указывать",
+    "send_sms": "Отправить SMS",
+    "register": "Создать аккаунт",
+    "login": "Войти",
+    "have_account": "Уже есть аккаунт?",
+    "password": "Скрыть"
+  },
+  "Login": {
+    "title": "Войти",
+    "Form": {
+      "phone": "Номер телефона",
+      "password": "Пароль"
+    },
+    "Validation": {
+      "phone": "Номер телефона обязателен",
+      "password": "Пароль обязателен"
+    },
+    "Message": {
+      "title": "Сообщение",
+      "description": "SMS подтверждение отправлено на номер",
+      "error": "Произошла ошибка при регистрации. Попробуйте позже.",
+      "validation": "Подтвердить"
+    },
+    "send_sms": "Отправить SMS",
+    "register": "Создать аккаунт",
+    "login": "Войти",
+    "have_account": "У вас нет аккаунта?",
+    "password": "Скрыть"
+  },
+  "ResetPassword": {
+    "title": "Восстановления аккаунта",
+    "Form": {
+      "phone": "Номер телефона",
+      "new_password": "Новый пароль",
+      "confirm_password": "Повторить пароль"
+    },
+    "Validation": {
+      "phone": "Номер телефона обязателен",
+      "password": "Пароль обязателен"
+    },
+    "Message": {
+      "title": "Сообщение",
+      "description": "SMS подтверждение отправлено на номер",
+      "error": "Произошла ошибка при регистрации. Попробуйте позже.",
+      "validation": "Подтвердить"
+    },
+    "register": "Создать новый аккаунт",
+    "reset": "Восстановить",
+    "password": "Скрыть"
   }
 }

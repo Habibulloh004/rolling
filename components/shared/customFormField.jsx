@@ -18,6 +18,7 @@ import {
   FormLabel,
   FormMessage,
 } from "../ui/form";
+import { DatePicker } from "../ui/date-picker";
 
 export const FormFieldType = {
   INPUT: "input",
@@ -98,16 +99,13 @@ const RenderInput = ({ field, className, props }) => {
     case FormFieldType.DATE_PICKER:
       return (
         <FormControl>
-          <Input
-            type="date"
-            placeholder={props.placeholder}
-            {...field}
-            value={field.value || ""} // Ensure the input is controlled
-            className={cn(
-              "textBig focus:border-white/50",
-              props.className,
-              className
-            )}
+          <DatePicker
+            value={field.value || null}
+            onChange={(date) => {
+              field.onChange(date);
+            }}
+            startYear={props.startYear || 1900}
+            endYear={props.endYear || new Date().getFullYear()}
           />
         </FormControl>
       );
@@ -195,17 +193,20 @@ const RenderInput = ({ field, className, props }) => {
 };
 
 const CustomFormField = (props) => {
-  const { control, name, label, inputClass } = props;
+  const { control, name, label, inputClass, optional } = props;
 
   return (
     <FormField
       control={control}
       name={name}
       render={({ field }) => (
-        <FormItem className="flex-1">
+        <FormItem className="flex-1 flex flex-col">
           {props.fieldType !== FormFieldType.CHECKBOX && label && (
             <FormLabel className="text-white text-sm font-serif">
-              {label}
+              {label}{" "}
+              {optional && (
+                <span className="text-[12px] text-white/50">{optional}</span>
+              )}
             </FormLabel>
           )}
           <RenderInput

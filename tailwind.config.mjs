@@ -37,6 +37,7 @@ const config = {
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
+          modal: "rgba(67, 103, 78, 0.9)",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",

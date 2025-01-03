@@ -2,6 +2,10 @@
   "All": {
     "more": "See more",
     "categories": "Categories",
+    "popular": "Popular and new items",
+    "cold_rolls": "Cold rolls",
+    "favorites": "Favorites",
+    "add":"Add",
     "or": "OR"
   },
   "Navbar": {
@@ -62,7 +66,7 @@
   },
   "Register": {
     "title": "Register and enjoy Rolling Sushi even more!",
-    "registration": "Registration",
+    "registeration": "Registration",
     "description": "Only registered users participate in our bonus system and receive up to 30% bonuses from each order. You will be able to use them 100% when paying for any dish! In addition, you will have access to exclusive discounts and promotions. Placing orders will become faster and more convenient. Do not miss the opportunity to become part of our loyalty program!",
     "Form": {
       "first_name": "First Name",

@@ -1,4 +1,6 @@
 import { ProductDialog } from "@/components/modals/ProductModal";
+import { Modal } from "@/components/shared/modal";
+import { Fragment } from "react";
 
 const products = [
   {
@@ -23,7 +25,11 @@ export default function Page() {
   return (
     <div className="container mx-auto grid gap-6 p-6 md:grid-cols-2 lg:grid-cols-3">
       {products.map((product) => (
-        <ProductDialog key={product.name} product={product} />
+        <Fragment key={product.name}>
+          <Modal>
+            <ProductDialog product={product} />
+          </Modal>
+        </Fragment>
       ))}
     </div>
   );

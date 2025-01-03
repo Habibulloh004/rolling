@@ -41,7 +41,7 @@ const Categories = ({ categories, locale }) => {
             return (
               <CarouselItem
                 key={i}
-                className={`basis-[45%] sm:basis-[30%] md:basis-[20%] lg:basis-[15%] p-0 mx-2 ${i == 0 && "max-sm:ml-14 max-md:ml-16 ml-8"}`}
+                className={`basis-[40%] sm:basis-[30%] md:basis-[20%] lg:basis-[15%] p-0 mx-2 ${i == 0 && "max-sm:ml-14 max-md:ml-16 ml-8"}`}
               >
                 <Link
                   locale={locale}

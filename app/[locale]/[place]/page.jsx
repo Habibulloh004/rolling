@@ -34,7 +34,7 @@ export default async function HomePage() {
     <Container className={"w-full flex-col"}>
       {/* <Banner banners={banners} /> */}
       <Categories categories={categories} locale={locale} />
-      <Modals />
+      {/* <Modals /> */}
     </Container>
   );
 }

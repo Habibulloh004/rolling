@@ -2,6 +2,10 @@
   "All": {
     "more": "Ko‘proq ko‘rish",
     "categories": "Kategoriyalar",
+    "popular": "Ommabop va yangi mahsulotlar",
+    "cold_rolls": "Sovuq rollar",
+    "favorites": "Sevimlilar",
+    "add": "Qo'shish",
     "or": "YOKI"
   },
   "Navbar": {

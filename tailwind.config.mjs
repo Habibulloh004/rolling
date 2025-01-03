@@ -24,7 +24,10 @@ const config = {
         },
       },
       colors: {
-        background: "hsl(var(--background))",
+        background: {
+          DEFAULT: "hsl(var(--background))",
+          primary: "rgba(245, 245, 245, 1)",
+        },
         foreground: "hsl(var(--foreground))",
         card: {
           DEFAULT: "hsl(var(--card))",
@@ -78,9 +81,9 @@ const config = {
         "custom-gradient-top-bottom":
           "linear-gradient(to bottom, hsla(138, 28%, 19%, 1) 10%, hsla(140, 20%, 52%, 1) 40%, hsla(137, 25%, 50%, 1) 100%)",
       },
-      boxShadow:{
-        "custom":"-3px 0px 4.5px -2px #00000040"
-      }
+      boxShadow: {
+        custom: "-3px 0px 4.5px -2px #00000040",
+      },
     },
   },
   plugins: [require("tailwindcss-animate")],

@@ -20,6 +20,40 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.8);
 }
 
+.input-phone > select {
+  background-color: transparent !important;
+}
+.input-phone select {
+  color: black;
+}
+.input-phone select option {
+  font-size: 12px;
+}
+.input-phone select option:hover {
+  background: rgba(67, 103, 78, 0.6);  
+}
+
+/* width */
+.input-phone select::-webkit-scrollbar {
+  width: 15px;
+}
+
+/* Track */
+.input-phone select::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey;
+}
+
+/* Handle */
+.input-phone select::-webkit-scrollbar-thumb {
+  background: rgba(67, 103, 78);
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+.input-phone select::-webkit-scrollbar-thumb:hover {
+  background: rgba(67, 103, 78, 0.6);
+}
+
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }

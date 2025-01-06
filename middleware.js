@@ -26,7 +26,7 @@ export default function middleware(req) {
 }
 
 export const config = {
-  matcher: ["/", "/(uz|ru|en)/:path*"], // Match root `/`, locales, and paths
+  matcher: ["/", "/(uz|ru|en)/:path*","/(uz|ru|en)/register","/(uz|ru|en)/login"], // Match root `/`, locales, and paths
 };
 
 

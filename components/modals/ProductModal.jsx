@@ -3,6 +3,8 @@
 import * as React from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import { Heart } from "lucide-react";
+import { cn } from "@/lib/utils";
 export function ProductDialog({ product }) {
   const [isFavorite, setIsFavorite] = React.useState(product.isFavorite);
 

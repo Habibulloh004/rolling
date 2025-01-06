@@ -74,11 +74,11 @@ export default async function Layout({ children, params, modal }) {
             </div>
             <p className="hidden xl:block py-2">{introText}</p>
           </div>
-          <main className="grow mb-3">
+          <main className="grow">
             {children}
             {modal}
           </main>
-          {/* <Footer params={params} /> */}
+          <Footer params={params} />
         </NextIntlClientProvider>
       </body>
     </html>

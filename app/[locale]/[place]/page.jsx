@@ -4,7 +4,6 @@ import { getLocale, getTranslations } from "next-intl/server";
 import Categories from "./_components/categories";
 import Container from "@/components/shared/container";
 import Modals from "./_components/modals";
-import { Link } from "@/i18n/routing";
 
 export const metadata = {
   title: "Rolling Sushi - Свежие суши и роллы в Ташкенте",

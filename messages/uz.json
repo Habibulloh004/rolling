@@ -6,7 +6,31 @@
     "cold_rolls": "Sovuq rollar",
     "favorites": "Sevimlilar",
     "add": "Qo'shish",
-    "or": "YOKI"
+    "or": "YOKI",
+    "reviews": "Sharh",
+    "vacansy": "Vakansiya",
+    "send": "Yuborish",
+    "cancel": "Bekor qilish",
+    "confirm": "Tasdiqlash",
+    "loading": "Yuklanmoqda",
+    "sendReview": "Sharh qoldirish"
+  },
+  "Form": {
+    "fullName": "To‘liq Ism",
+    "review": "Sharh",
+    "phone": "Telefon Raqami",
+    "profession": "Kasb",
+    "self": "O'zingiz haqida yozing",
+    "card_name": "Karta Nomi",
+    "card_number": "Karta Raqami",
+    "expired_date": "Amal qilish muddati",
+    "Validation": {
+      "fullName": "Ism va familiya majburiy",
+      "text": "Kamida 8 ta belgi kiritishingiz kerak",
+      "phone": "Telefon majburiy",
+      "profession": "Kasb majburiy",
+      "self": "Kamida 8 ta belgi kiritishingiz kerak"
+    }
   },
   "Navbar": {
     "main": "Bosh sahifa",
@@ -36,6 +60,18 @@
   },
   "NewsPage": {
     "title": "Yangiliklar va Aksiyalar"
+  },
+  "AboutUsPage": {
+    "title": "Biz haqimizda",
+    "intro": "Rolling Sushi’ga xush kelibsiz!",
+    "introBottom": "Rolling Sushi — bu siz uchun har bir detal o‘ylangan va g‘amxo‘rlik bilan yondashilgan joy. Biz ishonamizki, taom zavqlantirishi va uzoq vaqt esda qoladigan maxsus onlarni yaratishi kerak.",
+    "descriptionTop": "Bizni o‘ziga xos qiladigan narsa nima?",
+    "description": "Ta’m va sifatning mukammal uyg‘unligi. Biz faqat yangi mahsulotlardan foydalanamiz va har bir buyurtmani sevgi bilan tayyorlaymiz, shunda har bir taom siz uchun chinakam zavq manbaiga aylanadi. *** Hamma uchun qulaylik. Biz yapon oshxonasini Toshkent aholisi uchun yaqinroq va tushunarliroq qilishga intilamiz. *** Har bir detalda g‘amxo‘rlik. Biz nafaqat ta’m haqida, balki tajribangizni qulay va sodda qilish haqida ham o‘ylaymiz.",
+    "descriptionBottom": "Rolling Sushi — bu oila davrasidagi qulay kechki ovqatlar, do‘stlar bilan samimiy uchrashuvlar yoki o‘zingizni maxsus bir narsa bilan siylashingiz mumkin bo‘lgan vaqt. Biz har bir tashrifingiz yoki buyurtmangiz faqat yoqimli xotiralar qoldirishini xohlaymiz.",
+    "logoBottom": "Kunlaringizni yanada yaxshiroq qilishga bizga ishonch bildirganingiz uchun rahmat!",
+    "btnReview": "Sharhlar",
+    "btnVacansy": "Vakansiyalar",
+    "ourComand": "Bizning jamoamiz"
   },
   "Months": {
     "January": "Yanvar",

@@ -2,12 +2,10 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { aboutCard } from "@/public";
-import { Eye } from "lucide-react";
 
 const TeamCards = () => {
   return (

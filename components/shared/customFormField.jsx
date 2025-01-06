@@ -119,7 +119,7 @@ const RenderInput = ({ field, className, props }) => {
             <FormControl>
               <SelectTrigger
                 className={cn(
-                  "shad-select-trigger  border-b-2 border-border",
+                  "shad-select-trigger border-b-2 border-border",
                   props.className,
                   className
                 )}
@@ -193,7 +193,7 @@ const RenderInput = ({ field, className, props }) => {
 };
 
 const CustomFormField = (props) => {
-  const { control, name, label, inputClass, optional } = props;
+  const { control, name, label, inputClass, optional, labelClass } = props;
 
   return (
     <FormField
@@ -202,7 +202,9 @@ const CustomFormField = (props) => {
       render={({ field }) => (
         <FormItem className="flex-1 flex flex-col">
           {props.fieldType !== FormFieldType.CHECKBOX && label && (
-            <FormLabel className="text-white text-sm font-serif">
+            <FormLabel className={
+              cn("text-white text-sm font-serif", labelClass)
+            }>
               {label}{" "}
               {optional && (
                 <span className="text-[12px] text-white/50">{optional}</span>
@@ -211,8 +213,8 @@ const CustomFormField = (props) => {
           )}
           <RenderInput
             className={cn(
-              inputClass,
-              "text-white focus:outline-none text-xs lg:text-base bg-transparent"
+              "text-white text-xs lg:text-base bg-transparent",
+              inputClass
             )}
             field={field}
             props={props}

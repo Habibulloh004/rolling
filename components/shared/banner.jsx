@@ -10,10 +10,13 @@ import emblaCarouselAutoplay from "embla-carousel-autoplay";
 import { url } from "@/lib/utils";
 import CustomImage from "./customImage";
 import { useLocale } from "next-intl";
-import { Link } from "@/i18n/routing";
+import { usePathname } from "next/navigation";
+import Link from "next/link";
 
 const Banner = ({ banners }) => {
   const locale = useLocale();
+  const pathname = usePathname()
+  console.log(pathname)
   return (
     <main className={"mx-auto w-full py-5"}>
       <section className="flex items-center w-full justify-center h-full">
@@ -36,7 +39,7 @@ const Banner = ({ banners }) => {
               {banners.map((item, i) => {
                 return (
                   <CarouselItem key={i} className="">
-                    <Link locale={locale} className="mt-1" href={`/news`}>
+                    <Link className="mt-1" href={`${pathname}/news`}>
                       <div className="relative max-w-[1440px] mx-auto aspect-[16/6] lg:aspect-[15/5]">
 
                         <CustomImage

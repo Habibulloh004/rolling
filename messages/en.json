@@ -5,8 +5,32 @@
     "popular": "Popular and new items",
     "cold_rolls": "Cold rolls",
     "favorites": "Favorites",
-    "add":"Add",
-    "or": "OR"
+    "add": "Add",
+    "or": "OR",
+    "reviews": "Review",
+    "vacansy": "Vacancy",
+    "send": "Send",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "loading": "Loading",
+    "sendReview": "Send feedback"
+  },
+  "Form": {
+    "fullName": "Full Name",
+    "review": "Review",
+    "phone": "Phone Number",
+    "profession": "Profession",
+    "self": "Write about yourself",
+    "card_name": "Card Name",
+    "card_number": "Card Number",
+    "expired_date": "Expiration Date",
+    "Validation": {
+      "fullName": "Full name is required",
+      "text": "You must enter at least 8 characters",
+      "phone": "Phone is required",
+      "profession": "Profession is required",
+      "self": "You must enter at least 8 characters"
+    }
   },
   "Navbar": {
     "main": "Main",

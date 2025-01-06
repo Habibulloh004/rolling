@@ -1,12 +1,13 @@
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
-import { Link, routing } from "@/i18n/routing";
+import { routing } from "@/i18n/routing";
 import { Poppins } from "next/font/google";
 import "../../globals.css";
 import Header from "@/components/shared/header";
 import Marquee from "@/components/ui/marquee";
 import Footer from "@/components/shared/footer";
+import Link from "next/link";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -19,10 +20,10 @@ export const metadata = {
 };
 
 export default async function Layout({ children, params, modal }) {
-  const [locale, t] = await Promise.all([params, getTranslations("HomePage")]);
+  const [param, t] = await Promise.all([params, getTranslations("HomePage")]);
 
   // Validate the locale
-  if (!routing.locales.includes(locale.locale)) {
+  if (!routing.locales.includes(param.locale)) {
     notFound();
   }
 
@@ -33,8 +34,7 @@ export default async function Layout({ children, params, modal }) {
         <Link
           key={index}
           className="font-semibold inline"
-          locale={loc}
-          href="/sign-up"
+          href={`/${param.locale}/${param.place}/sign-up`}
         >
           {part}
         </Link>
@@ -47,18 +47,24 @@ export default async function Layout({ children, params, modal }) {
   const introText = wrapWithLink(
     t("intro"),
     ["Зарегистрируйтесь", "Register", "Hozir ro'yxatdan o'ting"],
-    locale.locale
+    param.locale
   );
 
   // Retrieve messages for the specified locale
-  const messages = await getMessages(locale.locale);
+  const messages = await getMessages(param.locale);
 
   return (
-    <html lang={locale.locale}>
+    <html lang={param.locale}>
+      <head>
+        <meta
+          name="viewport"
+          content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=no"
+        />
+      </head>
       <body
         className={`${poppins.className} antialiased min-h-screen flex flex-col`}
       >
-        <NextIntlClientProvider locale={locale.locale} messages={messages}>
+        <NextIntlClientProvider locale={param.locale} messages={messages}>
           <Header />
           <div className="bg-secondary text-primary text-center">
             <div className="max-xl:block hidden max-sm:text-xs">
@@ -72,7 +78,7 @@ export default async function Layout({ children, params, modal }) {
             {children}
             {modal}
           </main>
-          <Footer />
+          {/* <Footer params={params} /> */}
         </NextIntlClientProvider>
       </body>
     </html>

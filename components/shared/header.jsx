@@ -1,34 +1,26 @@
 "use client";
-import { Link, usePathname, useRouter } from "@/i18n/routing";
 import { lngItems, navItems } from "@/lib/utils";
-import { cartIcon, hamburgerIcon, navLogo, secondaryIcon } from "@/public";
+import { hamburgerIcon, navLogo, secondaryIcon } from "@/public";
 import { Search } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
 import Image from "next/legacy/image";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+
 import ResponsiveSVG from "@/public/assets/responsive";
 import { useStore } from "@/store";
+import { usePathname } from "next/navigation";
+import Link from "next/link";
+import LngChange from "./lngChange";
 
 export default function Header() {
-  const locale = useLocale();
-  const findLocale = lngItems.find((item) => item.locale == locale);
   const pathName = usePathname();
-  const router = useRouter(); // Next.js router
   const navbar = useTranslations("Navbar");
+  const locale = useLocale()
   const getPlace = (pathName) => {
-    if (pathName.startsWith("/web")) {
-      return "web";
-    } else if (pathName.startsWith("/branch")) {
-      return "branch";
-    } else {
-      return "unknown"; // Optional: to handle other cases
-    }
+    const segments = pathName.split("/").filter(Boolean); // Split and remove empty segments
+    const place = segments.find(
+      (segment) => segment === "web" || segment === "branch"
+    );
+    return place || "unknown"; // Return "unknown" if no match
   };
 
 
@@ -43,7 +35,7 @@ export default function Header() {
         } flex flex-col items-center bg-custom-gradient-top-bottom gap-5`}
       >
         {/* Logo */}
-        <Link locale={locale} href="/" className="flex-shrink-0 mt-5">
+        <Link href={`${pathName}`} className="flex-shrink-0 mt-5">
           <Image
             src={navLogo}
             alt="Rolling Sushi"
@@ -58,9 +50,8 @@ export default function Header() {
           {navItems.map((item) => {
             return (
               <Link
-                locale={locale}
                 key={item.id}
-                href={`/${getPlace(pathName)}${item.path}`}
+                href={`/${locale}/${getPlace(pathName)}${item.path}`}
                 onClick={toggleOpen}
                 className="flex-shrink-0 flex items-center gap-2 w-full"
               >
@@ -93,7 +84,7 @@ export default function Header() {
       {/* Header Content */}
       <div className="flex container fixed max-w-[1440px] z-10 top-0 px-3 left-1/2 -translate-x-1/2 m-auto items-center justify-between h-16 sm:h-24">
         {/* Desktop Logo */}
-        <Link locale={locale} href="/" className="hidden md:flex flex-shrink-0">
+        <Link href={`${pathName}`} className="hidden md:flex flex-shrink-0">
           <Image
             src={navLogo}
             alt="Rolling Sushi"
@@ -117,7 +108,7 @@ export default function Header() {
               className=""
             />
           </span>
-          <Link locale={locale} href="/" className=" flex-shrink-0">
+          <Link href={`${pathName}`} className=" flex-shrink-0">
             <Image
               src={secondaryIcon}
               alt="Rolling Sushi"
@@ -132,9 +123,8 @@ export default function Header() {
           {navItems.map((item) => {
             return (
               <Link
-                locale={locale}
                 key={item.id}
-                href={`/${getPlace(pathName)}${item.path}`}
+                href={`/${locale}/${getPlace(pathName)}${item.path}`}
                 onClick={toggleOpen}
                 className="flex-shrink-0 flex items-center gap-2"
               >
@@ -190,61 +180,13 @@ export default function Header() {
 
             {/* Language Selector */}
             <div className="hidden md:block">
-              <Select
-                defaultValue={findLocale.id}
-                onValueChange={(selectedValue) => {
-                  const selectedLocale = lngItems.find(
-                    (item) => item.id == selectedValue
-                  );
-                  if (selectedLocale) {
-                    router.replace(pathName, {
-                      locale: selectedLocale.locale,
-                    });
-                  }
-                }}
-              >
-                <SelectTrigger className="bg-white text-black border-none w-20 focus:outline-none cursor-pointer">
-                  <SelectValue asChild>
-                    <Image
-                      src={findLocale.icon.src}
-                      alt={findLocale.title}
-                      width={25}
-                      height={25}
-                    />
-                  </SelectValue>
-                </SelectTrigger>
-                <SelectContent>
-                  {lngItems.map((item) => (
-                    <SelectItem key={item.locale} value={item.id}>
-                      <Link
-                        href={pathName}
-                        locale={item.locale}
-                        className="flex items-center pr-6 py-1.5 gap-2"
-                      >
-                        <Image
-                          src={item.icon.src}
-                          alt={item.title}
-                          width={25}
-                          height={25}
-                        />
-                        <span
-                          className={
-                            item.locale === "ru" ? "text-[13px]" : "text-sm"
-                          }
-                        >
-                          {item.title}
-                        </span>
-                      </Link>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <LngChange />
             </div>
 
             {/* Cart */}
             <div>
               <Link
-                href="/cart"
+                href={`${pathName}/cart`}
                 className="flex items-center hover:text-gray-200"
               >
                 <span className="hidden md:block">

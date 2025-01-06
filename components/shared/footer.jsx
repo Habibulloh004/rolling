@@ -1,23 +1,25 @@
 import React from "react";
 import Container from "./container";
-import { getLocale, getTranslations } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import { appStoreIcon, playMarketIcon, secondaryIcon } from "@/public";
-import { Link } from "@/i18n/routing";
 import Image from "next/legacy/image";
 import { footItems } from "@/lib/utils";
-import { ChevronRight, MoveRight } from "lucide-react";
+import { ChevronRight } from "lucide-react";
+import Link from "next/link";
 
-const Footer = async () => {
-  const [locale, footerT, footNavT] = await Promise.all([
-    getLocale(),
+export default async function Footer({ params }) {
+  const [footerT, footNavT] = await Promise.all([
     getTranslations("Footer"),
     getTranslations("FootNav"),
   ]);
   return (
     <footer className="bg-white min-h-[300px] flex items-center flex-shrink-0 py-3">
       <Container className={`border-b border-primary py-2`}>
-        <section className="space-y-2 md:space-y-4 text-xs">
-          <Link locale={locale} href="/" className="flex-shrink-0 mt-5">
+        <section className="space-y-2 md:space-y-4 text-xs flex flex-col justify-center">
+          <Link
+            href={`/${params.locale}/${params.place}`}
+            className="flex-shrink-0 max-md:mx-auto mt-5 w-[200px] md:w-[280px]"
+          >
             <Image
               src={secondaryIcon}
               alt="Rolling Sushi"
@@ -27,7 +29,7 @@ const Footer = async () => {
             />
           </Link>
           <p
-            className="text-sm leading-relaxed"
+            className="text-sm leading-relaxed text-center md:text-left"
             dangerouslySetInnerHTML={{ __html: footerT("logoBottom") }}
           />
           <div className="space-y-1">
@@ -101,8 +103,7 @@ const Footer = async () => {
                 return (
                   <li key={item.id}>
                     <Link
-                      locale={locale}
-                      href={item.path}
+                      href={`/${params.locale}/${params.place}/${item.path}`}
                       className="flex items-center gap-1 font-semibold"
                     >
                       <ChevronRight className="size-4 md:size-5" />
@@ -129,6 +130,4 @@ const Footer = async () => {
       </Container>
     </footer>
   );
-};
-
-export default Footer;
+}

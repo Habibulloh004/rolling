@@ -27,9 +27,8 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
-import { useLocale, useTranslations } from "next-intl";
-import { DatePicker } from "../ui/date-picker";
-import { ArrowUpRight, Send } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { ArrowUpRight } from "lucide-react";
 
 export default function ResetPasswordForm() {
   const optLang = useTranslations("ResetPassword.Message");

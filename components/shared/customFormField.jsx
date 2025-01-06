@@ -9,7 +9,6 @@ import {
 import { Textarea } from "../ui/textarea";
 import "react-phone-number-input/style.css";
 import { cn } from "@/lib/utils";
-import CurrencyInput from "react-currency-input-field";
 import { PasswordInput } from "../ui/password-input";
 import {
   FormControl,
@@ -119,7 +118,7 @@ const RenderInput = ({ field, className, props }) => {
             <FormControl>
               <SelectTrigger
                 className={cn(
-                  "shad-select-trigger  border-b-2 border-border",
+                  "shad-select-trigger border-b-2 border-border",
                   props.className,
                   className
                 )}
@@ -148,43 +147,6 @@ const RenderInput = ({ field, className, props }) => {
           />
         </FormControl>
       );
-    case FormFieldType.CURRENCY:
-      return (
-        <FormControl>
-          <CurrencyInput
-            placeholder={props.placeholder}
-            className={cn(
-              "w-full p-2 rounded-md custom-currency-input",
-              props.className,
-              className
-            )}
-            value={field.value || ""}
-            onValueChange={(value, name) => {
-              if (!value || !isNaN(value.replace(/\s/g, ""))) {
-                field.onChange(value);
-              } else {
-                // Log and reset if invalid input occurs
-                console.error("Invalid input: not a number");
-                field.onChange("");
-              }
-            }}
-            step={0.01}
-            allowDecimals
-            decimalSeparator="."
-            groupSeparator=" "
-            decimalsLimit={8} // Limit decimal points to 8
-            prefix=""
-            disableAbbreviations // Prevents K/M abbreviations
-            onBlur={() => {
-              // Ensure the field is cleared if no valid number is present
-              if (isNaN(Number(field.value.replace(/\s/g, "")))) {
-                field.onChange("");
-              }
-            }}
-          />
-        </FormControl>
-      );
-
     case FormFieldType.SKELETON:
       return props.renderSkeleton ? props.renderSkeleton(field) : null;
     default:
@@ -193,7 +155,7 @@ const RenderInput = ({ field, className, props }) => {
 };
 
 const CustomFormField = (props) => {
-  const { control, name, label, inputClass, optional } = props;
+  const { control, name, label, inputClass, optional, labelClass } = props;
 
   return (
     <FormField
@@ -202,7 +164,9 @@ const CustomFormField = (props) => {
       render={({ field }) => (
         <FormItem className="flex-1 flex flex-col">
           {props.fieldType !== FormFieldType.CHECKBOX && label && (
-            <FormLabel className="text-white text-sm font-serif">
+            <FormLabel
+              className={cn("text-white text-sm font-serif", labelClass)}
+            >
               {label}{" "}
               {optional && (
                 <span className="text-[12px] text-white/50">{optional}</span>
@@ -211,8 +175,8 @@ const CustomFormField = (props) => {
           )}
           <RenderInput
             className={cn(
-              inputClass,
-              "text-white focus:outline-none text-xs lg:text-base bg-transparent"
+              "text-white text-xs lg:text-base bg-transparent",
+              inputClass
             )}
             field={field}
             props={props}

@@ -7,6 +7,13 @@ body {
   background: hsla(0, 0%, 96%, 1);
 }
 
+.empty-icons > * {
+  display: inline-block !important;
+}
+.filled-icons > * {
+  display: inline-block!important;
+}
+
 .input-phone > * {
   background-color: transparent;
   border: 1px solid #ffffff;
@@ -19,6 +26,18 @@ body {
   outline: none;
   border: 1px solid rgba(255, 255, 255, 0.8);
 }
+.gray > * {
+  background-color: transparent;
+  border: 1px solid hsl(0 0% 89.8%) !important;
+  height: 40px;
+  border-radius: 5px;
+  padding: 6px;
+}
+
+.gray > *:focus {
+  outline: none !important;
+  border: 1px solid hsl(0 0% 3.9%) !important;
+}
 
 .input-phone > select {
   background-color: transparent !important;
@@ -30,7 +49,7 @@ body {
   font-size: 12px;
 }
 .input-phone select option:hover {
-  background: rgba(67, 103, 78, 0.6);  
+  background: rgba(67, 103, 78, 0.6);
 }
 
 /* width */

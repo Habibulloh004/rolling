@@ -1,11 +1,10 @@
 import Container from "@/components/shared/container";
-import CustomImage from "@/components/shared/customImage";
-import { Link } from "@/i18n/routing";
 import { aboutLogo } from "@/public";
 import { getTranslations, getLocale } from "next-intl/server";
 import Image from "next/legacy/image";
 import React from "react";
 import TeamCards from "./_components/cards";
+import Link from "next/link";
 
 export const metadata = {
   title: "О нас - Rolling Sushi",
@@ -17,9 +16,9 @@ export const metadata = {
   },
 };
 
-const AboutUs = async () => {
-  const [locale, aboutUsT] = await Promise.all([
-    getLocale(),
+const AboutUs = async ({ params }) => {
+  const [param, aboutUsT] = await Promise.all([
+    params,
     getTranslations("AboutUsPage"),
   ]);
   const description = aboutUsT("description")
@@ -58,15 +57,13 @@ const AboutUs = async () => {
           <p>{aboutUsT("descriptionBottom")}</p>
           <div className="flex flex-col gap-3 sm:hidden mt-4">
             <Link
-              locale={locale}
-              href={"/reviews"}
+              href={`/${param.locale}/${param.place}/reviews`}
               className="w-full rounded-md bg-primary text-white py-2 text-xs md:text-sm text-center"
             >
               {aboutUsT("btnReview")}
             </Link>
             <Link
-              locale={locale}
-              href={"/vacansies"}
+              href={`/${param.locale}/${param.place}/create-vacansy`}
               className="w-full rounded-md bg-primary text-white py-2 text-xs md:text-sm text-center"
             >
               {aboutUsT("btnVacansy")}
@@ -84,16 +81,15 @@ const AboutUs = async () => {
             {aboutUsT("logoBottom")}
           </p>
           <div className="flex flex-col gap-3">
+            {/* <CreateReview /> */}
             <Link
-              locale={locale}
-              href={"/reviews"}
+              href={`/${param.locale}/${param.place}/reviews`}
               className="w-full lg:w-3/4 mx-auto rounded-md bg-primary text-white py-2 text-xs md:text-sm text-center"
             >
               {aboutUsT("btnReview")}
             </Link>
             <Link
-              locale={locale}
-              href={"/vacansies"}
+              href={`/${param.locale}/${param.place}/create-vacansy`}
               className="w-full lg:w-3/4 mx-auto rounded-md bg-primary text-white py-2 text-xs md:text-sm text-center"
             >
               {aboutUsT("btnVacansy")}

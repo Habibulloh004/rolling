@@ -1,6 +1,8 @@
 import { Button } from "../ui/button";
+import { useTranslations } from "next-intl";
 
 const SubmitButton = ({ isLoading, className, children }) => {
+  const allT = useTranslations("All")
   return (
     <Button
       variant="ghost"
@@ -27,9 +29,9 @@ const SubmitButton = ({ isLoading, className, children }) => {
                 fill="currentFill"
               />
             </svg>
-            <span className="text-black sr-only">Загрузка...</span>
+            <span className="text-black sr-only">{allT("loading")}</span>
           </div>
-          Yuklanmoqda...
+          {allT("loading")}
         </div>
       ) : (
         children

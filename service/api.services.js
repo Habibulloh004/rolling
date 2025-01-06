@@ -2,7 +2,7 @@ import { posterToken, posterUrl } from "@/lib/utils";
 import axios from "axios";
 
 export const ApiService = {
-  async getData(url, props) {
+  async getPosterData(url, props) {
     const response = await axios.get(
       `${posterUrl}/api/${url}?${posterToken}${props ? props : ""}`
     );

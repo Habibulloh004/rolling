@@ -78,7 +78,7 @@ export default async function Layout({ children, params, modal }) {
             {children}
             {modal}
           </main>
-          <Footer params={params} />
+          {/* <Footer params={params} /> */}
         </NextIntlClientProvider>
       </body>
     </html>

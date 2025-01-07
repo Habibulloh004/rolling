@@ -9,14 +9,11 @@ import {
 import emblaCarouselAutoplay from "embla-carousel-autoplay";
 import { url } from "@/lib/utils";
 import CustomImage from "./customImage";
-import { useLocale } from "next-intl";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 
 const Banner = ({ banners }) => {
-  const locale = useLocale();
   const pathname = usePathname()
-  console.log(pathname)
   return (
     <main className={"mx-auto w-full py-5"}>
       <section className="flex items-center w-full justify-center h-full">

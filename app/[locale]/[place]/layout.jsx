@@ -8,6 +8,8 @@ import Header from "@/components/shared/header";
 import Marquee from "@/components/ui/marquee";
 import Footer from "@/components/shared/footer";
 import Link from "next/link";
+import Script from "next/script";
+import GoogleAnalytics from "@/app/googleAnalytics";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -64,6 +66,50 @@ export default async function Layout({ children, params, modal }) {
       <body
         className={`${poppins.className} antialiased min-h-screen flex flex-col`}
       >
+        <noscript>
+          <iframe
+            src="https://www.googletagmanager.com/ns.html?id=GTM-M3LDW3FG"
+            height="0"
+            width="0"
+            style={{ display: "none", visibility: "hidden" }}
+          ></iframe>
+        </noscript>
+
+        {/* Google Analytics Script */}
+        <Script
+          strategy="afterInteractive"
+          src="https://www.googletagmanager.com/gtag/js?id=G-PN4ZZXXGHP"
+        />
+        <Script id="gtag-init" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'G-PN4ZZXXGHP', {
+              page_path: window.location.pathname,
+            });
+          `}
+        </Script>
+
+        {/* Google Tag Manager Script */}
+        <Script id="gtm-init" strategy="afterInteractive">
+          {`
+            (function(w,d,s,l,i){
+              w[l]=w[l]||[];
+              w[l].push({'gtm.start': new Date().getTime(), event:'gtm.js'});
+              var f=d.getElementsByTagName(s)[0],
+                  j=d.createElement(s),
+                  dl=l!='dataLayer'?'&l='+l:'';
+              j.async=true;
+              j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;
+              f.parentNode.insertBefore(j,f);
+            })(window,document,'script','dataLayer','GTM-M3LDW3FG');
+          `}
+        </Script>
+
+        {/* Google Analytics Route Tracking */}
+        <GoogleAnalytics />
         <NextIntlClientProvider locale={param.locale} messages={messages}>
           <Header />
           <div className="bg-secondary text-primary text-center">

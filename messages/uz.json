@@ -15,6 +15,18 @@
     "loading": "Yuklanmoqda",
     "sendReview": "Sharh qoldirish"
   },
+  "Profile": {
+    "title": "Profil",
+    "userName": "Foydalanuvchi nomi",
+    "phone": "Telefon raqami",
+    "offer": "Biz sizga har bir buyurtma bilan ko'proq tejash imkonini beruvchi noyob bonus dasturini taklif etamiz: <br/> 1. Bronza (10%): 1-dan 4-buyurtmagacha beriladi. <br/> 2. Kumush (20%): 5-dan 9-buyurtmagacha beriladi. <br/> 3. Oltin (30%): 10-buyurtmadan boshlab beriladi.",
+    "how_it_work": "Bu qanday ishlaydi? <br/> • Har bir buyurtmadan so'ng, darajangizga qarab (Bronza, Kumush yoki Oltin) bonuslar yig'iladi. <br /> • Menyumizdagi istalgan taom uchun to'lovda yig'ilgan bonuslarning 100% gacha bo'lgan qismini ishlatishingiz mumkin.",
+    "my_cards": "Mening kartalarim",
+    "my_address": "Yetkazib berish manzillari",
+    "my_order": "Mening buyurtmalarim",
+    "my_bonus": "Mening bonuslarim",
+    "logout": "Akkauntdan chiqish"
+  },  
   "Form": {
     "fullName": "To‘liq Ism",
     "review": "Sharh",

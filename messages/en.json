@@ -1,5 +1,7 @@
 {
   "All": {
+    "sms_err": "There is an error in the code! Try again.",
+    "search": "Search in the menu",
     "more": "See more",
     "categories": "Categories",
     "popular": "Popular and new items",

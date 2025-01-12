@@ -8,9 +8,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Cookies from "js-cookie";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { UpdateRegisterValidation } from "@/lib/validation";
-import { toast } from "sonner";
 import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
 import {
@@ -30,18 +29,36 @@ import {
   InputOTPSeparator,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
-import { useLocale, useTranslations } from "next-intl";
-import { DatePicker } from "../ui/date-picker";
-import { ArrowUpRight, Send } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { ArrowUpRight, Send, X } from "lucide-react";
+import {
+  formatTimestampToDate,
+  generateRandomFourDigitNumber,
+  getUrl,
+  url,
+} from "@/lib/utils";
+import {
+  getCategories,
+  getClient,
+  getClientGroup,
+  sendSmsToUser,
+} from "@/actions";
+import { useToast } from "@/hooks/use-toast";
+import { createClient } from "@/actions/post";
 
 export default function RegisterForm() {
+  const { toast } = useToast();
+  const [clientGroup, setClientGroup] = useState("");
+  const [registerBtnDisabled, setRegisterBtnDisabled] = useState(true);
+  const [otpValues, setOtpValues] = useState("");
+  const [generatingValue, setGeneratingValue] = useState("");
   const optLang = useTranslations("Register.Message");
   const RegisterValidation = UpdateRegisterValidation();
   const t = useTranslations("Register");
   const all = useTranslations("All");
   const register = useTranslations("Register.Form");
-  const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const pathname = usePathname();
   const router = useRouter();
   const form = useForm({
     resolver: zodResolver(RegisterValidation),
@@ -57,42 +74,48 @@ export default function RegisterForm() {
     },
   });
 
-  const onSubmit = async (values) => {
-    console.log(values);
-
-    return null;
-    setIsLoading(true);
-
-    try {
-      const { phone, password } = values;
-      console.log(phone, password, users);
-
-      const findUser = users?.find(
-        (user) =>
-          user?.Password == String(password) &&
-          user?.PhoneNumber == String(phone)
-      );
-      console.log({ findUser });
-
-      if (findUser) {
-        Cookies.set("auth", JSON.stringify(findUser), { expires: 1 });
-        Cookies.set(
-          "extraTime",
-          new Date().getTime() + 60 * 60 * 1000 * 24 * 30, // 30 days
-          { expires: 1 }
-        );
-        toast.success("Tizimga muvofaqiyatli kirdingiz.");
-        router.push(`/${findUser?.Role}`);
-      } else {
-        toast.error("Login yoki password noto'g'ri.Qaytadan urunib ko'ring!!!");
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error("Login yoki password noto'g'ri.Qaytadan urunib ko'ring!!!");
-    } finally {
-      setIsLoading(false);
+  useEffect(() => {
+    async function getGroup() {
+      const result = await getClientGroup();
+      setClientGroup(result);
+      console.log(result);
     }
+    getGroup();
+  }, []);
+
+  const onSubmit = async (values) => {
+    // console.log(values);
+    const posterClient = await createClient({
+      client_name: `${form.getValues("last_name")} ${form.getValues(
+        "first_name"
+      )}`,
+      client_sex: `${
+        form.getValues("genter") == "male"
+          ? "1"
+          : form.getValues("genter") == "female"
+          ? "2"
+          : "0"
+      }`,
+      client_groups_id_client: clientGroup
+        ? clientGroup[0].client_groups_id
+        : "1",
+      phone: `${form.getValues("phone")}`,
+      email: `${form.getValues("email")}`,
+      birthday: formatTimestampToDate(form.getValues("birthday")),
+      comment: JSON.stringify({ password: `password ${form.getValues("password")}` }),
+    });
+
+    if (posterClient.error && posterClient.error == 167) {
+      router.push(`${getUrl(pathname)}/login`);
+      return;
+    }
+
+    await getClient(posterClient.response);
+    // Cookies.set("client", JSON.stringify(client));
+    router.push(`${getUrl(pathname)}`);
   };
+
+  const phone = form.watch("phone");
 
   const [gender, setGender] = useState({
     male: false,
@@ -108,20 +131,30 @@ export default function RegisterForm() {
     }));
     form.setValue("gender", field);
   };
-  const { errors } = form.formState;
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const response = await databases.listDocuments(
-          DATABASE_ID,
-          COLLECTION_ID_USERS
-        );
-        console.log(response);
-        setUsers(response.documents);
-      } catch (error) {}
-    })();
-  }, []);
+  const checkNumber = async () => {
+    // const postNumber = fetch("")
+    if (otpValues != generatingValue) {
+      toast({
+        variant: "destructive",
+        title: all("sms_err"),
+      });
+      return;
+    }
+    setRegisterBtnDisabled(false);
+    console.log(form);
+    console.log("OTP:", otpValues);
+    console.log("val", generatingValue);
+  };
+
+  const sendSms = async () => {
+    const code = generateRandomFourDigitNumber();
+    setGeneratingValue(code);
+    const res = await sendSmsToUser(code, form.getValues("phone"));
+    console.log(res);
+  };
+
+  const { errors } = form.formState;
 
   return (
     <Form {...form}>
@@ -160,28 +193,42 @@ export default function RegisterForm() {
                 errors.phone && "pb-7"
               } h-full flex justify-start items-end w-full`}
             >
+              <div></div>
               <AlertDialog>
-                <AlertDialogTrigger asChild className="">
+                <AlertDialogTrigger asChild>
                   <div>
-                    <Button className="max-sm:hidden w-6/10 h-10 bg-white hover:bg-white/90 text-black">
+                    <Button
+                      type="button"
+                      disabled={!phone || phone.length != 13}
+                      onClick={sendSms}
+                      className="max-sm:hidden w-6/10 h-10 bg-white hover:bg-white/90 text-black"
+                    >
                       {t("send_sms")}
                     </Button>
-                    <Button className="sm:hidden h-10 bg-white hover:bg-white/90 text-black w-10">
+                    <Button
+                      type="button"
+                      disabled={!phone || phone.length != 13}
+                      onClick={sendSms}
+                      className="sm:hidden h-10 bg-white hover:bg-white/90 text-black w-10"
+                    >
                       <Send size={32} />
                     </Button>
                   </div>
                 </AlertDialogTrigger>
                 <AlertDialogContent className="rounded-md w-11/12 max-w-[365px]">
                   <AlertDialogHeader>
-                    <AlertDialogTitle className="text-xl text-center">
+                    <AlertDialogTitle className="text-xl text-center relative">
                       {optLang("title")}
+                      <AlertDialogCancel className="w-2 aspect-square absolute right-0 -top-2">
+                        <X className="size-2" />
+                      </AlertDialogCancel>
                     </AlertDialogTitle>
                     <AlertDialogDescription className="text-black/60 text-center text-sm">
-                      {optLang("description")} <br /> +998 99 ***-**-99{" "}
+                      {optLang("description")} <br /> {form.getValues("phone")}{" "}
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <div className="w-full flex justify-center items-center">
-                    <InputOTP maxLength={4}>
+                    <InputOTP maxLength={4} onChange={(e) => setOtpValues(e)}>
                       <InputOTPGroup>
                         <InputOTPSlot index={0} />
                         <InputOTPSlot index={1} />
@@ -193,7 +240,10 @@ export default function RegisterForm() {
                   <AlertDialogFooter
                     className={"flex justify-center items-center w-full"}
                   >
-                    <AlertDialogAction className="w-full hover:bg-primary hover:opacity-[0.9]">
+                    <AlertDialogAction
+                      onClick={checkNumber}
+                      className="w-full hover:bg-primary hover:opacity-[0.9]"
+                    >
                       {optLang("validation")}
                     </AlertDialogAction>
                   </AlertDialogFooter>
@@ -241,7 +291,7 @@ export default function RegisterForm() {
             optional={t("optional")}
           />
           <div className="col-span-2 flex flex-col space-y-2">
-            <div className="flex justify-start items-center gap-1">
+            <div className="flex justify-start items-center gap-1 font-semibold">
               <span className="text-sm text-white">{register("gender")}</span>
               <span className="text-xs text-white/50">{t("optional")}</span>
             </div>
@@ -287,6 +337,7 @@ export default function RegisterForm() {
         <div className="flex w-full max-sm:flex-col items-center sm:justify-start gap-3 sm:items-center">
           <SubmitButton
             isLoading={isLoading}
+            disabled={registerBtnDisabled}
             className="w-full sm:w-40 bg-white hover:bg-white"
           >
             {t("register")}
@@ -298,15 +349,18 @@ export default function RegisterForm() {
           </div>
           <h1 className="max-sm:hidden text-[13px] text-white font-[400]">
             {t("have_account")}
-            <Link href="/register" className="font-bold">
+            <Link href={`${getUrl(pathname)}/login`} className="font-[400] ">
               {" "}
               {t("login")}
             </Link>
           </h1>
-          <div className="sm:hidden flex justify-center items-center gap-2 text-white">
-            <h1>{t("login")}</h1>
+          <Link
+            href={`${getUrl(pathname)}/login`}
+            className="sm:hidden flex justify-center items-center gap-2 text-white"
+          >
+            <h1 className="">{t("login")}</h1>
             <ArrowUpRight />
-          </div>
+          </Link>
         </div>
       </form>
     </Form>

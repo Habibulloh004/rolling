@@ -4,7 +4,7 @@ import axios from "axios";
 export const ApiService = {
   async getPosterData(url, props) {
     const response = await axios.get(
-      `${posterUrl}/api/${url}?${posterToken}${props ? props : ""}`
+      `${posterUrl}/api/${url}?token=${posterToken}${props ? props : ""}`
     );
     return response.data;
   },

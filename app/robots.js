@@ -4,6 +4,7 @@ export default function robots() {
       userAgent: "*",
       allow: "/",
       allow: "/*",
+      disallow: "/*/branch/",
       disallow: "*/cart/",
       disallow: "*/checkout/",
     },

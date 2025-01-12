@@ -10,6 +10,7 @@ import Footer from "@/components/shared/footer";
 import Link from "next/link";
 import Script from "next/script";
 import GoogleAnalytics from "@/app/googleAnalytics";
+import { Toaster } from "@/components/ui/toaster";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -76,11 +77,11 @@ export default async function Layout({ children, params, modal }) {
         </noscript>
 
         {/* Google Analytics Script */}
-        <Script
+        {/* <Script
           strategy="afterInteractive"
           src="https://www.googletagmanager.com/gtag/js?id=G-PN4ZZXXGHP"
-        />
-        <Script id="gtag-init" strategy="afterInteractive">
+        /> */}
+        {/* <Script id="gtag-init" strategy="afterInteractive">
           {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
@@ -90,10 +91,10 @@ export default async function Layout({ children, params, modal }) {
               page_path: window.location.pathname,
             });
           `}
-        </Script>
+        </Script> */}
 
         {/* Google Tag Manager Script */}
-        <Script id="gtm-init" strategy="afterInteractive">
+        {/* <Script id="gtm-init" strategy="afterInteractive">
           {`
             (function(w,d,s,l,i){
               w[l]=w[l]||[];
@@ -106,10 +107,10 @@ export default async function Layout({ children, params, modal }) {
               f.parentNode.insertBefore(j,f);
             })(window,document,'script','dataLayer','GTM-M3LDW3FG');
           `}
-        </Script>
+        </Script> */}
 
         {/* Google Analytics Route Tracking */}
-        <GoogleAnalytics />
+        {/* <GoogleAnalytics /> */}
         <NextIntlClientProvider locale={param.locale} messages={messages}>
           <Header />
           <div className="bg-secondary text-primary text-center">
@@ -124,6 +125,7 @@ export default async function Layout({ children, params, modal }) {
             {children}
             {modal}
           </main>
+          <Toaster />
           {/* <Footer params={params} /> */}
         </NextIntlClientProvider>
       </body>

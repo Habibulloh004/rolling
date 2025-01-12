@@ -14,6 +14,7 @@ import aboutLogo from "./assets/aboutLogo.svg";
 import aboutCard from "./assets/aboutCard.svg";
 import appStoreIcon from "./assets/appStoreIcon.svg";
 import playMarketIcon from "./assets/playMarketIcon.svg";
+import accountIcon from "./assets/accountIcon.svg";
 
 export {
   appStoreIcon,
@@ -32,4 +33,5 @@ export {
   hamburgerIcon,
   news,
   aboutLogo,
+  accountIcon
 };

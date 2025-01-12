@@ -32,7 +32,7 @@ export default async function Footer({ params }) {
             className="text-sm leading-relaxed text-center md:text-left"
             dangerouslySetInnerHTML={{ __html: footerT("logoBottom") }}
           />
-          <div className="space-y-1">
+          <div className="space-y-1 max-md:flex max-md:flex-col max-md:items-center ">
             <span className="flex items-center gap-2">
               <p>{footerT("phone")}</p>
               <a className="font-semibold text-black" href="tel:+998771244444">
@@ -51,9 +51,9 @@ export default async function Footer({ params }) {
               </a>
             </span>
           </div>
-          <div className="flex flex-col gap-2 text-sm lg:hidden">
+          <div className="flex flex-col gap-2 text-sm lg:hidden max-md:items-center">
             <p className="font-semibold">{footerT("download")}</p>
-            <div className="-translate-x-3">
+            <div className="md:-translate-x-3">
               <a href="/">
                 <Image
                   src={appStoreIcon}

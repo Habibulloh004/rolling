@@ -37,7 +37,7 @@ const Cards = ({ data }) => {
               </div>
               <p className="mt-2 text-sm text-gray-600">{review}</p>
             </article>
-            <time className="mt-2 block text-sm text-gray-500">{date}</time>
+            <time suppressHydrationWarning className="mt-2 block text-sm text-gray-500">{date}</time>
           </div>
         </div>
       </CardContent>

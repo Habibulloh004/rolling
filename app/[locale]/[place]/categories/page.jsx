@@ -1,13 +1,10 @@
-import { ProductDialog } from "@/components/modals/ProductModal";
 import CustomImage from "@/components/shared/customImage";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/routing";
 import { getLocalizedCategoryName, posterUrl } from "@/lib/utils";
-import LoveSvg from "@/public/assets/love";
 import { ApiService } from "@/service/api.services";
 import { ChevronRight, Minus, Plus } from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";
-import { useTranslations } from "use-intl";
 import Container from "@/components/shared/container";
 import {
   Carousel,

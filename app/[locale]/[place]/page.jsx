@@ -31,7 +31,7 @@ export default async function HomePage() {
 
   return (
     <Container className={"w-full flex-col"}>
-      <Banner banners={banners} />
+      {/* <Banner banners={banners} /> */}
       <Categories categories={categories} locale={locale} />
       <Popular categories={categories} locale={locale} />
     </Container>

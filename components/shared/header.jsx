@@ -1,6 +1,6 @@
 "use client";
 import { lngItems, navItems } from "@/lib/utils";
-import { hamburgerIcon, navLogo, secondaryIcon } from "@/public";
+import { accountIcon, hamburgerIcon, navLogo, secondaryIcon } from "@/public";
 import { Search } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
 import Image from "next/legacy/image";
@@ -10,11 +10,14 @@ import { useStore } from "@/store";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import LngChange from "./lngChange";
+import { useEffect, useState } from "react";
+import { Input } from "../ui/input";
 
 export default function Header() {
-  const pathName = usePathname();
+  const [clientPathName, setClientPathName] = useState("");
   const navbar = useTranslations("Navbar");
-  const locale = useLocale()
+  const allT = useTranslations("All");
+  const locale = useLocale();
   const getPlace = (pathName) => {
     const segments = pathName.split("/").filter(Boolean); // Split and remove empty segments
     const place = segments.find(
@@ -23,6 +26,12 @@ export default function Header() {
     return place || "unknown"; // Return "unknown" if no match
   };
 
+  useEffect(() => {
+    // Set the pathName only on the client
+    if (window.location) {
+      setClientPathName(window.location.href);
+    }
+  }, []);
 
   const { toggleOpen, open } = useStore();
 
@@ -35,7 +44,7 @@ export default function Header() {
         } flex flex-col items-center bg-custom-gradient-top-bottom gap-5`}
       >
         {/* Logo */}
-        <Link href={`${pathName}`} className="flex-shrink-0 mt-5">
+        <Link href={`${clientPathName || "/"}`} className="flex-shrink-0 mt-5">
           <Image
             src={navLogo}
             alt="Rolling Sushi"
@@ -51,7 +60,9 @@ export default function Header() {
             return (
               <Link
                 key={item.id}
-                href={`/${locale}/${getPlace(pathName)}${item.path}`}
+                href={`/${locale}/${getPlace(clientPathName || "/")}${
+                  item.path
+                }`}
                 onClick={toggleOpen}
                 className="flex-shrink-0 flex items-center gap-2 w-full"
               >
@@ -63,7 +74,9 @@ export default function Header() {
                   className=""
                 />
                 <p
-                  className={`${item.path == pathName ? "font-semibold" : ""}`}
+                  className={`${
+                    item.path == clientPathName || "/" ? "font-semibold" : ""
+                  }`}
                 >
                   {navbar(`${item.title}`)}
                 </p>
@@ -84,7 +97,10 @@ export default function Header() {
       {/* Header Content */}
       <div className="flex container fixed max-w-[1440px] z-10 top-0 px-3 left-1/2 -translate-x-1/2 m-auto items-center justify-between h-16 sm:h-24">
         {/* Desktop Logo */}
-        <Link href={`${pathName}`} className="hidden md:flex flex-shrink-0">
+        <Link
+          href={`${clientPathName || "/"}`}
+          className="hidden md:flex flex-shrink-0"
+        >
           <Image
             src={navLogo}
             alt="Rolling Sushi"
@@ -108,7 +124,7 @@ export default function Header() {
               className=""
             />
           </span>
-          <Link href={`${pathName}`} className=" flex-shrink-0">
+          <Link href={`${clientPathName || "/"}`} className=" flex-shrink-0">
             <Image
               src={secondaryIcon}
               alt="Rolling Sushi"
@@ -124,7 +140,9 @@ export default function Header() {
             return (
               <Link
                 key={item.id}
-                href={`/${locale}/${getPlace(pathName)}${item.path}`}
+                href={`/${locale}/${getPlace(clientPathName || "/")}${
+                  item.path
+                }`}
                 onClick={toggleOpen}
                 className="flex-shrink-0 flex items-center gap-2"
               >
@@ -136,7 +154,9 @@ export default function Header() {
                   className=""
                 />
                 <p
-                  className={`${item.path == pathName ? "font-semibold" : ""}`}
+                  className={`${
+                    item.path == clientPathName || "/" ? "font-semibold" : ""
+                  }`}
                 >
                   {navbar(`${item.title}`)}
                 </p>
@@ -159,6 +179,8 @@ export default function Header() {
             />
           </span>
 
+           
+
           {/* Desktop Navigation */}
 
           {/* Right Section */}
@@ -171,22 +193,20 @@ export default function Header() {
               <div className="hidden xl:block relative h-12">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 size-6 text-primary" />
                 <input
-                  type="search"
-                  placeholder="Поиск по меню"
+                  type="text"
+                  placeholder={`${allT("search")}`}
                   className="max-w-64 h-full pl-12 pr-2 rounded-2xl text-gray-900 placeholder-gray-500 bg-white focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
             </div>
 
             {/* Language Selector */}
-            <div className="hidden md:block">
-              <LngChange />
-            </div>
+            <div className="hidden md:block"><LngChange /></div>
 
             {/* Cart */}
             <div>
               <Link
-                href={`${pathName}/cart`}
+                href={`${clientPathName || "/"}/cart`}
                 className="flex items-center hover:text-gray-200"
               >
                 <span className="hidden md:block">

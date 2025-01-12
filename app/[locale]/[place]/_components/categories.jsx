@@ -8,12 +8,8 @@ import {
 } from "@/components/ui/carousel";
 import { Link } from "@/i18n/routing";
 import CustomImage from "@/components/shared/customImage";
-import Image from "next/legacy/image";
-import { ChevronRight, Minus, Plus } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { useTranslations } from "use-intl";
-import { Button } from "@/components/ui/button";
-import LoveSvg from "@/public/assets/love";
-import { useState } from "react";
 
 const Categories = ({ categories, locale }) => {
   const allT = useTranslations("All");

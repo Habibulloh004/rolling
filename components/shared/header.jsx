@@ -13,38 +13,27 @@ import LngChange from "./lngChange";
 import { useEffect, useState } from "react";
 import { Input } from "../ui/input";
 
-export default function Header() {
-  const [clientPathName, setClientPathName] = useState("");
+export default function Header({ param }) {
   const navbar = useTranslations("Navbar");
   const allT = useTranslations("All");
   const locale = useLocale();
-  const getPlace = (pathName) => {
-    const segments = pathName.split("/").filter(Boolean); // Split and remove empty segments
-    const place = segments.find(
-      (segment) => segment === "web" || segment === "branch"
-    );
-    return place || "unknown"; // Return "unknown" if no match
-  };
-
-  useEffect(() => {
-    // Set the pathName only on the client
-    if (window.location) {
-      setClientPathName(window.location.href);
-    }
-  }, []);
+  const pathName = usePathname();
 
   const { toggleOpen, open } = useStore();
 
   return (
-    <header className="sticky top-0 md:bg-custom-gradient z-50 bg-white text-white h-16 sm:h-24 items-center">
+    <header className="sticky top-0 md:bg-custom-gradient z-[999] bg-white text-white h-16 sm:h-24 items-center">
       {/* Mobile Navigation Menu */}
       <div
-        className={`absolute z-50 top-0 h-screen w-[60%] p-3 lg:hidden transition-transform duration-300 ${
+        className={`absolute z-[998] top-0 h-screen w-[70%] md:w-[60%] p-3 lg:hidden transition-transform duration-300 ${
           open ? "translate-x-0" : "-translate-x-full"
         } flex flex-col items-center bg-custom-gradient-top-bottom gap-5`}
       >
         {/* Logo */}
-        <Link href={`${clientPathName || "/"}`} className="flex-shrink-0 mt-5">
+        <Link
+          href={`/${locale}/${param?.place}`}
+          className="flex-shrink-0 mt-5"
+        >
           <Image
             src={navLogo}
             alt="Rolling Sushi"
@@ -55,14 +44,12 @@ export default function Header() {
         </Link>
 
         {/* Navigation */}
-        <nav className="flex flex-col gap-5 sm:gap-7 mt-5 justify-start items-start w-9/12">
+        <nav className="flex flex-col gap-5 sm:gap-7 mt-5 justify-start items-start w-10/12 md:w-9/12">
           {navItems.map((item) => {
             return (
               <Link
                 key={item.id}
-                href={`/${locale}/${getPlace(clientPathName || "/")}${
-                  item.path
-                }`}
+                href={`/${locale}/${param?.place}${item.path}`}
                 onClick={toggleOpen}
                 className="flex-shrink-0 flex items-center gap-2 w-full"
               >
@@ -75,7 +62,9 @@ export default function Header() {
                 />
                 <p
                   className={`${
-                    item.path == clientPathName || "/" ? "font-semibold" : ""
+                    `/${locale}/${param?.place}${item.path}` == pathName
+                      ? "font-semibold"
+                      : ""
                   }`}
                 >
                   {navbar(`${item.title}`)}
@@ -89,7 +78,7 @@ export default function Header() {
       {/* Overlay for closing the menu */}
       <div
         onClick={toggleOpen}
-        className={`absolute right-0 top-0 z-40 bg-black/30 h-screen w-[100%] lg:hidden transition-opacity duration-300 ${
+        className={`absolute right-0 top-0 z-[900] bg-black/30 h-screen w-[100%] lg:hidden transition-opacity duration-300 ${
           open ? "opacity-100" : "opacity-0 pointer-events-none"
         }`}
       ></div>
@@ -98,7 +87,7 @@ export default function Header() {
       <div className="flex container fixed max-w-[1440px] z-10 top-0 px-3 left-1/2 -translate-x-1/2 m-auto items-center justify-between h-16 sm:h-24">
         {/* Desktop Logo */}
         <Link
-          href={`${clientPathName || "/"}`}
+          href={`/${locale}/${param?.place}`}
           className="hidden md:flex flex-shrink-0"
         >
           <Image
@@ -124,7 +113,7 @@ export default function Header() {
               className=""
             />
           </span>
-          <Link href={`${clientPathName || "/"}`} className=" flex-shrink-0">
+          <Link href={`/${locale}/${param?.place}`} className=" flex-shrink-0">
             <Image
               src={secondaryIcon}
               alt="Rolling Sushi"
@@ -140,9 +129,7 @@ export default function Header() {
             return (
               <Link
                 key={item.id}
-                href={`/${locale}/${getPlace(clientPathName || "/")}${
-                  item.path
-                }`}
+                href={`/${locale}/${param?.place}${item.path}`}
                 onClick={toggleOpen}
                 className="flex-shrink-0 flex items-center gap-2"
               >
@@ -155,7 +142,9 @@ export default function Header() {
                 />
                 <p
                   className={`${
-                    item.path == clientPathName || "/" ? "font-semibold" : ""
+                    `/${locale}/${param?.place}${item.path}` == pathName
+                      ? "font-semibold"
+                      : ""
                   }`}
                 >
                   {navbar(`${item.title}`)}
@@ -179,8 +168,6 @@ export default function Header() {
             />
           </span>
 
-           
-
           {/* Desktop Navigation */}
 
           {/* Right Section */}
@@ -201,22 +188,24 @@ export default function Header() {
             </div>
 
             {/* Language Selector */}
-            <div className="hidden md:block"><LngChange /></div>
+            <div className="hidden md:block">
+              <LngChange />
+            </div>
 
             {/* Cart */}
             <div>
               <Link
-                href={`${clientPathName || "/"}/cart`}
+                href={`/${locale}/${param?.place}/cart`}
                 className="flex items-center hover:text-gray-200"
               >
                 <span className="hidden md:block">
                   <ResponsiveSVG size="35" color="white" />
                 </span>
                 <span className="block md:hidden">
-                  <ResponsiveSVG size="35" color="hsla(167, 100%, 13%, 1)" />
+                  <ResponsiveSVG size="28" color="hsla(167, 100%, 13%, 1)" />
                 </span>
                 <div className="relative">
-                  <span className="absolute -top-1 -right-2 size-6 rounded-full bg-red-500 flex items-center justify-center">
+                  <span className="absolute -top-1 -right-2 size-5 md:size-6 rounded-full bg-red-500 flex items-center justify-center">
                     1
                   </span>
                 </div>

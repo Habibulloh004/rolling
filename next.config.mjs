@@ -32,6 +32,11 @@ const nextConfig = {
         hostname: "joinposter.com",
         pathname: "/upload/**",
       },
+      {
+        protocol: "https",
+        hostname: "joinposter.comundefined",
+        pathname: "/upload/**",
+      },
     ],
   },
   async headers() {

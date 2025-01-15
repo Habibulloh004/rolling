@@ -112,7 +112,7 @@ export default async function Layout({ children, params, modal }) {
         {/* Google Analytics Route Tracking */}
         {/* <GoogleAnalytics /> */}
         <NextIntlClientProvider locale={param.locale} messages={messages}>
-          <Header />
+          <Header param={param} />
           <div className="bg-secondary text-primary text-center">
             <div className="max-xl:block hidden max-sm:text-xs">
               <Marquee pauseOnHover className="[--duration:20s]">
@@ -121,12 +121,12 @@ export default async function Layout({ children, params, modal }) {
             </div>
             <p className="hidden xl:block py-2">{introText}</p>
           </div>
-          <main className="grow">
+          <main className="grow pb-8">
             {children}
             {modal}
           </main>
           <Toaster />
-          {/* <Footer params={params} /> */}
+          <Footer params={params} />
         </NextIntlClientProvider>
       </body>
     </html>

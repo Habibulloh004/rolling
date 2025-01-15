@@ -6,6 +6,8 @@ export const ApiService = {
     const response = await axios.get(
       `${posterUrl}/api/${url}?token=${posterToken}${props ? props : ""}`
     );
+    console.log(`${posterUrl}/api/${url}?token=${posterToken}${props ? props : ""}`);
+    
     return response.data;
   },
   async get(url) {

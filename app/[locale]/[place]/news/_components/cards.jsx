@@ -1,4 +1,5 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
 import {
   Card,
   CardContent,
@@ -9,144 +10,59 @@ import {
 } from "@/components/ui/card";
 import { news } from "@/public";
 import { Eye } from "lucide-react";
+import CustomImage from "@/components/shared/customImage";
 
-const PromotionCards = () => {
+const PromotionCards = ({ item }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  // Matnning kesilgan qismini aniqlash
+  const shortDescription =
+    item.description.length < 70
+      ? item.description
+      : `${item.description.slice(0, 70)}...`;
+
   return (
     <main>
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 mt-3 lg:mt-6 gap-5 2xl:grid-cols-4">
-        <Card>
-          <CardHeader className="p-0">
-            <img
+      <Card>
+        <CardHeader className="p-0">
+          <div className="relative h-40 md:h-60">
+            <CustomImage
               src={`${news.src}`}
               alt="news-img"
               className="w-full object-cover aspect-video"
             />
-            <div className="p-6">
-              <CardDescription className="text-primary max-sm:text-xs">
-                Новости
-              </CardDescription>
-              <CardTitle className="text-base md:text-2xl tracking-wider">
-                Новость 1
-              </CardTitle>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm md:text-base">
-              Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil
-              repellendus eius nostrum id blanditiis. Qui sit incidunt
-              consequuntur id deleniti officiis voluptas mollitia, sint,
-              voluptate aspernatur voluptatum facilis velit libero commodi
-              doloremque.
-            </p>
-          </CardContent>
-          <CardFooter className="text-xs flex items-center justify-between">
-            <p>03.12.2024</p>
-            <span className="flex items-center">
-              <Eye className="size-4 inline mr-1 align-middle" />
-              <p>440</p>
-            </span>
-          </CardFooter>
-        </Card>
-        <Card>
-          <CardHeader className="p-0">
-            <img
-              src={`${news.src}`}
-              alt="news-img"
-              className="w-full object-cover aspect-video"
-            />
-            <div className="p-6">
-              <CardDescription className="text-primary max-sm:text-xs">
-                Новости
-              </CardDescription>
-              <CardTitle className="text-base md:text-2xl tracking-wider">
-                Новость 1
-              </CardTitle>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm md:text-base">
-              Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil
-              repellendus eius nostrum id blanditiis. Qui sit incidunt
-              consequuntur id deleniti officiis voluptas mollitia, sint,
-              voluptate aspernatur voluptatum facilis velit libero commodi
-              doloremque.
-            </p>
-          </CardContent>
-          <CardFooter className="text-xs flex items-center justify-between">
-            <p>03.12.2024</p>
-            <span className="flex items-center">
-              <Eye className="size-4 inline mr-1 align-middle" />
-              <p>440</p>
-            </span>
-          </CardFooter>
-        </Card>
-        <Card>
-          <CardHeader className="p-0">
-            <img
-              src={`${news.src}`}
-              alt="news-img"
-              className="w-full object-cover aspect-video"
-            />
-            <div className="p-6">
-              <CardDescription className="text-primary max-sm:text-xs">
-                Новости
-              </CardDescription>
-              <CardTitle className="text-base md:text-2xl tracking-wider">
-                Новость 1
-              </CardTitle>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm md:text-base">
-              Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil
-              repellendus eius nostrum id blanditiis. Qui sit incidunt
-              consequuntur id deleniti officiis voluptas mollitia, sint,
-              voluptate aspernatur voluptatum facilis velit libero commodi
-              doloremque.
-            </p>
-          </CardContent>
-          <CardFooter className="text-xs flex items-center justify-between">
-            <p>03.12.2024</p>
-            <span className="flex items-center">
-              <Eye className="size-4 inline mr-1 align-middle" />
-              <p>440</p>
-            </span>
-          </CardFooter>
-        </Card>
-        <Card>
-          <CardHeader className="p-0">
-            <img
-              src={`${news.src}`}
-              alt="news-img"
-              className="w-full object-cover aspect-video"
-            />
-            <div className="p-6">
-              <CardDescription className="text-primary max-sm:text-xs">
-                Новости
-              </CardDescription>
-              <CardTitle className="text-base md:text-2xl tracking-wider">
-                Новость 1
-              </CardTitle>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm md:text-base">
-              Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil
-              repellendus eius nostrum id blanditiis. Qui sit incidunt
-              consequuntur id deleniti officiis voluptas mollitia, sint,
-              voluptate aspernatur voluptatum facilis velit libero commodi
-              doloremque.
-            </p>
-          </CardContent>
-          <CardFooter className="text-xs flex items-center justify-between">
-            <p>03.12.2024</p>
-            <span className="flex items-center">
-              <Eye className="size-4 inline mr-1 align-middle" />
-              <p>440</p>
-            </span>
-          </CardFooter>
-        </Card>
-      </div>
+          </div>
+          <div className="p-6">
+            <CardDescription className="text-primary textNormal">
+              {item.text}
+            </CardDescription>
+            <CardTitle className="textSmall4 tracking-wider">
+              {item.title}
+            </CardTitle>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <p className="textSmall3">
+            {isExpanded ? item.description : shortDescription}
+            {/* Agar matn kesilgan bo‘lsa, "3 nuqta"ni yoki tugmani qo‘shamiz */}
+            {item.description.length > 70 && (
+              <button
+                onClick={() => setIsExpanded(!isExpanded)}
+                className="text-blue-500 ml-2 underline cursor-pointer"
+              >
+                {isExpanded ? "Yopish" : "Ko‘proq ko‘rish"}
+              </button>
+            )}
+          </p>
+        </CardContent>
+        <CardFooter className="text-xs flex items-center justify-between">
+          <p>{item.date}</p>
+          <span className="flex items-center">
+            <Eye className="size-4 inline mr-1 align-middle" />
+            <p>{item.view}</p>
+          </span>
+        </CardFooter>
+      </Card>
     </main>
   );
 };

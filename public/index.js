@@ -14,7 +14,19 @@ import aboutLogo from "./assets/aboutLogo.svg";
 import aboutCard from "./assets/aboutCard.svg";
 import appStoreIcon from "./assets/appStoreIcon.svg";
 import playMarketIcon from "./assets/playMarketIcon.svg";
-import accountIcon from "./assets/accountIcon.svg";
+import accountIcon from "./assets/accountIcon.png";
+import location from "./assets/Location.svg"
+import pencil from "./assets/pencil.svg"
+import info from "./assets/info.svg"
+import card from "./assets/card.svg"
+import cash from "./assets/cash.svg"
+import payme from "./assets/payme.svg"
+import click from "./assets/click.svg"
+import uzum from "./assets/uzum.svg"
+import uzcard from "./assets/uzcard.svg"
+import bucket from "./assets/bucket.svg"
+import gift from "./assets/gift.svg"
+import gold from "./assets/Gold.png"
 
 export {
   appStoreIcon,
@@ -33,5 +45,17 @@ export {
   hamburgerIcon,
   news,
   aboutLogo,
-  accountIcon
+  accountIcon,
+  location,
+  pencil,
+  info,
+  card,
+  cash,
+  payme,
+  click,
+  uzum,
+  uzcard,
+  bucket,
+  gift,
+  gold
 };

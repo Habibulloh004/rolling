@@ -8,16 +8,17 @@ import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 
 export default async function Footer({ params }) {
-  const [footerT, footNavT] = await Promise.all([
+  const [footerT, footNavT, path] = await Promise.all([
     getTranslations("Footer"),
     getTranslations("FootNav"),
+    params,
   ]);
   return (
     <footer className="bg-white min-h-[300px] flex items-center flex-shrink-0 py-3">
       <Container className={`border-b border-primary py-2`}>
         <section className="space-y-2 md:space-y-4 text-xs flex flex-col justify-center">
           <Link
-            href={`/${params.locale}/${params.place}`}
+            href={`/${path.locale}/${path.place}`}
             className="flex-shrink-0 max-md:mx-auto mt-5 w-[200px] md:w-[280px]"
           >
             <Image
@@ -53,7 +54,7 @@ export default async function Footer({ params }) {
           </div>
           <div className="flex flex-col gap-2 text-sm lg:hidden max-md:items-center">
             <p className="font-semibold">{footerT("download")}</p>
-            <div className="md:-translate-x-3">
+            <div className="md:-translate-x-3 w-full max-sm:flex items-center justify-between flex-col gap-2">
               <a href="/">
                 <Image
                   src={appStoreIcon}
@@ -103,7 +104,7 @@ export default async function Footer({ params }) {
                 return (
                   <li key={item.id}>
                     <Link
-                      href={`/${params.locale}/${params.place}/${item.path}`}
+                      href={`/${path.locale}/${path.place}/${item.path}`}
                       className="flex items-center gap-1 font-semibold"
                     >
                       <ChevronRight className="size-4 md:size-5" />

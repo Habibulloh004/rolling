@@ -15,7 +15,8 @@
     "cancel": "Bekor qilish",
     "confirm": "Tasdiqlash",
     "loading": "Yuklanmoqda",
-    "sendReview": "Sharh qoldirish"
+    "sendReview": "Sharh qoldirish",
+    "sum":"so'm"
   },
   "Profile": {
     "title": "Profil",

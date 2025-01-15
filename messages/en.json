@@ -16,7 +16,13 @@
     "confirm": "Confirm",
     "loading": "Loading",
     "sendReview": "Send feedback",
-    "sum": "sum"
+    "sum": "sum",
+    "edit": "Edit",
+    "save": "Save",
+    "choose": "Choose",
+    "add_comment": "Add Comments",
+    "add_comment_info": "Add any important information for the courier: entrance, intercom code, floor, or other details.",
+    "services": "Services"
   },
   "Profile": {
     "title": "Profile",
@@ -182,5 +188,48 @@
     "register": "Create a new account",
     "reset": "Recover",
     "password": "Hide"
+  },
+  "Cart": {
+    "title": "Cart",
+    "your_order": "Your Order",
+    "Delivery": {
+      "title": "Delivery",
+      "address": "Delivery Address",
+      "phone": "Phone Number",
+      "comment": "Add Comments",
+      "delivery_price": "Delivery Cost"
+    },
+    "Pickup": {
+      "title": "Pickup",
+      "address": "Choose a Branch",
+      "phone": "Phone Number",
+      "comment": "Add Comments"
+    },
+    "Spot": {
+      "title": "Spots",
+      "choose_spot": "Choose a Branch",
+      "choose_table": "Choose a Table",
+      "phone": "Phone Number",
+      "comment": "Add Comments",
+      "self_service": "Self-Service",
+      "ofitsiant_service": "Waiter",
+      "ofitsiant_service_pay": "Service Charge",
+      "chat_info": "If there are difficulties, our operators will contact you via chat."
+    },
+    "Payment": {
+      "card": "By Card",
+      "cash": "By Cash"
+    },
+    "Total": {
+      "total": "Total Amount",
+      "discount": "Discount",
+      "delivery": "Delivery",
+      "to_pay": "To Pay",
+      "bonus": "Bonus",
+      "bonus_pay": "Apply My Bonuses",
+      "submit": "Confirm Order",
+      "note": "The restaurant is currently closed. We accept orders daily from 10:00. Thank you for choosing Rolling Sushi!"
+    },
+    "pay_success": "Payment Method"
   }
 }

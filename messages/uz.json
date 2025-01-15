@@ -16,7 +16,13 @@
     "confirm": "Tasdiqlash",
     "loading": "Yuklanmoqda",
     "sendReview": "Sharh qoldirish",
-    "sum":"so'm"
+    "sum": "so'm",
+    "edit": "O'zgartirish",
+    "save": "Saqlash",
+    "choose": "Tanlash",
+    "add_comment": "Izoh qo'shish",
+    "add_comment_info": "Kuryer uchun muhim ma'lumotlarni qo'shing: kirish joyi, domofon kodi, qavat yoki boshqa tafsilotlar.",
+    "services": "Xizmatlar"
   },
   "Profile": {
     "title": "Profil",
@@ -29,7 +35,7 @@
     "my_order": "Mening buyurtmalarim",
     "my_bonus": "Mening bonuslarim",
     "logout": "Akkauntdan chiqish"
-  },  
+  },
   "Form": {
     "fullName": "To‘liq Ism",
     "review": "Sharh",
@@ -182,5 +188,48 @@
     "register": "Yangi hisob yaratish",
     "reset": "Tiklash",
     "password": "Yashirish"
+  },
+  "Cart": {
+    "title": "Savat",
+    "your_order": "Sizning buyurtmangiz",
+    "Delivery": {
+      "title": "Yetkazib berish",
+      "address": "Yetkazib berish manzili",
+      "phone": "Telefon raqami",
+      "comment": "Izoh qo'shish",
+      "delivery_price": "Yetkazib berish narxi"
+    },
+    "Pickup": {
+      "title": "Olib ketish",
+      "address": "Filialni tanlang",
+      "phone": "Telefon raqami",
+      "comment": "Izoh qo'shish"
+    },
+    "Spot": {
+      "title": "Joylar",
+      "choose_spot": "Filialni tanlang",
+      "choose_table": "Stolni tanlang",
+      "phone": "Telefon raqami",
+      "comment": "Izoh qo'shish",
+      "self_service": "O'z-o'ziga xizmat",
+      "ofitsiant_service": "Ofitsiant",
+      "ofitsiant_service_pay": "Xizmat haqi",
+      "chat_info": "Agar muammolar yuzaga kelsa, operatorlarimiz siz bilan chat orqali bog'lanadi."
+    },
+    "Payment": {
+      "card": "Karta orqali",
+      "cash": "Naqd pulda"
+    },
+    "Total": {
+      "total": "Umumiy summa",
+      "discount": "Chegirma",
+      "delivery": "Yetkazib berish",
+      "to_pay": "To'lash uchun",
+      "bonus": "Bonus",
+      "bonus_pay": "Mening bonuslarimni qo'llash",
+      "submit": "Buyurtmani tasdiqlash",
+      "note": "Restoran hozir yopiq. Biz har kuni soat 10:00 dan buyurtmalarni qabul qilamiz. Rolling Sushi-ni tanlaganingiz uchun rahmat!"
+    },
+    "pay_success": "To'lov turi"
   }
 }

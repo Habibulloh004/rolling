@@ -2,6 +2,7 @@
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Rating } from "react-simple-star-rating";
+import { truncateText } from "@/lib/utils";
 // import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 
 const Cards = ({ data }) => {
@@ -9,7 +10,7 @@ const Cards = ({ data }) => {
   return (
     <Card
       key={review.id}
-      className="border-0 border-t-2 rounded-none shadow-none border-t-[#43674E] flex"
+      className="h-52 bg-white border-0 border-t-2 rounded-none shadow-none border-t-[#43674E] flex"
     >
       <CardContent className="pt-6">
         <div className="h-full flex flex-col justify-between items-start gap-4">
@@ -35,9 +36,16 @@ const Cards = ({ data }) => {
                   transition
                 />
               </div>
-              <p className="mt-2 text-sm text-gray-600">{review}</p>
+              <p className="mt-2 text-sm text-gray-600">
+                {truncateText(review, 100)}
+              </p>
             </article>
-            <time className="mt-2 block text-sm text-gray-500">{date}</time>
+            <time
+              suppressHydrationWarning
+              className="mt-2 block text-sm text-gray-500"
+            >
+              {date}
+            </time>
           </div>
         </div>
       </CardContent>

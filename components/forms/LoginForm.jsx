@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, cache } from "react";
 import { Form } from "../ui/form";
 import CustomFormField, { FormFieldType } from "../shared/customFormField";
 import SubmitButton from "../shared/submitButton";
@@ -8,34 +8,17 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Cookies from "js-cookie";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { UpdateLoginValidation } from "@/lib/validation";
 import { toast } from "sonner";
-import { Button } from "../ui/button";
-import { Checkbox } from "../ui/checkbox";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSeparator,
-  InputOTPSlot,
-} from "@/components/ui/input-otp";
-import { useLocale, useTranslations } from "next-intl";
-import { DatePicker } from "../ui/date-picker";
-import { ArrowUpRight, Send } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { ArrowUpRight } from "lucide-react";
+import { getUrl } from "@/lib/utils";
+import { getClients } from "@/actions";
 
 export default function LoginForm() {
   const optLang = useTranslations("Register.Message");
+
   const all = useTranslations("All");
   const RegisterValidation = UpdateLoginValidation();
   const t = useTranslations("Login");
@@ -43,6 +26,7 @@ export default function LoginForm() {
   const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
   const form = useForm({
     resolver: zodResolver(RegisterValidation),
     defaultValues: {
@@ -51,42 +35,58 @@ export default function LoginForm() {
     },
   });
 
-  const onSubmit = async (values) => {
-    console.log(values);
-
-    return null;
-    setIsLoading(true);
-
-    try {
-      const { phone, password } = values;
-      console.log(phone, password, users);
-
-      const findUser = users?.find(
-        (user) =>
-          user?.Password == String(password) &&
-          user?.PhoneNumber == String(phone)
-      );
-      console.log({ findUser });
-
-      if (findUser) {
-        Cookies.set("auth", JSON.stringify(findUser), { expires: 1 });
-        Cookies.set(
-          "extraTime",
-          new Date().getTime() + 60 * 60 * 1000 * 24 * 30, // 30 days
-          { expires: 1 }
-        );
-        toast.success("Tizimga muvofaqiyatli kirdingiz.");
-        router.push(`/${findUser?.Role}`);
-      } else {
-        toast.error("Login yoki password noto'g'ri.Qaytadan urunib ko'ring!!!");
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error("Login yoki password noto'g'ri.Qaytadan urunib ko'ring!!!");
-    } finally {
-      setIsLoading(false);
+  useEffect(() => {
+    async function getPosterClients() {
+      const clients = await getClients();
+      setUsers(clients);
+      console.log(clients);
     }
+    getPosterClients();
+  }, []);
+
+  async function login(clients, loginData) {
+    const formattedPhone = loginData.phone.replace("+", "");
+    const formattedPassword = `password ${loginData.password}`; // Add "password " to the user input password
+
+    for (const client of clients) {
+      const clientPhone = client.phone_number || "";
+      let clientPassword = null;
+
+      // Attempt to parse the JSON part of the comment field
+      try {
+        // Extract only the JSON object from the comment
+        const jsonString = client.comment.match(/^\{.*?\}/)?.[0] || "{}";
+        const commentData = JSON.parse(jsonString);
+        clientPassword = commentData.password;
+      } catch (error) {
+        console.warn(
+          `Skipping client ${client.lastname} due to invalid JSON in comment.`
+        );
+        // console.dir(client, { depth: null });
+        continue; // Skip this client if the JSON is invalid
+      }
+
+      // Check if phone and password match
+      if (
+        clientPhone === formattedPhone &&
+        clientPassword === formattedPassword
+      ) {
+        return { success: true, message: "Login successful", client };
+      }
+    }
+
+    return { success: false, message: "Invalid phone number or password" };
+  }
+
+  const onSubmit = async (values) => {
+    const result = await login(users, values);
+    console.log(result);
+    Cookies.set("client", JSON.stringify(result.client), {
+      expires: 7,
+      path: "/",
+    });
   };
+
   return (
     <Form {...form}>
       <form
@@ -113,6 +113,7 @@ export default function LoginForm() {
         </div>
         <div className="flex w-full max-sm:flex-col items-center sm:justify-start gap-3 sm:items-center">
           <SubmitButton
+            disabled={users.length < 1}
             isLoading={isLoading}
             className="w-full sm:w-40 bg-white hover:bg-white"
           >
@@ -125,15 +126,18 @@ export default function LoginForm() {
           </div>
           <h1 className="max-sm:hidden text-[13px] text-white font-[400]">
             {t("have_account")}
-            <Link href="/register" className="font-bold">
+            <Link href={`${getUrl(pathname)}/sign-up`} className="font-bold">
               {" "}
-              {t("login")}
+              {t("register")}
             </Link>
           </h1>
-          <div className="sm:hidden flex justify-center items-center gap-2 text-white">
+          <Link
+            href={`${getUrl(pathname)}/sign-up`}
+            className="sm:hidden flex justify-center items-center gap-2 text-white"
+          >
             <h1>{t("register")}</h1>
             <ArrowUpRight />
-          </div>
+          </Link>
         </div>
       </form>
     </Form>

@@ -1,6 +1,6 @@
 "use client";
 import { lngItems, navItems } from "@/lib/utils";
-import { hamburgerIcon, navLogo, secondaryIcon } from "@/public";
+import { accountIcon, hamburgerIcon, navLogo, secondaryIcon } from "@/public";
 import { Search } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
 import Image from "next/legacy/image";
@@ -10,32 +10,30 @@ import { useStore } from "@/store";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import LngChange from "./lngChange";
+import { useEffect, useState } from "react";
+import { Input } from "../ui/input";
 
-export default function Header() {
-  const pathName = usePathname();
+export default function Header({ param }) {
   const navbar = useTranslations("Navbar");
-  const locale = useLocale()
-  const getPlace = (pathName) => {
-    const segments = pathName.split("/").filter(Boolean); // Split and remove empty segments
-    const place = segments.find(
-      (segment) => segment === "web" || segment === "branch"
-    );
-    return place || "unknown"; // Return "unknown" if no match
-  };
-
+  const allT = useTranslations("All");
+  const locale = useLocale();
+  const pathName = usePathname();
 
   const { toggleOpen, open } = useStore();
 
   return (
-    <header className="sticky top-0 md:bg-custom-gradient z-50 bg-white text-white h-16 sm:h-24 items-center">
+    <header className="sticky top-0 md:bg-custom-gradient z-[999] bg-white text-white h-16 sm:h-24 items-center">
       {/* Mobile Navigation Menu */}
       <div
-        className={`absolute z-50 top-0 h-screen w-[60%] p-3 lg:hidden transition-transform duration-300 ${
+        className={`absolute z-[998] top-0 h-screen w-[70%] md:w-[60%] p-3 lg:hidden transition-transform duration-300 ${
           open ? "translate-x-0" : "-translate-x-full"
         } flex flex-col items-center bg-custom-gradient-top-bottom gap-5`}
       >
         {/* Logo */}
-        <Link href={`${pathName}`} className="flex-shrink-0 mt-5">
+        <Link
+          href={`/${locale}/${param?.place}`}
+          className="flex-shrink-0 mt-5"
+        >
           <Image
             src={navLogo}
             alt="Rolling Sushi"
@@ -46,12 +44,12 @@ export default function Header() {
         </Link>
 
         {/* Navigation */}
-        <nav className="flex flex-col gap-5 sm:gap-7 mt-5 justify-start items-start w-9/12">
+        <nav className="flex flex-col gap-5 sm:gap-7 mt-5 justify-start items-start w-10/12 md:w-9/12">
           {navItems.map((item) => {
             return (
               <Link
                 key={item.id}
-                href={`/${locale}/${getPlace(pathName)}${item.path}`}
+                href={`/${locale}/${param?.place}${item.path}`}
                 onClick={toggleOpen}
                 className="flex-shrink-0 flex items-center gap-2 w-full"
               >
@@ -63,7 +61,11 @@ export default function Header() {
                   className=""
                 />
                 <p
-                  className={`${item.path == pathName ? "font-semibold" : ""}`}
+                  className={`${
+                    `/${locale}/${param?.place}${item.path}` == pathName
+                      ? "font-semibold"
+                      : ""
+                  }`}
                 >
                   {navbar(`${item.title}`)}
                 </p>
@@ -76,7 +78,7 @@ export default function Header() {
       {/* Overlay for closing the menu */}
       <div
         onClick={toggleOpen}
-        className={`absolute right-0 top-0 z-40 bg-black/30 h-screen w-[100%] lg:hidden transition-opacity duration-300 ${
+        className={`absolute right-0 top-0 z-[900] bg-black/30 h-screen w-[100%] lg:hidden transition-opacity duration-300 ${
           open ? "opacity-100" : "opacity-0 pointer-events-none"
         }`}
       ></div>
@@ -84,7 +86,10 @@ export default function Header() {
       {/* Header Content */}
       <div className="flex container fixed max-w-[1440px] z-10 top-0 px-3 left-1/2 -translate-x-1/2 m-auto items-center justify-between h-16 sm:h-24">
         {/* Desktop Logo */}
-        <Link href={`${pathName}`} className="hidden md:flex flex-shrink-0">
+        <Link
+          href={`/${locale}/${param?.place}`}
+          className="hidden md:flex flex-shrink-0"
+        >
           <Image
             src={navLogo}
             alt="Rolling Sushi"
@@ -108,7 +113,7 @@ export default function Header() {
               className=""
             />
           </span>
-          <Link href={`${pathName}`} className=" flex-shrink-0">
+          <Link href={`/${locale}/${param?.place}`} className=" flex-shrink-0">
             <Image
               src={secondaryIcon}
               alt="Rolling Sushi"
@@ -124,7 +129,7 @@ export default function Header() {
             return (
               <Link
                 key={item.id}
-                href={`/${locale}/${getPlace(pathName)}${item.path}`}
+                href={`/${locale}/${param?.place}${item.path}`}
                 onClick={toggleOpen}
                 className="flex-shrink-0 flex items-center gap-2"
               >
@@ -136,7 +141,11 @@ export default function Header() {
                   className=""
                 />
                 <p
-                  className={`${item.path == pathName ? "font-semibold" : ""}`}
+                  className={`${
+                    `/${locale}/${param?.place}${item.path}` == pathName
+                      ? "font-semibold"
+                      : ""
+                  }`}
                 >
                   {navbar(`${item.title}`)}
                 </p>
@@ -171,8 +180,8 @@ export default function Header() {
               <div className="hidden xl:block relative h-12">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 size-6 text-primary" />
                 <input
-                  type="search"
-                  placeholder="Поиск по меню"
+                  type="text"
+                  placeholder={`${allT("search")}`}
                   className="max-w-64 h-full pl-12 pr-2 rounded-2xl text-gray-900 placeholder-gray-500 bg-white focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
@@ -186,17 +195,17 @@ export default function Header() {
             {/* Cart */}
             <div>
               <Link
-                href={`${pathName}/cart`}
+                href={`/${locale}/${param?.place}/cart`}
                 className="flex items-center hover:text-gray-200"
               >
                 <span className="hidden md:block">
                   <ResponsiveSVG size="35" color="white" />
                 </span>
                 <span className="block md:hidden">
-                  <ResponsiveSVG size="35" color="hsla(167, 100%, 13%, 1)" />
+                  <ResponsiveSVG size="28" color="hsla(167, 100%, 13%, 1)" />
                 </span>
                 <div className="relative">
-                  <span className="absolute -top-1 -right-2 size-6 rounded-full bg-red-500 flex items-center justify-center">
+                  <span className="absolute -top-1 -right-2 size-5 md:size-6 rounded-full bg-red-500 flex items-center justify-center">
                     1
                   </span>
                 </div>

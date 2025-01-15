@@ -3,7 +3,6 @@
 import {
   Carousel,
   CarouselContent,
-  CarouselCounter,
   CarouselItem,
 } from "../ui/carousel";
 import emblaCarouselAutoplay from "embla-carousel-autoplay";
@@ -53,8 +52,6 @@ const Banner = ({ banners }) => {
             </CarouselContent>
           </Carousel>
         </div>
-
-        {/* Desktop View */}
       </section>
     </main>
   );

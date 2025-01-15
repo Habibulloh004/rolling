@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import {
   Select,
@@ -40,7 +41,7 @@ const LngChange = () => {
           />
         </SelectValue>
       </SelectTrigger>
-      <SelectContent>
+      <SelectContent className="z-[999]">
         {lngItems.map((item) => (
           <SelectItem key={item.locale} value={item.id}>
             <Link

@@ -4,6 +4,7 @@ import { getLocale } from "next-intl/server";
 import Categories from "./_components/categories";
 import Container from "@/components/shared/container";
 import Popular from "./_components/popular";
+import { ApiService } from "@/service/api.services";
 
 export const metadata = {
   title: "Rolling Sushi - Свежие суши и роллы в Ташкенте",
@@ -16,24 +17,28 @@ export const metadata = {
   },
 };
 
-export default async function HomePage() {
-  const [bannersData, categoriesData] = await Promise.all([
+export default async function HomePage({ params }) {
+  const [bannersData, categoriesData, productsData] = await Promise.all([
     getData("/banner/get_banners"),
-    getData("/poster/categories"),
+    ApiService.getPosterData("menu.getCategories"),
+    ApiService.getPosterData("menu.getProducts"),
   ]);
 
   const banners = bannersData.banners;
   const categories = categoriesData.response.filter(
     (item) => item.category_photo != null && item.category_hidden != "1"
   );
+  const products = productsData.response
+    .filter((item) => item.photo_origin != null && item?.menu_category_id != 0)
+    .slice(0, 10);
 
-  const [locale] = await Promise.all([getLocale()]);
+  const [locale, path] = await Promise.all([getLocale(), params]);
 
   return (
     <Container className={"w-full flex-col"}>
       <Banner banners={banners} />
-      <Categories categories={categories} locale={locale} />
-      <Popular categories={categories} locale={locale} />
+      <Categories categories={categories} locale={locale} path={path} />
+      <Popular products={products} locale={locale} path={path} />
     </Container>
   );
 }

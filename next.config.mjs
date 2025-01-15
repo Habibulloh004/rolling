@@ -6,6 +6,9 @@ const withNextIntl = createNextIntlPlugin();
 const nextConfig = {
   experimental: {
     // dynamicIO: true,
+    serverActions: {
+      bodySizeLimit: "50mb",
+    },
     staleTimes: {
       dynamic: 30,
       static: 180,
@@ -29,6 +32,11 @@ const nextConfig = {
         hostname: "joinposter.com",
         pathname: "/upload/**",
       },
+      {
+        protocol: "https",
+        hostname: "joinposter.comundefined",
+        pathname: "/upload/**",
+      },
     ],
   },
   async headers() {
@@ -37,7 +45,10 @@ const nextConfig = {
         source: "/api/:path*",
         headers: [
           { key: "Access-Control-Allow-Credentials", value: "true" },
-          { key: "Access-Control-Allow-Origin", value: "https://rolling-sushi.uz" },
+          {
+            key: "Access-Control-Allow-Origin",
+            value: "https://rolling-sushi.uz",
+          },
           {
             key: "Access-Control-Allow-Methods",
             value: "GET,OPTIONS,PATCH,DELETE,POST,PUT",

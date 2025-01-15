@@ -1,30 +1,28 @@
 "use client";
-import { getLocalizedCategoryName, posterUrl } from "@/lib/utils";
+import { formatText, getLocalizedCategoryName, posterUrl } from "@/lib/utils";
 import Container from "@/components/shared/container";
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
-import { Link } from "@/i18n/routing";
 import CustomImage from "@/components/shared/customImage";
-import Image from "next/legacy/image";
-import { ChevronRight, Minus, Plus } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { useTranslations } from "use-intl";
-import { Button } from "@/components/ui/button";
-import LoveSvg from "@/public/assets/love";
-import { useState } from "react";
+import Link from "next/link";
 
-const Categories = ({ categories, locale }) => {
+const Categories = ({ categories, locale, path }) => {
   const allT = useTranslations("All");
   return (
     <Container className={`mt-5 w-full flex-col gap-3 pb-4`}>
       <div className="w-11/12 flex justify-between items-center gap-3">
-        <h1 className="font-bold text-thin text-xl">{allT("categories")}</h1>
+        <h1 className="font-bold text-thin textNormal3">
+          {allT("categories")}
+        </h1>
         <Link
           locale={locale}
-          href={"/web/categories"}
-          className="flex justify-end items-center gap-1 text-primary text-sm font-medium"
+          href={`/${locale}/${path?.place}/category`}
+          className="flex justify-end items-center gap-1 text-primary textSmall3 font-medium"
         >
           {allT("more")}
           <ChevronRight size={18} />
@@ -41,23 +39,31 @@ const Categories = ({ categories, locale }) => {
               item.category_name,
               locale
             );
+            const linkName = formatText(
+              getLocalizedCategoryName(item.category_name, "en")
+            );
             return (
               <CarouselItem
                 key={i}
-                className={`basis-[45%] sm:basis-[30%] md:basis-[20%] lg:basis-[15%] p-0 mx-2 ${i == 0 && "max-sm:ml-14 max-md:ml-16 ml-8"}`}
+                className={`basis-[25%] sm:basis-[20%] md:basis-[20%] lg:basis-[15%] p-0 mx-2 ${
+                  i == 0 && "max-sm:ml-8 max-md:ml-16 ml-8"
+                }`}
               >
                 <Link
-                  locale={locale}
-                  href={"/hey"}
-                  className="relative w-full h-full"
+                  href={`/${locale}/${path?.place}/category/${item?.category_id}-${linkName}`}
+                  className="space-y-2 relative w-full h-full"
                 >
-                  <div className="relative rounded-[40px] w-full aspect-square overflow-hidden">
+                  <div className="relative rounded-[20px] sm:rounded-[40px] w-full aspect-square overflow-hidden">
                     <CustomImage
-                      src={`${posterUrl}${item.category_photo}`}
+                      src={`${posterUrl}${item.category_photo_origin}`}
                       className="w-full h-full"
                       alt={`${localizedName}`}
+                      photo={item.category_photo}
                     />
                   </div>
+                  <h1 className="text-center textSmall3 font-bold">
+                    {localizedName}
+                  </h1>
                 </Link>
               </CarouselItem>
             );
@@ -69,4 +75,3 @@ const Categories = ({ categories, locale }) => {
 };
 
 export default Categories;
-

@@ -3,12 +3,15 @@ import { getTranslations } from "next-intl/server";
 import Link from "next/link";
 import React, { Fragment } from "react";
 import Cards from "./_components/cards";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+} from "@/components/ui/carousel";
 
 const Reviews = async ({ params }) => {
-  const [allT, param] = await Promise.all([
-    getTranslations("All"),
-    params,
-  ]);
+  const [allT, param] = await Promise.all([getTranslations("All"), params]);
+  console.log(param);
   const fakeData = [
     {
       id: 1,
@@ -23,7 +26,7 @@ const Reviews = async ({ params }) => {
       name: "Anna Ivanova",
       rating: 4,
       review:
-        "Great experience overall. The ambiance was cozy, but the food took a bit long to arrive.",
+        "Great experience overall. The ambiance was cozy, but the food took a bit long to arrive.Great experience overall. The ambiance was cozy, but the food took a bit long to arrive.Great experience overall. The ambiance was cozy, but the food took a bit long to arrive.Great experience overall. The ambiance was cozy, but the food took a bit long to arrive.",
       date: "2025-01-02",
     },
     {
@@ -54,9 +57,9 @@ const Reviews = async ({ params }) => {
 
   return (
     <Container
-      className={`flex-col items-start py-10 min-h-[400px] justify-center`}
+      className={`max-md:w-full w-11/12 flex-col items-start py-10 min-h-[400px] justify-center`}
     >
-      <div className="flex items-center justify-between w-full">
+      <div className="max-md:w-11/12 mx-auto flex items-center justify-between w-full">
         <h1 className="text-xl md:text-2xl text-muted font-semibold">
           {allT("reviews")}
         </h1>
@@ -67,13 +70,26 @@ const Reviews = async ({ params }) => {
           {allT("sendReview")}
         </Link>
       </div>
-      <main className="grid sm:grid-cols-2 lg:grid-cols-3 mt-3 lg:mt-6 gap-5 2xl:grid-cols-4">
-        {fakeData.map((item) => (
-          <Fragment key={item.id}>
-            <Cards data={item} />
-          </Fragment>
-        ))}
-      </main>
+      <Carousel
+        className="relative w-full text-foreground mt-5 md:mt-10 "
+        paginate={"false"}
+        opts={{
+          align: "center",
+        }}
+      >
+        <CarouselContent className="relative">
+          {fakeData.map((item, i) => (
+            <CarouselItem
+              key={i}
+              className={`basis-[80%] sm:basis-[45%] lg:basis-1/4 p-0 mx-2 ${
+                i == 0 && "max-sm:ml-8 max-md:ml-16 ml-8"
+              }`}
+            >
+              <Cards data={item} />
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+      </Carousel>
     </Container>
   );
 };

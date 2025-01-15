@@ -1,13 +1,13 @@
 import { Button } from "../ui/button";
 import { useTranslations } from "next-intl";
 
-const SubmitButton = ({ isLoading, className, children }) => {
+const SubmitButton = ({ isLoading, className, children, disabled }) => {
   const allT = useTranslations("All")
   return (
     <Button
       variant="ghost"
       type="submit"
-      disabled={isLoading}
+      disabled={isLoading || disabled}
       className={className}
     >
       {isLoading ? (

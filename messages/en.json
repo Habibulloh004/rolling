@@ -1,5 +1,7 @@
 {
   "All": {
+    "sms_err": "There is an error in the code! Try again.",
+    "search": "Search in the menu",
     "more": "See more",
     "categories": "Categories",
     "popular": "Popular and new items",
@@ -13,7 +15,8 @@
     "cancel": "Cancel",
     "confirm": "Confirm",
     "loading": "Loading",
-    "sendReview": "Send feedback"
+    "sendReview": "Send feedback",
+    "sum": "sum"
   },
   "Profile": {
     "title": "Profile",
@@ -26,7 +29,7 @@
     "my_order": "My orders",
     "my_bonus": "My bonuses",
     "logout": "Log out"
-  },  
+  },
   "Form": {
     "fullName": "Full Name",
     "review": "Review",

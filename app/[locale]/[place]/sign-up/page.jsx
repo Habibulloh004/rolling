@@ -3,8 +3,8 @@ import CustomImage from "@/components/shared/customImage";
 import { getLocale, getTranslations } from "next-intl/server";
 import React from "react";
 
-export default async function Register() {
-  const [register] = await Promise.all([
+export default async function SignUp() {
+  const [locale, register] = await Promise.all([
     getLocale(),
     getTranslations("Register"),
   ]);

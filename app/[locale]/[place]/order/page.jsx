@@ -43,7 +43,7 @@ const Order = () => {
     <Container className={"flex flex-col pt-8 w-11/12"}>
       <div className="w-full flex justify-between items-center ">
         <h1 className="text-[#004032] textNormal4 font-bold">
-          Мои заказы
+          Мои заказы1213
         </h1>
         <Button className={"hidden lg:block hover:bg-primary textSmall4 "}>
           История заказов

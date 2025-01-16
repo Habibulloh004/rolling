@@ -228,8 +228,10 @@
       "bonus": "Bonus",
       "bonus_pay": "Mening bonuslarimni qo'llash",
       "submit": "Buyurtmani tasdiqlash",
-      "note": "Restoran hozir yopiq. Biz har kuni soat 10:00 dan buyurtmalarni qabul qilamiz. Rolling Sushi-ni tanlaganingiz uchun rahmat!"
+      "note": "Restoran hozir yopiq. Biz har kuni soat 10:00 dan buyurtmalarni qabul qilamiz. Rolling Sushi-ni tanlaganingiz uchun rahmat!",
+      "have_bonus": "Mavjud bonuslar"
     },
-    "pay_success": "To'lov turi"
+    "pay_success": "To'lov turi",
+    "empty_product": "Mahsulotlar mavjud emas."
   }
 }

@@ -228,8 +228,10 @@
       "bonus": "Bonus",
       "bonus_pay": "Apply My Bonuses",
       "submit": "Confirm Order",
-      "note": "The restaurant is currently closed. We accept orders daily from 10:00. Thank you for choosing Rolling Sushi!"
+      "note": "The restaurant is currently closed. We accept orders daily from 10:00. Thank you for choosing Rolling Sushi!",
+      "have_bonus": "Available bonuses"
     },
-    "pay_success": "Payment Method"
+    "pay_success": "Payment Method",
+    "empty_product":"No products available."
   }
 }

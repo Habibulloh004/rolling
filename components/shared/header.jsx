@@ -6,7 +6,7 @@ import { useTranslations, useLocale } from "next-intl";
 import Image from "next/legacy/image";
 
 import ResponsiveSVG from "@/public/assets/responsive";
-import { useStore } from "@/store";
+import { useProductStore, useStore } from "@/store";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import LngChange from "./lngChange";
@@ -18,8 +18,12 @@ export default function Header({ param }) {
   const allT = useTranslations("All");
   const locale = useLocale();
   const pathName = usePathname();
-
+  const { products } = useProductStore();
   const { toggleOpen, open } = useStore();
+  const { initializeProducts } = useProductStore();
+  useEffect(() => {
+    initializeProducts();
+  }, []);
 
   return (
     <header className="sticky top-0 md:bg-custom-gradient z-[999] bg-white text-white h-16 sm:h-24 items-center">
@@ -204,11 +208,13 @@ export default function Header({ param }) {
                 <span className="block md:hidden">
                   <ResponsiveSVG size="28" color="hsla(167, 100%, 13%, 1)" />
                 </span>
-                <div className="relative">
-                  <span className="absolute -top-1 -right-2 size-5 md:size-6 rounded-full bg-red-500 flex items-center justify-center">
-                    1
-                  </span>
-                </div>
+                {products.length > 0 && products && (
+                  <div className="relative">
+                    <span className="absolute -top-1 -right-2 size-5 md:size-6 rounded-full bg-red-500 flex items-center justify-center textSmall1">
+                      {products.length}
+                    </span>
+                  </div>
+                )}
               </Link>
             </div>
           </div>

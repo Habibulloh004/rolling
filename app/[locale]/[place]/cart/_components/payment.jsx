@@ -39,21 +39,21 @@ const Payment = () => {
 
   return (
     <div className="w-full flex flex-col items-start md:px-12 pt-6">
-      <h2 className="text-2xl font-bold leading-9">Способ оплаты</h2>
-      <div className="grid grid-cols-3 gap-2 pt-7">
+      <h2 className="textNormal4 font-bold leading-9">Способ оплаты</h2>
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-2 pt-7">
         {pay.map((item) => (
           <button
             key={item.id}
-            className="group w-[118px] min-h-[70px] rounded-[7px] border-[#004032] border-b-2 p-3 flex flex-col justify-start active:border-2 gap-1"
+            className="group w-[118px] min-h-[70px] rounded-[7px] border-[#004032] border-b-2 p-3 flex flex-col justify-start focus:border-2 gap-1"
           >
             <Image
               src={item.icon}
               alt="card"
-              width={30}
-              height={30}
-              className=""
+              width={100}
+              height={100}
+              className={`${item.id == 1 ? "w-10" : "w-16"}`}
             />
-            <p className="font-normal text-sm text-[#00000099] group-active:text-[#004032] group-active:font-bold">
+            <p className="font-normal text-sm text-[#00000099] group-focus:text-[#004032] group-focus:font-bold">
               {item.text}
             </p>
           </button>
@@ -66,7 +66,7 @@ const Payment = () => {
         >
           <Plus />
         </Link>
-        <div className="w-[375px] relative bg-[#428B7B] rounded-[17px] h-[165px] overflow-hidden my-9 blur-[1px]">
+        <div className="w-[250px] sm:w-[300px] md:w-[375px] relative bg-[#428B7B] rounded-[17px] h-[165px] overflow-hidden my-9 blur-[1px]">
           <Image
             src={uzcard}
             alt="uzcard"

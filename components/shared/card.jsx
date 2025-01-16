@@ -1,9 +1,9 @@
 "use client";
 
 import CustomImage from "@/components/shared/customImage";
-import { Button } from "@/components/ui/button";
 import { cn, formatNumber, posterUrl } from "@/lib/utils";
-import { Heart, Plus } from "lucide-react";
+import { useProductStore } from "@/store";
+import { Heart, Minus, Plus } from "lucide-react";
 import Link from "next/link";
 import React, { useState } from "react";
 
@@ -16,6 +16,22 @@ const Card = ({
 }) => {
   const [isFavorite, setIsFavorite] = useState(false);
   const { photo, price } = props;
+  const { products, setProducts, incrementCount, decrementCount } =
+    useProductStore();
+  const handleAddProduct = () => {
+    setProducts(item);
+  };
+  const handleIncrementCount = () => {
+    incrementCount(item?.product_id);
+  };
+  const handleDecrementCount = () => {
+    decrementCount(item?.product_id);
+  };
+
+  const findProduct = products.find((pr) => pr.product_id == item.product_id);
+
+  console.log(products);
+
   return (
     <div className="relative w-full bg-white rounded-md p-2 space-y-2 h-full flex flex-col justify-between">
       {/* Wrap the clickable area with Link */}
@@ -51,11 +67,38 @@ const Card = ({
           )}
         />
       </button>
-      <div className="flex justify-end items-center gap-2">
-        <Button className="w-7 h-7 max-sm:px-2 max-sm:py-2 sm:w-8 sm:h-8 hover:bg-primary-modal">
-          <Plus />
-        </Button>
-      </div>
+      {!findProduct ? (
+        <div className="flex justify-end items-center gap-2">
+          <button
+            onClick={handleAddProduct}
+            className="rounded-md p-2 bg-primary active:bg-primary-modal"
+          >
+            <Plus className="text-white max-md:w-4 max-md:h-4 w-5 h-5" size={18} />
+          </button>
+        </div>
+      ) : (
+        <div className="flex justify-end items-center gap-2">
+          <div className="max-sm:w-full flex justify-around sm:justify-center items-center gap-1 bg-primary rounded-md">
+            <button
+              onClick={handleIncrementCount}
+              className="max-sm:w-full rounded-l-md p-2 bg-primary active:bg-gradient-to-r active:from-white/20 active:to-primary"
+            >
+              <Plus className="text-white max-md:w-4 max-md:h-4 w-5 h-5" size={18} />
+            </button>
+            <span className="font-bold text-[12px] md:textSmall4 text-white min-w-6 text-center">
+              {findProduct.count > 10
+                ? findProduct.count
+                : `0${findProduct.count}`}
+            </span>
+            <button
+              onClick={handleDecrementCount}
+              className="max-sm:flex justify-center items-center max-sm:w-full rounded-r-md p-2 bg-primary active:bg-gradient-to-l active:from-white/20 active:to-primary"
+            >
+              <Minus className="text-white max-md:w-4 max-md:h-4 w-5 h-5" />
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

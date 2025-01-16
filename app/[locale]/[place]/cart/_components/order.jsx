@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { gift, gold } from "@/public";
 import { ChevronRight } from "lucide-react";
 import Image from "next/image";
@@ -14,34 +15,34 @@ const Order = () => {
     <div className="w-full flex flex-col pt-6">
       <div className="flex flex-col gap-y-4">
         <div className="w-full flex justify-between">
-          <p className="font-medium textSmall2  leading-5 text-[#2E2E2E] text-end w-[120px]">
+          <p className="font-medium textSmall2  leading-5 text-[#2E2E2E] text-start md:text-end w-[120px]">
             {total("delivery")}
           </p>
           <p className="font-normal textNormal2 leading-7 text-[#2E2E2E]">
-            10 000 сум
+            10 000 {all("sum")}
           </p>
         </div>
         <div className="w-full flex justify-between">
-          <p className="font-medium textSmall2 leading-5 text-[#2E2E2E] text-end w-[120px]">
+          <p className="font-medium textSmall2 leading-5 text-[#2E2E2E] text-start md:text-end w-[120px]">
             {total("bonus")}
           </p>
           <p className="font-normal textNormal2 leading-7 text-[#2E2E2E]">
-            20 000 сум
+            20 000 {all("sum")}
           </p>
         </div>
         <div className="w-full flex justify-between">
-          <p className="font-medium textSmall2 leading-5 text-[#2E2E2E] text-end w-[120px]">
+          <p className="font-medium textSmall2 leading-5 text-[#2E2E2E] text-start md:text-end w-[120px]">
             {total("total")}
           </p>
           <p className="font-normal textNormal3 leading-7 text-[#2E2E2E]">
-            230 000 сум
+            230 000 {all("sum")}
           </p>
         </div>
       </div>
       <div className="pt-[31px]">
         <Button
           className={
-            "bg-[#F5F5F5] w-full h-16 flex justify-center items-center gap-1 border-[1px] rounded-2xl"
+            "bg-[#F5F5F5] w-full h-10 md:h-16 flex justify-center items-center gap-1 border-[1px] rounded-md md:rounded-2xl"
           }
         >
           <Image
@@ -49,20 +50,22 @@ const Order = () => {
             alt="gift"
             width={100}
             height={100}
-            className="w-10 h-10"
+            className="w-7 md:w-10 h-7 md:h-10"
           />
-          <p className="font-medium text-base leading-5 text-[#2E2E2E]">
+          <p className="font-medium text-sm sm:text-md leading-5 text-[#2E2E2E]">
             {total("bonus_pay")}
           </p>
           <p className="text-[#2E2E2E]">
             <ChevronRight />
           </p>
         </Button>
-        <div className="hidden flex-col w-full p-5 border-[1px] border-[#979797] rounded-xl mt-3">
-          <div className="w-full flex justify-between ">
+        <div className=" flex-col w-full p-5 border-[1px] border-[#979797] rounded-xl mt-3">
+          <div className="w-full flex justify-between gap-2">
             <div className="flex flex-col items-center gap-4">
-              <p className="text-[#373737]">Имеющийся бонусы</p>
-              <p className="text-xl">100 000 сум</p>
+              <p className="text-[#373737] textNormal2">
+                {total("have_bonus")}
+              </p>
+              <p className="textSmall5">100 000 {all("sum")}</p>
             </div>
             <div className="bg-primary rounded-xl w-[138px] h-[92px] flex flex-col justify-between items-center relative py-[5px]">
               <div>
@@ -81,31 +84,32 @@ const Order = () => {
               </p>
             </div>
           </div>
-
           <div className="mt-[7px]">
-            <p className="text-[#373737] pb-3">Выбрать сумму</p>
-            <input
+            <p className="text-[#373737] pb-1 font-medium">
+              {all("choose")} {all("sum")}
+            </p>
+            <Input
               type="text"
-              placeholder="45 000 сум"
-              className="outline-none border-[1px] bg-transparent p-6 rounded-[10px] w-full "
+              placeholder={`45 000 ${all("sum")}`}
+              className="outline-none border-[2px] bg-transparent p-2 md:p-6 rounded-[10px] w-full text-[12px] md:text-sm"
             />
           </div>
-          <div className="w-full flex justify-around items-center pt-7">
-            <Button className={"h-11 min-w-[178px] hover:bg-primary"}>
-              Подтвердить
+          <div className="w-full flex justify-around items-center pt-7 gap-2 textSmall2">
+            <Button className={"w-full hover:bg-primary"}>
+              {all("confirm")}
             </Button>
             <Button
               className={
-                "h-11 text-[#004032] shadow-none bg-transparent hover:bg-transparent"
+                "w-full border text-[#004032] shadow-none bg-transparent hover:bg-transparent"
               }
             >
-              Отменить
+              {all("cancel")}
             </Button>
           </div>
         </div>
         <Button
           className={
-            "w-full h-16 flex justify-center items-center gap-1 border-[1px] rounded-2xl hover:bg-primary mt-5 font-medium text-lg"
+            "w-full h-10 md:h-16 flex justify-center items-center gap-1 border-[1px] rounded-md md:rounded-2xl hover:bg-primary mt-5 font-medium text-sm md:text-md"
           }
         >
           {total("submit")}

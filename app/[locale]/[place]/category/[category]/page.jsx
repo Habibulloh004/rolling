@@ -18,6 +18,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import Card from "@/components/shared/card";
 
 export default async function CategoryItems({ params }) {
   const [locale, all, path] = await Promise.all([
@@ -55,42 +56,34 @@ export default async function CategoryItems({ params }) {
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
-      <div className="w-full grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 2xl:grid-cols-7 gap-5">
+      <div className="w-full grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 2xl:grid-cols-6 gap-5">
         {products?.map((item, i) => {
           const localizedName = getLocalizedProduct(
             item.product_production_description,
             locale,
             "name"
           );
-
-          const linkNameCategory = formatText(
-            getLocalizedCategoryName(item.category_name, "en")
-          );
-
-          const linkNameProducts = formatText(
+          const linkNameProduct = formatText(
             getLocalizedProduct(
-              item?.product_production_description,
+              item.product_production_description,
               "en",
               "name"
             )
           );
+          const linkNameCategory = formatText(
+            getLocalizedCategoryName(item.category_name, "en", "name")
+          );
           return (
-            <Link
-              key={i}
-              href={`/${locale}/${path.place}/category/${item.menu_category_id}-${linkNameCategory}/product/${item?.product_id}-${linkNameProducts}`} // Adjust link dynamically
-              className="relative w-full flex justify-start items-center flex-col gap-2"
-            >
-              <div className="w-full aspect-square relative rounded-[20px] sm:rounded-[40px] bg-white overflow-hidden">
-                <CustomImage
-                  src={`${posterUrl}${item?.photo_origin}`}
-                  className="w-full h-full object-cover"
-                  alt={`${localizedName}`}
-                />
-              </div>
-              <h1 className="font-bold text-thin textSmall2 text-center">
-                {localizedName}
-              </h1>
-            </Link>
+            <div key={i} className={`w-full h-full`}>
+              <Card
+                defaultHref={`/${locale}/${path.place}/category/${item?.menu_category_id}-${linkNameCategory}/product/${item?.product_id}-${linkNameProduct}`}
+                locale={locale}
+                item={item}
+                localizedName={localizedName}
+                photo={item.photo_origin}
+                price={item.price["1"] / 100}
+              />
+            </div>
           );
         })}
       </div>

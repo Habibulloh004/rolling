@@ -4,7 +4,7 @@ import Order from "./order";
 
 const Right = ({ products, locale }) => {
   return (
-    <div className="w-full flex flex-col">
+    <div className="w-10/12 flex flex-col">
       <Products products={products} locale={locale} />
       <Order />
     </div>

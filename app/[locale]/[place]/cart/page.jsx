@@ -16,12 +16,12 @@ const Basket = async () => {
     getLocale(),
   ]);
   return (
-    <Container className={"w-11/12 flex flex-col gap-5 pt-8"}>
+    <Container className={"w-11/12 flex flex-col md:gap-5 pt-4 md:pt-8 gap-2"}>
       <h1 className="w-full text-primary font-bold font-Poppins leading-10 text-start textNormal4">
         {cart("title")}
       </h1>
       {/* Desktop version */}
-      <div className="hidden lg:grid lg:grid-cols-2 md:gap-10 w-full">
+      <div className="hidden lg:grid lg:grid-cols-2 lg:gap-16 w-full">
         <Left />
         <Right
           products={products.response
@@ -31,14 +31,9 @@ const Basket = async () => {
         />
       </div>
       {/* Mobile version */}
-      <div className="lg:hidden w-full">
-        <Category />
-        <Products
-          products={products.response
-            .filter((c) => c.menu_category_id != 0)
-            .slice(0, 10)}
-          locale={locale}
-        />
+      <div className="lg:hidden w-full space-y-2">
+        <Category locale={locale} />
+        <Products locale={locale} />
         <Payment />
         <Order />
       </div>

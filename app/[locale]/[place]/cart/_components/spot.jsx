@@ -10,36 +10,49 @@ const Spot = () => {
   const all = useTranslations("All");
   return (
     <div className="w-full flex flex-col">
-      <div className="w-full space-y-2">
-        <p className="text-[#A098AE] font-normal">
+      <div className="w-full md:space-y-2">
+        <p className="text-[#A098AE] textSmall3 font-normal">
           {spotText("choose_spot")}
         </p>
         <div className="flex w-full justify-between pt-2">
-          <p className="flex items-center text-lg font-bold leading-7">
-            <Image src={location} alt="location" width={32} height={32} />
+          <p className="flex items-center textSmall3 font-bold md:gap-2">
+            <Image
+              src={location}
+              alt="location"
+              width={100}
+              height={100}
+              className="w-6 h-6 md:w-8 md:h-8"
+            />
             Яккасарайский филиал
           </p>
           <Button
             className={
-              "bg-transparent text-[#004032] shadow-none border-[1px] rounded-[8px] border-[#004032]"
+              "h-8 max-sm:text-[12px] md:h-10 px-4 md:px-5 bg-transparent text-[#004032] shadow-none border-[1px] rounded-[8px] border-[#004032]"
             }
           >
             {all("choose")}
           </Button>
         </div>
-        <p className="text-[#A098AE] font-normal leading-">
+        <p className="text-[#A098AE] font-normal textSmall3">
           {spotText("choose_table")}
         </p>
-        <div className="flex w-full justify-between pt-2">
-          <p className="flex items-center text-lg font-bold leading-7">
-            <Image src={location} alt="location" width={32} height={32} />5 стол
+        <div className="flex w-full justify-between pt-2 md:gap-2">
+          <p className="flex items-center textSmall3 font-bold leading-7">
+            <Image
+              src={location}
+              alt="location"
+              width={100}
+              height={100}
+              className="w-6 h-6 md:w-8 md:h-8"
+            />
+            5 ст ол
           </p>
           <Button
             className={
-              "bg-transparent text-[#004032] shadow-none border-[1px] rounded-[8px] border-[#004032]"
+              "h-8 max-sm:text-[12px] md:h-10 px-4 md:px-5 bg-transparent text-[#004032] shadow-none border-[1px] rounded-[8px] border-[#004032]"
             }
           >
-            Выбрать
+            {all("choose")}
           </Button>
         </div>
       </div>

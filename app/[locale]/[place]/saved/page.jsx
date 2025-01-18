@@ -8,7 +8,7 @@ import ProductsCard from "./_components/productsCard";
 const Favourite = async ({ params }) => {
   const [locale, all, path] = await Promise.all([
     getLocale(),
-    getTranslations("All"),
+    getTranslations("Navbar"),
     params,
   ]);
   return (
@@ -16,7 +16,7 @@ const Favourite = async ({ params }) => {
       <section className="w-full mt-5 space-y-3 pb-4">
         <div className="flex justify-between items-center gap-3">
           <h1 className="font-bold text-primary textNormal4 w-full">
-            {all("favorites")}
+            {all("saved")}
           </h1>
         </div>
         <ProductsCard locale={locale} path={path} />

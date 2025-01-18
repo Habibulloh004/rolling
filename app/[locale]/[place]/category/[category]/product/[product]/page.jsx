@@ -3,6 +3,7 @@ import {
   formatText,
   getLocalizedCategoryName,
   getLocalizedProduct,
+  truncateText,
 } from "@/lib/utils";
 import { ApiService } from "@/service/api.services";
 import { getLocale, getTranslations } from "next-intl/server";
@@ -68,7 +69,9 @@ export default async function ProductPage({ params }) {
           <BreadcrumbSeparator className={""} size={48} />
           <BreadcrumbItem>
             <BreadcrumbPage>
-              <h1 className="font-bold textSmall3">{localizedName}</h1>
+              <h1 className="font-bold textSmall3">
+                {truncateText(localizedName, 50)}
+              </h1>
             </BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>

@@ -57,7 +57,7 @@ export default function Header({ locale, param }) {
         </Link>
 
         {/* Navigation */}
-        <nav className="w-10/12 flex flex-col gap-5 sm:gap-7 mt-5 justify-start items-start">
+        <nav className="max-sm:w-10/12 flex flex-col gap-5 sm:gap-7 mt-5 justify-start items-start">
           {navItems.map((item) => {
             return (
               <Link
@@ -211,7 +211,7 @@ export default function Header({ locale, param }) {
           </Link>
         </nav>
 
-        <div className="flex items-center gap-5">
+        <div className="flex items-center gap-3">
           <span
             className="bg-white p-[6px] rounded-md hidden md:flex lg:hidden items-center"
             onClick={toggleOpen}

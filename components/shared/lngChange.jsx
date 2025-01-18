@@ -31,7 +31,7 @@ const LngChange = () => {
         }
       }}
     >
-      <SelectTrigger className="bg-white text-black border-none w-20 focus:outline-none cursor-pointer">
+      <SelectTrigger className="bg-white xl:h-11 text-black border-none w-20 focus:outline-none cursor-pointer">
         <SelectValue asChild>
           <Image
             src={findLocale.icon.src}

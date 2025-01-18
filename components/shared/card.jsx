@@ -1,7 +1,7 @@
 "use client";
 
 import CustomImage from "@/components/shared/customImage";
-import { cn, formatNumber, posterUrl } from "@/lib/utils";
+import { cn, formatNumber, posterUrl, truncateText } from "@/lib/utils";
 import { useProductStore, useStore } from "@/store";
 import { Heart, Minus, Plus } from "lucide-react";
 import Link from "next/link";
@@ -63,7 +63,8 @@ const Card = ({
         </div>
         <div>
           <h1 className="textSmall1 font-bold">
-            {localizedName} <span className="font-[400]"></span>
+            {truncateText(localizedName, 40)}{" "}
+            <span className="font-[400]"></span>
           </h1>
           <p className="textSmall2 font-bold">
             {price ? formatNumber(price) : 0} сум

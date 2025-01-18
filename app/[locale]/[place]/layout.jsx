@@ -112,7 +112,7 @@ export default async function Layout({ children, params, modal }) {
         {/* Google Analytics Route Tracking */}
         {/* <GoogleAnalytics /> */}
         <NextIntlClientProvider locale={param.locale} messages={messages}>
-          <Header param={param} />
+          <Header param={param} locale={param.locale} />
           <div className="bg-secondary text-primary text-center">
             <div className="max-xl:block hidden max-sm:text-xs">
               <Marquee pauseOnHover className="[--duration:20s]">

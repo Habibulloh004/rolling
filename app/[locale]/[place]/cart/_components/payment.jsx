@@ -7,7 +7,7 @@ import Link from "next/link";
 import React from "react";
 import { useTranslations } from "use-intl";
 
-const Payment = () => {
+const Payment = ({ locale, place }) => {
   const paymentText = useTranslations("Cart.Payment");
   const pay = [
     {
@@ -38,9 +38,9 @@ const Payment = () => {
   ];
 
   return (
-    <div className="w-full flex flex-col items-start md:px-12 pt-6">
+    <div className="w-full flex flex-col items-start md:px-12 pt-6 gap-5">
       <h2 className="textNormal4 font-bold leading-9">Способ оплаты</h2>
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-2 pt-7">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
         {pay.map((item) => (
           <button
             key={item.id}
@@ -59,34 +59,34 @@ const Payment = () => {
           </button>
         ))}
       </div>
-      <div className="flex justify-center items-center">
-        <Link
-          href="/"
-          className="w-[50px] h-[50px] rounded-full bg-white absolute z-50 flex justify-center items-center"
-        >
+      <Link
+        href={`/${locale}/${place}/create-card`}
+        className="w-full sm:w-2/3 md:w-8/12 lg:w-full 2xl:w-9/12 h-40 md:h-48 flex justify-center items-center"
+      >
+        <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-white absolute z-50 flex justify-center items-center">
           <Plus />
-        </Link>
-        <div className="w-[250px] sm:w-[300px] md:w-[375px] relative bg-[#428B7B] rounded-[17px] h-[165px] overflow-hidden my-9 blur-[1px]">
+        </div>
+        <div className="w-full h-full relative bg-[#428B7B] rounded-[17px] overflow-hidden my-9 blur-[1px] mx-auto">
           <Image
             src={uzcard}
             alt="uzcard"
             width={100}
             height={100}
-            className="absolute z-20 top-[18px] right-[22px]"
+            className=" absolute z-40 top-[18px] right-[5%]"
           />
           <div className="bg-[#EB5757] absolute w-60 h-60 rounded-full -left-[120px] -top-10 opacity-50"></div>
           <div className="bg-[#A6C44A] absolute w-60 h-60 rounded-full left-0 -bottom-32 opacity-50 z-10"></div>
-          <p className="absolute font-semibold text-lg leading-6 left-9 top-5 text-white">
+          <p className="absolute font-semibold textSmall4 leading-6 left-[5%] top-5 text-white">
             Названия карты
           </p>
-          <p className="absolute font-semibold text-lg leading-6 right-11 top-[88px] text-white">
+          <p className="absolute font-semibold textSmall4 leading-6 right-[5%] top-[88px] text-white">
             01/01
           </p>
-          <p className="font-semibold text-lg leading-6 absolute text-center w-full bottom-[10px] text-white z-50">
-            9860 * * * * * * * * 1222
+          <p className="font-semibold textSmall4 leading-6 absolute text-center w-full bottom-[10px] text-white z-50">
+            000 000 0000 0000
           </p>
         </div>
-      </div>
+      </Link>
     </div>
   );
 };

@@ -5,6 +5,8 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
+import { getLocale, getTranslations } from "next-intl/server";
+import Link from "next/link";
 import React from "react";
 
 const order = [
@@ -38,36 +40,49 @@ const order = [
   },
 ];
 
-const Order = () => {
+export default async function Order({ params }) {
+  const [locale, path, orderText, all] = await Promise.all([
+    getLocale(),
+    params,
+    getTranslations("Order"),
+    getTranslations("All"),
+  ]);
   return (
     <Container className={"flex flex-col pt-8 w-11/12"}>
       <div className="w-full flex justify-between items-center ">
         <h1 className="text-[#004032] textNormal4 font-bold">
-          Мои заказы
+          {orderText("title")}
         </h1>
-        <Button className={"hidden lg:block hover:bg-primary textSmall4 "}>
-          История заказов
-        </Button>
+        <Link href={`/${locale}/${path.place}/create-review`}>
+          <Button
+            className={
+              "md:h-12 md:textNormal2 md:px-4 hidden lg:block hover:bg-primary textSmall4"
+            }
+          >
+            {orderText("comment")}
+          </Button>
+        </Link>
       </div>
 
       <div className="hidden py-[35px] lg:grid grid-cols-3 w-full gap-6">
         {order.map((item, i) => (
-          <div
+          <Link
+            href={`/${locale}/${path.place}/order/${item.id}`}
             className="w-full rounded-2xl bg-background p-5 flex flex-col justify-between gap-4"
             key={i}
           >
             <div className="flex flex-col gap-y-3">
               <p className="textSmall4 font-semibold text-thin">
-                Заказ №{item.id}
+                {orderText("order_title")} №{item.id}
               </p>
               <p className="textNormal4 font-bold text-thin">
-                {item.price} сум
+                {item.price} {all("sum")}
               </p>
               <p className="textSmall3 font-semibold text-thin">
-                Товаров: {item.count}
+                {orderText("product_title")}: {item.count}
               </p>
               <p className="hidden lg:block textSmall1 pt-[14px]">
-                Тип оплаты:{" "}
+                {orderText("payment_method")} :{" "}
                 <span className="text-[#0000009E]">{item.type} Бонусом</span>{" "}
               </p>
               <p className="textSmall2 font-normal text-[#A098AE]">
@@ -77,9 +92,9 @@ const Order = () => {
             <Button
               className={"w-full hover:bg-primary text-[13px] text-white"}
             >
-              Отслеживать заказ
+              {orderText("show_order")}
             </Button>
-          </div>
+          </Link>
         ))}
       </div>
 
@@ -92,7 +107,10 @@ const Order = () => {
         <CarouselContent>
           {order.map((item, i) => (
             <CarouselItem key={i} className="basis-[100%]  md:basis-1/2">
-              <div className="w-full  bg-white rounded-2xl p-5 flex flex-col justify-between">
+              <Link
+                href={`/${locale}/${path.place}/order/${item.id}`}
+                className="w-full  bg-white rounded-2xl p-5 flex flex-col justify-between"
+              >
                 <div className="flex flex-col gap-2">
                   <div className="w-full flex justify-between">
                     <p className="text-[15px] lg:text-lg font-semibold text-thin">
@@ -119,13 +137,11 @@ const Order = () => {
                 >
                   Отслеживать заказ
                 </Button>
-              </div>
+              </Link>
             </CarouselItem>
           ))}
         </CarouselContent>
       </Carousel>
     </Container>
   );
-};
-
-export default Order;
+}

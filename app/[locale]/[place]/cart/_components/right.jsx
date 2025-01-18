@@ -6,6 +6,7 @@ const Right = ({ products, locale }) => {
   return (
     <div className="w-10/12 flex flex-col">
       <Products products={products} locale={locale} />
+      <div className="h-[1px] bg-foreground/10 w-full"/>
       <Order />
     </div>
   );

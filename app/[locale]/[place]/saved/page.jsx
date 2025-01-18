@@ -1,9 +1,28 @@
-import React from 'react'
+import React from "react";
+import Container from "@/components/shared/container";
+import Card from "@/components/shared/card";
+import { getLocale, getTranslations } from "next-intl/server";
+import { getLocalizedCategoryName } from "@/lib/utils";
+import ProductsCard from "./_components/productsCard";
 
-const Saved = () => {
+const Favourite = async ({ params }) => {
+  const [locale, all, path] = await Promise.all([
+    getLocale(),
+    getTranslations("All"),
+    params,
+  ]);
   return (
-    <div>Saved</div>
-  )
-}
+    <Container className="w-11/12 flex flex-col pt-5 space-y-3">
+      <section className="w-full mt-5 space-y-3 pb-4">
+        <div className="flex justify-between items-center gap-3">
+          <h1 className="font-bold text-primary textNormal4 w-full">
+            {all("favorites")}
+          </h1>
+        </div>
+        <ProductsCard locale={locale} path={path} />
+      </section>
+    </Container>
+  );
+};
 
-export default Saved
+export default Favourite;

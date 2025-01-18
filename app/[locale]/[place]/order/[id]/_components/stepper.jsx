@@ -1,39 +1,42 @@
-import { Confirmation, Cooking, Delivered, Shipped } from "@/public";
+"use client";
+
 import Image from "next/image";
 import React from "react";
+import { useTranslations } from "use-intl";
 
 const Stepper = ({ currentStep }) => {
+  const statusData = useTranslations("Order.OrderStatus");
   const steps = [
-    { id: 1, label: "Заказ подтверждён", icon: Confirmation },
-    { id: 2, label: "Готовится", icon: Cooking },
-    { id: 3, label: "Заказ доставляется", icon: Shipped },
-    { id: 4, label: "Заказ доставлен", icon: Delivered },
+    { id: 1, label: statusData("confirmed"), icon: "/assets/Confirmation.svg" },
+    { id: 2, label: statusData("cooking"), icon: "/assets/Cooking.svg" },
+    { id: 3, label: statusData("in-deliver"), icon: "/assets/Shipped.svg" },
+    { id: 4, label: statusData("finished"), icon: "/assets/Delivered.svg" },
   ];
 
   return (
-    <div className="flex flex-col items-center relative">
+    <div className="w-full flex flex-col items-center relative">
       {steps.map((step, index) => (
-        <div key={step.id} className="flex items-start gap-11">
+        <div key={step.id} className="flex items-start gap-10">
           <Image
             src={step.icon}
             alt="image"
-            width={32}
-            height={32}
-            className="w-8 h-7 relative -top-1"
+            width={100}
+            height={100}
+            className="h-12 -top-4 relative"
           />
 
           <div className="flex flex-col items-center justify-center relative ">
             <div
               className={`w-4 h-4 flex justify-center items-center rounded-full duration-300 ${
                 currentStep >= step.id
-                  ? "bg-[#004032] h-5 w-5"
-                  : "bg-[#00403280] w-4 h-4"
-              }`}
+                  ? "bg-[#004032] w-5 h-5"
+                  : "bg-[#00403280] w-5 h-5"
+              } ${currentStep == step.id && "w-6 h-6"}`}
             ></div>
             {/* Vertical Line */}
             {index !== steps.length - 1 && (
               <div
-                className={`h-12 w-0.5 duration-300 ${
+                className={`h-16 w-0.5 duration-300 ${
                   currentStep > step.id
                     ? "bg-[#004032]"
                     : "bg-transparent border-none"

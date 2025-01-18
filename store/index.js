@@ -3,6 +3,13 @@ import { create } from "zustand";
 export const useStore = create((set) => ({
   open: false,
   toggleOpen: () => set((state) => ({ open: !state.open })),
+  favorites: [],
+  setFavorites: (favorite) => set(() => ({ favorites: favorite })),
+  initializeFavorites: () => {
+    const savedProducts = localStorage.getItem("isFavorites");
+    const parsedProducts = savedProducts ? JSON.parse(savedProducts) : [];
+    set({ favorites: parsedProducts });
+  },
 }));
 
 export const useProductStore = create((set) => ({

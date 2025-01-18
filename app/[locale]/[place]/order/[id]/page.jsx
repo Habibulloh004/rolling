@@ -5,6 +5,9 @@ import { location } from "@/public";
 import Image from "next/image";
 import React from "react";
 import Stepper from "./_components/stepper";
+import { getLocale, getTranslations } from "next-intl/server";
+import Products from "./_components/products";
+import Link from "next/link";
 
 const basket = [
   {
@@ -177,124 +180,114 @@ const basket = [
   },
 ];
 
-const Delivery = () => {
+export default async function OrderList({ params }) {
+  const [locale, path, orderText, all, deliveryText, cartText] =
+    await Promise.all([
+      getLocale(),
+      params,
+      getTranslations("Order"),
+      getTranslations("All"),
+      getTranslations("Cart.Delivery"),
+      getTranslations("Cart.Total"),
+    ]);
   return (
-    <Container className={"py-5 lg:py-16 flex flex-col"}>
+    <Container className={"w-11/12 py-5 flex flex-col gap-5"}>
       <div className="w-full flex justify-between items-start ">
         <div>
-          <h1 className="text-[#004032] text-xl font-bold lg:text-3xl">
-            Заказ №1 <span className="hidden">доставлен!</span>
+          <h1 className="text-[#004032] textNormal4 font-bold">
+            {orderText("order_title")} №{""}1
+            <span className="hidden">{orderText("delivered")}!</span>
           </h1>
           <p className="hidden text-[#004032] text-xl font-bold lg:text-2xl pt-3">
-            Что нам стоит улучшить? Ждём вашу обратную связь!
+            {orderText("info")}
           </p>
         </div>
-        <Button
-          className={
-            "hidden lg:block w-[267px] h-[48px] hover:bg-primary text-lg "
-          }
-        >
-          Оставить отзыв
-        </Button>
+        <Link href={`/${locale}/${path.place}/create-review`}>
+          <Button
+            className={
+              "md:h-12 md:textNormal2 md:px-4 hidden lg:block hover:bg-primary textSmall4"
+            }
+          >
+            {orderText("comment")}
+          </Button>
+        </Link>
       </div>
-
-      <div className="flex flex-col-reverse lg:flex-row lg:justify-between w-full lg:pt-9">
+      <div className="flex flex-col-reverse lg:flex-row lg:justify-between w-full gap-4">
         <div className=" lg:w-2/3">
-          <div className="flex flex-col w-full gap-[10px] pt-5 lg:p-0">
-            <p className="text-sm lg:text-lg text-[#A098AE]">Адрес доставки</p>
-            <p className="flex items-center text-sm lg:text-lg font-bold leading-7">
+          <div className="flex flex-col justify-start items-start w-full gap-[10px] pt-5 lg:p-0">
+            <p className="textSmall3 text-[#A098AE]">
+              {deliveryText("address")}
+            </p>
+            <p className="flex items-center textSmall3 font-bold leading-7 md:gap-2">
               <Image
                 src={location}
                 alt="location"
                 width={100}
                 height={100}
-                className="w-7 h-6"
+                className="w-6 h-6 md:w-8 md:h-8"
               />
               Дом 1
             </p>
-            <p className="font-normal text-[#A098AE] text-sm lg:text-lg pt-[10px] felx">
+            <p className="font-normal text-[#A098AE] textSmall1">
               Яшнабадский р-й. Улица Боткина 1А дом №20
             </p>
-            <div className="border-[1px] border-[#A098AE] w-[200] h-[34px] rounded-[8px] flex justify-center items-center">
-              <p className="text-sm text-[#2E2E2E] text-center ">
+            <div className="border-[1px] border-[#A098AE] px-4 py-2 rounded-[8px]">
+              <p className="textSmall2 text-[#2E2E2E] text-center ">
                 До квартиры №12
               </p>
             </div>
           </div>
-
           <div className="flex flex-col-reverse items-center  gap-10 lg:flex-row lg:justify-between mt-12">
-            <div className="w-[191px] h-52 py-3 px-5 bg-white rounded-xl flex flex-col">
+            <div className="max-sm:w-10/12 max-md:w-2/3 md:w-[300px] py-3 px-5 bg-white rounded-xl flex flex-col justify-center items-center">
               <Image
                 src={location}
                 alt="image"
                 width={100}
                 height={100}
-                className="w-[152px] h-[92px]"
+                className=""
               />
               <article className="pt-3">
                 <p className="text-xs font-medium">Паркентский филиал</p>
                 <p className="text-[9px] font-light">Улица Паркент 2</p>
               </article>
-              <Button className={"h-6 text-[8px] mt-[10px] hover:bg-primary "}>
+              <Button
+                className={
+                  "h-8 text-[12px] md:text-sm mt-[10px] hover:bg-primary "
+                }
+              >
                 +99899 777-77-77
               </Button>
             </div>
-            <Stepper currentStep={3} />
+            <Stepper currentStep={1} />
           </div>
         </div>
 
-        <div className="w-full lg:w-1/3">
-          <h1 className="hidden lg:block font-bold text-lg lg:text-2xl leading-9 text-black text-start">
-            Ваш заказ
-          </h1>
-          <div className="overflow-y-scroll flex flex-col h-[545px] w-full lg:pt-7 simple-scrollbar">
-            {basket.map((item, i) => (
-              <div key={i} className="flex h-20 gap-4 mt-6 relative mr-[20] ">
-                <Image
-                  src={`${posterUrl}${item.photo}`}
-                  alt="product"
-                  width={100}
-                  height={100}
-                />
-                <div className="h-full flex flex-col justify-center gap-y-3 ">
-                  <p className="font-semibold text-base lg:text-lg leading-7">
-                    {item.product_name.replace(/\$.*/, "").trim() || "No Name"}
-                  </p>
-                  <div className="flex justify-between">
-                    <p className="font-normal text-sm text-[#A098AE]">1x</p>
-                    <p className="font-semibold text-sm leading-5 text-end">
-                      {item?.price["1"]
-                        ? `${item.price["1"] / 100} UZS`
-                        : "Price not available"}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="flex flex-col gap-y-4 pt-6 border-t-2 border-[#DBDBDB] mt-5">
-            <div className="hidden w-full lg:flex justify-between">
-              <p className="font-medium text-base leading-5 text-[#2E2E2E] text-end w-[120px]">
-                Доставка
+        <div className="w-full lg:w-1/3 space-y-4">
+          <Products locale={locale} />
+          <div className="h-[0.5px] w-full bg-[#DBDBDB]" />
+          <div className="flex flex-col gap-y-4">
+            <div className="w-full flex justify-between">
+              <p className="font-medium textSmall3  leading-5 text-[#2E2E2E] text-start md:text-end">
+                {cartText("delivery")}
               </p>
-              <p className="font-normal text-lg leading-7 text-[#2E2E2E]">
-                10 000 сум
-              </p>
-            </div>
-            <div className="hidden w-full lg:flex justify-between">
-              <p className="font-medium text-base leading-5 text-[#2E2E2E] text-end w-[120px]">
-                Бонус
-              </p>
-              <p className="font-normal text-lg leading-7 text-[#2E2E2E]">
-                20 000 сум
+              <p className="font-normal textNormal2 leading-7 text-[#2E2E2E]">
+                10 000 {all("sum")}
               </p>
             </div>
             <div className="w-full flex justify-between">
-              <p className="font-medium text-base lg:text-lg leading-5 text-[#2E2E2E] text-end ">
-                Общая сумма
+              <p className="font-medium textSmall3 leading-5 text-[#2E2E2E] text-start md:text-end">
+                {cartText("bonus")}
               </p>
-              <p className="font-medium text-xl lg:text-2xl leading-7 text-[#2E2E2E]">
-                230 000 сум
+              <p className="font-normal textNormal2 leading-7 text-[#2E2E2E]">
+                20 000 {all("sum")}
+              </p>
+            </div>
+            <div className="w-full flex justify-between">
+              <p className="font-medium textSmall3 leading-5 text-[#2E2E2E] text-start md:text-end">
+                {cartText("total")}
+              </p>
+              <p className="font-normal textNormal3 leading-7 text-[#2E2E2E]">
+                230 000 {all("sum")}
               </p>
             </div>
           </div>
@@ -302,6 +295,4 @@ const Delivery = () => {
       </div>
     </Container>
   );
-};
-
-export default Delivery;
+}

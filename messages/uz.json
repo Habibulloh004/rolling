@@ -7,6 +7,7 @@
     "popular": "Ommabop va yangi mahsulotlar",
     "cold_rolls": "Sovuq rollar",
     "favorites": "Sevimlilar",
+    "not_found_favorites":"Sevimli mahsulotlar topilmadi",
     "add": "Qo'shish",
     "or": "YOKI",
     "reviews": "Sharh",
@@ -233,5 +234,22 @@
     },
     "pay_success": "To'lov turi",
     "empty_product": "Mahsulotlar mavjud emas."
+  },
+  "Order": {
+    "title": "Mening buyurtmalarim",
+    "order_title": "Buyurtma",
+    "product_title": "Mahsulotlar",
+    "payment_method": "Toʻlov turi",
+    "show_order": "Buyurtmani ko'rish",
+    "comment": "Fikr bildirish",
+    "your_order": "Sizning buyurtmangiz",
+    "OrderStatus": {
+      "confirmed": "Qabul qilingan",
+      "cooking": "Tayyorlanmoqda",
+      "in-deliver": "Yo'lda",
+      "finished": "Yetkazib berildi"
+    },
+    "delivered": "Yetkazildi",
+    "info": "Nimani yaxshilashimiz kerak? Sizning fikringizni kutamiz!"
   }
 }

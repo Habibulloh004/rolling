@@ -12,10 +12,10 @@ const Order = () => {
   const all = useTranslations("All");
   const total = useTranslations("Cart.Total");
   return (
-    <div className="w-full flex flex-col pt-6">
+    <div className="w-full flex flex-col pt-6 gap-5">
       <div className="flex flex-col gap-y-4">
         <div className="w-full flex justify-between">
-          <p className="font-medium textSmall2  leading-5 text-[#2E2E2E] text-start md:text-end w-[120px]">
+          <p className="font-medium textSmall3  leading-5 text-[#2E2E2E] text-start md:text-end">
             {total("delivery")}
           </p>
           <p className="font-normal textNormal2 leading-7 text-[#2E2E2E]">
@@ -23,7 +23,7 @@ const Order = () => {
           </p>
         </div>
         <div className="w-full flex justify-between">
-          <p className="font-medium textSmall2 leading-5 text-[#2E2E2E] text-start md:text-end w-[120px]">
+          <p className="font-medium textSmall3 leading-5 text-[#2E2E2E] text-start md:text-end">
             {total("bonus")}
           </p>
           <p className="font-normal textNormal2 leading-7 text-[#2E2E2E]">
@@ -31,7 +31,7 @@ const Order = () => {
           </p>
         </div>
         <div className="w-full flex justify-between">
-          <p className="font-medium textSmall2 leading-5 text-[#2E2E2E] text-start md:text-end w-[120px]">
+          <p className="font-medium textSmall3 leading-5 text-[#2E2E2E] text-start md:text-end">
             {total("total")}
           </p>
           <p className="font-normal textNormal3 leading-7 text-[#2E2E2E]">
@@ -39,10 +39,10 @@ const Order = () => {
           </p>
         </div>
       </div>
-      <div className="pt-[31px]">
+      <div className="">
         <Button
           className={
-            "bg-[#F5F5F5] w-full h-10 md:h-16 flex justify-center items-center gap-1 border-[1px] rounded-md md:rounded-2xl"
+            "bg-[#F5F5F5] w-full h-10 md:h-16 flex justify-center items-center gap-1 border-[1px] rounded-xl"
           }
         >
           <Image
@@ -59,7 +59,7 @@ const Order = () => {
             <ChevronRight />
           </p>
         </Button>
-        <div className=" flex-col w-full p-5 border-[1px] border-[#979797] rounded-xl mt-3">
+        <div className="flex-col w-full p-5 border-[1px] shadow-md rounded-xl mt-3">
           <div className="w-full flex justify-between gap-2">
             <div className="flex flex-col items-center gap-4">
               <p className="text-[#373737] textNormal2">
@@ -95,12 +95,12 @@ const Order = () => {
             />
           </div>
           <div className="w-full flex justify-around items-center pt-7 gap-2 textSmall2">
-            <Button className={"w-full hover:bg-primary"}>
+            <Button className={"w-full hover:bg-primary md:py-2 md:h-12"}>
               {all("confirm")}
             </Button>
             <Button
               className={
-                "w-full border text-[#004032] shadow-none bg-transparent hover:bg-transparent"
+                "w-full border text-[#004032] shadow-none bg-transparent hover:bg-transparent md:py-2 md:h-12"
               }
             >
               {all("cancel")}
@@ -109,7 +109,7 @@ const Order = () => {
         </div>
         <Button
           className={
-            "w-full h-10 md:h-16 flex justify-center items-center gap-1 border-[1px] rounded-md md:rounded-2xl hover:bg-primary mt-5 font-medium text-sm md:text-md"
+            "w-full h-10 md:h-16 flex justify-center items-center gap-1 border-[1px] rounded-xl hover:bg-primary mt-5 font-medium text-sm md:text-md"
           }
         >
           {total("submit")}

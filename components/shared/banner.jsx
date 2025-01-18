@@ -36,7 +36,7 @@ const Banner = ({ banners }) => {
                 return (
                   <CarouselItem key={i} className="">
                     <Link className="mt-1" href={`${pathname}/news`}>
-                      <div className="relative max-w-[1440px] mx-auto aspect-[16/6] lg:aspect-[15/5]">
+                      <div className="relative max-w-[1440px] mx-auto aspect-[16/7] sm:aspect-[16/6] lg:aspect-[15/5]">
 
                         <CustomImage
                           src={`${url}/banner/get_banner/${item.id}`}

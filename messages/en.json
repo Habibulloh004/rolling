@@ -7,6 +7,7 @@
     "popular": "Popular and new items",
     "cold_rolls": "Cold rolls",
     "favorites": "Favorites",
+    "not_found_favorites": "Not found favorites products",
     "add": "Add",
     "or": "OR",
     "reviews": "Review",
@@ -232,6 +233,23 @@
       "have_bonus": "Available bonuses"
     },
     "pay_success": "Payment Method",
-    "empty_product":"No products available."
+    "empty_product": "No products available."
+  },
+  "Order": {
+    "title": "My Orders",
+    "order_title": "Order",
+    "product_title": "Products",
+    "payment_method": "Payment Method",
+    "show_order": "Track Order",
+    "comment": "Leave a Review",
+    "your_order": "Your Order",
+    "OrderStatus": {
+      "confirmed": "Accepted",
+      "cooking": "In preparation",
+      "in-deliver": "On the Way",
+      "finished": "Delivered"
+    },
+    "delivered": "Delivered",
+    "info": "What should we improve? We’re waiting for your feedback!"
   }
 }

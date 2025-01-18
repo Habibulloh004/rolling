@@ -1,6 +1,5 @@
 import Container from "@/components/shared/container";
 import React from "react";
-import Category from "./_components/sidebar";
 import Products from "./_components/products";
 import Order from "./_components/order";
 import Payment from "./_components/payment";
@@ -8,12 +7,14 @@ import Right from "./_components/right";
 import Left from "./_components/left";
 import { getLocale, getTranslations } from "next-intl/server";
 import { ApiService } from "@/service/api.services";
+import CartSidebar from "./_components/sidebar";
 
-const Basket = async () => {
-  const [cart, products, locale] = await Promise.all([
+const Basket = async ({ params }) => {
+  const [cart, products, locale, path] = await Promise.all([
     getTranslations("Cart"),
     ApiService.getPosterData("menu.getProducts"),
     getLocale(),
+    params,
   ]);
   return (
     <Container className={"w-11/12 flex flex-col md:gap-5 pt-4 md:pt-8 gap-2"}>
@@ -22,7 +23,7 @@ const Basket = async () => {
       </h1>
       {/* Desktop version */}
       <div className="hidden lg:grid lg:grid-cols-2 lg:gap-16 w-full">
-        <Left />
+        <Left place={path.place} locale={locale} />
         <Right
           products={products.response
             .filter((c) => c.menu_category_id != 0)
@@ -32,9 +33,9 @@ const Basket = async () => {
       </div>
       {/* Mobile version */}
       <div className="lg:hidden w-full space-y-2">
-        <Category locale={locale} />
+        <CartSidebar locale={locale} place={path.place} />
         <Products locale={locale} />
-        <Payment />
+        <Payment locale={locale} place={path.place} />
         <Order />
       </div>
     </Container>

@@ -1,11 +1,11 @@
 import Payment from "./payment";
 import CartSidebar from "./sidebar";
 
-const Left = () => {
+const Left = ({ place, locale }) => {
   return (
     <div className="w-full flex flex-col">
-      <CartSidebar />
-      <Payment />
+      <CartSidebar place={place} />
+      <Payment place={place} locale={locale} />
     </div>
   );
 };

@@ -1,5 +1,7 @@
 {
   "All": {
+    "client_err": "There is no such user! Please register.",
+    "logErr": "There is an error in your number or password, please try again.",
     "sms_err": "There is an error in the code! Try again.",
     "search": "Search in the menu",
     "more": "See more",
@@ -156,6 +158,8 @@
   },
   "Login": {
     "title": "Log In",
+    "recover": "Recover",
+    "forgot": "Forgot password?",
     "Form": {
       "phone": "Phone Number",
       "password": "Password"

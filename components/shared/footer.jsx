@@ -15,7 +15,7 @@ export default async function Footer({ params }) {
   ]);
   if (path.place !== "branch") {
     return (
-      <footer className="bg-white min-h-[300px] flex items-center flex-shrink-0 py-3 pt-5">
+      <footer className="bg-white min-h-[300px] flex items-center flex-shrink-0 py-3 mt-8">
         <Container className={`border-b border-primary py-2`}>
           <section className="space-y-2 md:space-y-4 text-xs flex flex-col justify-center">
             <Link

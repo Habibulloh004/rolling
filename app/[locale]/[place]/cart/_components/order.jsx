@@ -47,7 +47,7 @@ const Order = () => {
         </div>
       </div>
       <div className="">
-        {!activeTab == "spot" && (
+        {activeTab != "spot" && (
           <>
             <Button
               className={

@@ -26,8 +26,8 @@ const AboutUs = async ({ params }) => {
     .map((sentence) => sentence.trim());
 
   return (
-    <Container className={"flex-col items-start py-3 md:py-8 text-muted"}>
-      <h1 className="text-xl md:text-2xl font-semibold">{aboutUsT("title")}</h1>
+    <Container className={"w-11/12 flex-col items-start p-3 md:p-8 text-muted"}>
+      <h1 className="textNormal4 text-primary font-semibold">{aboutUsT("title")}</h1>
       <Container className={"w-[97%] items-start gap-10 justify-between"}>
         <section className="w-full sm:w-[60%]">
           <p className="font-semibold py-3 md:py-5 text-lg md:text-xl">

@@ -21,6 +21,7 @@
     "sendReview": "Send feedback",
     "sum": "sum",
     "edit": "Edit",
+    "delete": "Delete",
     "save": "Save",
     "choose": "Choose",
     "add_comment": "Add Comments",
@@ -41,10 +42,45 @@
     "offer": "We offer a unique bonus program that allows you to save more with every order: <br/> 1. Bronze (10%): earned from the 1st to the 4th order. <br/> 2. Silver (20%): earned from the 5th to the 9th order. <br/> 3. Gold (30%): earned starting from the 10th order.",
     "how_it_work": "How does it work? <br/> • After each order, you earn bonuses depending on your level: Bronze, Silver, or Gold. <br /> • You can use up to 100% of the accumulated bonuses to pay for any dish from our menu.",
     "my_cards": "My cards",
-    "my_address": "Delivery addresses",
+    "my_address": "My addresses",
     "my_order": "My orders",
     "my_bonus": "My bonuses",
-    "logout": "Log out"
+    "logout": "Log out",
+    "Links": {
+      "my_card": "My Cards",
+      "address": "Delivery Addresses",
+      "order": "My Orders",
+      "bonus": "My Bonuses",
+      "log_out": "Log Out"
+    },
+    "Bonus": {
+      "title": "We offer a unique bonus program that allows you to save more with every order:",
+      "bonus_1": "1. Bronze (10%): awarded for orders from the 1st to the 4th.",
+      "bonus_2": "2. Silver (20%): awarded for orders from the 5th to the 9th.",
+      "bonus_3": "3. Gold (30%): awarded starting from the 10th order.",
+      "how_it_work": "How does it work?",
+      "work_1": "• After each order, bonuses are credited based on your level: Bronze, Silver, or Gold.",
+      "work_2": "• You can use up to 100% of the accumulated bonuses to pay for any dish from our menu."
+    },
+    "MyCard": {
+      "title": "Fill in the details",
+      "add": "Add card",
+      "card_name": "Card Name",
+      "card_name_pls": "Enter the card name",
+      "card_num": "Card Number",
+      "card_date": "Expiration Date",
+      "card_m": "Month",
+      "card_y": "Year"
+    },
+    "Address": {
+      "title": "My Addresses",
+      "name": "Name",
+      "name_pls": "Home",
+      "address": "Address",
+      "pls": "Yashnobod district, Botkin 1a",
+      "comment": "Comments on the address",
+      "comment_pls": "Entrance 1"
+    }
   },
   "Form": {
     "fullName": "Full Name",

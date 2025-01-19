@@ -24,7 +24,7 @@ export async function CreateReview() {
         <Button>{aboutUsT("btnReview")}</Button>
       </DialogTrigger>
       <DialogContent
-        className="max-w-md w-11/12 no-scrollbar overflow-y-scroll p-7 focus:outline-none border-0 rounded-sm sm:rounded-md"
+        className="max-w-lg w-11/12 no-scrollbar overflow-y-scroll p-7 focus:outline-none border-0 rounded-sm sm:rounded-md"
         mark="false"
       >
         <DialogHeader className={""}>

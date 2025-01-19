@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, cache } from "react";
+import React, { useState, useEffect } from "react";
 import { Form } from "../ui/form";
 import CustomFormField, { FormFieldType } from "../shared/customFormField";
 import SubmitButton from "../shared/submitButton";
@@ -10,15 +10,15 @@ import Cookies from "js-cookie";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { UpdateLoginValidation } from "@/lib/validation";
-import { toast } from "sonner";
 import { useTranslations } from "next-intl";
 import { ArrowUpRight } from "lucide-react";
 import { getUrl } from "@/lib/utils";
 import { getClients } from "@/actions";
+import { useToast } from "@/hooks/use-toast";
 
 export default function LoginForm() {
   const optLang = useTranslations("Register.Message");
-
+  const { toast } = useToast();
   const all = useTranslations("All");
   const RegisterValidation = UpdateLoginValidation();
   const t = useTranslations("Login");
@@ -39,7 +39,6 @@ export default function LoginForm() {
     async function getPosterClients() {
       const clients = await getClients();
       setUsers(clients);
-      console.log(clients);
     }
     getPosterClients();
   }, []);
@@ -62,7 +61,6 @@ export default function LoginForm() {
         console.warn(
           `Skipping client ${client.lastname} due to invalid JSON in comment.`
         );
-        // console.dir(client, { depth: null });
         continue; // Skip this client if the JSON is invalid
       }
 
@@ -71,20 +69,32 @@ export default function LoginForm() {
         clientPhone === formattedPhone &&
         clientPassword === formattedPassword
       ) {
+        Cookies.set(
+          "client",
+          JSON.stringify({
+            ...client,
+            addresses: null,
+          })
+        );
+
+        router.replace(`${getUrl(pathname)}`);
         return { success: true, message: "Login successful", client };
       }
     }
-
     return { success: false, message: "Invalid phone number or password" };
   }
 
   const onSubmit = async (values) => {
+    setIsLoading(true);
+    
     const result = await login(users, values);
-    console.log(result);
-    Cookies.set("client", JSON.stringify(result.client), {
-      expires: 7,
-      path: "/",
-    });
+    if (result.success == false) {
+      toast({
+        variant: "destructive",
+        title: all("logErr"),
+      });
+    }
+    setIsLoading(false);
   };
 
   return (
@@ -124,13 +134,25 @@ export default function LoginForm() {
             <h1 className="textNormal3">{all("or")}</h1>
             <div className="w-full h-[1.5px] bg-white" />
           </div>
-          <h1 className="max-sm:hidden text-[13px] text-white font-[400]">
-            {t("have_account")}
-            <Link href={`${getUrl(pathname)}/sign-up`} className="font-bold">
-              {" "}
-              {t("register")}
-            </Link>
-          </h1>
+          <div>
+            <h1 className="max-sm:hidden text-[13px] text-white font-[400]">
+              {t("have_account")}
+              <Link href={`${getUrl(pathname)}/sign-up`} className="font-bold">
+                {" "}
+                {t("register")}
+              </Link>
+            </h1>
+            <h1 className="max-sm:hidden text-[13px] text-white font-[400]">
+              {t("forgot")}
+              <Link
+                href={`${getUrl(pathname)}/reset-password`}
+                className="font-bold"
+              >
+                {" "}
+                {t("recover")}
+              </Link>
+            </h1>
+          </div>
           <Link
             href={`${getUrl(pathname)}/sign-up`}
             className="sm:hidden flex justify-center items-center gap-2 text-white"

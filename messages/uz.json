@@ -1,5 +1,7 @@
 {
   "All": {
+    "client_err": "Bunday foydalanuvchi mavjud emas! Iltimos ro'yxatdan o'ting.",
+    "logErr": "Raqamingiz yoki parolda xatolik bor qaytadan urinib ko'ring.",
     "sms_err": "Kodda xatolik bor! Qaytadan urinib ko'ring.",
     "search": "Menyudan qidirish",
     "more": "Ko‘proq ko‘rish",
@@ -149,6 +151,8 @@
   },
   "Login": {
     "title": "Tizimga kirish",
+    "recover": "Tiklash",
+    "forgot": "Parolni unutdingizmi?",
     "Form": {
       "phone": "Telefon raqami",
       "password": "Parol"

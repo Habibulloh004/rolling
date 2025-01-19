@@ -1,0 +1,575 @@
+{
+  "All": {
+    "client_err": "Bunday foydalanuvchi mavjud emas! Iltimos ro'yxatdan o'ting.",
+    "logErr": "Raqamingiz yoki parolda xatolik bor qaytadan urinib ko'ring.",
+    "sms_err": "Kodda xatolik bor! Qaytadan urinib ko'ring.",
+    "search": "Menyudan qidirish",
+    "more": "Ko‘proq ko‘rish",
+    "categories": "Kategoriyalar",
+    "popular": "Ommabop va yangi mahsulotlar",
+    "cold_rolls": "Sovuq rollar",
+    "favorites": "Sevimlilar",
+    "add": "Qo'shish",
+    "or": "YOKI",
+    "reviews": "Sharh",
+    "vacansy": "Vakansiya",
+    "send": "Yuborish",
+    "cancel": "Bekor qilish",
+    "confirm": "Tasdiqlash",
+    "loading": "Yuklanmoqda",
+    "sendReview": "Sharh qoldirish"
+  },
+  "Profile": {
+    "title": "Profil",
+    "userName": "Foydalanuvchi nomi",
+    "phone": "Telefon raqami",
+    "offer": "Biz sizga har bir buyurtma bilan ko'proq tejash imkonini beruvchi noyob bonus dasturini taklif etamiz: <br/> 1. Bronza (10%): 1-dan 4-buyurtmagacha beriladi. <br/> 2. Kumush (20%): 5-dan 9-buyurtmagacha beriladi. <br/> 3. Oltin (30%): 10-buyurtmadan boshlab beriladi.",
+    "how_it_work": "Bu qanday ishlaydi? <br/> • Har bir buyurtmadan so'ng, darajangizga qarab (Bronza, Kumush yoki Oltin) bonuslar yig'iladi. <br /> • Menyumizdagi istalgan taom uchun to'lovda yig'ilgan bonuslarning 100% gacha bo'lgan qismini ishlatishingiz mumkin.",
+    "my_cards": "Mening kartalarim",
+    "my_address": "Yetkazib berish manzillari",
+    "my_order": "Mening buyurtmalarim",
+    "my_bonus": "Mening bonuslarim",
+    "logout": "Akkauntdan chiqish"
+  },  
+  "Form": {
+    "fullName": "To‘liq Ism",
+    "review": "Sharh",
+    "phone": "Telefon Raqami",
+    "profession": "Kasb",
+    "self": "O'zingiz haqida yozing",
+    "card_name": "Karta Nomi",
+    "card_number": "Karta Raqami",
+    "expired_date": "Amal qilish muddati",
+    "Validation": {
+      "fullName": "Ism va familiya majburiy",
+      "text": "Kamida 8 ta belgi kiritishingiz kerak",
+      "phone": "Telefon majburiy",
+      "profession": "Kasb majburiy",
+      "self": "Kamida 8 ta belgi kiritishingiz kerak"
+    }
+  },
+  "Navbar": {
+    "main": "Bosh sahifa",
+    "news": "Yangiliklar",
+    "saved": "Tanlanganlar",
+    "about-us": "Biz haqimizda"
+  },
+  "Footer": {
+    "logoBottom": "Rolling Sushi — bu sizning tanlovingiz, yangi va sifatli taomlar. <br /> Biz sizning ishonchingizni qadrlaymiz va har bir buyurtmangizni o'zgacha qilishga intilamiz.",
+    "phone": "Telefon:",
+    "email": "Elektron pochta:",
+    "download": "Bizning ilovamizni yuklab oling!",
+    "addressName": "Filial manzillari:",
+    "address1": "Oltintepa ko'chasi, 253, Toshkent",
+    "address2": "Yangi Olmazor ko'chasi, 7A, Toshkent",
+    "address3": "Yakkasaroy ko'chasi, 7, Toshkent"
+  },
+  "FootNav": {
+    "aboutUs": "Biz haqimizda",
+    "reviews": "Sharhlar",
+    "vacansies": "Bo'sh ish o'rinlari"
+  },
+  "HomePage": {
+    "intro": "Bizning bonus dasturimizda ishtirok etishni xohlaysizmi? Hozir ro'yxatdan o'ting va har bir buyurtma uchun 30% gacha bonuslarni yig'ishni boshlang!",
+    "title": "Salom dunyo!",
+    "about": "About sahifasiga kirish"
+  },
+  "NewsPage": {
+    "title": "Yangiliklar va Aksiyalar"
+  },
+  "AboutUsPage": {
+    "title": "Biz haqimizda",
+    "intro": "Rolling Sushi’ga xush kelibsiz!",
+    "introBottom": "Rolling Sushi — bu siz uchun har bir detal o‘ylangan va g‘amxo‘rlik bilan yondashilgan joy. Biz ishonamizki, taom zavqlantirishi va uzoq vaqt esda qoladigan maxsus onlarni yaratishi kerak.",
+    "descriptionTop": "Bizni o‘ziga xos qiladigan narsa nima?",
+    "description": "Ta’m va sifatning mukammal uyg‘unligi. Biz faqat yangi mahsulotlardan foydalanamiz va har bir buyurtmani sevgi bilan tayyorlaymiz, shunda har bir taom siz uchun chinakam zavq manbaiga aylanadi. *** Hamma uchun qulaylik. Biz yapon oshxonasini Toshkent aholisi uchun yaqinroq va tushunarliroq qilishga intilamiz. *** Har bir detalda g‘amxo‘rlik. Biz nafaqat ta’m haqida, balki tajribangizni qulay va sodda qilish haqida ham o‘ylaymiz.",
+    "descriptionBottom": "Rolling Sushi — bu oila davrasidagi qulay kechki ovqatlar, do‘stlar bilan samimiy uchrashuvlar yoki o‘zingizni maxsus bir narsa bilan siylashingiz mumkin bo‘lgan vaqt. Biz har bir tashrifingiz yoki buyurtmangiz faqat yoqimli xotiralar qoldirishini xohlaymiz.",
+    "logoBottom": "Kunlaringizni yanada yaxshiroq qilishga bizga ishonch bildirganingiz uchun rahmat!",
+    "btnReview": "Sharhlar",
+    "btnVacansy": "Vakansiyalar",
+    "ourComand": "Bizning jamoamiz"
+  },
+  "Months": {
+    "January": "Yanvar",
+    "February": "Fevral",
+    "March": "Mart",
+    "April": "Aprel",
+    "May": "May",
+    "June": "Iyun",
+    "July": "Iyul",
+    "August": "Avgust",
+    "September": "Sentyabr",
+    "October": "Oktyabr",
+    "November": "Noyabr",
+    "December": "Dekabr",
+    "selectDate": "Sana tanlash"
+  },
+  "Register": {
+    "title": "Ro‘yxatdan o‘ting va Rolling Sushi’dan yanada ko‘proq zavqlaning!",
+    "registeration": "Ro‘yxatdan o‘tish",
+    "description": "Faqat ro‘yxatdan o‘tgan foydalanuvchilar bizning bonus tizimimizda ishtirok etadi va har bir buyurtmadan 30% gacha bonus olishadi. Siz ularni istalgan taomni to‘lashda 100% ishlatishingiz mumkin! Bundan tashqari, siz maxsus chegirmalar va aksiyalarga ega bo‘lasiz. Buyurtma berish yanada tez va qulay bo‘ladi. Bizning sodiqlik dasturimizning bir qismiga aylanib qolish imkoniyatini qo‘ldan boy bermang!",
+    "Form": {
+      "first_name": "Ism",
+      "last_name": "Familiya",
+      "phone": "Telefon raqami",
+      "password": "Parol",
+      "email": "Elektron pochta",
+      "birthday": "Tug‘ilgan sana",
+      "gender": "Jinsi",
+      "privacy_policy": "Akkaunt yaratish orqali men Foydalanish shartlari va Maxfiylik siyosatimizga roziman."
+    },
+    "Validation": {
+      "first_name": "Ism majburiy",
+      "last_name": "Familiya majburiy",
+      "phone": "Telefon raqami majburiy",
+      "password": "Parol majburiy",
+      "email": "Elektron pochta majburiy",
+      "password_mismatch": "Parollar mos kelmadi"
+    },
+    "Message": {
+      "title": "Xabar",
+      "description": "Tasdiqlash SMS yuborildi raqamga",
+      "error": "Ro‘yxatdan o‘tishda xatolik yuz berdi. Iltimos, keyinroq urinib ko‘ring.",
+      "validation": "Kodni yuboring"
+    },
+    "optional": "Majburiy emas",
+    "gender_male": "Erkak",
+    "gender_fimale": "Ayol",
+    "gender_other": "Ko‘rsatilmagan",
+    "send_sms": "SMS yuborish",
+    "register": "Akkaunt yaratish",
+    "login": "Kirish",
+    "have_account": "Akkauntingiz bormi?",
+    "password": "Maxfiy"
+  },
+  "Login": {
+    "title": "Tizimga kirish",
+    "recover": "Tiklash",
+    "forgot": "Parolni unutdingizmi?",
+    "Form": {
+      "phone": "Telefon raqami",
+      "password": "Parol"
+    },
+    "Validation": {
+      "phone": "Telefon raqami majburiy",
+      "password": "Parol majburiy"
+    },
+    "Message": {
+      "title": "Xabar",
+      "description": "SMS tasdiq kodi raqamingizga yuborildi",
+      "error": "Ro‘yxatdan o‘tishda xatolik yuz berdi. Iltimos, keyinroq urinib ko‘ring.",
+      "validation": "Kod yuborish"
+    },
+    "send_sms": "SMS yuborish",
+    "register": "Akkaunt yaratish",
+    "login": "Kirish",
+    "have_account": "Akkauntingiz yo‘qmi?",
+    "password": "Maxfiy kod"
+  },
+  "ResetPassword": {
+    "title": "Akkauntni tiklash",
+    "Form": {
+      "phone": "Telefon raqami",
+      "new_password": "Yangi parol",
+      "confirm_password": "Parolni takrorlang"
+    },
+    "Validation": {
+      "phone": "Telefon raqami majburiy",
+      "password": "Parol majburiy"
+    },
+    "Message": {
+      "title": "Xabar",
+      "description": "Tasdiqlash SMS kodi raqamingizga yuborildi",
+      "error": "Ro‘yxatdan o‘tishda xatolik yuz berdi. Iltimos, keyinroq urinib ko‘ring.",
+      "validation": "Tasdiqlash"
+    },
+    "register": "Yangi akkaunt yaratish",
+    "reset": "Tiklash",
+    "password": "Yashirish"
+  }
+}
+
+
+
+{
+  "All": {
+    "client_err": "Такой пользователь не существует! Пожалуйста, зарегистрируйтесь.",
+    "logErr": "В вашем номере или пароле ошибка, попробуйте еще раз.",
+    "sms_err": "В коде есть ошибка! Попробуйте еще раз.",
+    "search": "Поиск по меню",
+    "more": "Увидеть больше",
+    "categories": "Категории",
+    "popular": "Популярные и новинки",
+    "cold_rolls": "Холодные роллы",
+    "favorites": "Избранное",
+    "add": "Добавить",
+    "or": "ИЛИ",
+    "reviews": "Отзыв",
+    "vacansy": "Вакансия",
+    "send": "Отправить",
+    "cancel": "Отменить",
+    "confirm": "Подтвердить",
+    "loading": "Загрузка",
+    "sendReview": "Оставить отзыв"
+  },
+  "Profile": {
+    "title": "Профиль",
+    "userName": "Имя пользователя",
+    "phone": "Номер телефона",
+    "offer": "Мы предлагаем уникальную бонусную программу, которая позволяет вам экономить больше с каждым заказом: <br/> 1. Бронза (10%): начисляется с 1-го по 4-й заказ. <br/> 2. Сильвер (20%): начисляется с 5-го по 9-й заказ. <br/> 3. Голд (30%): начисляется начиная с 10-го заказа",
+    "how_it_work": "Как это работает? <br/> • После каждого заказа вам начисляются бонусы в зависимости от вашего уровня: Бронза, Сильвер или Голд. <br /> • Вы можете использовать до 100% накопленных бонусов для оплаты любого блюда из нашего меню.",
+    "my_cards": "Мои карты",
+    "my_address": "Адреса доставок",
+    "my_order": "Мои заказы",
+    "my_bonus": "Мои бонусы",
+    "logout": "Выйти из аккаунта"
+  },
+  "Form": {
+    "fullName": "Имя Фамилия",
+    "review": "Отзыв",
+    "phone": "Номер телефона",
+    "profession": "Профессия",
+    "self": "Напишите о себе",
+    "card_name": "Название карты",
+    "card_number": "Номер карты",
+    "expired_date": "Срок действия",
+    "Validation": {
+      "fullName": "Имя, Фамилия обязательно",
+      "text": "Вы должны ввести как минимум 8 символов",
+      "phone": "Телефон обязателен",
+      "profession": "Профессия обязательна",
+      "self": "Вы должны ввести минимум 8 символов"
+    }
+  },
+  "Navbar": {
+    "main": "Главное",
+    "news": "Новости",
+    "saved": "Избранные ",
+    "about-us": "О нас"
+  },
+  "Footer": {
+    "logoBottom": "Rolling Sushi — ваш выбор свежести и качества. <br /> Мы ценим ваше доверие и стремимся сделать каждый ваш заказ особенным.",
+    "phone": "Телефон:",
+    "email": "Эл. почта:",
+    "download": "Скачайте наше приложения!",
+    "addressName": "Адреса филиалов:",
+    "address1": "ул. Олтинтепа, 253, Ташкент",
+    "address2": "ул. Янги Олмазор, 7A, Ташкент",
+    "address3": "ул. Яккасарай, 7, Ташкент"
+  },
+  "FootNav": {
+    "aboutUs": "О нас",
+    "reviews": "Отзывы",
+    "vacansies": "Вакансии"
+  },
+  "HomePage": {
+    "intro": "Хотите участвовать в нашей бонусной программе? Зарегистрируйтесь сейчас и начните накапливать до 30% бонусов на каждый заказ!",
+    "title": "Привет, мир!",
+    "about": "Перейти на страницу «О нас»"
+  },
+  "NewsPage": {
+    "title": "Новости и Акции"
+  },
+  "AboutUsPage": {
+    "title": "О нас",
+    "intro": "Добро пожаловать в Rolling Sushi!",
+    "introBottom": "Rolling Sushi — это место, где каждая деталь продумана с вниманием и заботой о вас. Мы убеждены, что еда должна радость и создавать особенные моменты, которые запоминаются надолго.",
+    "descriptionTop": "Что делает нас особенными?",
+    "description": "Идеальное сочетание вкуса и качества. Мы используем только свежие ингредиенты и готовим с любовью, чтобы каждый заказ стал для вас настоящим удовольствием. *** Доступность для всех. Мы стремимся сделать японскую кухню ближе и понятнее для жителей Ташкента. *** Забота в каждой детали. Мы думаем не только о вкусе, но и о том, как сделать ваш опыт простым и комфортным.",
+    "descriptionBottom": "Rolling Sushi — это про уютные семейные ужины, душевные встречи с друзьями или время, когда можно побаловать себя чем-то особенным. Мы хотим, чтобы каждый ваш визит или заказ оставлял только приятные воспоминания.",
+    "logoBottom": "Спасибо, что доверяете нам делать ваш день чуточку лучше!",
+    "btnReview": "Отзывы",
+    "btnVacansy": "Вакансии",
+    "ourComand": "Наша команда"
+  },
+  "Months": {
+    "January": "Январь",
+    "February": "Февраль",
+    "March": "Март",
+    "April": "Апрель",
+    "May": "Май",
+    "June": "Июнь",
+    "July": "Июль",
+    "August": "Август",
+    "September": "Сентябрь",
+    "October": "Октябрь",
+    "November": "Ноябрь",
+    "December": "Декабрь",
+    "selectDate": "Выберите дату"
+  },
+  "Register": {
+    "title": "Зарегистрируйтесь и наслаждайтесь Rolling Sushi еще больше!",
+    "registeration": "Регистрация",
+    "description": "Только зарегистрированные пользователи участвуют в нашей бонусной системе и получают до 30% бонусов с каждого заказа. Вы сможете использовать их на 100% при оплате любого блюда! Кроме того, вам будут доступны эксклюзивные скидки и акции. Оформление заказов станет быстрее и удобнее. Не упустите возможность стать частью нашей программы лояльности!",
+    "Form": {
+      "first_name": "Имя",
+      "last_name": "Фамилия",
+      "phone": "Номер телефона",
+      "password": "Пароль",
+      "email": "Электронная почта",
+      "birthday": "Дата рождения",
+      "gender": "Пол",
+      "privacy_policy": "Создавая учетную запись, я соглашаюсь с нашими Условиями использования и Политикой конфиденциальности."
+    },
+    "Validation": {
+      "first_name": "Имя обязательно",
+      "last_name": "Фамилия обязательна",
+      "phone": "Номер телефона обязателен",
+      "password": "Пароль обязателен",
+      "email": "Электронная почта обязательна",
+      "password_mismatch": "Пароли не совпадают"
+    },
+    "Message": {
+      "title": "Сообщение",
+      "description": "Смс подтверждения отправлено на номер",
+      "error": "Произошла ошибка при регистрации. Пожалуйста, попробуйте позже.",
+      "validation": "Подтвердить"
+    },
+    "optional": "Необязательно",
+    "gender_male": "Мужчина",
+    "gender_fimale": "Женщина",
+    "gender_other": "Не указывать",
+    "send_sms": "Отправить SMS",
+    "register": "Создать аккаунт",
+    "login": "Войти",
+    "have_account": "Уже есть аккаунт?",
+    "password": "Скрыть"
+  },
+  "Login": {
+    "title": "Войти",
+    "recover": "Восстановить",
+    "forgot": "Забыли пароль?",
+    "Form": {
+      "phone": "Номер телефона",
+      "password": "Пароль"
+    },
+    "Validation": {
+      "phone": "Номер телефона обязателен",
+      "password": "Пароль обязателен"
+    },
+    "Message": {
+      "title": "Сообщение",
+      "description": "SMS подтверждение отправлено на номер",
+      "error": "Произошла ошибка при регистрации. Попробуйте позже.",
+      "validation": "Подтвердить"
+    },
+    "send_sms": "Отправить SMS",
+    "register": "Создать аккаунт",
+    "login": "Войти",
+    "have_account": "У вас нет аккаунта?",
+    "password": "Скрыть"
+  },
+  "ResetPassword": {
+    "title": "Восстановления аккаунта",
+    "Form": {
+      "phone": "Номер телефона",
+      "new_password": "Новый пароль",
+      "confirm_password": "Повторить пароль"
+    },
+    "Validation": {
+      "phone": "Номер телефона обязателен",
+      "password": "Пароль обязателен"
+    },
+    "Message": {
+      "title": "Сообщение",
+      "description": "SMS подтверждение отправлено на номер",
+      "error": "Произошла ошибка при регистрации. Попробуйте позже.",
+      "validation": "Подтвердить"
+    },
+    "register": "Создать новый аккаунт",
+    "reset": "Восстановить",
+    "password": "Скрыть"
+  }
+}
+
+
+{
+  "All": {
+    "client_err": "There is no such user! Please register.",
+    "logErr": "There is an error in your number or password, please try again.",
+    "sms_err": "There is an error in the code! Try again.",
+    "search": "Search in the menu",
+    "more": "See more",
+    "categories": "Categories",
+    "popular": "Popular and new items",
+    "cold_rolls": "Cold rolls",
+    "favorites": "Favorites",
+    "add": "Add",
+    "or": "OR",
+    "reviews": "Review",
+    "vacansy": "Vacancy",
+    "send": "Send",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "loading": "Loading",
+    "sendReview": "Send feedback"
+  },
+  "Profile": {
+    "title": "Profile",
+    "userName": "Username",
+    "phone": "Phone number",
+    "offer": "We offer a unique bonus program that allows you to save more with every order: <br/> 1. Bronze (10%): earned from the 1st to the 4th order. <br/> 2. Silver (20%): earned from the 5th to the 9th order. <br/> 3. Gold (30%): earned starting from the 10th order.",
+    "how_it_work": "How does it work? <br/> • After each order, you earn bonuses depending on your level: Bronze, Silver, or Gold. <br /> • You can use up to 100% of the accumulated bonuses to pay for any dish from our menu.",
+    "my_cards": "My cards",
+    "my_address": "Delivery addresses",
+    "my_order": "My orders",
+    "my_bonus": "My bonuses",
+    "logout": "Log out"
+  },  
+  "Form": {
+    "fullName": "Full Name",
+    "review": "Review",
+    "phone": "Phone Number",
+    "profession": "Profession",
+    "self": "Write about yourself",
+    "card_name": "Card Name",
+    "card_number": "Card Number",
+    "expired_date": "Expiration Date",
+    "Validation": {
+      "fullName": "Full name is required",
+      "text": "You must enter at least 8 characters",
+      "phone": "Phone is required",
+      "profession": "Profession is required",
+      "self": "You must enter at least 8 characters"
+    }
+  },
+  "Navbar": {
+    "main": "Main",
+    "news": "News",
+    "saved": "Chosen",
+    "about-us": "About us"
+  },
+  "Footer": {
+    "logoBottom": "Rolling Sushi — your choice of freshness and quality. <br /> We value your trust and strive to make each order special.",
+    "phone": "Phone:",
+    "email": "Email:",
+    "download": "Download our app!",
+    "addressName": "Branch addresses:",
+    "address1": "253 Oltintepa Street, Tashkent",
+    "address2": "7A Yangi Olmazor Street, Tashkent",
+    "address3": "7 Yakkasaroy Street, Tashkent"
+  },
+  "FootNav": {
+    "aboutUs": "About Us",
+    "reviews": "Reviews",
+    "vacansies": "Vacancies"
+  },
+  "HomePage": {
+    "intro": "Do you want to participate in our bonus program? Register now and start earning up to 30% bonuses on every order!",
+    "title": "Hello world!",
+    "about": "Go to the about page"
+  },
+  "NewsPage": {
+    "title": "News and Promotions"
+  },
+  "AboutUsPage": {
+    "title": "About Us",
+    "intro": "Welcome to Rolling Sushi!",
+    "introBottom": "Rolling Sushi is a place where every detail is thoughtfully designed with care and attention for you. We believe that food should bring joy and create special moments that stay in your memory for a long time.",
+    "descriptionTop": "What makes us special?",
+    "description": "The perfect combination of taste and quality. We use only fresh ingredients and prepare with love to make every order a true delight for you. *** Accessibility for everyone. We strive to bring Japanese cuisine closer and more understandable to the residents of Tashkent. *** Care in every detail. We think not only about taste but also about making your experience simple and comfortable.",
+    "descriptionBottom": "Rolling Sushi is about cozy family dinners, heartfelt gatherings with friends, or moments to treat yourself to something special. We want every visit or order to leave you with only pleasant memories.",
+    "logoBottom": "Thank you for trusting us to make your day a little better!",
+    "btnReview": "Reviews",
+    "btnVacansy": "Vacancies",
+    "ourComand": "Our Team"
+  },
+  "Months": {
+    "January": "January",
+    "February": "February",
+    "March": "March",
+    "April": "April",
+    "May": "May",
+    "June": "June",
+    "July": "July",
+    "August": "August",
+    "September": "September",
+    "October": "October",
+    "November": "November",
+    "December": "December",
+    "selectDate": "Pick a date"
+  },
+  "Register": {
+    "title": "Register and enjoy Rolling Sushi even more!",
+    "registeration": "Registration",
+    "description": "Only registered users participate in our bonus system and receive up to 30% bonuses from each order. You will be able to use them 100% when paying for any dish! In addition, you will have access to exclusive discounts and promotions. Placing orders will become faster and more convenient. Do not miss the opportunity to become part of our loyalty program!",
+    "Form": {
+      "first_name": "First Name",
+      "last_name": "Last Name",
+      "phone": "Phone Number",
+      "password": "Password",
+      "email": "Email",
+      "birthday": "Birthday",
+      "gender": "Gender",
+      "privacy_policy": "By creating an account, I agree to our Terms of Use and Privacy Policy."
+    },
+    "Validation": {
+      "first_name": "First Name",
+      "last_name": "Last Name Required",
+      "phone": "Phone Number Required",
+      "password": "Password Required",
+      "email": "Email Required",
+      "password_mismatch": "Passwords do not match"
+    },
+    "Message": {
+      "title": "Message",
+      "description": "SMS confirmation sent to number",
+      "error": "An error occurred while registering. Please try again later.",
+      "validation": "Send code  "
+    },
+    "optional": "Optional",
+    "gender_male": "Male",
+    "gender_fimale": "Fimale",
+    "gender_other": "Do not select",
+    "send_sms": "Send SMS",
+    "register": "Create Account",
+    "login": "Log in",
+    "have_account": "Already have an account?",
+    "password": "Secret"
+  },
+  "Login": {
+    "title": "Log In",
+    "recover": "Recover",
+    "forgot": "Forgot password?",
+    "Form": {
+      "phone": "Phone Number",
+      "password": "Password"
+    },
+    "Validation": {
+      "phone": "Phone Number Required",
+      "password": "Password Required"
+    },
+    "Message": {
+      "title": "Message",
+      "description": "SMS confirmation sent to number",
+      "error": "An error occurred while registering. Please try again later.",
+      "validation": "Send code  "
+    },
+    "send_sms": "Send SMS",
+    "register": "Create Account",
+    "login": "Log in",
+    "have_account": "Your havn't account?",
+    "password": "Secret"
+  },
+  "ResetPassword": {
+    "title": "Account Recovery",
+    "Form": {
+      "phone": "Phone Number",
+      "new_password": "New Password",
+      "confirm_password": "Repeat Password"
+    },
+    "Validation": {
+      "phone": "Phone Number is required",
+      "password": "Password is required"
+    },
+    "Message": {
+      "title": "Message",
+      "description": "SMS confirmation sent to the number",
+      "error": "An error occurred during registration. Please try again later.",
+      "validation": "Confirm"
+    },
+    "register": "Create a new account",
+    "reset": "Recover",
+    "password": "Hide"
+  }
+}

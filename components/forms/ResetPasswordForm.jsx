@@ -8,9 +8,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Cookies from "js-cookie";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { UpdateResetPasswordValidation } from "@/lib/validation";
-import { toast } from "sonner";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -28,19 +27,33 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { useTranslations } from "next-intl";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Send, X } from "lucide-react";
+import { generateRandomFourDigitNumber, getUrl } from "@/lib/utils";
+import { Button } from "../ui/button";
+import { getClient, getClients, sendSmsToUser } from "@/actions";
+import { useToast } from "@/hooks/use-toast";
+import { updateClient } from "@/actions/post";
+import axios from "axios";
 
 export default function ResetPasswordForm() {
+  const { toast } = useToast();
+  const [users, setUsers] = useState([]);
+  const [resetPasswordBtnDisabled, setResetPasswordBtnDisabled] =
+    useState(true);
+  const [otpValues, setOtpValues] = useState("");
+  const [generatingValue, setGeneratingValue] = useState("");
+  const pathname = usePathname();
   const optLang = useTranslations("ResetPassword.Message");
   const all = useTranslations("All");
-  const RegisterValidation = UpdateResetPasswordValidation();
+  const ResetPasswordValidation = UpdateResetPasswordValidation();
   const t = useTranslations("ResetPassword");
+  const registerT = useTranslations("Register");
+  const loginT = useTranslations("Login");
   const reset = useTranslations("ResetPassword.Form");
-  const [users, setUsers] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
   const form = useForm({
-    resolver: zodResolver(RegisterValidation),
+    resolver: zodResolver(ResetPasswordValidation),
     defaultValues: {
       phone: "",
       new_password: "",
@@ -48,42 +61,82 @@ export default function ResetPasswordForm() {
     },
   });
 
-  const onSubmit = async (values) => {
-    console.log(values);
-
-    return null;
-    setIsLoading(true);
-
-    try {
-      const { phone, password } = values;
-      console.log(phone, password, users);
-
-      const findUser = users?.find(
-        (user) =>
-          user?.Password == String(password) &&
-          user?.PhoneNumber == String(phone)
-      );
-      console.log({ findUser });
-
-      if (findUser) {
-        Cookies.set("auth", JSON.stringify(findUser), { expires: 1 });
-        Cookies.set(
-          "extraTime",
-          new Date().getTime() + 60 * 60 * 1000 * 24 * 30, // 30 days
-          { expires: 1 }
-        );
-        toast.success("Tizimga muvofaqiyatli kirdingiz.");
-        router.push(`/${findUser?.Role}`);
-      } else {
-        toast.error("Login yoki password noto'g'ri.Qaytadan urunib ko'ring!!!");
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error("Login yoki password noto'g'ri.Qaytadan urunib ko'ring!!!");
-    } finally {
-      setIsLoading(false);
+  useEffect(() => {
+    async function getPosterClients() {
+      const clients = await getClients();
+      setUsers(clients);
     }
+    getPosterClients();
+  }, []);
+
+  const phone = form.watch("phone");
+
+  async function login(clients, loginData) {
+    const formattedPhone = loginData.phone.replace("+", "");
+
+    for (const client of clients) {
+      const clientPhone = client.phone_number || "";
+
+      if (clientPhone == formattedPhone) {
+        return { success: true, message: "Login successful", client };
+      }
+    }
+    return { success: false, message: "Invalid phone number or password" };
+  }
+
+  const onSubmit = async (values) => {
+    setIsLoading(true);
+    const { client, success } = await login(users, values);
+    if (success == false) {
+      toast({
+        variant: "destructive",
+        title: all("client_err"),
+      });
+      setIsLoading(false);
+      return;
+    }
+    const clientPassword = JSON.parse(client.comment);
+    const updatedClient = {
+      ...client,
+      comment: JSON.stringify({
+        ...clientPassword,
+        password: `password ${values.new_password}`,
+      }),
+    };
+    await updateClient(updatedClient);
+    Cookies.set(
+      "client",
+      JSON.stringify({
+        ...updatedClient,
+        addresses: null,
+      })
+    );
+    router.replace(`${getUrl(pathname)}`);
+    setIsLoading(false);
   };
+
+  const checkNumber = async () => {
+    // const postNumber = fetch("")
+    if (otpValues != generatingValue) {
+      toast({
+        variant: "destructive",
+        title: all("sms_err"),
+      });
+      return;
+    }
+    setResetPasswordBtnDisabled(false);
+    console.log(form);
+    console.log("OTP:", otpValues);
+    console.log("val", generatingValue);
+  };
+
+  const sendSms = async () => {
+    const code = generateRandomFourDigitNumber();
+    setGeneratingValue(code);
+    const res = await sendSmsToUser(code, form.getValues("phone"));
+    console.log(res);
+  };
+
   return (
     <Form {...form}>
       <form
@@ -91,14 +144,80 @@ export default function ResetPasswordForm() {
         className="w-full space-y-5 sm:space-y-4 w-ful rounded-md"
       >
         <div className="w-full flex flex-col gap-3">
-          <CustomFormField
-            fieldType={FormFieldType.PHONE_INPUT}
-            control={form.control}
-            name="phone"
-            placeholder=""
-            label={reset("phone")}
-            inputClass="rounded-md border-[1px]"
-          />
+          <div className="w-full flex col-span-2 sm:grid grid-cols-3 justify-start items-end gap-2">
+            <div className="w-full col-span-2">
+              <CustomFormField
+                fieldType={FormFieldType.PHONE_INPUT}
+                control={form.control}
+                name="phone"
+                placeholder=""
+                label={reset("phone")}
+                inputClass="rounded-md border-[1px]"
+              />
+            </div>
+            <div
+              className={`${
+                form.formState.phone && "pb-7"
+              } h-full flex justify-start items-end w-full`}
+            >
+              <div></div>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <div>
+                    <Button
+                      type="button"
+                      disabled={!phone || phone.length != 13}
+                      onClick={sendSms}
+                      className="max-sm:hidden h-10 px-[10px] bg-white hover:bg-white/90 text-black"
+                    >
+                      {registerT("send_sms")}
+                    </Button>
+                    <Button
+                      type="button"
+                      disabled={!phone || phone.length != 13}
+                      onClick={sendSms}
+                      className="sm:hidden h-10 bg-white hover:bg-white/90 text-black w-10"
+                    >
+                      <Send size={32} />
+                    </Button>
+                  </div>
+                </AlertDialogTrigger>
+                <AlertDialogContent className="rounded-md w-11/12 max-w-[365px]">
+                  <AlertDialogHeader>
+                    <AlertDialogTitle className="text-xl text-center relative">
+                      {optLang("title")}
+                      <AlertDialogCancel className="w-2 aspect-square absolute right-0 -top-2">
+                        <X className="size-2" />
+                      </AlertDialogCancel>
+                    </AlertDialogTitle>
+                    <AlertDialogDescription className="text-black/60 text-center text-sm">
+                      {optLang("description")} <br /> {form.getValues("phone")}{" "}
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <div className="w-full flex justify-center items-center">
+                    <InputOTP maxLength={4} onChange={(e) => setOtpValues(e)}>
+                      <InputOTPGroup>
+                        <InputOTPSlot index={0} />
+                        <InputOTPSlot index={1} />
+                        <InputOTPSlot index={2} />
+                        <InputOTPSlot index={3} />
+                      </InputOTPGroup>
+                    </InputOTP>
+                  </div>
+                  <AlertDialogFooter
+                    className={"flex justify-center items-center w-full"}
+                  >
+                    <AlertDialogAction
+                      onClick={checkNumber}
+                      className="w-full hover:bg-primary hover:opacity-[0.9]"
+                    >
+                      {optLang("validation")}
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </div>
+          </div>
           <CustomFormField
             fieldType={FormFieldType.PASSWORDINPUT}
             control={form.control}
@@ -117,50 +236,22 @@ export default function ResetPasswordForm() {
           />
         </div>
         <div className="flex w-full max-sm:flex-col items-center sm:justify-start gap-3 sm:items-center">
-          <AlertDialog>
-            <AlertDialogTrigger asChild className="">
-                <SubmitButton
-                  isLoading={isLoading}
-                  className="w-full sm:w-40 bg-white hover:bg-white"
-                >
-                  {t("reset")}
-                </SubmitButton>
-            </AlertDialogTrigger>
-            <AlertDialogContent className="rounded-md w-[365px]">
-              <AlertDialogHeader>
-                <AlertDialogTitle className="text-xl text-center">
-                  {optLang("title")}
-                </AlertDialogTitle>
-                <AlertDialogDescription className="text-black/60 text-center text-sm">
-                  {optLang("description")} <br /> +998 99 ***-**-99{" "}
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <div className="w-full flex justify-center items-center">
-                <InputOTP maxLength={4}>
-                  <InputOTPGroup>
-                    <InputOTPSlot index={0} />
-                    <InputOTPSlot index={1} />
-                    <InputOTPSlot index={2} />
-                    <InputOTPSlot index={3} />
-                  </InputOTPGroup>
-                </InputOTP>
-              </div>
-              <AlertDialogFooter
-                className={"flex justify-center items-center w-full"}
-              >
-                <AlertDialogAction className="w-full hover:bg-primary hover:opacity-[0.9]">
-                  {optLang("validation")}
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
+          <SubmitButton
+            isLoading={isLoading}
+            disabled={resetPasswordBtnDisabled || users.length < 1}
+            className="w-full sm:w-40 bg-white hover:bg-white"
+          >
+            {t("reset")}
+          </SubmitButton>
+
           <div className="sm:hidden w-full text-white flex items-center justify-center gap-2">
             <div className="w-full h-[1.5px] bg-white" />
             <h1 className="textNormal3">{all("or")}</h1>
             <div className="w-full h-[1.5px] bg-white" />
           </div>
           <h1 className="max-sm:hidden text-[13px] text-white font-[400]">
-            <Link href="/register" className="font-bold">
+            {loginT("have_account")}
+            <Link href={`${getUrl(pathname)}/sign-up`} className="font-bold">
               {" "}
               {t("register")}
             </Link>

@@ -6,45 +6,62 @@ import { cn, formatNumber, posterUrl, truncateText } from "@/lib/utils";
 import { useProductStore, useStore } from "@/store";
 import { Heart, Minus, Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 export default function ProductCard({
   localizedDesc,
   localizedName,
   productData,
+  place,
 }) {
-  const isFavorites = JSON.parse(localStorage.getItem("isFavorites")) || [];
+  const [isFavorites, setIsFavorites] = useState([]);
   const { products, setProducts, incrementCount, decrementCount } =
     useProductStore();
+  const { setFavorites } = useStore();
+  const all = useTranslations("All");
+
+  useEffect(() => {
+    // Ensure localStorage is accessed only in the browser
+    const storedFavorites =
+      JSON.parse(localStorage.getItem("isFavorites")) || [];
+    setIsFavorites(storedFavorites);
+  }, []);
+
   const handleAddProduct = () => {
     setProducts(productData);
   };
+
   const handleIncrementCount = () => {
     incrementCount(productData?.product_id);
   };
+
   const handleDecrementCount = () => {
     decrementCount(productData?.product_id);
   };
-  const all = useTranslations("All");
-  const findProduct = products.find(
-    (pr) => pr.product_id == productData.product_id
-  );
-  const { setFavorites } = useStore();
 
   const handleAddFavorite = () => {
     const favorite = isFavorites.find(
       (f) => f.product_id === productData.product_id
     );
+
+    let updatedFavorites;
+
     if (!favorite) {
-      isFavorites.push(productData);
-      setFavorites(isFavorites);
-      localStorage.setItem("isFavorites", JSON.stringify(isFavorites));
+      updatedFavorites = [...isFavorites, productData];
     } else {
-      isFavorites.splice(isFavorites.indexOf(favorite), 1);
-      setFavorites(isFavorites);
-      localStorage.setItem("isFavorites", JSON.stringify(isFavorites));
+      updatedFavorites = isFavorites.filter(
+        (f) => f.product_id !== productData.product_id
+      );
     }
+
+    setIsFavorites(updatedFavorites);
+    setFavorites(updatedFavorites);
+    localStorage.setItem("isFavorites", JSON.stringify(updatedFavorites));
   };
+
+  const findProduct = products.find(
+    (pr) => pr.product_id == productData.product_id
+  );
 
   const favorite = isFavorites.find(
     (f) => f.product_id === productData.product_id
@@ -52,26 +69,30 @@ export default function ProductCard({
 
   return (
     <main className="w-full h-full relative py-5 flex max-md:flex-col gap-5">
-      <button className="z-10 absolute right-1 top-1 md:right-2 md:top-2 rounded-full bg-white p-1 shadow-sm transition-colors hover:bg-gray-100">
-        <Heart
+      {place != "branch" && (
+        <button
           onClick={handleAddFavorite}
-          className={cn(
-            "h-6 w-6",
-            favorite ? "fill-[#43674E] text-[#43674E]" : "text-gray-400"
-          )}
-        />
-      </button>
+          className="z-10 absolute right-1 top-1 md:right-2 md:top-2 rounded-full bg-white p-1 shadow-sm transition-colors hover:bg-gray-100"
+        >
+          <Heart
+            className={cn(
+              "h-6 w-6",
+              favorite ? "fill-[#43674E] text-[#43674E]" : "text-gray-400"
+            )}
+          />
+        </button>
+      )}
       <section className="w-full md:w-[400px] h-full xl:w-[450px] 2xl:w-[500px] flex flex-col gap-3">
         <div className="aspect-square relative rounded-md overflow-hidden bg-secondary">
           <CustomImage
             src={`${posterUrl}${productData.photo_origin}`}
             alt="text"
-            className={"w-full h-full object-cover md:object-contain"}
+            className="w-full h-full object-cover md:object-contain"
           />
         </div>
       </section>
-      <section className="w-11/12 justify-between flex-grow flex flex-col gap-5">
-        <div className="space-y-2">
+      <section className="w-full md:w-10/12 justify-between flex-grow flex flex-col gap-5">
+        <div className="space-y-2 pt-4">
           <h1 className="textNormal4 text-primary font-bold">
             {truncateText(localizedName, 100)}
           </h1>

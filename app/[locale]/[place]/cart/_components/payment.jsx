@@ -1,6 +1,7 @@
 "use client";
 
 import { card, cash, click, payme, uzcard, uzum } from "@/public";
+import { useStore } from "@/store";
 import { Plus } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -9,6 +10,8 @@ import { useTranslations } from "use-intl";
 
 const Payment = ({ locale, place }) => {
   const paymentText = useTranslations("Cart.Payment");
+  const { activeTab } = useStore();
+
   const pay = [
     {
       id: 1,
@@ -59,34 +62,36 @@ const Payment = ({ locale, place }) => {
           </button>
         ))}
       </div>
-      <Link
-        href={`/${locale}/${place}/create-card`}
-        className="w-full sm:w-2/3 md:w-8/12 lg:w-full 2xl:w-9/12 h-40 md:h-48 flex justify-center items-center"
-      >
-        <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-white absolute z-50 flex justify-center items-center">
-          <Plus />
-        </div>
-        <div className="w-full h-full relative bg-[#428B7B] rounded-[17px] overflow-hidden my-9 blur-[1px] mx-auto">
-          <Image
-            src={uzcard}
-            alt="uzcard"
-            width={100}
-            height={100}
-            className=" absolute z-40 top-[18px] right-[5%]"
-          />
-          <div className="bg-[#EB5757] absolute w-60 h-60 rounded-full -left-[120px] -top-10 opacity-50"></div>
-          <div className="bg-[#A6C44A] absolute w-60 h-60 rounded-full left-0 -bottom-32 opacity-50 z-10"></div>
-          <p className="absolute font-semibold textSmall4 leading-6 left-[5%] top-5 text-white">
-            Названия карты
-          </p>
-          <p className="absolute font-semibold textSmall4 leading-6 right-[5%] top-[88px] text-white">
-            01/01
-          </p>
-          <p className="font-semibold textSmall4 leading-6 absolute text-center w-full bottom-[10px] text-white z-50">
-            000 000 0000 0000
-          </p>
-        </div>
-      </Link>
+      {activeTab !== "spot" && (
+        <Link
+          href={`/${locale}/${place}/create-card`}
+          className="w-full sm:w-2/3 md:w-8/12 lg:w-full 2xl:w-9/12 h-40 md:h-48 flex justify-center items-center"
+        >
+          <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-white absolute z-50 flex justify-center items-center">
+            <Plus />
+          </div>
+          <div className="w-full h-full relative bg-[#428B7B] rounded-[17px] overflow-hidden my-9 blur-[1px] mx-auto">
+            <Image
+              src={uzcard}
+              alt="uzcard"
+              width={100}
+              height={100}
+              className=" absolute z-40 top-[18px] right-[5%]"
+            />
+            <div className="bg-[#EB5757] absolute w-60 h-60 rounded-full -left-[120px] -top-10 opacity-50"></div>
+            <div className="bg-[#A6C44A] absolute w-60 h-60 rounded-full left-0 -bottom-32 opacity-50 z-10"></div>
+            <p className="absolute font-semibold textSmall4 leading-6 left-[5%] top-5 text-white">
+              Названия карты
+            </p>
+            <p className="absolute font-semibold textSmall4 leading-6 right-[5%] top-[88px] text-white">
+              01/01
+            </p>
+            <p className="font-semibold textSmall4 leading-6 absolute text-center w-full bottom-[10px] text-white z-50">
+              000 000 0000 0000
+            </p>
+          </div>
+        </Link>
+      )}
     </div>
   );
 };

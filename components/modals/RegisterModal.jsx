@@ -32,7 +32,6 @@ export function RegisterModal() {
             <h1 className="textNormal4 font-[400]">
               {register("registeration")}
             </h1>
-            <p>Lenguate</p>
           </div>
         </DialogHeader>
         <RegisterForm />

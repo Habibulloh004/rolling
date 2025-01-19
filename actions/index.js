@@ -67,6 +67,7 @@ export async function getClient(id) {
   const cookieStore = await cookies();
   const myHeaders = new Headers();
 
+  console.log(id)
   const requestOptions = {
     method: "GET",
     headers: myHeaders,
@@ -85,7 +86,9 @@ export async function getClient(id) {
       });
       return result.response;
     })
-    .catch((error) => console.error(error));
+    .catch((error) => {
+      console.log(error)
+    });
 
   return res;
 }
@@ -108,5 +111,3 @@ export async function getClients() {
     .catch((error) => console.error(error));
   return res;
 }
-
-

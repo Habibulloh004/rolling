@@ -44,7 +44,7 @@ const Products = ({ locale }) => {
                       alt="product"
                       width={100}
                       height={100}
-                      className="max-sm:w-20 max-sm:h-20 object-cover aspect-square rounded-md col-span-2 row-span-2"
+                      className="border max-sm:w-20 max-sm:h-20 object-cover aspect-square rounded-md col-span-2 row-span-2"
                     />
                     <div className="w-full flex flex-col justify-between min-h-16 md:min-h-20 gap-2 md:gap-4 relative">
                       <div className="w-full row-span-1 h-full flex items-start justify-between gap-y-3 gap-1">

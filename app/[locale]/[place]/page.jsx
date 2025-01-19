@@ -5,6 +5,7 @@ import Categories from "./_components/categories";
 import Container from "@/components/shared/container";
 import Popular from "./_components/popular";
 import { ApiService } from "@/service/api.services";
+import TitleComponent from "./_components/titleComponent";
 
 export const metadata = {
   title: "Rolling Sushi - Свежие суши и роллы в Ташкенте",
@@ -17,12 +18,31 @@ export const metadata = {
   },
 };
 
-export default async function HomePage({ params }) {
-  const [bannersData, categoriesData, productsData] = await Promise.all([
+export default async function HomePage({ params, searchParams }) {
+  const [
+    bannersData,
+    categoriesData,
+    productsData,
+    searchParamsData,
+    locale,
+    path,
+  ] = await Promise.all([
     getData("/banner/get_banners"),
     ApiService.getPosterData("menu.getCategories"),
     ApiService.getPosterData("menu.getProducts"),
+    searchParams,
+    getLocale(),
+    params,
   ]);
+
+  let spotData;
+  if (path.place === "branch") {
+    spotData = await ApiService.getPosterData(
+      "spots.getSpot",
+      `&spot_id=${searchParamsData.spot}`
+    );
+  }
+  console.log(spotData);
 
   const banners = bannersData.banners;
   const categories = categoriesData.response.filter(
@@ -32,11 +52,19 @@ export default async function HomePage({ params }) {
     .filter((item) => item.photo_origin != null && item?.menu_category_id != 0)
     .slice(0, 10);
 
-  const [locale, path] = await Promise.all([getLocale(), params]);
-
   return (
     <Container className={"w-full flex-col"}>
-      <Banner banners={banners} />
+      {path.place == "branch" && (
+        <TitleComponent
+        searchParamsData={searchParamsData}
+          products={products}
+          categories={categories}
+          locale={locale}
+          path={path}
+          spotData={spotData}
+        />
+      )}
+      {path.place != "branch" && <Banner banners={banners} />}
       <Categories categories={categories} locale={locale} path={path} />
       <Popular products={products} locale={locale} path={path} />
     </Container>

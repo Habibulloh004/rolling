@@ -1,7 +1,8 @@
-"use server"
+"use server";
 import { posterToken, posterUrl } from "@/lib/utils";
+import { cookies } from "next/headers";
 
-export async function createClient(data) { 
+export async function createClient(data) {
   const myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
   myHeaders.append(
@@ -26,4 +27,49 @@ export async function createClient(data) {
     .then((result) => result)
     .catch((error) => console.error(error));
   return res;
+}
+export async function updateClient(data) {
+  const myHeaders = new Headers();
+  // const cookieStore = await cookies();
+  // cookieStore.set({
+  //   name: "client",
+  //   value: JSON.stringify(data),
+  // });
+  // (await cookies())?.set("client", JSON.stringify(data))();
+  myHeaders.append("Content-Type", "application/json");
+  const raw = JSON.stringify(data);
+
+  const requestOptions = {
+    method: "POST",
+    body: raw,
+    headers: myHeaders,
+    redirect: "follow",
+  };
+
+  const res = fetch(
+    `${posterUrl}/api/clients.updateClient?token=${posterToken}`,
+    requestOptions
+  )
+    .then((response) => response.json())
+    .then((result) => {
+      return result;
+    })
+    .catch((error) => console.error(error));
+  return res;
+}
+export async function saveCookie(cookie) {
+  try {
+    // Assuming cookies() is a valid function that returns a cookie store
+    const cookieStore = await cookies();
+
+    await cookieStore.set({
+      name: "client",
+      value: JSON.stringify(cookie),
+    });
+
+    return "data"; // or return a success status if needed
+  } catch (error) {
+    console.error("Failed to save cookie:", error);
+    throw error; // Propagate the error to the caller
+  }
 }

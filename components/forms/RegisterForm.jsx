@@ -78,13 +78,12 @@ export default function RegisterForm() {
     async function getGroup() {
       const result = await getClientGroup();
       setClientGroup(result);
-      console.log(result);
     }
     getGroup();
   }, []);
 
   const onSubmit = async (values) => {
-    // console.log(values);
+    setIsLoading(true)
     const posterClient = await createClient({
       client_name: `${form.getValues("last_name")} ${form.getValues(
         "first_name"
@@ -106,13 +105,14 @@ export default function RegisterForm() {
     });
 
     if (posterClient.error && posterClient.error == 167) {
-      router.push(`${getUrl(pathname)}/login`);
+      router.replace(`${getUrl(pathname)}/login`);
+      setIsLoading(false)
       return;
     }
 
     await getClient(posterClient.response);
-    // Cookies.set("client", JSON.stringify(client));
-    router.push(`${getUrl(pathname)}`);
+    router.replace(`${getUrl(pathname)}`);
+    setIsLoading(false)
   };
 
   const phone = form.watch("phone");
@@ -133,7 +133,6 @@ export default function RegisterForm() {
   };
 
   const checkNumber = async () => {
-    // const postNumber = fetch("")
     if (otpValues != generatingValue) {
       toast({
         variant: "destructive",
@@ -142,16 +141,12 @@ export default function RegisterForm() {
       return;
     }
     setRegisterBtnDisabled(false);
-    console.log(form);
-    console.log("OTP:", otpValues);
-    console.log("val", generatingValue);
   };
 
   const sendSms = async () => {
     const code = generateRandomFourDigitNumber();
     setGeneratingValue(code);
-    const res = await sendSmsToUser(code, form.getValues("phone"));
-    console.log(res);
+    await sendSmsToUser(code, form.getValues("phone"));
   };
 
   const { errors } = form.formState;
@@ -291,7 +286,7 @@ export default function RegisterForm() {
             optional={t("optional")}
           />
           <div className="col-span-2 flex flex-col space-y-2">
-            <div className="flex justify-start items-center gap-1 font-semibold">
+            <div className="flex justify-start items-center gap-1">
               <span className="text-sm text-white">{register("gender")}</span>
               <span className="text-xs text-white/50">{t("optional")}</span>
             </div>
@@ -349,7 +344,7 @@ export default function RegisterForm() {
           </div>
           <h1 className="max-sm:hidden text-[13px] text-white font-[400]">
             {t("have_account")}
-            <Link href={`${getUrl(pathname)}/login`} className="font-[400] ">
+            <Link href={`${getUrl(pathname)}/login`} className="font-semibold ">
               {" "}
               {t("login")}
             </Link>

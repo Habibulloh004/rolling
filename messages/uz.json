@@ -1,5 +1,7 @@
 {
   "All": {
+    "client_err": "Bunday foydalanuvchi mavjud emas! Iltimos ro'yxatdan o'ting.",
+    "logErr": "Raqamingiz yoki parolda xatolik bor qaytadan urinib ko'ring.",
     "sms_err": "Kodda xatolik bor! Qaytadan urinib ko'ring.",
     "search": "Menyudan qidirish",
     "more": "Ko‘proq ko‘rish",
@@ -7,7 +9,7 @@
     "popular": "Ommabop va yangi mahsulotlar",
     "cold_rolls": "Sovuq rollar",
     "favorites": "Sevimlilar",
-    "not_found_favorites":"Sevimli mahsulotlar topilmadi",
+    "not_found_favorites": "Sevimli mahsulotlar topilmadi",
     "add": "Qo'shish",
     "or": "YOKI",
     "reviews": "Sharh",
@@ -23,7 +25,14 @@
     "choose": "Tanlash",
     "add_comment": "Izoh qo'shish",
     "add_comment_info": "Kuryer uchun muhim ma'lumotlarni qo'shing: kirish joyi, domofon kodi, qavat yoki boshqa tafsilotlar.",
-    "services": "Xizmatlar"
+    "services": "Xizmatlar",
+    "table": "Stol",
+    "welcome": "Xush kelibsiz",
+    "spot": "filiali",
+    "waiter": "Ofitsiant xizmati",
+    "waiter_desc": "Xizmatlarimiz ofitsiantlar tomonidan ko'rsatiladi",
+    "self": "O'z-o'ziga xizmat ko'rsatish",
+    "self_desc": "Xaridor o'ziga xizmat qiladi"
   },
   "Profile": {
     "title": "Profil",
@@ -149,6 +158,8 @@
   },
   "Login": {
     "title": "Tizimga kirish",
+    "recover": "Tiklash",
+    "forgot": "Parolni unutdingizmi?",
     "Form": {
       "phone": "Telefon raqami",
       "password": "Parol"
@@ -251,5 +262,11 @@
     },
     "delivered": "Yetkazildi",
     "info": "Nimani yaxshilashimiz kerak? Sizning fikringizni kutamiz!"
+  },
+  "Search": {
+    "search_pr": "Mahsulotlar",
+    "not_search_pr": "Mahsulotlar topilmadi.",
+    "search_ct": "Kategoriyalar",
+    "not_search_ct": "Kategoriyalar topilmadi."
   }
 }

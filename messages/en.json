@@ -1,5 +1,7 @@
 {
   "All": {
+    "client_err": "There is no such user! Please register.",
+    "logErr": "There is an error in your number or password, please try again.",
     "sms_err": "There is an error in the code! Try again.",
     "search": "Search in the menu",
     "more": "See more",
@@ -23,7 +25,14 @@
     "choose": "Choose",
     "add_comment": "Add Comments",
     "add_comment_info": "Add any important information for the courier: entrance, intercom code, floor, or other details.",
-    "services": "Services"
+    "services": "Services",
+    "table": "Table",
+    "welcome": "Welcome",
+    "spot": "branch",
+    "waiter": "Waiter service",
+    "waiter_desc": "Service is provided by our establishment's waiters",
+    "self": "Self-service",
+    "self_desc": "The customer serves himself"
   },
   "Profile": {
     "title": "Profile",
@@ -149,6 +158,8 @@
   },
   "Login": {
     "title": "Log In",
+    "recover": "Recover",
+    "forgot": "Forgot password?",
     "Form": {
       "phone": "Phone Number",
       "password": "Password"
@@ -251,5 +262,11 @@
     },
     "delivered": "Delivered",
     "info": "What should we improve? We’re waiting for your feedback!"
+  },
+  "Search": {
+    "search_pr": "Products",
+    "not_search_pr": "No products found.",
+    "search_ct": "Categories",
+    "not_search_ct": "No categories found."
   }
 }

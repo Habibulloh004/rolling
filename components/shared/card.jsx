@@ -5,6 +5,8 @@ import { cn, formatNumber, posterUrl, truncateText } from "@/lib/utils";
 import { useProductStore, useStore } from "@/store";
 import { Heart, Minus, Plus } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const Card = ({
   item,
@@ -13,11 +15,18 @@ const Card = ({
   defaultHref = "/web/category",
   ...props
 }) => {
-  const isFavorites = JSON.parse(localStorage.getItem("isFavorites")) || [];
+  const pathname = usePathname();
+  const [isFavorites, setIsFavorites] = useState([]);
   const { setFavorites } = useStore();
   const { photo, price } = props;
   const { products, setProducts, incrementCount, decrementCount } =
     useProductStore();
+
+  useEffect(() => {
+    const favorites = JSON.parse(localStorage.getItem("isFavorites")) || [];
+    setIsFavorites(favorites);
+  }, []);
+
   const handleAddProduct = () => {
     setProducts(item);
   };
@@ -29,26 +38,25 @@ const Card = ({
   };
 
   const handleAddFavorite = (product) => {
-    // Add favorite logic here
-
     const favorite = isFavorites.find(
       (f) => f.product_id === product.product_id
     );
+    let updatedFavorites;
+
     if (!favorite) {
-      isFavorites.push(product);
-      setFavorites(isFavorites);
-      localStorage.setItem("isFavorites", JSON.stringify(isFavorites));
+      updatedFavorites = [...isFavorites, product];
     } else {
-      isFavorites.splice(isFavorites.indexOf(favorite), 1);
-      setFavorites(isFavorites);
-      localStorage.setItem("isFavorites", JSON.stringify(isFavorites));
+      updatedFavorites = isFavorites.filter(
+        (f) => f.product_id !== product.product_id
+      );
     }
+
+    setIsFavorites(updatedFavorites);
+    setFavorites(updatedFavorites);
+    localStorage.setItem("isFavorites", JSON.stringify(updatedFavorites));
   };
 
   const findProduct = products.find((pr) => pr.product_id == item.product_id);
-
-  console.log(products);
-
   const favorite = isFavorites.find((f) => f.product_id === item.product_id);
   return (
     <div className="relative w-full bg-white rounded-md p-2 space-y-2 h-full flex flex-col justify-between">
@@ -72,20 +80,22 @@ const Card = ({
         </div>
       </Link>
       {/* Favorite Button */}
-      <button
-        onClick={(e) => {
-          e.stopPropagation(); // Prevent Link navigation when clicking the button
-          handleAddFavorite(item);
-        }}
-        className="absolute right-3 top-1 md:top-2 rounded-full bg-white p-1 shadow-sm transition-colors hover:bg-gray-100"
-      >
-        <Heart
-          className={cn(
-            "h-6 w-6",
-            favorite ? "fill-[#43674E] text-[#43674E]" : "text-gray-400"
-          )}
-        />
-      </button>
+      {!defaultHref?.startsWith(`/${locale}/branch`) && (
+        <button
+          onClick={(e) => {
+            e.stopPropagation(); // Prevent Link navigation when clicking the button
+            handleAddFavorite(item);
+          }}
+          className="absolute right-3 top-1 md:top-2 rounded-full bg-white p-1 shadow-sm transition-colors hover:bg-gray-100"
+        >
+          <Heart
+            className={cn(
+              "h-6 w-6",
+              favorite ? "fill-[#43674E] text-[#43674E]" : "text-gray-400"
+            )}
+          />
+        </button>
+      )}
       {!findProduct ? (
         <div className="flex justify-end items-center gap-2">
           <button

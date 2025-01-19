@@ -374,7 +374,7 @@ export default function Header({ locale, param, spotData }) {
                 account and remove your data from our servers.
               </DialogDescription>
             </DialogHeader>
-            <div className="bg-white flex justify-between items-center gap-1">
+            <div className="bg-white flex justify-between items-center gap-1 px-2">
               <h1 className=" px-4 py-3 rounded-md text-center leading-9 font-bold textNormal3 text-thin">
                 {
                   translateTextSpot(

@@ -48,7 +48,7 @@ export default async function Order({ params }) {
     getTranslations("All"),
   ]);
   return (
-    <Container className={"flex flex-col pt-8 w-11/12"}>
+    <Container className={"flex flex-col pt-8 w-11/12 gap-5"}>
       <div className="w-full flex justify-between items-center ">
         <h1 className="text-[#004032] textNormal4 font-bold">
           {orderText("title")}
@@ -64,7 +64,7 @@ export default async function Order({ params }) {
         </Link>
       </div>
 
-      <div className="hidden py-[35px] lg:grid grid-cols-3 w-full gap-6">
+      <div className="hidden lg:grid grid-cols-3 w-full gap-6">
         {order.map((item, i) => (
           <Link
             href={`/${locale}/${path.place}/order/${item.id}`}

@@ -375,14 +375,15 @@ export default function Header({ locale, param, spotData }) {
               </DialogDescription>
             </DialogHeader>
             <div className="bg-white flex justify-between items-center gap-1 px-2">
-              <h1 className=" px-4 py-3 rounded-md text-center leading-9 font-bold textNormal3 text-thin">
+              <h1 className=" px-4 py-3 rounded-md md:text-center leading-9 font-bold textNormal3 text-thin">
                 {
                   translateTextSpot(
                     spotData?.response?.find((sp) => sp.spot_id == spot)?.name,
                     locale
                   )?.split("-")[1]
                 }{" "}
-                {allT("spot")} {allT("table")} № {table_num}
+                {allT("spot")} <br className="sm:hidden" />
+                {allT("table")} № {table_num}
               </h1>
               <LngChange />
             </div>

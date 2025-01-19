@@ -21,6 +21,7 @@
     "sendReview": "Sharh qoldirish",
     "sum": "so'm",
     "edit": "O'zgartirish",
+    "delete": "O'chirish",
     "save": "Saqlash",
     "choose": "Tanlash",
     "add_comment": "Izoh qo'shish",
@@ -41,10 +42,45 @@
     "offer": "Biz sizga har bir buyurtma bilan ko'proq tejash imkonini beruvchi noyob bonus dasturini taklif etamiz: <br/> 1. Bronza (10%): 1-dan 4-buyurtmagacha beriladi. <br/> 2. Kumush (20%): 5-dan 9-buyurtmagacha beriladi. <br/> 3. Oltin (30%): 10-buyurtmadan boshlab beriladi.",
     "how_it_work": "Bu qanday ishlaydi? <br/> • Har bir buyurtmadan so'ng, darajangizga qarab (Bronza, Kumush yoki Oltin) bonuslar yig'iladi. <br /> • Menyumizdagi istalgan taom uchun to'lovda yig'ilgan bonuslarning 100% gacha bo'lgan qismini ishlatishingiz mumkin.",
     "my_cards": "Mening kartalarim",
-    "my_address": "Yetkazib berish manzillari",
+    "my_address": "Mening manzillarim",
     "my_order": "Mening buyurtmalarim",
     "my_bonus": "Mening bonuslarim",
-    "logout": "Akkauntdan chiqish"
+    "logout": "Akkauntdan chiqish",
+    "Links": {
+      "my_card": "Mening kartalarim",
+      "address": "Yetkazib berish manzillari",
+      "order": "Buyurtmalarim",
+      "bonus": "Mening bonuslarim",
+      "log_out": "Hisobdan chiqish"
+    },
+    "Bonus": {
+      "title": "Biz sizga har bir buyurtmangiz bilan ko‘proq tejash imkonini beruvchi noyob bonus dasturini taklif qilamiz:",
+      "bonus_1": "1. Bronza (10%): 1-dan 4-buyurtmagacha hisoblanadi.",
+      "bonus_2": "2. Kumush (20%): 5-dan 9-buyurtmagacha hisoblanadi.",
+      "bonus_3": "3. Oltin (30%): 10-buyurtmadan boshlab hisoblanadi.",
+      "how_it_work": "Bu qanday ishlaydi?",
+      "work_1": "• Har bir buyurtmadan so‘ng sizning darajangizga qarab bonuslar hisoblanadi: Bronza, Kumush yoki Oltin.",
+      "work_2": "• Menyumizdagi istalgan taomni to‘lash uchun yig‘ilgan bonuslarning 100% gacha bo‘lgan qismini ishlatishingiz mumkin."
+    },
+    "MyCard": {
+      "title": "Ma'lumotlarni to‘ldiring",
+      "add": "Karta qo'shish",
+      "card_name": "Karta nomi",
+      "card_name_pls": "Karta nomini kiriting",
+      "card_num": "Karta raqami",
+      "card_date": "Amal qilish muddati",
+      "card_m": "Oy",
+      "card_y": "Yil"
+    },
+    "Address": {
+      "title": "Manzillarim",
+      "name": "Nomi",
+      "name_pls": "Uy",
+      "address": "Manzil",
+      "pls": "Yashnobod tumani, Botkin 1a",
+      "comment": "Manzilga izohlar",
+      "comment_pls": "1-qavat"
+    }
   },
   "Form": {
     "fullName": "To‘liq Ism",

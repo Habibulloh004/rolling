@@ -12,11 +12,11 @@ const Delivery = ({ locale }) => {
   return (
     <div className="w-full flex flex-col">
       {/* <Products locale={locale} /> */}
-      <div className="w-full space-y-4 md:space-y-8">
+      <div className="w-full space-y-2 md:space-y-4">
         <p className="text-[#A098AE] font-normal textSmall3">
           {deliveryText("address")}
         </p>
-        <div className="flex w-full justify-between pt-2">
+        <div className="flex w-full justify-between">
           <p className="flex items-center textSmall3 font-bold leading-7 md:gap-2">
             <Image
               src={location}
@@ -34,7 +34,7 @@ const Delivery = ({ locale }) => {
           >
             {all("edit")}
           </Button>
-        </div>
+        </div>  
         <p className="text-[#A098AE] text-normal textSmall2 pt-2">
           Яшнабадский р-й. Улица Боткина 1А дом №20
         </p>

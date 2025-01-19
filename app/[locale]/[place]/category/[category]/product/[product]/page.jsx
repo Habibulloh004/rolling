@@ -18,18 +18,20 @@ import {
 } from "@/components/ui/breadcrumb";
 import ProductCard from "./_component/productCard";
 
-export default async function ProductPage({ params }) {
-  const [locale, product, path, all] = await Promise.all([
+export default async function ProductPage({ params, searchParams }) {
+  const [locale, path, all, searchParamsData] = await Promise.all([
     getLocale(),
-    ApiService.getPosterData(
-      `menu.getProduct`,
-      `&product_id=${params.product}`
-    ),
     params,
     getTranslations("All"),
+    searchParams,
   ]);
+  const { spot, table_id, table_num, service } = searchParamsData;
 
-  const productData = product.response;
+  const { response: productData } = await ApiService.getPosterData(
+    `menu.getProduct`,
+    `&product_id=${path.product}`
+  );
+
   const localizedName = getLocalizedProduct(
     productData.product_production_description,
     locale,
@@ -50,18 +52,32 @@ export default async function ProductPage({ params }) {
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
-            <BreadcrumbLink href={`/${locale}/${path?.place}/category`}>
+            <BreadcrumbLink
+              href={
+                path?.place !== "branch"
+                  ? `/${locale}/${path?.place}/category`
+                  : `/${locale}/${path?.place}/category?spot=${spot}&table_id=${table_id}&table_num=${table_num}&service=${service}`
+              }
+            >
               <h1 className="font-bold textSmall3">{all("categories")}</h1>
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator className={""} size={48} />
           <BreadcrumbItem>
             <BreadcrumbLink
-              href={`/${locale}/${path?.place}/category/${
-                productData?.menu_category_id
-              }-${formatText(
-                getLocalizedCategoryName(productData.category_name, "en")
-              )}`}
+              href={
+                path?.place !== "branch"
+                  ? `/${locale}/${path?.place}/category/${
+                      productData?.menu_category_id
+                    }-${formatText(
+                      getLocalizedCategoryName(productData.category_name, "en")
+                    )}`
+                  : `/${locale}/${path?.place}/category/${
+                      productData?.menu_category_id
+                    }-${formatText(
+                      getLocalizedCategoryName(productData.category_name, "en")
+                    )}?spot=${spot}&table_id=${table_id}&table_num=${table_num}&service=${service}`
+              }
             >
               <h1 className="font-bold textSmall3">{localizedNameCategory}</h1>
             </BreadcrumbLink>
@@ -80,6 +96,7 @@ export default async function ProductPage({ params }) {
         localizedName={localizedName}
         localizedDesc={localizedDesc}
         productData={productData}
+        place={path.place}
       />
     </Container>
   );

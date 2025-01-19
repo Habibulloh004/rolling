@@ -1,20 +1,28 @@
 "use client";
+
 import React, { useEffect } from "react";
 import { useTranslations } from "use-intl";
 import Delivery from "./delivery";
 import Pickup from "./pickup";
 import Spot from "./spot";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useStore } from "@/store";
 
-const CartSidebar = ({ locale, place }) => {
-  const cart = useTranslations("Cart");
+const CartSidebar = ({ locale, place, spotData, searchParamsData }) => {
   const deliveryText = useTranslations("Cart.Delivery");
   const pickupText = useTranslations("Cart.Pickup");
   const spot = useTranslations("Cart.Spot");
-  console.log({ place });
+  const { setActiveTab } = useStore();
+  const handleTabChange = (value) => {
+    console.log("Selected Tab:", value);
+    setActiveTab(value);
+  };
 
   useEffect(() => {
     if (place == "web") {
+      setActiveTab("delivery");
+    } else {
+      setActiveTab("spot");
     }
   }, [place]);
 
@@ -22,6 +30,7 @@ const CartSidebar = ({ locale, place }) => {
     <div className="">
       <Tabs
         defaultValue={place == "web" ? "delivery" : "spot"}
+        onValueChange={handleTabChange}
         className="w-full"
       >
         <TabsList className="w-full bg-transparent min-h-8 md:min-h-10 border p-1">
@@ -54,7 +63,7 @@ const CartSidebar = ({ locale, place }) => {
           <Pickup locale={locale} />
         </TabsContent>
         <TabsContent className="md:px-10" value="spot">
-          <Spot locale={locale} />
+          <Spot locale={locale} spotData={spotData} searchParamsData={searchParamsData} />
         </TabsContent>
       </Tabs>
     </div>

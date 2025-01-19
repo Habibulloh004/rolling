@@ -20,12 +20,15 @@ import {
 } from "@/components/ui/breadcrumb";
 import Card from "@/components/shared/card";
 
-export default async function CategoryItems({ params }) {
-  const [locale, all, path] = await Promise.all([
+export default async function CategoryItems({ params, searchParams }) {
+  const [locale, all, path, searchParamsData] = await Promise.all([
     getLocale(),
     getTranslations("All"),
     params,
+    searchParams,
   ]);
+  const { spot, table_id, table_num, service } = searchParamsData;
+
   const { response: categoryItems } = await ApiService.getPosterData(
     `menu.getProducts`,
     `&category_id=${path.category}`
@@ -35,8 +38,6 @@ export default async function CategoryItems({ params }) {
     `&category_id=${path.category}`
   );
   const products = categoryItems.filter((c) => c.photo != null);
-  console.log(path);
-
   const categoryName = getLocalizedCategoryName(category.category_name, locale);
 
   return (
@@ -44,7 +45,13 @@ export default async function CategoryItems({ params }) {
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
-            <BreadcrumbLink href={`/${locale}/${path.place}/category`}>
+            <BreadcrumbLink
+              href={
+                path?.place !== "branch"
+                  ? `/${locale}/${path?.place}/category`
+                  : `/${locale}/${path?.place}/category?spot=${spot}&table_id=${table_id}&table_num=${table_num}&service=${service}`
+              }
+            >
               <h1 className="font-bold textSmall3">{all("categories")}</h1>
             </BreadcrumbLink>
           </BreadcrumbItem>
@@ -76,7 +83,11 @@ export default async function CategoryItems({ params }) {
           return (
             <div key={i} className={`w-full h-full`}>
               <Card
-                defaultHref={`/${locale}/${path.place}/category/${item?.menu_category_id}-${linkNameCategory}/product/${item?.product_id}-${linkNameProduct}`}
+                defaultHref={
+                  path?.place !== "branch"
+                    ? `/${locale}/${path.place}/category/${item?.menu_category_id}-${linkNameCategory}/product/${item?.product_id}-${linkNameProduct}`
+                    : `/${locale}/${path.place}/category/${item?.menu_category_id}-${linkNameCategory}/product/${item?.product_id}-${linkNameProduct}?spot=${spot}&table_id=${table_id}&table_num=${table_num}&service=${service}`
+                }
                 locale={locale}
                 item={item}
                 localizedName={localizedName}

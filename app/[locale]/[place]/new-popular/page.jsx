@@ -9,16 +9,19 @@ import {
   getLocalizedProduct,
 } from "@/lib/utils";
 
-const ColdRolls = async ({ params }) => {
-  const [locale, all, path, products] = await Promise.all([
+const ColdRolls = async ({ params, searchParams }) => {
+  const [locale, all, path, products, searchParamsData] = await Promise.all([
     getLocale(),
     getTranslations("All"),
     params,
     ApiService.getPosterData("menu.getProducts"),
+    searchParams,
   ]);
   const productsData = products.response
     .filter((item) => item.photo_origin != null && item.menu_category_id != 0)
     .slice(0, 20);
+  const { spot, table_id, table_num, service } = searchParamsData;
+
   return (
     <Container className="w-11/12 flex flex-col pt-5 space-y-3">
       <section className="w-full mt-5 space-y-3 pb-4">
@@ -47,7 +50,11 @@ const ColdRolls = async ({ params }) => {
             return (
               <div key={i} className={`w-full h-full`}>
                 <Card
-                  defaultHref={`/${locale}/${path.place}/category/${item?.menu_category_id}-${linkNameCategory}/product/${item?.product_id}-${linkNameProduct}`}
+                  defaultHref={
+                    path?.place !== "branch"
+                      ? `/${locale}/${path.place}/category/${item?.menu_category_id}-${linkNameCategory}/product/${item?.product_id}-${linkNameProduct}`
+                      : `/${locale}/${path.place}/category/${item?.menu_category_id}-${linkNameCategory}/product/${item?.product_id}-${linkNameProduct}?spot=${spot}&table_id=${table_id}&table_num=${table_num}&service=${service}`
+                  }
                   locale={locale}
                   item={item}
                   localizedName={localizedName}

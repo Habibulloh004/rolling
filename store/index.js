@@ -5,10 +5,18 @@ export const useStore = create((set) => ({
   toggleOpen: () => set((state) => ({ open: !state.open })),
   favorites: [],
   setFavorites: (favorite) => set(() => ({ favorites: favorite })),
+  activeTab: "delivery",
+  setActiveTab: (tab) =>
+    set(() => {
+      localStorage.setItem("activeTab", tab);
+      return { activeTab: tab };
+    }),
   initializeFavorites: () => {
     const savedProducts = localStorage.getItem("isFavorites");
+    const savedActiveTab = localStorage.getItem("activeTab");
     const parsedProducts = savedProducts ? JSON.parse(savedProducts) : [];
     set({ favorites: parsedProducts });
+    set({ activeTab: savedActiveTab ? savedActiveTab : "delivery" });
   },
 }));
 

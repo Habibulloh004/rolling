@@ -18,20 +18,23 @@ import {
 import Card from "@/components/shared/card";
 import Link from "next/link";
 
-export default async function Page({ params }) {
-  const [locale, all, path, categoriesData, productsData] = await Promise.all([
-    getLocale(),
-    getTranslations("All"),
-    params,
-    ApiService.getPosterData("menu.getCategories"),
-    ApiService.getPosterData("menu.getProducts"),
-  ]);
+export default async function Page({ params, searchParams }) {
+  const [locale, all, path, categoriesData, productsData, searchParamsData] =
+    await Promise.all([
+      getLocale(),
+      getTranslations("All"),
+      params,
+      ApiService.getPosterData("menu.getCategories"),
+      ApiService.getPosterData("menu.getProducts"),
+      searchParams,
+    ]);
   const categories = categoriesData.response.filter(
     (c) => c.category_photo != null && c.category_hidden != "1"
   );
   const products = productsData.response
     .filter((c) => c.photo_origin != null && c.menu_category_id != 0)
     .slice(0, 10);
+  const { spot, table_id, table_num, service } = searchParamsData;
 
   return (
     <Container className="w-full sm:w-11/12 flex flex-col pt-5 space-y-3">
@@ -41,7 +44,7 @@ export default async function Page({ params }) {
             {all("categories")}
           </h1>
         </div>
-        <div className="w-full grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 2xl:grid-cols-7 gap-5">
+        <div className="w-full grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 2xl:grid-cols-6 gap-5">
           {categories?.map((item, i) => {
             const localizedName = getLocalizedCategoryName(
               item.category_name,
@@ -55,13 +58,17 @@ export default async function Page({ params }) {
             return (
               <Link
                 key={i}
-                href={`/${locale}/${path.place}/category/${item?.category_id}-${linkName}`} // Adjust link dynamically
+                href={
+                  path?.place !== "branch"
+                    ? `/${locale}/${path.place}/category/${item?.category_id}-${linkName}`
+                    : `/${locale}/${path.place}/category/${item?.category_id}-${linkName}?spot=${spot}&table_id=${table_id}&table_num=${table_num}&service=${service}`
+                }
                 className="relative w-full flex justify-start items-center flex-col gap-2"
               >
-                <div className="w-full h-full aspect-square sm:h-40 relative rounded-[20px] sm:rounded-[40px] overflow-hidden">
+                <div className="w-full h-full aspect-square relative rounded-[40px] overflow-hidden">
                   <CustomImage
                     src={`${posterUrl}${item?.category_photo}`}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover aspect-square"
                     alt={`${localizedName}`}
                   />
                 </div>

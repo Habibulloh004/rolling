@@ -15,16 +15,27 @@ import { ChevronRight } from "lucide-react";
 import { useTranslations } from "use-intl";
 import Card from "@/components/shared/card";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 
 const Popular = ({ products = [], locale, path }) => {
   const allT = useTranslations("All");
+  const searchParams = useSearchParams();
+  const spot = searchParams.get("spot");
+  const table_id = searchParams.get("table_id");
+  const table_num = searchParams.get("table_num");
+  const service = searchParams.get("service");
+
   return (
     <Container className="mt-5 w-full flex-col gap-3 pb-4">
       <div className="w-11/12 flex justify-between items-center gap-3">
-        <h1 className="font-bold text-thin textNormal3">{allT("popular")}</h1>
+        <h1 className="font-bold text-thin textNormal4">{allT("popular")}</h1>
         <Link
           locale={locale}
-          href={`/${locale}/${path?.place}/new-popular`}
+          href={
+            path?.place !== "branch"
+              ? `/${locale}/${path?.place}/new-popular`
+              : `/${locale}/${path?.place}/new-popular?spot=${spot}&table_id=${table_id}&table_num=${table_num}&service=${service}`
+          }
           className="textSmall3 flex items-center gap-1 text-primary font-medium"
         >
           {allT("more")}
@@ -61,7 +72,11 @@ const Popular = ({ products = [], locale, path }) => {
                 }`}
               >
                 <Card
-                  defaultHref={`/${locale}/${path?.place}/category/${item?.menu_category_id}-${linkNameCategory}/product/${item?.product_id}-${linkNameProducts}`}
+                  defaultHref={
+                    path?.place !== "branch"
+                      ? `/${locale}/${path?.place}/category/${item?.menu_category_id}-${linkNameCategory}/product/${item?.product_id}-${linkNameProducts}`
+                      : `/${locale}/${path?.place}/category/${item?.menu_category_id}-${linkNameCategory}/product/${item?.product_id}-${linkNameProducts}?spot=${spot}&table_id=${table_id}&table_num=${table_num}&service=${service}`
+                  }
                   locale={locale}
                   item={item}
                   photo={item.photo}

@@ -14,7 +14,7 @@ import Link from "next/link";
 const Banner = ({ banners }) => {
   const pathname = usePathname()
   return (
-    <main className={"mx-auto w-full py-5"}>
+    <main className={"mx-auto w-full py-3 md:py-5"}>
       <section className="flex items-center w-full justify-center h-full">
         {/* Mobile View */}
         <div className="bg-transparent rounded-xl w-full">
@@ -36,7 +36,7 @@ const Banner = ({ banners }) => {
                 return (
                   <CarouselItem key={i} className="">
                     <Link className="mt-1" href={`${pathname}/news`}>
-                      <div className="relative max-w-[1440px] mx-auto aspect-[16/7] sm:aspect-[16/6] lg:aspect-[15/5]">
+                      <div className="relative max-w-[1440px] mx-auto aspect-[15/5] rounded-xl overflow-hidden">
 
                         <CustomImage
                           src={`${url}/banner/get_banner/${item.id}`}

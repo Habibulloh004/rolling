@@ -11,9 +11,10 @@ import { map } from "../page";
 import { Button } from "@/components/ui/button";
 
 const EditAdress = ({ params }) => {
+  const path = React.use(params);
   const addressT = useTranslations("Profile.Address");
   const allT = useTranslations("All");
-  const address = map.find((item) => item.id == params.id);
+  const address = map.find((item) => item.id == path.id);
   return (
     <Container className={"w-11/12 flex flex-col pt-3 md:pt-8"}>
       <h1 className="font-semibold textNormal4 text-primary w-full text-start">
@@ -30,6 +31,7 @@ const EditAdress = ({ params }) => {
               name="name"
               value={address?.title}
               type="text"
+              onChange={(e) => console.log(e.target.value)}
               placeholder={addressT("name_pls")}
               className={
                 "w-full focus-visible:outline-none focus-visible:ring-0 border-none shadow-none"
@@ -56,6 +58,7 @@ const EditAdress = ({ params }) => {
               name="address"
               type="text"
               placeholder={addressT("pls")}
+              onChange={(e) => console.log(e)}
               className={
                 "text-base focus-visible:outline-none focus-visible:ring-0 border-none shadow-none"
               }
@@ -79,6 +82,7 @@ const EditAdress = ({ params }) => {
               value={address?.comment || "No Comment"}
               type="text"
               name="comment"
+              onChange={(e) => console.log(e)}
               placeholder={addressT("name_pls")}
               className={
                 "text-base focus-visible:outline-none focus-visible:ring-0 border-none shadow-none"

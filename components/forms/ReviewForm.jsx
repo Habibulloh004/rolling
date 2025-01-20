@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import { useTranslations } from "next-intl";
 import { Button } from "../ui/button";
 import { Rating } from "react-simple-star-rating";
+import axios from "axios";
 
 export default function ReviewForm() {
   const ReviewValidation = UpdateReviewValidation();
@@ -33,20 +34,25 @@ export default function ReviewForm() {
   };
 
   const onSubmit = async (values) => {
-    console.log(values);
-    console.log(rating);
-
-    return null;
     setIsLoading(true);
+    const feedbackMessage = `
+📋 Новый отзыв:
+👤 Полное имя: ${values.fullName}
+⭐ Рейтинг: ${rating}/5
+💬 Отзыв: ${values.text}
+  `.trim();
 
-    try {
-    } catch (error) {
-      console.error(error);
-      toast.error("Login yoki password noto'g'ri.Qaytadan urunib ko'ring!!!");
-    } finally {
-      setIsLoading(false);
-    }
+    await axios.get(
+      `https://api.telegram.org/bot7051935328:AAFJxJAVsRTPxgj3rrHWty1pEUlMkBgg9_o/sendMessage?chat_id=-1002349869199&text=${encodeURIComponent(
+        feedbackMessage
+      )}`
+    );
+    form.reset();
+    setRating(0)
+    setIsLoading(false);
+    return null;
   };
+
   return (
     <Form {...form}>
       <form
@@ -75,7 +81,7 @@ export default function ReviewForm() {
           <div className="demo flex justify-center">
             <Rating
               onClick={handleRating}
-              initialValue={rating} 
+              initialValue={rating}
               allowFraction
               fillColorArray={[
                 "#f17a45",
@@ -95,10 +101,15 @@ export default function ReviewForm() {
           >
             {allT("send")}
           </SubmitButton>
-          <Button variant="outline" type={"button"} onClick={() => {
-            setRating(0);
-            form.reset()
-          }} className="text-muted w-full sm:w-40">
+          <Button
+            variant="outline"
+            type={"button"}
+            onClick={() => {
+              setRating(0);
+              form.reset();
+            }}
+            className="text-muted w-full sm:w-40"
+          >
             {allT("cancel")}
           </Button>
         </div>

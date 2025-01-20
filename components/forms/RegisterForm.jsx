@@ -181,7 +181,7 @@ export default function RegisterForm() {
               name="phone"
               placeholder=""
               label={register("phone")}
-              inputClass="rounded-md border-[1px]"
+              inputClass="rounded-md border-[1px] w-[250px]"
             />
             <div
               className={`${

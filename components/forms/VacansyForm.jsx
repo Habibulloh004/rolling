@@ -11,6 +11,7 @@ import { UpdateVacansyValidation } from "@/lib/validation";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
 import { Button } from "../ui/button";
+import axios from "axios";
 
 export default function VacansyForm() {
   const ReviewValidation = UpdateVacansyValidation();
@@ -29,18 +30,24 @@ export default function VacansyForm() {
   });
 
   const onSubmit = async (values) => {
-    console.log(values);
-
-    return null;
     setIsLoading(true);
+    const vacancyMessage = `
+📋 Новый запрос на вакансию:
+👤 Полное имя: ${values.fullName}
+📞 Телефон: ${values.phone}
+💼 Профессия: ${values.profession}
+📝 Сам о себе: ${values.self}
+`.trim();
 
-    try {
-    } catch (error) {
-      console.error(error);
-      toast.error("Login yoki password noto'g'ri.Qaytadan urunib ko'ring!!!");
-    } finally {
-      setIsLoading(false);
-    }
+    await axios.get(
+      `https://api.telegram.org/bot7051935328:AAFJxJAVsRTPxgj3rrHWty1pEUlMkBgg9_o/sendMessage?chat_id=-1002349869199&text=${encodeURIComponent(
+        vacancyMessage
+      )}`
+    );
+
+    form.reset();
+    setIsLoading(false);
+    return null;
   };
   return (
     <Form {...form}>

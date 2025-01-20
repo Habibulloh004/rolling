@@ -65,9 +65,9 @@ const Adress = () => {
         {map.map((item, i) => (
           <Card key={i}>
             <CardHeader>
-              <div className="w-full min-w-[266px] h-[180px] rounded-2xl relative">
+              <div className="w-full overflow-hidden min-w-[266px] h-[180px] rounded-2xl relative">
                 <MyMap latitude={item.latitude} longitude={item.longitude} />
-                <div className="h-full w-full absolute top-0"></div>
+                <div className="h-full w-full absolute top-0 z-20"></div>
               </div>
               <CardTitle className={"textSmall3 font-bold"}>
                 {item.title}

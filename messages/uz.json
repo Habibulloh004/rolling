@@ -312,6 +312,7 @@
     "txtContact": "Qanday bog‘lanish mumkin?",
     "txtSocial": "Bizning ijtimoiy tarmoqlarimiz",
     "txtApp": "Bizning ilovalarimiz",
-    "txtAdress": "Toshkent shahri, Yashnobod tumani, Botkin ko‘chasi, 41-uy"
+    "txtAdress": "Toshkent shahri, Yashnobod tumani, Botkin ko‘chasi, 41-uy",
+    "btnShare": "Ulashish"
   }
 }

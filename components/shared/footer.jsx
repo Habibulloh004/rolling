@@ -7,7 +7,7 @@ import { footItems } from "@/lib/utils";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 
-export default async function Footer({ params }) {
+export default async function   Footer({ params }) {
   const [footerT, footNavT, path] = await Promise.all([
     getTranslations("Footer"),
     getTranslations("FootNav"),

@@ -27,7 +27,7 @@ const AboutUs = async ({ params }) => {
 
   return (
     <Container className={"flex-col items-start py-3 md:py-8 text-muted"}>
-      <h1 className="text-xl md:text-2xl font-semibold">{aboutUsT("title")}</h1>
+      <h1 className="text-xl md:text-2xl font-semibold ">{aboutUsT("title")}</h1>
       <Container className={"w-[97%] items-start gap-10 justify-between"}>
         <section className="w-full sm:w-[60%]">
           <p className="font-bold py-3 md:py-5 text-lg md:text-xl">

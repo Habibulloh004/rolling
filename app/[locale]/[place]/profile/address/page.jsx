@@ -103,10 +103,10 @@ const Adress = () => {
                 <Card key={i}>
                   <CardHeader>
                     <div className="w-full lg:w-[266px] h-[180px] rounded-2xl relative">
-                      <MyMap
+                      {/* <MyMap
                         latitude={item.latitude}
                         longitude={item.longitude}
-                      />
+                      /> */}
                       <div className="h-full w-full absolute top-0"></div>
                     </div>
                     <CardTitle className={"text-xl font-bold"}>

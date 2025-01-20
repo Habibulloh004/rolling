@@ -137,6 +137,8 @@
     "descriptionBottom": "Rolling Sushi is about cozy family dinners, heartfelt gatherings with friends, or moments to treat yourself to something special. We want every visit or order to leave you with only pleasant memories.",
     "logoBottom": "Thank you for trusting us to make your day a little better!",
     "btnReview": "Reviews",
+    "btnContact": "Contact",
+    "btnQuestions": "Frequently asked questions",
     "btnVacansy": "Vacancies",
     "ourComand": "Our Team"
   },
@@ -304,5 +306,12 @@
     "not_search_pr": "No products found.",
     "search_ct": "Categories",
     "not_search_ct": "No categories found."
+  },
+  "Contact": {
+    "title": "Contact",
+    "txtContact": "How to contact us?",
+    "txtSocial": "Our social networks",
+    "txtApp": "Our application",
+    "txtAdress": "Tashkent, Yashnabad district, Botkina street, House 41"
   }
 }

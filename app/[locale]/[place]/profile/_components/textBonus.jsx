@@ -7,7 +7,7 @@ const TextBonus = ({ className }) => {
   const bonusText = useTranslations("Profile.Bonus");
   return (
     <div className={className}>
-      <div className="lg:w-[444px]">
+      <div className="lg:w-[460px]">
         <p className="text-base font-medium text-[#004032]">
           {bonusText("title")}
         </p>
@@ -22,7 +22,7 @@ const TextBonus = ({ className }) => {
         </p>
       </div>
 
-      <div className="lg:w-[444px]">
+      <div className="lg:w-[460px]">
         <p className="text-base font-medium text-[#004032]">
           {bonusText("how_it_work")}
         </p>

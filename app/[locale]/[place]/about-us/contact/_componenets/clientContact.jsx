@@ -6,12 +6,33 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { YMaps, Map, Placemark } from "@pbe/react-yandex-maps";
 import { translateTextSpot, translateTextSpotAddress } from "@/lib/utils";
+import dynamic from "next/dynamic";
+import { icon } from "leaflet";
+
+const MapContainer = dynamic(() => import("react-leaflet").then(mod => mod.MapContainer), { ssr: false });
+const TileLayer = dynamic(() => import("react-leaflet").then(mod => mod.TileLayer), { ssr: false });
+const Marker = dynamic(() => import("react-leaflet").then(mod => mod.Marker), { ssr: false });
+const Popup = dynamic(() => import("react-leaflet").then(mod => mod.Popup), { ssr: false });
 
 const ClientContact = ({ spotData, locale }) => {
     const contactT = useTranslations("Contact")
     const [address, setAddress] = useState(null);
+    const addressMarker = new icon({
+        iconUrl:
+            "https://fkkpuaszmvpxjoqqmlzx.supabase.co/storage/v1/object/sign/rolling-sushi/locaation.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJyb2xsaW5nLXN1c2hpL2xvY2FhdGlvbi5wbmciLCJpYXQiOjE3MzczNzk0NTksImV4cCI6MTc2ODkxNTQ1OX0.gSnye5QeEB43lsmQBXxbXTVasrR4JFKoGCcWCeIYhhg&t=2025-01-20T13%3A24%3A20.162Z",
+        iconSize: [40, 40],
+    });
+    const userMarker = new icon({
+        iconUrl:
+            "https://fkkpuaszmvpxjoqqmlzx.supabase.co/storage/v1/object/sign/rolling-sushi/user.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJyb2xsaW5nLXN1c2hpL3VzZXIucG5nIiwiaWF0IjoxNzM3Mzc5NDQ2LCJleHAiOjE3Njg5MTU0NDZ9._ac5SnVZfXfhP78dd2wbfQsB-kAKvxlMQvI7GNQg-QI&t=2025-01-20T13%3A24%3A07.547Z",
+        iconSize: [60, 60],
+    });
+    const branchMarker = new icon({
+        iconUrl:
+            "https://fkkpuaszmvpxjoqqmlzx.supabase.co/storage/v1/object/sign/rolling-sushi/branch.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJyb2xsaW5nLXN1c2hpL2JyYW5jaC5wbmciLCJpYXQiOjE3MzczNzk3MzQsImV4cCI6MTc2ODkxNTczNH0.Pmqf4d58IB_zDVfbyhpu9J-jmfhxa-_r7REEJhL92BQ&t=2025-01-20T13%3A28%3A55.611Z",
+        iconSize: [40, 40],
+    });
     useEffect(() => {
         if (spotData && spotData.length > 0) {
             const firstItemWithImage = {
@@ -34,7 +55,6 @@ const ClientContact = ({ spotData, locale }) => {
             setAddress({ ...params, image: images[params.spot_id] });
         }
     }
-
     return (
         <div className="flex flex-col mt-5 w-full">
             <h1 className="text-xl md:text-2xl font-semibold text-start w-full text-[#004032]">
@@ -96,18 +116,25 @@ const ClientContact = ({ spotData, locale }) => {
                         }
                     </a>
                     <div className="w-full h-40 my-4 ">
-                        <YMaps query={{ apikey: "0cce4c39-8879-4e3c-b343-288c3e6adcd0" }}>
-                            <Map
-                                defaultState={{
-                                    center: [Number(address?.lat), Number(address?.lng)],
-                                    zoom: 17,
-                                }}
-                                width="100%"
-                                height="100%"
+                        <MapContainer
+                            center={[address?.lat, address?.lng]}
+                            zoom={11}
+                            style={{ width: "100%", height: "100%", zIndex: "10" }}
+
+                        >
+                            <TileLayer
+                                attribution='&copy; <a href="https://www.jawg.io/">Jawg Maps</a> contributors'
+                                url="https://{s}.tile.jawg.io/jawg-terrain/{z}/{x}/{y}{r}.png?access-token=w5ttrDDjaPRXHLnelq9tbZ9j4foxqWTmHwXfqQ5WQcbmgJWV2vqR1U6FMj8Zm4j9"
+                            />
+                            <Marker
+                                position={[address?.lat, address?.lng]}
+                                icon={1 === 1 ? addressMarker : branchMarker}
                             >
-                                <Placemark geometry={[Number(address?.lat), Number(address?.lng)]} />
-                            </Map>
-                        </YMaps>
+                                <Popup>
+                                    <h3>Yakkasaroy</h3>
+                                </Popup>
+                            </Marker>
+                        </MapContainer>
                     </div>
                     <Button className={"w-full max-w-96 h-11 hover:bg-primary"}>{contactT("btnShare")}</Button>
                 </div>

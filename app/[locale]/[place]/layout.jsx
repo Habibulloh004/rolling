@@ -12,6 +12,7 @@ import Script from "next/script";
 import GoogleAnalytics from "@/app/googleAnalytics";
 import { Toaster } from "@/components/ui/toaster";
 import { ApiService } from "@/service/api.services";
+import NextTopLoader from "nextjs-toploader";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -44,8 +45,6 @@ export default async function Layout({
   if (param.place === "branch") {
     spotData = await ApiService.getPosterData("spots.getSpots");
   }
-
-  console.log({ param });
 
   const wrapWithLink = (text, words, loc) => {
     const parts = text.split(new RegExp(`(${words.join("|")})`, "g"));
@@ -95,11 +94,11 @@ export default async function Layout({
         </noscript>
 
         {/* Google Analytics Script */}
-        {/* <Script
+        <Script
           strategy="afterInteractive"
           src="https://www.googletagmanager.com/gtag/js?id=G-PN4ZZXXGHP"
-        /> */}
-        {/* <Script id="gtag-init" strategy="afterInteractive">
+        />
+        <Script id="gtag-init" strategy="afterInteractive">
           {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
@@ -109,10 +108,10 @@ export default async function Layout({
               page_path: window.location.pathname,
             });
           `}
-        </Script> */}
+        </Script>
 
         {/* Google Tag Manager Script */}
-        {/* <Script id="gtm-init" strategy="afterInteractive">
+        <Script id="gtm-init" strategy="afterInteractive">
           {`
             (function(w,d,s,l,i){
               w[l]=w[l]||[];
@@ -125,10 +124,24 @@ export default async function Layout({
               f.parentNode.insertBefore(j,f);
             })(window,document,'script','dataLayer','GTM-M3LDW3FG');
           `}
-        </Script> */}
+        </Script>
 
         {/* Google Analytics Route Tracking */}
-        {/* <GoogleAnalytics /> */}
+        <GoogleAnalytics />
+        <NextTopLoader
+          color="hsl(138, 21%, 33%)"
+          crawlSpeed={200}
+          height={3}
+          crawl={true}
+          showSpinner={false}
+          easing="ease"
+          speed={200}
+          shadow="0 0 10px #5b8a69,0 0 5px #5b8a69"
+          template='<div class="bar" role="bar"><div class="peg"></div></div> 
+  <div class="spinner" role="spinner"><div class="spinner-icon"></div></div>'
+          zIndex={999999999}
+          showAtBottom={false}
+        />
         <NextIntlClientProvider locale={param.locale} messages={messages}>
           <Header param={param} locale={param.locale} spotData={spotData} />
           {param.place !== "branch" && (
@@ -146,7 +159,7 @@ export default async function Layout({
             {modal}
           </main>
           <Toaster />
-          <Footer params={params} />
+          <Footer params={param} />
         </NextIntlClientProvider>
       </body>
     </html>

@@ -1,5 +1,7 @@
 {
   "All": {
+    "sign_in": "Kirish",
+    "review_err": "Izoh yozish uchun registratsiyadan o'ting",
     "client_err": "Bunday foydalanuvchi mavjud emas! Iltimos ro'yxatdan o'ting.",
     "logErr": "Raqamingiz yoki parolda xatolik bor qaytadan urinib ko'ring.",
     "sms_err": "Kodda xatolik bor! Qaytadan urinib ko'ring.",
@@ -176,7 +178,8 @@
       "last_name": "Familiya majburiy",
       "phone": "Telefon raqami majburiy",
       "password": "Parol majburiy",
-      "email": "Elektron pochta majburiy"
+      "email": "Elektron pochta majburiy",
+      "password_mismatch": "Parollar mos kelmadi"
     },
     "Message": {
       "title": "Xabar",

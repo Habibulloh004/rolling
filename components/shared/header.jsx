@@ -1,6 +1,6 @@
 "use client";
 
-import { navItems, translateTextSpot } from "@/lib/utils";
+import { getUrl, navItems, translateTextSpot } from "@/lib/utils";
 import { accountIcon, hamburgerIcon, navLogo, secondaryIcon } from "@/public";
 import { Search } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
@@ -20,6 +20,7 @@ import LngChange from "./lngChange";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
+import Cookies from "js-cookie";
 
 export default function Header({ locale, param, spotData }) {
   const searchParams = useSearchParams();
@@ -36,19 +37,15 @@ export default function Header({ locale, param, spotData }) {
   const { initializeProducts } = useProductStore();
   const [isOpen, setisOpen] = useState(true);
   const router = useRouter();
+  const [client, setClient] = useState(null);
 
   useEffect(() => {
     initializeFavorites();
     initializeProducts();
+    setClient(Cookies.get("client") || null);
   }, []);
 
-  useEffect(() => {
-    if (open) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
-    }
-  }, [open]);
+  console.log(client);
 
   useEffect(() => {
     if (spot && table_id && table_num && !service && param.place == "branch") {
@@ -125,7 +122,11 @@ export default function Header({ locale, param, spotData }) {
           })}
 
           <Link
-            href={`/${locale}/${param?.place}/profile`}
+            href={`${
+              client
+                ? `${getUrl(pathName)}/profile`
+                : `${getUrl(pathName)}/login`
+            }`}
             onClick={toggleOpen}
             className="flex-shrink-0 flex items-center gap-2 w-full"
           >
@@ -138,10 +139,10 @@ export default function Header({ locale, param, spotData }) {
             />
             <p
               className={`${
-                `/${locale}/${param?.place}` == pathName ? "font-semibold" : ""
+                `${pathName}/profile` == pathName ? "font-semibold" : ""
               }`}
             >
-              Abdulloh
+              {client ? `Abdulloh` : `${allT("sign_in")}`}
             </p>
           </Link>
         </nav>
@@ -240,7 +241,11 @@ export default function Header({ locale, param, spotData }) {
             })}
 
             <Link
-              href={`/${locale}/${param?.place}/profile`}
+              href={`${
+                client
+                  ? `${getUrl(pathName)}/profile`
+                  : `${getUrl(pathName)}/login`
+              }`}
               onClick={toggleOpen}
               className="flex-shrink-0 flex items-center gap-2 w-full"
             >
@@ -253,12 +258,10 @@ export default function Header({ locale, param, spotData }) {
               />
               <p
                 className={`${
-                  `/${locale}/${param?.place}/profile` == pathName
-                    ? "font-semibold"
-                    : "lg:text-sm xl:text-base"
+                  `${pathName}/profile` == pathName ? "font-semibold" : ""
                 }`}
               >
-                Abdulloh
+                {client ? `Abdulloh` : `${allT("sign_in")}`}
               </p>
             </Link>
           </nav>
@@ -279,25 +282,6 @@ export default function Header({ locale, param, spotData }) {
               />
             </span>
           )}
-
-          {/*           
-                      <Link
-            href={`/${locale}/${getPlace(clientPathName || "/")}/profile`}
-            onClick={toggleOpen}
-            className="flex-shrink-0 flex items-center gap-2 w-full"
-          >
-            <Image
-              src={`${accountIcon.src}`}
-              alt={`Account icon`}
-              width={35}
-              height={35}
-              className=""
-            />
-            <p className={`${"/profile" == clientPathName || "/" ? "font-semibold" : ""}`}>
-              Anna
-            </p>
-          </Link>
-            */}
 
           {/* Desktop Navigation */}
 

@@ -1,5 +1,7 @@
 {
   "All": {
+    "sign_in": "Sign in",
+    "review_err": "Register to write a feedback",
     "client_err": "There is no such user! Please register.",
     "logErr": "There is an error in your number or password, please try again.",
     "sms_err": "There is an error in the code! Try again.",
@@ -174,7 +176,8 @@
       "last_name": "Last Name Required",
       "phone": "Phone Number Required",
       "password": "Password Required",
-      "email": "Email Required"
+      "email": "Email Required",
+      "password_mismatch": "Passwords do not match"
     },
     "Message": {
       "title": "Message",

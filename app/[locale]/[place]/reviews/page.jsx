@@ -81,7 +81,7 @@ const Reviews = async ({ params }) => {
           {fakeData.map((item, i) => (
             <CarouselItem
               key={i}
-              className={`basis-[80%] sm:basis-[45%] lg:basis-1/4 p-0 mx-2 ${
+              className={`basis-[80%] sm:basis-[45%] lg:basis-[45%] xl:basis-[30%] p-0 mx-2 ${
                 i == 0 && "max-sm:ml-8 max-md:ml-16 ml-8"
               }`}
             >

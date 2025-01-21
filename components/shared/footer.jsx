@@ -9,10 +9,19 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { usePathname } from "next/navigation";
 
+<<<<<<< HEAD
+export default async function   Footer({ params }) {
+  const [footerT, footNavT, path] = await Promise.all([
+    getTranslations("Footer"),
+    getTranslations("FootNav"),
+    params,
+  ]);
+=======
 export default function Footer({ params: path }) {
   const pathname = usePathname();
   const footerT = useTranslations("Footer");
   const footNavT = useTranslations("FootNav");
+>>>>>>> 9744fdcfeebb58314df79a3870868228d8b47d46
   if (path.place !== "branch") {
     return (
       <footer

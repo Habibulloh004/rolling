@@ -13,14 +13,6 @@ const Products = ({ locale }) => {
   const all = useTranslations("All");
   const { products, incrementCount, decrementCount, deleteProduct } =
     useProductStore();
-
-  const handleIncrementCount = (item) => {
-    incrementCount(item?.product_id);
-  };
-  const handleDecrementCount = (item) => {
-    decrementCount(item?.product_id);
-  };
-
   return (
     <div className="max-md:bg-white max-md:p-3 w-full rounded-md pb-4 space-y-4">
       <h1 className="font-bold textNormal3 text-black text-start">

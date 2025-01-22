@@ -38,13 +38,23 @@ import {
   url,
 } from "@/lib/utils";
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import {
   getCategories,
   getClient,
   getClientGroup,
   sendSmsToUser,
 } from "@/actions";
+import { ScrollArea } from "@/components/ui/scroll-area"
 import { useToast } from "@/hooks/use-toast";
 import { createClient } from "@/actions/post";
+
 
 export default function RegisterForm() {
   const { toast } = useToast();
@@ -56,6 +66,8 @@ export default function RegisterForm() {
   const RegisterValidation = UpdateRegisterValidation();
   const t = useTranslations("Register");
   const all = useTranslations("All");
+  const policyT = useTranslations("Policy");
+  const descriptionT = useTranslations("Policy.description");
   const register = useTranslations("Register.Form");
   const [isLoading, setIsLoading] = useState(false);
   const pathname = usePathname();
@@ -88,13 +100,12 @@ export default function RegisterForm() {
       client_name: `${form.getValues("last_name")} ${form.getValues(
         "first_name"
       )}`,
-      client_sex: `${
-        form.getValues("genter") == "male"
-          ? "1"
-          : form.getValues("genter") == "female"
+      client_sex: `${form.getValues("genter") == "male"
+        ? "1"
+        : form.getValues("genter") == "female"
           ? "2"
           : "0"
-      }`,
+        }`,
       client_groups_id_client: clientGroup
         ? clientGroup[0].client_groups_id
         : "1",
@@ -148,9 +159,35 @@ export default function RegisterForm() {
     setGeneratingValue(code);
     await sendSmsToUser(code, form.getValues("phone"));
   };
+  const descriptionArray = [
+    {
+      id: 1,
+      title: descriptionT("0_title"),
+      text: descriptionT("0_text")
+    },
+    {
+      id: 2,
+      title: descriptionT("1_title"),
+      text: descriptionT("1_text")
+    },
+    {
+      id: 3,
+      title: descriptionT("2_title"),
+      text: descriptionT("2_text")
+    },
+    {
+      id: 4,
+      title: descriptionT("3_title"),
+      text: descriptionT("3_text")
+    },
+    {
+      id: 5,
+      title: descriptionT("4_title"),
+      text: descriptionT("4_text")
+    },
+  ]
 
   const { errors } = form.formState;
-
   return (
     <Form {...form}>
       <form
@@ -174,19 +211,20 @@ export default function RegisterForm() {
             label={register("last_name")}
             inputClass="rounded-md border-[1px] col-span-2 md:col-span-1"
           />
-          <div className="w-full flex col-span-2 sm:grid grid-cols-2 justify-start items-end gap-2">
-            <CustomFormField
-              fieldType={FormFieldType.PHONE_INPUT}
-              control={form.control}
-              name="phone"
-              placeholder=""
-              label={register("phone")}
-              inputClass="rounded-md border-[1px] w-[250px]"
-            />
+          <div className="w-full flex col-span-2 sm:grid grid-cols-2 lg:grid-cols-4 justify-start items-end gap-2">
+            <div className="lg:col-span-3 w-full">
+              <CustomFormField
+                fieldType={FormFieldType.PHONE_INPUT}
+                control={form.control}
+                name="phone"
+                placeholder=""
+                label={register("phone")}
+                inputClass="rounded-md border-[1px] w-full"
+              />
+            </div>
             <div
-              className={`${
-                errors.phone && "pb-7"
-              } h-full flex justify-start items-end w-full`}
+              className={`${errors.phone && "pb-7"
+                } h-full flex justify-end items-end col-span-1`}
             >
               <div></div>
               <AlertDialog>
@@ -272,9 +310,30 @@ export default function RegisterForm() {
                 )
               }
             />
-            <span className="text-[13px] text-white">
-              {register("privacy_policy")}
-            </span>
+
+            <div className="w-5/6">
+              <Dialog>
+                <DialogTrigger as="div"><p className="text-[12px] text-white text-start">{register("privacy_policy").split(" ").slice(0, 12).join(" ")} <span className="underline underline-offset-1">{register("privacy_policy").split(" ").slice(-2).join(" ")}</span></p></DialogTrigger>
+
+                <DialogContent as="div" mark="false" className={"px-5"}>
+                  <ScrollArea as="div" className="h-[500px] py-4">
+                    <h1 className="text-xl md:text-2xl font-semibold text-start w-full text-[#004032] mt-3">{policyT("title")}</h1>
+                    {descriptionArray.map((item, i) => (
+                      <DialogHeader as="div" key={i}>
+                        <DialogTitle as="div"><p className="text-base lg:test-lg text-start  w-5/6">{item.title}</p></DialogTitle>
+
+                        {item.text.split('\n').map((line, idx) => (
+                          <DialogDescription className="text-xs md:text-base font-normal text-start" key={idx}>{line}</DialogDescription>
+                        ))}
+
+                      </DialogHeader>
+                    ))}
+                  </ScrollArea>
+                </DialogContent>
+
+              </Dialog>
+            </div>
+
           </div>
           <CustomFormField
             fieldType={FormFieldType.DATE_PICKER}
@@ -325,9 +384,22 @@ export default function RegisterForm() {
               form.setValue("privacy_policy", !form.getValues("privacy_policy"))
             }
           />
-          <span className="text-[13px] text-white">
-            {register("privacy_policy")}
-          </span>
+          <Dialog>
+            <DialogTrigger as="div"><p className="text-[13px] text-white ">{register("privacy_policy").split(" ").slice(0, 12).join(" ")} <span className="underline underline-offset-2">{register("privacy_policy").split(" ").slice(-2).join(" ")}</span></p></DialogTrigger>
+            <DialogContent mark="false" className={"px-5"}>
+              <ScrollArea as="div" className="h-[400px] py-7">
+                <h1 className="text-xl md:text-2xl font-semibold text-start w-full text-[#004032] mt-3">{policyT("title")}</h1>
+                {descriptionArray.map((item, i) => (
+                  <DialogHeader as="div" key={i}>
+                    <DialogTitle as="div"><p className="text-base lg:test-lg text-start  w-5/6">{item.title}</p></DialogTitle>
+                    {item.text.split('\n').map((line, idx) => (
+                      <DialogDescription className="text-xs md:text-base font-normal text-start" key={idx}>{line}</DialogDescription>
+                    ))}
+                  </DialogHeader>
+                ))}
+              </ScrollArea>
+            </DialogContent>
+          </Dialog>
         </div>
         <div className="flex w-full max-sm:flex-col items-center sm:justify-start gap-3 sm:items-center">
           <SubmitButton

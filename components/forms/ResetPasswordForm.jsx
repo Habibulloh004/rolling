@@ -30,13 +30,11 @@ import { useTranslations } from "next-intl";
 import { ArrowUpRight, Send, X } from "lucide-react";
 import { generateRandomFourDigitNumber, getUrl } from "@/lib/utils";
 import { Button } from "../ui/button";
-import { getClient, getClients, sendSmsToUser } from "@/actions";
-import { useToast } from "@/hooks/use-toast";
+import { getClients, sendSmsToUser } from "@/actions";
 import { updateClient } from "@/actions/post";
-import axios from "axios";
+import { toast } from "sonner";
 
 export default function ResetPasswordForm() {
-  const { toast } = useToast();
   const [users, setUsers] = useState([]);
   const [resetPasswordBtnDisabled, setResetPasswordBtnDisabled] =
     useState(true);
@@ -88,16 +86,13 @@ export default function ResetPasswordForm() {
     setIsLoading(true);
     const { client, success } = await login(users, values);
     if (success == false) {
-      toast({
-        variant: "destructive",
-        title: all("client_err"),
-      });
+      toast.error(all("client_err"));
       setIsLoading(false);
       return;
     }
     const clientPassword = JSON.parse(client.comment);
     const updatedClient = {
-      ...client,
+      client_id: client.client_id,
       comment: JSON.stringify({
         ...clientPassword,
         password: `password ${values.new_password}`,
@@ -111,17 +106,14 @@ export default function ResetPasswordForm() {
         addresses: null,
       })
     );
-    router.replace(`${getUrl(pathname)}`);
+    router.replace(`${getUrl(pathname)}/login`);
     setIsLoading(false);
   };
 
   const checkNumber = async () => {
     // const postNumber = fetch("")
     if (otpValues != generatingValue) {
-      toast({
-        variant: "destructive",
-        title: all("sms_err"),
-      });
+      toast.error(all("sms_err"));
       return;
     }
     setResetPasswordBtnDisabled(false);

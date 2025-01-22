@@ -42,7 +42,6 @@ export default async function HomePage({ params, searchParams }) {
       `&spot_id=${searchParamsData.spot}`
     );
   }
-  console.log(spotData);
 
   const banners = bannersData.banners;
   const categories = categoriesData.response.filter(

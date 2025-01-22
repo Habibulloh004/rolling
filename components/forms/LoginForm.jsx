@@ -14,11 +14,11 @@ import { useTranslations } from "next-intl";
 import { ArrowUpRight } from "lucide-react";
 import { getUrl } from "@/lib/utils";
 import { getClients } from "@/actions";
-import { useToast } from "@/hooks/use-toast";
+import { useClientStore } from "@/store";
+import { toast } from "sonner";
 
 export default function LoginForm() {
   const optLang = useTranslations("Register.Message");
-  const { toast } = useToast();
   const all = useTranslations("All");
   const RegisterValidation = UpdateLoginValidation();
   const t = useTranslations("Login");
@@ -27,6 +27,7 @@ export default function LoginForm() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
+  const { setClient } = useClientStore();
   const form = useForm({
     resolver: zodResolver(RegisterValidation),
     defaultValues: {
@@ -86,15 +87,13 @@ export default function LoginForm() {
 
   const onSubmit = async (values) => {
     setIsLoading(true);
-    
+
     const result = await login(users, values);
     if (result.success == false) {
-      toast({
-        variant: "destructive",
-        title: all("logErr"),
-      });
+      toast.error(all("logErr"));
     }
     setIsLoading(false);
+    setClient(result.client);
   };
 
   return (
@@ -137,7 +136,7 @@ export default function LoginForm() {
           <div>
             <h1 className="max-sm:hidden text-[13px] text-white font-[400]">
               {t("have_account")}
-              <Link href={`${getUrl(pathname)}/sign-up`} className="font-bold">
+              <Link href={`${getUrl(pathname)}/sign-up`} className="font-bold ">
                 {" "}
                 {t("register")}
               </Link>
@@ -146,7 +145,7 @@ export default function LoginForm() {
               {t("forgot")}
               <Link
                 href={`${getUrl(pathname)}/reset-password`}
-                className="font-bold"
+                className="font-bold "
               >
                 {" "}
                 {t("recover")}
@@ -157,9 +156,19 @@ export default function LoginForm() {
             href={`${getUrl(pathname)}/sign-up`}
             className="sm:hidden flex justify-center items-center gap-2 text-white"
           >
-            <h1>{t("register")}</h1>
+            <h1 className="">{t("register")}</h1>
             <ArrowUpRight />
           </Link>
+          <h1 className="sm:hidden text-white font-[400]">
+            {t("forgot")}
+            <Link
+              href={`${getUrl(pathname)}/reset-password`}
+              className="font-bold "
+            >
+              {" "}
+              {t("recover")}
+            </Link>
+          </h1>
         </div>
       </form>
     </Form>

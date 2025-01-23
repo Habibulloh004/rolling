@@ -37,8 +37,9 @@
     "waiter_desc": "Service is provided by our establishment's waiters",
     "self": "Self-service",
     "self_desc": "The customer serves himself",
-    "selected":"Selected",
-    "no_active":"Currently inactive"
+    "selected": "Selected",
+    "no_active": "Currently inactive",
+    "no_auth": "You are not logged in!"
   },
   "Bonus": {
     "bonus": "Bonus",

@@ -12,16 +12,17 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useOrderStore } from "@/store";
+import { useOrderStore, useStore } from "@/store";
 import Link from "next/link";
 import { Textarea } from "@/components/ui/textarea";
+import { toast } from "sonner";
 
 const Delivery = ({ locale, auth, clientData, place }) => {
   const deliveryText = useTranslations("Cart.Delivery");
   const all = useTranslations("All");
   const { orderData, setOrderData } = useOrderStore();
   const [modalAdd, setModalAdd] = useState(false);
-  
+  const { setActiveTab } = useStore();
   const handleSelectAddress = (address) => {
     setModalAdd(false);
     setOrderData({
@@ -32,6 +33,30 @@ const Delivery = ({ locale, auth, clientData, place }) => {
       client_addresses_id: address?.id,
       address_comment: address?.comment,
     });
+  };
+
+  useEffect(() => {
+    if (place == "branch") {
+      setActiveTab("spot");
+    }
+  }, []);
+
+  const handleSelectModal = () => {
+    if (auth?.client_id) {
+      setModalAdd(true);
+    } else {
+      toast.warning(
+        <div className="w-full h-full flex justify-between items-center">
+          {all("no_auth")}{" "}
+          <Link
+            href={`/${locale}/${place}/login`}
+            className="bg-black text-white rounded-md px-2 py-1"
+          >
+            {all("sign_in")}
+          </Link>
+        </div>
+      );
+    }
   };
 
   useEffect(() => {
@@ -70,9 +95,10 @@ const Delivery = ({ locale, auth, clientData, place }) => {
             />
             {orderData?.address ? orderData.address : "addres mavjud emas"}
           </p>
-          <Dialog open={modalAdd} onOpenChange={setModalAdd}>
+          <Dialog open={modalAdd}>
             <DialogTrigger asChild>
               <Button
+                onClick={handleSelectModal}
                 className={
                   "h-8 max-sm:text-[12px] md:h-10 px-4 md:px-5 bg-transparent text-[#004032] shadow-none border-[1px] rounded-[8px] border-[#004032]"
                 }
@@ -81,6 +107,7 @@ const Delivery = ({ locale, auth, clientData, place }) => {
               </Button>
             </DialogTrigger>
             <DialogContent
+              handleClose={() => setModalAdd(false)}
               mark="false"
               className="max-w-xl w-11/12 md:w-full rounded-md max-sm:px-3"
             >
@@ -145,7 +172,7 @@ const Delivery = ({ locale, auth, clientData, place }) => {
           </p>
         )}
         <div className="flex w-full items-center justify-between pt-2 md:gap-2">
-          <div className="w-2/3 flex flex-col gap-1">
+          <div className="w-full md:w-2/3 flex flex-col gap-1">
             <p className="text-[#A098AE] font-normal textSmall3">
               {all("add_comment")}
             </p>

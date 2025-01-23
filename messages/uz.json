@@ -38,7 +38,8 @@
     "self": "O'z-o'ziga xizmat ko'rsatish",
     "self_desc": "Xaridor o'ziga xizmat qiladi",
     "selected": "Tanlangan",
-    "no_active": "Hozirda faol emas"
+    "no_active": "Hozirda faol emas",
+    "no_auth": "Siz tizimga kirmagansiz!"
   },
   "Bonus": {
     "bonus": "Bonus",

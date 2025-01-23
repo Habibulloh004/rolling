@@ -111,7 +111,7 @@ export default function RegisterForm() {
     }
 
     await getClient(posterClient.response);
-    router.replace(`${getUrl(pathname)}`);
+    router.replace(`${getUrl(pathname)}/login`);
     setIsLoading(false)
   };
 

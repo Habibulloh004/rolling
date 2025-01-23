@@ -1,4 +1,10 @@
+import Cookies from "js-cookie";
 import { create } from "zustand";
+
+export const useClientStore = create((set) => ({
+  client: Cookies.get("client") ? JSON.parse(Cookies.get("client")) : null,
+  setClient: (data) => set(() => ({ client: data })),
+}));
 
 export const useStore = create((set) => ({
   open: false,

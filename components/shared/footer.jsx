@@ -9,6 +9,7 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { usePathname } from "next/navigation";
 
+
 export default function Footer({ params: path }) {
   const pathname = usePathname();
   const footerT = useTranslations("Footer");

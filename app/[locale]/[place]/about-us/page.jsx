@@ -26,11 +26,11 @@ const AboutUs = async ({ params }) => {
     .map((sentence) => sentence.trim());
 
   return (
-    <Container className={"w-11/12 flex-col items-start p-3 md:p-8 text-muted"}>
-      <h1 className="textNormal4 text-primary font-semibold">{aboutUsT("title")}</h1>
+    <Container className={"flex-col items-start py-3 md:py-8 text-muted"}>
+      <h1 className="text-xl md:text-2xl font-semibold ">{aboutUsT("title")}</h1>
       <Container className={"w-[97%] items-start gap-10 justify-between"}>
         <section className="w-full sm:w-[60%]">
-          <p className="font-semibold py-3 md:py-5 text-lg md:text-xl">
+          <p className="font-bold py-3 md:py-5 text-lg md:text-xl">
             {aboutUsT("intro")}
           </p>
           <div className="sm:hidden flex justify-center my-6">
@@ -56,6 +56,18 @@ const AboutUs = async ({ params }) => {
           </div>
           <p>{aboutUsT("descriptionBottom")}</p>
           <div className="flex flex-col gap-3 sm:hidden mt-4">
+          <Link
+              href={`/${param.locale}/${param.place}/about-us/questions`}
+              className="w-full rounded-md bg-primary text-white py-2 text-xs md:text-sm text-center"
+            >
+              {aboutUsT("btnQuestions")}
+            </Link>
+            <Link
+              href={`/${param.locale}/${param.place}/about-us/contact`}
+              className="w-full rounded-md bg-primary text-white py-2 text-xs md:text-sm text-center"
+            >
+              {aboutUsT("btnContact")}
+            </Link>
             <Link
               href={`/${param.locale}/${param.place}/reviews`}
               className="w-full rounded-md bg-primary text-white py-2 text-xs md:text-sm text-center"
@@ -83,14 +95,26 @@ const AboutUs = async ({ params }) => {
           <div className="flex flex-col gap-3">
             {/* <CreateReview /> */}
             <Link
+              href={`/${param.locale}/${param.place}/about-us/questions`}
+              className="w-full lg:w-3/4 mx-auto rounded-md bg-primary text-white py-4 text-xs md:text-sm text-center"
+            >
+              {aboutUsT("btnQuestions")}
+            </Link>
+            <Link
+              href={`/${param.locale}/${param.place}/about-us/contact`}
+              className="w-full lg:w-3/4 mx-auto rounded-md bg-primary text-white py-4 text-xs md:text-sm text-center"
+            >
+              {aboutUsT("btnContact")}
+            </Link>
+            <Link
               href={`/${param.locale}/${param.place}/reviews`}
-              className="w-full lg:w-3/4 mx-auto rounded-md bg-primary text-white py-2 text-xs md:text-sm text-center"
+              className="w-full lg:w-3/4 mx-auto rounded-md bg-primary text-white py-4 text-xs md:text-sm text-center"
             >
               {aboutUsT("btnReview")}
             </Link>
             <Link
               href={`/${param.locale}/${param.place}/create-vacansy`}
-              className="w-full lg:w-3/4 mx-auto rounded-md bg-primary text-white py-2 text-xs md:text-sm text-center"
+              className="w-full lg:w-3/4 mx-auto rounded-md bg-primary text-white py-4 text-xs md:text-sm text-center"
             >
               {aboutUsT("btnVacansy")}
             </Link>

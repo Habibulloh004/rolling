@@ -38,6 +38,10 @@
     "self": "O'z-o'ziga xizmat ko'rsatish",
     "self_desc": "Xaridor o'ziga xizmat qiladi"
   },
+  "Bonus": {
+    "bonus": "Bonus",
+    "title": "Qanchalik tez-tez buyurtma bersangiz, shuncha ko‘p foyda olasiz!"
+  },
   "Profile": {
     "title": "Profil",
     "userName": "Foydalanuvchi nomi",
@@ -49,6 +53,7 @@
     "my_order": "Mening buyurtmalarim",
     "my_bonus": "Mening bonuslarim",
     "logout": "Akkauntdan chiqish",
+    "have_bonus": "Mavjud bonuslar:",
     "Links": {
       "my_card": "Mening kartalarim",
       "address": "Yetkazib berish manzillari",
@@ -140,6 +145,8 @@
     "descriptionBottom": "Rolling Sushi — bu oila davrasidagi qulay kechki ovqatlar, do‘stlar bilan samimiy uchrashuvlar yoki o‘zingizni maxsus bir narsa bilan siylashingiz mumkin bo‘lgan vaqt. Biz har bir tashrifingiz yoki buyurtmangiz faqat yoqimli xotiralar qoldirishini xohlaymiz.",
     "logoBottom": "Kunlaringizni yanada yaxshiroq qilishga bizga ishonch bildirganingiz uchun rahmat!",
     "btnReview": "Sharhlar",
+    "btnContact": "Aloqa",
+    "btnQuestions": "Tez-tez beriladigan savollar",
     "btnVacansy": "Vakansiyalar",
     "ourComand": "Bizning jamoamiz"
   },
@@ -311,5 +318,13 @@
     "not_search_pr": "Mahsulotlar topilmadi.",
     "search_ct": "Kategoriyalar",
     "not_search_ct": "Kategoriyalar topilmadi."
+  },
+  "Contact": {
+    "title": "Aloqa",
+    "txtContact": "Qanday bog‘lanish mumkin?",
+    "txtSocial": "Bizning ijtimoiy tarmoqlarimiz",
+    "txtApp": "Bizning ilovalarimiz",
+    "txtAdress": "Toshkent shahri, Yashnobod tumani, Botkin ko‘chasi, 41-uy",
+    "btnShare": "Ulashish"
   }
 }

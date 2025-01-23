@@ -14,6 +14,14 @@ const PasswordInput = React.forwardRef(({ className, ...props }, ref) => {
   const disabled =
     props.value === "" || props.value === undefined || props.disabled;
 
+  const handleChange = (event) => {
+    const inputValue = event.target.value;
+    // Faqat raqam va musbat qiymatlar qabul qilish
+    if (/^\d*$/.test(inputValue)) {
+      props.onChange(event); // Faqat valid qiymatni qaytarish
+    }
+  };
+
   return (
     <div className="relative">
       <Input
@@ -21,6 +29,7 @@ const PasswordInput = React.forwardRef(({ className, ...props }, ref) => {
         className={cn("hide-password-toggle pr-10", className)}
         ref={ref}
         {...props}
+        onChange={handleChange} // Custom onChange ishlatish
       />
       <Button
         type="button"
@@ -36,16 +45,14 @@ const PasswordInput = React.forwardRef(({ className, ...props }, ref) => {
             size={32}
           />
         ) : (
-          // <EyeOffIcon className="h-4 w-4" aria-hidden="true" />
           <EyeOff
             size={32}
             className={`${showPassword ? "text-white" : "text-white/50"}`}
           />
         )}
         <h1
-          className={`textSmall2 ${
-            showPassword ? "text-white" : "text-white/50"
-          }`}
+          className={`textSmall2 ${showPassword ? "text-white" : "text-white/50"
+            }`}
         >
           {t("password")}
         </h1>
@@ -53,50 +60,6 @@ const PasswordInput = React.forwardRef(({ className, ...props }, ref) => {
           {showPassword ? "Hide password" : "Show password"}
         </span>
       </Button>
-      <Button
-        type="button"
-        variant="ghost"
-        size="sm"
-        className="sm:hidden absolute right-0 top-0  h-full px-3 py-2 hover:bg-transparent"
-        onClick={() => setShowPassword((prev) => !prev)}
-        disabled={disabled}
-      >
-        {showPassword && !disabled ? (
-          <Eye
-            className={`${showPassword ? "text-white" : "text-white/50"}`}
-            size={32}
-          />
-        ) : (
-          // <EyeOffIcon className="h-4 w-4" aria-hidden="true" />
-          <>
-            <EyeClosed
-              size={32}
-              className={`${
-                showPassword ? "text-white" : "text-white/50"
-              } sm:hidden`}
-            />
-            <EyeOff
-              size={32}
-              className={`${
-                showPassword ? "text-white" : "text-white/50"
-              } max-sm:hidden`}
-            />
-          </>
-        )}
-        <span className="sr-only">
-          {showPassword ? "Hide password" : "Show password"}
-        </span>
-      </Button>
-
-      {/* hides browsers password toggles */}
-      <style>{`
-					.hide-password-toggle::-ms-reveal,
-					.hide-password-toggle::-ms-clear {
-						visibility: hidden;
-						pointer-events: none;
-						display: none;
-					}
-				`}</style>
     </div>
   );
 });

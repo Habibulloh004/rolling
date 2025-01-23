@@ -53,6 +53,7 @@
     "my_bonus": "Mening bonuslarim",
     "logout": "Akkauntdan chiqish",
     "have_bonus": "Mavjud bonuslar:",
+    "btnAddAddress": "Manzilni qo'shish",
     "Links": {
       "my_card": "Mening kartalarim",
       "address": "Yetkazib berish manzillari",
@@ -322,5 +323,50 @@
     "txtApp": "Bizning ilovalarimiz",
     "txtAdress": "Toshkent shahri, Yashnobod tumani, Botkin ko‘chasi, 41-uy",
     "btnShare": "Ulashish"
+  },
+  "FAQ": {
+    "title": "Ko‘p so‘raladigan savollar",
+    "text": "Agar sizda qo‘shimcha savollar bo‘lsa, biz bilan telefon orqali bog‘laning: +998 77 124 44 44 yoki bizga rollingsushi@gmail.com manziliga yozing.",
+    "questions": {
+      "q0_question": "Qanday qilib yetkazib berishni buyurtma qilish mumkin?",
+      "q0_answer": "Yetkazib berishni quyidagi usullar orqali buyurtma qilishingiz mumkin:\n• Veb-saytimiz orqali: taomlarni tanlang, savatga qo‘shing va buyurtma bering.\n• Rolling Sushi mobil ilovasi orqali, App Store va Google Play’da mavjud.\n• Telefon orqali: +998 77 124 44 44.",
+      "q1_question": "Qaysi to‘lov usullarini qabul qilasiz?",
+      "q1_answer": "Biz quyidagilarni qabul qilamiz:\n• To‘lov tizimlari orqali onlayn to‘lov (Click, Payme, Uzum).\n• Yetkazib berishda naqd yoki karta orqali to‘lov.\n• Bonuslardan naqd pul bilan birgalikda foydalanish orqali to‘lash.",
+      "q2_question": "Bonus tizimi qanday ishlaydi?",
+      "q2_answer": "• Har bir buyurtma uchun mijoz darajasiga qarab bonuslar beriladi:\n• Bronza (10%) 1-dan 4-buyurtmagacha.\n• Kumush (20%) 5-dan 9-buyurtmagacha.\n• Oltin (30%) 10-buyurtma va undan keyin.\n• To‘plangan bonuslardan to‘liq yoki qisman to‘lov uchun foydalanishingiz mumkin.",
+      "q3_question": "Yetkazib berish qancha vaqt oladi?",
+      "q3_answer": "O‘rtacha yetkazib berish vaqti 40 daqiqani tashkil etadi. Vaqt joylashuvingiz va ish hajmiga qarab o‘zgarishi mumkin.",
+      "q4_question": "Buyurtma holatini qanday kuzataman?",
+      "q4_answer": "• Buyurtma berganingizdan so‘ng, sizga buyurtma raqami va holati bilan xabar yuboriladi.\n• Mobil ilovada buyurtma holatini ko‘rishingiz mumkin: “Qabul qilindi”, “Tayyorlanmoqda”, “Yo‘lda”.",
+      "q5_question": "Buyurtmam kechiksa nima qilishim kerak?",
+      "q5_answer": "Agar buyurtmangiz kechiksa, iltimos, biz bilan +998 77 124 44 44 telefon raqami orqali bog‘laning. Biz holatni tezda tekshirib, sizga ma’lumot beramiz.",
+      "q6_question": "Buyurtmani bekor qilsam bo‘ladimi?",
+      "q6_answer": "• Agar buyurtma hali boshlanmagan bo‘lsa, uni jarimasiz bekor qilishingiz mumkin.\n• Agar buyurtma allaqachon tayyor yoki yo‘lda bo‘lsa, bekor qilish qo‘shimcha xarajatlarni talab qilishi mumkin.",
+      "q7_question": "Filiallaringiz qayerda joylashgan?",
+      "q7_answer": "Filiallarimiz quyidagi manzillarda joylashgan:\n• Yakkasaroy: Bog‘iston ko‘chasi, 7-uy, Toshkent.\n• Boshqa manzillarni saytimizning “Aloqalar” bo‘limida topishingiz mumkin.",
+      "q8_question": "Vegetarian taomlaringiz bormi?",
+      "q8_answer": "Ha, bizda vegetarian suşi va rollar mavjud. Ularni saytimiz va ilovamizdagi “Vegetarian taomlar” bo‘limida topishingiz mumkin.",
+      "q9_question": "Qanday qilib sharh qoldirishim mumkin?",
+      "q9_answer": "Sharhni quyidagicha qoldirishingiz mumkin:\n• Saytimizdagi “Sharhlar” bo‘limida.\n• Mobil ilova orqali.\n• Google My Business orqali bizga yordam berish uchun.",
+      "q10_question": "Ishga arizani qanday topshirish mumkin?",
+      "q10_answer": "Arizani saytimizning “Ish o‘rinlari” bo‘limi orqali yuborishingiz mumkin, aloqa ma’lumotlaringizni va talab qilinayotgan lavozimni ko‘rsatgan holda.",
+      "q11_question": "Kontakt ma’lumotlari",
+      "q11_answer": "Qo‘shimcha savollaringiz bo‘lsa, biz bilan +998 77 124 44 44 telefon raqami yoki rollingsushi@gmail.com elektron pochtasi orqali bog‘laning."
+    }
+  },
+  "Policy": {
+    "title": "Maxfiylik siyosati",
+    "description": {
+      "0_title": "Umumiy qoidalar",
+      "0_text": "Ushbu Maxfiylik siyosati Rolling Sushi (keyingi o‘rinlarda 'Kompaniya' deb yuritiladi) mijozlar ma'lumotlarini qanday yig‘ishi, ishlatishi, saqlashi va himoya qilishi haqida ma’lumot beradi.",
+      "1_title": "Ma'lumotlarni yig‘ish Quyidagi ma'lumotlarni yig‘ishimiz mumkin:",
+      "1_text": "• Shaxsiy ma'lumotlar: ism, familiya, telefon raqami, elektron pochta manzili. \n• Yetkazib berish ma'lumotlari: yetkazib berish manzili, qo‘shimcha izohlar.\n• To‘lov ma'lumotlari: tranzaksiya ma'lumotlari (lekin bank kartasi ma'lumotlari emas).\n• Texnik ma'lumotlar: IP-manzil, qurilma ma'lumotlari, brauzer turi, cookies.",
+      "2_title": "Ma'lumotlardan foydalanish Yig‘ilgan ma'lumotlar quyidagilar uchun ishlatilishi mumkin:",
+      "2_text": "• Buyurtmalarni qayta ishlash va bajarish. \n• Xizmat sifatini yaxshilash va takliflarni shaxsiylashtirish.\n• Buyurtmalarni tasdiqlash yoki yetkazib berish holati haqida mijozlar bilan bog‘lanish.\n• Marketing kampaniyalari va sodiqlik dasturlarini o‘tkazish.",
+      "3_title": "Ma'lumotlarni uchinchi tomonlar bilan bo‘lishish Biz mijozlarning shaxsiy ma'lumotlarini uchinchi tomonlarga quyidagi hollardan tashqari bermaymiz:",
+      "3_text": "• Yetkazib berishni sherik xizmatlar orqali amalga oshirish uchun.\n• To‘lovlarni to‘lov tizimlari orqali amalga oshirish uchun.\n• O‘zbekiston Respublikasi qonunchiligiga binoan talab qilingan hollarda.",
+      "4_title": "Ma'lumotlarni himoya qilish Mijozlarning ma'lumotlarini himoya qilish uchun barcha zarur choralarni ko‘ramiz:",
+      "4_text": "• Ma'lumotlarni uzatish uchun SSL shifrlashdan foydalanamiz.\n• Ruxsatsiz kirishning oldini olish uchun xavfsizlik tizimlarini muntazam yangilab boramiz."
+    }
   }
 }

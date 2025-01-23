@@ -10,8 +10,8 @@ import { cookies } from "next/headers";
 
 export default async function Bonus() {
   const getClient = await cookies();
-  const { value } = getClient.get("client");
-  const client = JSON.parse(value);
+  const clientData = getClient.get("client")
+  const client = clientData ? JSON.parse(clientData?.value) : {}
 
   const [allT, profileT, bonusT] = await Promise.all([
     getTranslations("All"),
@@ -30,8 +30,8 @@ export default async function Bonus() {
                 {client.client_groups_discount == "30"
                   ? "GOLD"
                   : client.client_groups_discount == "20"
-                  ? "SILVER"
-                  : "BRONZE"}
+                    ? "SILVER"
+                    : "BRONZE"}
               </p>
               <p className="font-bold text-white text-center text-2xl ">
                 {client.client_groups_discount}%

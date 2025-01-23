@@ -55,6 +55,7 @@
     "my_bonus": "My bonuses",
     "logout": "Log out",
     "have_bonus": "Available bonuses:",
+    "btnAddAddress": "Add Address",
     "Links": {
       "my_card": "My Cards",
       "address": "Delivery Addresses",
@@ -196,7 +197,7 @@
     },
     "optional": "Optional",
     "gender_male": "Male",
-    "gender_fimale": "Fimale",
+    "gender_fimale": "Female",
     "gender_other": "Do not select",
     "send_sms": "Send SMS",
     "register": "Create Account",
@@ -327,5 +328,50 @@
     "txtApp": "Our application",
     "txtAdress": "Tashkent, Yashnabad district, Botkina street, House 41",
     "btnShare": "Share"
+  },
+  "FAQ": {
+    "title": "Frequently Asked Questions",
+    "text": "If you have any further questions, feel free to contact us by phone at +998 77 124 44 44 or email us at rollingsushi@gmail.com.",
+    "questions": {
+      "q0_question": "How to order delivery?",
+      "q0_answer": "You can order delivery in the following ways:\n• Through our website: select dishes, add them to your cart, and place an order.\n• Through the Rolling Sushi mobile app, available on the App Store and Google Play.\n• By phone: +998 77 124 44 44.",
+      "q1_question": "What payment methods do you accept?",
+      "q1_answer": "We accept:\n• Online payment via payment systems (Click, Payme, Uzum).\n• Cash or card payment upon delivery.\n• Using bonuses in combination with cash for payment.",
+      "q2_question": "How does the bonus system work?",
+      "q2_answer": "• Bonuses are awarded for each order based on the customer’s level:\n• Bronze (10%) from the 1st to the 4th order.\n• Silver (20%) from the 5th to the 9th order.\n• Gold (30%) from the 10th order onwards.\n• Accumulated bonuses can be used for full or partial payment of dishes.",
+      "q3_question": "How long will the delivery take?",
+      "q3_answer": "The average delivery time is 40 minutes. The time may vary depending on your location and the workload.",
+      "q4_question": "How can I track the status of my order?",
+      "q4_answer": "• After placing the order, you will receive a notification with the order number and its status.\n• In the mobile app, you can see the current order status: “Accepted”, “Preparing”, “On the way”.",
+      "q5_question": "What should I do if my order is delayed?",
+      "q5_answer": "If your order is delayed, please contact us at +998 77 124 44 44. We will quickly check the status and provide you with the details.",
+      "q6_question": "Can I cancel my order?",
+      "q6_answer": "• If the order hasn’t been started yet, you can cancel it without penalty.\n• If the order is already ready or on its way, the cancellation may incur additional costs.",
+      "q7_question": "Where are your branches located?",
+      "q7_answer": "Our branches are located at the following addresses:\n• Yakkasaray: Bogiston Street, House 7, Tashkent.\n• Other addresses can be found in the “Contacts” section on our website.",
+      "q8_question": "Do you have vegetarian dishes?",
+      "q8_answer": "Yes, we offer vegetarian sushi and rolls. You can find them in the “Vegetarian Dishes” category on our website and app.",
+      "q9_question": "How can I leave a review?",
+      "q9_answer": "You can leave a review:\n• On our website in the “Reviews” section.\n• Through the mobile app.\n• In Google My Business to help us improve.",
+      "q10_question": "How to apply for a vacancy?",
+      "q10_answer": "You can submit an application through the “Careers” section on our website, providing your contact information and the position you are applying for.",
+      "q11_question": "Contact Information",
+      "q11_answer": "If you have any further questions, feel free to contact us at +998 77 124 44 44 or email us at rollingsushi@gmail.com."
+    }
+  },
+  "Policy": {
+    "title": "Privacy Policy",
+    "description": {
+      "0_title": "General Provisions",
+      "0_text": "This Privacy Policy describes how Rolling Sushi (hereinafter referred to as 'Company') collects, uses, stores, and protects customer information.",
+      "1_title": "Data Collection We may collect the following data:",
+      "1_text": "• Personal data: name, surname, phone number, email address. \n• Delivery data: delivery address, additional comments.\n• Payment information: transaction data (but not bank card details).\n• Technical data: IP address, device data, browser type, cookies.",
+      "2_title": "Data Usage Collected data may be used for:",
+      "2_text": "• Processing and fulfilling orders. \n• Improving service quality and personalizing offers.\n• Communicating with customers to confirm orders or inform them about delivery status.\n• Conducting marketing campaigns and loyalty programs.",
+      "3_title": "Data Sharing with Third Parties We do not share customers' personal data with third parties except in the following cases:",
+      "3_text": "• To fulfill delivery via partner services.\n• To process payments through payment systems.\n• As required by the legislation of the Republic of Uzbekistan",
+      "4_title": "Data Protection We take all necessary measures to protect customer data:",
+      "4_text": "• Use SSL encryption for data transmission.\n• Regularly update security systems to prevent unauthorized access."
+    }
   }
 }

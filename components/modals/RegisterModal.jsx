@@ -13,7 +13,7 @@ import RegisterForm from "../forms/RegisterForm";
 export function RegisterModal() {
   const register = useTranslations("Register");
   return (
-    <Dialog className="w-full">
+    <Dialog open className="w-full">
       <DialogTrigger asChild>
         <Button>Register modal</Button>
       </DialogTrigger>

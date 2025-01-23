@@ -25,8 +25,8 @@ const Pickup = ({
   const handleSelectAddress = (spot) => {
     setOrderData({
       ...orderData,
+      spot_name: spot?.name,
       spot_id: spot?.spot_id,
-      spot_name: spot?.spot_name,
     });
   };
 

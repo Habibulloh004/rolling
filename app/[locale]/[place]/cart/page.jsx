@@ -14,7 +14,6 @@ const Basket = async ({ params, searchParams }) => {
   const cookieStore = await cookies();
   const cookiesData = cookieStore.get("client");
   const auth = cookiesData ? JSON.parse(cookiesData.value) : {};
-  console.log(auth);
   
   const [cart, products, locale, path, searchParamsData] = await Promise.all([
     getTranslations("Cart"),
@@ -51,6 +50,7 @@ const Basket = async ({ params, searchParams }) => {
             .filter((c) => c.menu_category_id != 0)
             .slice(0, 10)}
           locale={locale}
+          searchParamsData={searchParamsData}
         />
       </div>
       {/* Mobile version */}
@@ -64,7 +64,7 @@ const Basket = async ({ params, searchParams }) => {
         />
         <Products locale={locale} auth={auth} />
         <Payment locale={locale} place={path.place} auth={auth} />
-        <Order auth={auth}/>
+        <Order auth={auth} searchParamsData={searchParamsData}/>
       </div>
     </Container>
   );

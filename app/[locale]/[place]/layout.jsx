@@ -114,7 +114,12 @@ export default async function Layout({ children, params }) {
           showAtBottom={false}
         />
         <NextIntlClientProvider locale={param.locale} messages={messages}>
-          <Header auth={auth} param={param} locale={param.locale} spotData={spotData} />
+          <Header
+            auth={auth}
+            param={param}
+            locale={param.locale}
+            spotData={spotData}
+          />
           <main className="grow">{children}</main>
           <Toaster
             position="bottom-right"

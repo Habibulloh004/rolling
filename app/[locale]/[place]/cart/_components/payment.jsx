@@ -6,10 +6,12 @@ import { Plus } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import { toast } from "sonner";
 import { useTranslations } from "use-intl";
 
 const Payment = ({ locale, place }) => {
   const paymentText = useTranslations("Cart.Payment");
+  const all = useTranslations("All");
   const { activeTab } = useStore();
   const { orderData, setOrderData } = useOrderStore();
   const pay = [
@@ -45,6 +47,17 @@ const Payment = ({ locale, place }) => {
     },
   ];
 
+  const handleSelectPayment = (item) => {
+    if (item.type === "cash" || item.type === "card") {
+      setOrderData({
+        ...orderData,
+        payment_method: item.type,
+      });
+    } else {
+      toast.warning(all("no_active"));
+    }
+  };
+
   return (
     <div className="w-full flex flex-col items-start md:px-12 pt-6 gap-5">
       <h2 className="hidden textNormal4 font-bold leading-9">
@@ -53,16 +66,19 @@ const Payment = ({ locale, place }) => {
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         {pay.map((item) => (
           <button
-            onClick={() =>
-              setOrderData({
-                ...orderData,
-                payment_method: item.type,
-              })
-            }
+            onClick={() => handleSelectPayment(item)}
             key={item.id}
-            className={`w-[118px] min-h-[70px] rounded-[7px] border-[#004032] border-b-2 p-3 flex flex-col justify-start focus:border-2 gap-1 ${
-              orderData?.payment_method == item?.type ? "border-2 font-semibold" : ""
-            }`}
+            className={`w-[118px] min-h-[70px] rounded-[7px] border-[#004032] border-b-2 p-3 flex flex-col justify-start gap-1
+              ${
+                item.type == "card" || item.type == "cash"
+                  ? ""
+                  : "opacity-[0.5]"
+              }
+              ${
+                orderData?.payment_method == item?.type
+                  ? "border-2 font-semibold"
+                  : ""
+              }`}
           >
             <Image
               src={item.icon}

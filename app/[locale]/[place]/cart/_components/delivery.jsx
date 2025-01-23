@@ -19,7 +19,6 @@ import { Textarea } from "@/components/ui/textarea";
 const Delivery = ({ locale, auth, clientData, place }) => {
   const deliveryText = useTranslations("Cart.Delivery");
   const all = useTranslations("All");
-  console.log({ clientData });
   const { orderData, setOrderData } = useOrderStore();
   const [modalAdd, setModalAdd] = useState(false);
   

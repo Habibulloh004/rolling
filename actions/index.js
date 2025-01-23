@@ -112,7 +112,7 @@ export async function getClientData(id) {
       return result.response;
     })
     .catch((error) => {
-      console.log(error)
+      console.log(error,"error")
     });
 
   return res;

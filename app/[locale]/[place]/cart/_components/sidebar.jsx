@@ -6,7 +6,7 @@ import Delivery from "./delivery";
 import Pickup from "./pickup";
 import Spot from "./spot";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useStore } from "@/store";
+import { useOrderStore, useStore } from "@/store";
 import Cookies from "js-cookie";
 import { getClientData, getSpotsData } from "@/actions";
 
@@ -18,12 +18,11 @@ const CartSidebar = ({ locale, place, spotData, searchParamsData, auth }) => {
   const [clientData, setClientData] = useState(null);
   const [branchsData, setBranchesData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-
+  const { setOrderData, orderData } = useOrderStore();
   const handleTabChange = (value) => {
-    console.log("Selected Tab:", value);
     setActiveTab(value);
-    setOrderData((prevData) => ({
-      ...prevData,
+    setOrderData({
+      ...orderData,
       service_mode: (() => {
         switch (value) {
           case "delivery":
@@ -36,16 +35,13 @@ const CartSidebar = ({ locale, place, spotData, searchParamsData, auth }) => {
             return 3;
         }
       })(),
-    }));
+    });
   };
 
   useEffect(() => {
-    if (place == "web" && activeTab == "spot") {
+    if (place === "web") {
       setActiveTab("delivery");
-    } else if (
-      (activeTab == "pickup" || activeTab == "delivery") &&
-      place == "branch"
-    ) {
+    } else {
       setActiveTab("spot");
     }
   }, [place]);
@@ -56,8 +52,6 @@ const CartSidebar = ({ locale, place, spotData, searchParamsData, auth }) => {
       try {
         const response = await getClientData(Number(auth.client_id));
         const spots = await getSpotsData();
-        console.log(spots, "spots");
-
         setClientData(response[0]);
         setBranchesData(spots);
       } catch (error) {
@@ -73,6 +67,7 @@ const CartSidebar = ({ locale, place, spotData, searchParamsData, auth }) => {
   return (
     <div className="">
       <Tabs
+        defaultValue={activeTab}
         value={activeTab}
         onValueChange={handleTabChange}
         className="w-full"

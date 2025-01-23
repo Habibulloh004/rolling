@@ -2,16 +2,16 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { formatNumber } from "@/lib/utils";
+import { formatCreatedAt, formatNumber } from "@/lib/utils";
 import { gift, gold } from "@/public";
-import { useOrderStore, useStore } from "@/store";
+import { useOrderStore, useProductStore, useStore } from "@/store";
 import { ChevronRight } from "lucide-react";
 import Image from "next/image";
 import React, { useState } from "react";
 import { useTranslations } from "use-intl";
 
 // DiscountBadge Component
-const DiscountBadge = ({ auth }) => {
+const DiscountBadge = () => {
   const discountColor = {
     10: "#E2E2E2",
     20: "#ED7403",
@@ -64,19 +64,74 @@ const DiscountBadge = ({ auth }) => {
 };
 
 // Main Order Component
-const Order = ({ auth }) => {
+const Order = ({ auth, searchParamsData }) => {
   const all = useTranslations("All");
   const total = useTranslations("Cart.Total");
   const { activeTab } = useStore();
   const [bonus, setBonus] = useState(0);
   const [activeBonus, setActiveBonus] = useState(false);
   const { orderData, setOrderData, totalSum } = useOrderStore();
-
+  const { products } = useProductStore();
+  const { service } = searchParamsData;
   const handleSetBonus = () => {
     setOrderData({ ...orderData, pay_bonus: Number(bonus) });
     setBonus(0);
     setActiveBonus(false);
   };
+  const handleSubmit = async () => {
+    try {
+      const {
+        spot_id,
+        spot_name,
+        phone,
+        service_mode,
+        payment_method,
+        delivery_price,
+        lng,
+        lat,
+        pay_cash,
+        pay_card,
+        pay_click,
+        pay_payme,
+        pay_uzum,
+        pay_bonus,
+        comment,
+        address,
+        client_addresses_id,
+        address_comment,
+      } = orderData;
+
+      const filterProductsAbdugani = products?.map((p) => {
+        return {
+          product_id: +p.product_id,
+          amount: +p.count,
+        };
+      });
+
+      let deliveryData = {
+        address_comment,
+        all_price: Number((+totalSum + +delivery_price) * 100),
+        client_address: `${lat},${lng}`,
+        client_id: Number(auth?.client_id),
+        comment,
+        created_at: formatCreatedAt(),
+        payed_bonus: pay_bonus ? Number(pay_bonus) * 100 : 0,
+        payed_sum: Number(
+          +totalSum + +delivery_price - (pay_bonus ? +pay_bonus : 0)
+        ),
+        payment: payment_method,
+        phone: `+${auth?.phone_number}`,
+        products: JSON.stringify(filterProductsAbdugani),
+        promotion: "no",
+        spot_id: Number(spot_id),
+        status: "accept",
+        type: service_mode == 3 ? "delivery" : `take_away ${spot_name}`,
+      };
+      let pickupData = {};
+      let spotData = {};
+    } catch (error) {}
+  };
+  console.log(orderData);
 
   return (
     <div className="w-full flex flex-col pt-6 gap-5">
@@ -95,7 +150,7 @@ const Order = ({ auth }) => {
               {total("delivery")}
             </p>
             <p className="font-normal textNormal2 leading-7 text-[#2E2E2E]">
-              10 000 {all("sum")}
+              {formatNumber(orderData?.delivery_price)} {all("sum")}
             </p>
           </div>
         )}
@@ -109,15 +164,57 @@ const Order = ({ auth }) => {
             </p>
           </div>
         )}
-        <div className="w-full flex justify-between">
-          <p className="font-medium textSmall3 leading-5 text-[#2E2E2E] text-start md:text-end">
-            {total("total")}
-          </p>
-          <p className="font-normal textNormal3 leading-7 text-[#2E2E2E]">
-            {formatNumber(Number(totalSum) - Number(orderData?.pay_bonus || 0))}{" "}
-            {all("sum")}
-          </p>
-        </div>
+        {activeTab !== "spot" && (
+          <div className="w-full flex justify-between">
+            <p className="font-medium textSmall3 leading-5 text-[#2E2E2E] text-start md:text-end">
+              {total("total")}
+            </p>
+            <p className="font-normal textNormal3 leading-7 text-[#2E2E2E]">
+              {formatNumber(
+                Number(totalSum) -
+                  Number(orderData?.pay_bonus) +
+                  (orderData?.service_mode == 3 ? orderData?.delivery_price : 0)
+              )}{" "}
+              {all("sum")}
+            </p>
+          </div>
+        )}
+        {activeTab !== "spot" && (
+          <div className="w-full flex justify-between">
+            <p className="font-medium textSmall3 leading-5 text-[#2E2E2E] text-start md:text-end">
+              {total("total")}
+            </p>
+            <p className="font-normal textNormal3 leading-7 text-[#2E2E2E]">
+              {formatNumber(
+                Number(totalSum) -
+                  Number(orderData?.pay_bonus) +
+                  (orderData?.service_mode == 3 ? orderData?.delivery_price : 0)
+              )}{" "}
+              {all("sum")}
+            </p>
+          </div>
+        )}
+        {activeTab == "spot" && service == "waiter" && (
+          <div className="w-full flex justify-between">
+            <p className="font-medium textSmall3 leading-5 text-[#2E2E2E] text-start md:text-end">
+              {all("waiter")}
+            </p>
+            <p className="font-normal textNormal2 leading-7 text-[#2E2E2E]">
+              10%
+            </p>
+          </div>
+        )}
+        {activeTab == "spot" && (
+          <div className="w-full flex justify-between">
+            <p className="font-medium textSmall3 leading-5 text-[#2E2E2E] text-start md:text-end">
+              {total("total")}
+            </p>
+            <p className="font-normal textNormal3 leading-7 text-[#2E2E2E]">
+              {formatNumber(Number(totalSum + (totalSum * 10) / 100))}
+              {all("sum")}
+            </p>
+          </div>
+        )}
       </div>
       <div className="">
         {activeTab !== "spot" && (
@@ -140,7 +237,7 @@ const Order = ({ auth }) => {
                 <ChevronRight />
               </p>
             </Button>
-            {activeBonus && (
+            {activeBonus && auth && (
               <div className="flex-col w-full p-5 border-[1px] shadow-md rounded-xl mt-3">
                 <div className="w-full flex justify-between gap-2">
                   <div className="flex flex-col items-center gap-4">
@@ -192,7 +289,10 @@ const Order = ({ auth }) => {
             )}
           </>
         )}
-        <Button className="mb-3 w-full h-10 md:h-12 flex justify-center items-center gap-1 border-[1px] rounded-xl hover:bg-primary mt-5 font-medium text-sm md:text-md">
+        <Button
+          onClick={handleSubmit}
+          className="mb-3 w-full h-10 md:h-12 flex justify-center items-center gap-1 border-[1px] rounded-xl hover:bg-primary md:mt-5 font-medium text-sm md:text-md"
+        >
           {total("submit")}
         </Button>
         <div className="hidden w-full h-[141px] p-5 border-[1px] border-[#979797] rounded-xl mt-3">

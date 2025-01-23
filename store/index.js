@@ -19,10 +19,12 @@ export const useStore = create((set) => ({
     }),
   initializeFavorites: () => {
     const savedProducts = localStorage.getItem("isFavorites");
+    
     const savedActiveTab = localStorage.getItem("activeTab");
+    console.log(savedActiveTab,"yobana");
     const parsedProducts = savedProducts ? JSON.parse(savedProducts) : [];
     set({ favorites: parsedProducts });
-    set({ activeTab: savedActiveTab ? savedActiveTab : "delivery" });
+    set({ activeTab: savedActiveTab });
   },
 }));
 
@@ -199,13 +201,13 @@ export const useProductStore = create((set) => ({
 export const useOrderStore = create((set) => ({
   orderData: {
     spot_id: 0,
-    spot_name:"",
+    spot_name: "",
     phone: "",
     products: [],
     service_mode: 3,
     payment_method: "cash",
     total: 0,
-    delivery_price: 0,
+    delivery_price: 10000,
     lng: 0,
     lat: 0,
     client: null,
@@ -238,13 +240,13 @@ export const useOrderStore = create((set) => ({
       ? JSON.parse(orderData)
       : {
           spot_id: 0,
-          spot_name:"",
+          spot_name: "",
           phone: "",
           products: [],
           service_mode: 3,
           payment_method: "cash",
           total: 0,
-          delivery_price: 0,
+          delivery_price: 10000,
           lng: 0,
           lat: 0,
           client: null,

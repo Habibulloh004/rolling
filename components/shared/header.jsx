@@ -183,6 +183,9 @@ export default function Header({ auth, locale, param, spotData }) {
               </p>
             </Link>
           </nav>
+          <div className="flex justify-start items-center w-10/12">
+            <LngChange param={param} />
+          </div>
         </div>
 
         {/* Overlay for closing the menu */}

@@ -27,6 +27,9 @@ import uzcard from "./assets/uzcard.svg"
 import bucket from "./assets/bucket.svg"
 import gift from "./assets/gift.svg"
 import gold from "./assets/Gold.png"
+import facebook from "./assets/facebook.svg"
+import telegram from "./assets/telegram.svg"
+import instagram from "./assets/instagram.svg"
 
 export {
   appStoreIcon,
@@ -57,5 +60,8 @@ export {
   uzcard,
   bucket,
   gift,
-  gold
+  gold,
+  facebook,
+  telegram,
+  instagram,
 };

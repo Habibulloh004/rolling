@@ -1,21 +1,28 @@
+"use client";
 import React from "react";
 import Container from "./container";
-import { getTranslations } from "next-intl/server";
 import { appStoreIcon, playMarketIcon, secondaryIcon } from "@/public";
 import Image from "next/legacy/image";
 import { footItems } from "@/lib/utils";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { usePathname } from "next/navigation";
 
-export default async function Footer({ params }) {
-  const [footerT, footNavT, path] = await Promise.all([
-    getTranslations("Footer"),
-    getTranslations("FootNav"),
-    params,
-  ]);
+
+export default function Footer({ params: path }) {
+  const pathname = usePathname();
+  const footerT = useTranslations("Footer");
+  const footNavT = useTranslations("FootNav");
   if (path.place !== "branch") {
     return (
-      <footer className="bg-white min-h-[300px] flex items-center flex-shrink-0 py-3 mt-8">
+      <footer
+        className={`bg-white min-h-[300px] flex items-center flex-shrink-0 py-3 ${
+          pathname.includes("/login") ||
+          pathname.includes("/sign-up") ||
+          pathname.includes("/reset-password") ? "" : "mt-8"
+        }`}
+      >
         <Container className={`border-b border-primary py-2`}>
           <section className="space-y-2 md:space-y-4 text-xs flex flex-col justify-center">
             <Link

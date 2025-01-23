@@ -13,8 +13,11 @@ import { useTranslations } from "next-intl";
 import { Button } from "../ui/button";
 import { Rating } from "react-simple-star-rating";
 import axios from "axios";
+import Cookies from "js-cookie";
+import { useToast } from "@/hooks/use-toast";
 
 export default function ReviewForm() {
+  const { toast } = useToast()
   const ReviewValidation = UpdateReviewValidation();
   const allT = useTranslations("All");
   const formT = useTranslations("Form");
@@ -34,6 +37,13 @@ export default function ReviewForm() {
   };
 
   const onSubmit = async (values) => {
+    if(!Cookies.get("client")) {
+      toast({
+        variant: "destructive",
+        title: allT("review_err"),
+      });
+      return;
+    }
     setIsLoading(true);
     const feedbackMessage = `
 📋 Новый отзыв:

@@ -27,7 +27,7 @@ const AboutUs = async ({ params }) => {
 
   return (
     <Container className={"flex-col items-start py-3 md:py-8 text-muted"}>
-      <h1 className="text-xl md:text-2xl font-semibold">{aboutUsT("title")}</h1>
+      <h1 className="text-xl md:text-2xl font-semibold ">{aboutUsT("title")}</h1>
       <Container className={"w-[97%] items-start gap-10 justify-between"}>
         <section className="w-full sm:w-[60%]">
           <p className="font-bold py-3 md:py-5 text-lg md:text-xl">
@@ -58,25 +58,25 @@ const AboutUs = async ({ params }) => {
           <div className="flex flex-col gap-3 sm:hidden mt-4">
           <Link
               href={`/${param.locale}/${param.place}/about-us/questions`}
-              className="w-full rounded-md bg-primary text-white py-2 text-xs md:text-sm text-center"
+              className="w-full h-[50px] flex items-center justify-center rounded-md bg-primary text-white py-2 text-xs md:text-sm text-center"
             >
               {aboutUsT("btnQuestions")}
             </Link>
             <Link
               href={`/${param.locale}/${param.place}/about-us/contact`}
-              className="w-full rounded-md bg-primary text-white py-2 text-xs md:text-sm text-center"
+              className="w-full h-[50px] flex items-center justify-center rounded-md bg-primary text-white py-2 text-xs md:text-sm text-center"
             >
               {aboutUsT("btnContact")}
             </Link>
             <Link
               href={`/${param.locale}/${param.place}/reviews`}
-              className="w-full rounded-md bg-primary text-white py-2 text-xs md:text-sm text-center"
+              className="w-full h-[50px] flex items-center justify-center rounded-md bg-primary text-white py-2 text-xs md:text-sm text-center"
             >
               {aboutUsT("btnReview")}
             </Link>
             <Link
               href={`/${param.locale}/${param.place}/create-vacansy`}
-              className="w-full rounded-md bg-primary text-white py-2 text-xs md:text-sm text-center"
+              className="w-full h-[50px] flex items-center justify-center rounded-md bg-primary text-white py-2 text-xs md:text-sm text-center"
             >
               {aboutUsT("btnVacansy")}
             </Link>
@@ -121,12 +121,7 @@ const AboutUs = async ({ params }) => {
           </div>
         </section>
       </Container>
-      <section className="mt-10 md:mt-14">
-        <h1 className="text-xl md:text-2xl font-semibold">
-          {aboutUsT("ourComand")}
-        </h1>
-        <TeamCards />
-      </section>
+      {/* <sectio  */}
     </Container>
   );
 };

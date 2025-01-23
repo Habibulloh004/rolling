@@ -11,7 +11,7 @@ export default async function Profile({ params }) {
   ]);
   return (
     <Container
-      className={`w-11/12 flex-col items-start min-h-[400px] justify-start pt-3 md:pt-8`}
+      className={`flex-col items-start min-h-[400px] justify-start pt-3 md:pt-8`}
     >
       <ProfileComponent locale={locale} path={path} />
       <TextBonus className={"hidden lg:flex gap-11 pt-6"} />

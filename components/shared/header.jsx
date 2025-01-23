@@ -14,7 +14,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import ResponsiveSVG from "@/public/assets/responsive";
-import { useProductStore, useStore } from "@/store";
+import { useOrderStore, useProductStore, useStore } from "@/store";
 import Link from "next/link";
 import LngChange from "./lngChange";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -34,6 +34,7 @@ export default function Header({ locale, param, spotData }) {
   const allT = useTranslations("All");
   const { products } = useProductStore();
   const { toggleOpen, open, initializeFavorites } = useStore();
+  const { initializeOrderData } = useOrderStore();
   const { initializeProducts } = useProductStore();
   const [isOpen, setisOpen] = useState(true);
   const router = useRouter();
@@ -42,6 +43,7 @@ export default function Header({ locale, param, spotData }) {
   useEffect(() => {
     initializeFavorites();
     initializeProducts();
+    initializeOrderData();
     setClient(Cookies.get("client") || null);
   }, []);
 

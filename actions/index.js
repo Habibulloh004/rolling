@@ -92,6 +92,54 @@ export async function getClient(id) {
 
   return res;
 }
+export async function getClientData(id) {
+  const cookieStore = await cookies();
+  const myHeaders = new Headers();
+
+  console.log(id)
+  const requestOptions = {
+    method: "GET",
+    headers: myHeaders,
+    redirect: "follow",
+  };
+
+  const res = fetch(
+    `${posterUrl}/api/clients.getClient?token=${posterToken}&client_id=${id}`,
+    requestOptions
+  )
+    .then((response) => response.json())
+    .then(async (result) => {
+      return result.response;
+    })
+    .catch((error) => {
+      console.log(error)
+    });
+
+  return res;
+}
+export async function getSpotsData() {
+  const myHeaders = new Headers();
+
+  const requestOptions = {
+    method: "GET",
+    headers: myHeaders,
+    redirect: "follow",
+  };
+
+  const res = fetch(
+    `${posterUrl}/api/spots.getSpots?token=${posterToken}`,
+    requestOptions
+  )
+    .then((response) => response.json())
+    .then(async (result) => {
+      return result.response;
+    })
+    .catch((error) => {
+      console.log(error)
+    });
+
+  return res;
+}
 
 export async function getClients() {
   const myHeaders = new Headers();

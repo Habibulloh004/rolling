@@ -42,8 +42,8 @@ const Payment = ({ locale, place }) => {
 
   return (
     <div className="w-full flex flex-col items-start md:px-12 pt-6 gap-5">
-      <h2 className="textNormal4 font-bold leading-9">Способ оплаты</h2>
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+      <h2 className="hidden textNormal4 font-bold leading-9">{paymentText("thanks_payment")}</h2>
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         {pay.map((item) => (
           <button
             key={item.id}
@@ -62,7 +62,7 @@ const Payment = ({ locale, place }) => {
           </button>
         ))}
       </div>
-      {activeTab !== "spot" && (
+      {activeTab !== "spot" || false && (
         <Link
           href={`/${locale}/${place}/create-card`}
           className="w-full sm:w-2/3 md:w-8/12 lg:w-full 2xl:w-9/12 h-40 md:h-48 flex justify-center items-center"
@@ -81,7 +81,7 @@ const Payment = ({ locale, place }) => {
             <div className="bg-[#EB5757] absolute w-60 h-60 rounded-full -left-[120px] -top-10 opacity-50"></div>
             <div className="bg-[#A6C44A] absolute w-60 h-60 rounded-full left-0 -bottom-32 opacity-50 z-10"></div>
             <p className="absolute font-semibold textSmall4 leading-6 left-[5%] top-5 text-white">
-              Названия карты
+              {paymentText("card_name")}
             </p>
             <p className="absolute font-semibold textSmall4 leading-6 right-[5%] top-[88px] text-white">
               01/01

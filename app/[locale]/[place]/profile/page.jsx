@@ -1,19 +1,22 @@
 import Container from "@/components/shared/container";
 import TextBonus from "./_components/textBonus";
 import ProfileComponent from "./_components/profileComponent";
-import { getLocale, getTranslations } from "next-intl/server";
+import { getLocale } from "next-intl/server";
+import { cookies } from "next/headers";
 
 export default async function Profile({ params }) {
-  const [profileT, locale, path] = await Promise.all([
-    getTranslations("Profile"),
+  const [getClient, locale, path] = await Promise.all([
+    await cookies(),
     getLocale(),
     params,
   ]);
+  const { value } = getClient.get("client");
+  const client = JSON.parse(value);
   return (
     <Container
       className={`flex-col items-start min-h-[400px] justify-start pt-3 md:pt-8`}
     >
-      <ProfileComponent locale={locale} path={path} />
+      <ProfileComponent locale={locale} path={path} client={client} />
       <TextBonus className={"hidden lg:flex gap-11 pt-6"} />
     </Container>
   );

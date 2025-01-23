@@ -37,6 +37,10 @@
     "self": "O'z-o'ziga xizmat ko'rsatish",
     "self_desc": "Xaridor o'ziga xizmat qiladi"
   },
+  "Bonus": {
+    "bonus": "Bonus",
+    "title": "Qanchalik tez-tez buyurtma bersangiz, shuncha ko‘p foyda olasiz!"
+  },
   "Profile": {
     "title": "Profil",
     "userName": "Foydalanuvchi nomi",
@@ -48,6 +52,7 @@
     "my_order": "Mening buyurtmalarim",
     "my_bonus": "Mening bonuslarim",
     "logout": "Akkauntdan chiqish",
+    "have_bonus": "Mavjud bonuslar:",
     "Links": {
       "my_card": "Mening kartalarim",
       "address": "Yetkazib berish manzillari",

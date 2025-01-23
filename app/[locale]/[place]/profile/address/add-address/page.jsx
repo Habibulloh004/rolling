@@ -1,20 +1,58 @@
 "use client";
+import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import Container from "@/components/shared/container";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { pencil } from "@/public";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
 import MyMap from "../../_components/map";
 import { map } from "../page";
 import { Button } from "@/components/ui/button";
+import { Icon } from "leaflet";
+
+
+const SmoothTransition = ({ lng, lat, zoom = 14 }) => {
+  const map = useMap();
+  // Move map center with animation
+  map.flyTo([lat, lng], zoom, { duration: 1.5 });
+  return null;
+};
 
 const EditAdress = ({ params }) => {
+  const [position, setPosition] = useState({lat:41.2995,lng: 69.2401,});
   const path = React.use(params);
   const addressT = useTranslations("Profile.Address");
   const allT = useTranslations("All");
   const address = map.find((item) => item.id == path.id);
+  const userMarker = new Icon({
+    iconUrl:
+      "https://fkkpuaszmvpxjoqqmlzx.supabase.co/storage/v1/object/sign/rolling-sushi/user.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJyb2xsaW5nLXN1c2hpL3VzZXIucG5nIiwiaWF0IjoxNzM3Mzc5NDQ2LCJleHAiOjE3Njg5MTU0NDZ9._ac5SnVZfXfhP78dd2wbfQsB-kAKvxlMQvI7GNQg-QI&t=2025-01-20T13%3A24%3A07.547Z",
+    iconSize: [60, 60],
+  });
+
+  const handleFindLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (location) => {
+          setPosition({
+            lat: location.coords.latitude,
+            lng: location.coords.longitude,
+          });
+        },
+        (error) => {
+          console.error("Error fetching location:", error);
+        }
+      );
+    } else {
+      console.error("Geolocation is not supported by this browser.");
+    }
+  };
+
+
+  console.log(position);
+
   return (
     <Container className={"w-11/12 flex flex-col pt-3 md:pt-8"}>
       <h1 className="font-semibold textNormal4 text-primary w-full text-start">
@@ -100,25 +138,36 @@ const EditAdress = ({ params }) => {
           </div>
           <div className="w-full hidden lg:grid grid-cols-1 gap-y-4 lg:grid-cols-3 gap-x-2 mt-5 ">
             <Button className={"hover:bg-primary h-10 rounded-sm"}>
-              {allT("edit")}
+              {allT("add")}
             </Button>
-            <Button variant="ghost" className={"border-2 h-10 rounded-sm"}>
-              {allT("delete")}
-            </Button>
+            <button onClick={handleFindLocation} style={{ marginBottom: "10px" }}>
+              Mening joylashuvimni top
+            </button>
           </div>
         </div>
         <div className="lg:w-full h-48 lg:h-80 rounded-xl overflow-hidden">
-          <MyMap latitude={address?.latitude} longitude={address?.longitude} />
+
+
+          <MapContainer
+            center={[position.lng, position.lat]} // Default: Toshkent
+            zoom={13}
+            style={{ height: "400px", width: "100%" }}
+          >
+             <SmoothTransition lng={position?.lng} lat={position?.lat} zoom={16} />
+            <TileLayer
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            />
+            {position && (
+              <Marker position={position} icon={userMarker}>
+                <Popup>Sizning joylashuvingiz!</Popup>
+              </Marker>
+            )}
+          </MapContainer>
         </div>
         <div className="w-full grid lg:hidden grid-cols-1 gap-y-2 mt-10">
           <Button className={"hover:bg-primary h-10 rounded-xl "}>
-            {allT("edit")}
-          </Button>
-          <Button
-            variant="ghost"
-            className={"hover:bg-primary h-10 rounded-xl "}
-          >
-            {allT("delete")}
+            {allT("add")}
           </Button>
         </div>
       </div>

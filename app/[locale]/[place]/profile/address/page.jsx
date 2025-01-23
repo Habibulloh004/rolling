@@ -17,6 +17,9 @@ import Container from "@/components/shared/container";
 import { Button } from "@/components/ui/button";
 import MyMap from "../_components/map";
 import { useTranslations } from "use-intl";
+import Link from "next/link";
+import { getURL } from "next/dist/shared/lib/utils";
+import { usePathname } from "next/navigation";
 
 export const map = [
   {
@@ -56,11 +59,19 @@ export const map = [
 const Adress = () => {
   const allT = useTranslations("All");
   const profileT = useTranslations("Profile");
+  const pathName = usePathname();
+
   return (
-    <Container className={"w-11/12 flex flex-col pt-3 md:pt-8 gap-5"}>
-      <h1 className="w-full font-semibold text-primary textNormal4 text-start">
-        {profileT("my_address")}
-      </h1>
+    <Container className={"flex flex-col pt-3 md:pt-8 gap-5"}>
+      <div className="w-full flex justify-between">
+        <h1 className="w-full font-semibold text-primary textNormal4 text-start">
+          {profileT("my_address")}
+        </h1>
+        <Link href={`${getURL(pathName)}/add-address`} className="h-10 bg-primary">
+
+        {profileT("btnAddAddress")}
+        </Link>
+      </div>
       <div className="w-full hidden lg:grid lg:grid-cols-3 xl:grid-cols-4 gap-3">
         {map.map((item, i) => (
           <Card key={i}>
@@ -80,10 +91,9 @@ const Adress = () => {
             </CardHeader>
             <CardFooter
               className={
-                "grid grid-cols-1 gap-y-4 lg:grid-cols-2 w-full gap-x-2"
+                "grid grid-cols-1 gap-y-4  w-full gap-x-2"
               }
             >
-              <Button className={"hover:bg-primary"}>{allT("edit")}</Button>
               <Button className={"hover:bg-primary"}>{allT("delete")}</Button>
             </CardFooter>
           </Card>

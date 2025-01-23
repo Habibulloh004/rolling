@@ -187,6 +187,8 @@ export default function RegisterForm() {
     },
   ]
 
+  
+
   const { errors } = form.formState;
   return (
     <Form {...form}>
@@ -297,8 +299,8 @@ export default function RegisterForm() {
             fieldType={FormFieldType.PASSWORDINPUT}
             control={form.control}
             name="password"
-            label={register("password")}
-            placeholder=""
+            label="Parol" // Labelni matn sifatida uzatish
+            placeholder="Parolni kiriting"
             inputClass="rounded-md border-[1px]"
           />
           <div className="sm:hidden flex items-center space-x-2">

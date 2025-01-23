@@ -14,33 +14,56 @@ const CartSidebar = ({ locale, place, spotData, searchParamsData, auth }) => {
   const deliveryText = useTranslations("Cart.Delivery");
   const pickupText = useTranslations("Cart.Pickup");
   const spot = useTranslations("Cart.Spot");
-  const { setActiveTab } = useStore();
+  const { setActiveTab, activeTab } = useStore();
   const [clientData, setClientData] = useState(null);
   const [branchsData, setBranchesData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const handleTabChange = (value) => {
     console.log("Selected Tab:", value);
     setActiveTab(value);
+    setOrderData((prevData) => ({
+      ...prevData,
+      service_mode: (() => {
+        switch (value) {
+          case "delivery":
+            return 3;
+          case "pickup":
+            return 2;
+          case "spot":
+            return 2;
+          default:
+            return 3;
+        }
+      })(),
+    }));
   };
 
   useEffect(() => {
-    if (place == "web") {
+    if (place == "web" && activeTab == "spot") {
       setActiveTab("delivery");
-    } else {
+    } else if (
+      (activeTab == "pickup" || activeTab == "delivery") &&
+      place == "branch"
+    ) {
       setActiveTab("spot");
     }
   }, [place]);
 
   useEffect(() => {
     const fetchData = async () => {
+      setIsLoading(true);
       try {
         const response = await getClientData(Number(auth.client_id));
         const spots = await getSpotsData();
-        console.log(spots,"spots");
-        
+        console.log(spots, "spots");
+
         setClientData(response[0]);
         setBranchesData(spots);
-      } catch (error) {}
+      } catch (error) {
+      } finally {
+        setIsLoading(false);
+      }
     };
     if (auth) {
       fetchData();
@@ -50,7 +73,7 @@ const CartSidebar = ({ locale, place, spotData, searchParamsData, auth }) => {
   return (
     <div className="">
       <Tabs
-        defaultValue={place == "web" ? "delivery" : "spot"}
+        value={activeTab}
         onValueChange={handleTabChange}
         className="w-full"
       >
@@ -89,6 +112,7 @@ const CartSidebar = ({ locale, place, spotData, searchParamsData, auth }) => {
         <TabsContent className="md:px-10" value="pickup">
           <Pickup
             locale={locale}
+            isLoading={isLoading}
             clientData={clientData}
             auth={auth}
             branchsData={branchsData}

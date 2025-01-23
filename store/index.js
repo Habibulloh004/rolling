@@ -199,6 +199,7 @@ export const useProductStore = create((set) => ({
 export const useOrderStore = create((set) => ({
   orderData: {
     spot_id: 0,
+    spot_name:"",
     phone: "",
     products: [],
     service_mode: 3,
@@ -237,6 +238,7 @@ export const useOrderStore = create((set) => ({
       ? JSON.parse(orderData)
       : {
           spot_id: 0,
+          spot_name:"",
           phone: "",
           products: [],
           service_mode: 3,

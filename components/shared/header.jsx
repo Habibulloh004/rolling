@@ -14,11 +14,12 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import ResponsiveSVG from "@/public/assets/responsive";
-<<<<<<< HEAD
-import { useOrderStore, useProductStore, useStore } from "@/store";
-=======
-import { useClientStore, useProductStore, useStore } from "@/store";
->>>>>>> dfad11f02fd4bfe8d96762d4c0997c706c7f898e
+import {
+  useClientStore,
+  useProductStore,
+  useStore,
+  useOrderStore,
+} from "@/store";
 import Link from "next/link";
 import LngChange from "./lngChange";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -27,13 +28,12 @@ import { Button } from "../ui/button";
 import Cookies from "js-cookie";
 import Marquee from "../ui/marquee";
 
-export default function Header({ locale, param, spotData }) {
+export default function Header({ auth, locale, param, spotData }) {
   const searchParams = useSearchParams();
   const spot = searchParams.get("spot");
   const table_id = searchParams.get("table_id");
   const table_num = searchParams.get("table_num");
   const service = searchParams.get("service");
-  const { client, setClient } = useClientStore();
   const pathName = usePathname();
   const navbar = useTranslations("Navbar");
   const allT = useTranslations("All");
@@ -43,28 +43,18 @@ export default function Header({ locale, param, spotData }) {
   const { initializeOrderData } = useOrderStore();
   const { initializeProducts } = useProductStore();
   const [isOpen, setisOpen] = useState(true);
-  const router = useRouter();
   const [cl, setCl] = useState(null);
 
   useEffect(() => {
     initializeFavorites();
     initializeProducts();
-<<<<<<< HEAD
     initializeOrderData();
-    setClient(Cookies.get("client") || null);
-=======
-    if (!client) {
-      setClient(
-        Cookies.get("client") ? JSON.parse(Cookies.get("client")) : null
-      );
-    }
-    setCl(client);
->>>>>>> dfad11f02fd4bfe8d96762d4c0997c706c7f898e
   }, []);
 
   useEffect(() => {
-    setCl(client);
-  }, [client]);
+    const authenticated = auth ? JSON.parse(auth.value) : {};
+    setCl(authenticated);
+  }, [auth]);
 
   useEffect(() => {
     if (spot && table_id && table_num && !service && param.place == "branch") {

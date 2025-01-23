@@ -36,7 +36,8 @@
     "waiter": "Ofitsiant xizmati",
     "waiter_desc": "Xizmatlarimiz ofitsiantlar tomonidan ko'rsatiladi",
     "self": "O'z-o'ziga xizmat ko'rsatish",
-    "self_desc": "Xaridor o'ziga xizmat qiladi"
+    "self_desc": "Xaridor o'ziga xizmat qiladi",
+    "selected":"Tanlangan"
   },
   "Bonus": {
     "bonus": "Bonus",

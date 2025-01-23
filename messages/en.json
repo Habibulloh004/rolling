@@ -36,7 +36,8 @@
     "waiter": "Waiter service",
     "waiter_desc": "Service is provided by our establishment's waiters",
     "self": "Self-service",
-    "self_desc": "The customer serves himself"
+    "self_desc": "The customer serves himself",
+    "selected":"Selected"
   },
   "Bonus": {
     "bonus": "Bonus",

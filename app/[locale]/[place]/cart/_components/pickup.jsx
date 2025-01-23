@@ -5,7 +5,7 @@ import Image from "next/image";
 import React, { useEffect } from "react";
 import { useTranslations } from "use-intl";
 import Products from "./products";
-import { useOrderStore } from "@/store";
+import { useOrderStore, useStore } from "@/store";
 import { Textarea } from "@/components/ui/textarea";
 import { translateTextSpot, translateTextSpotAddress } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -21,6 +21,7 @@ const Pickup = ({
   const pickupText = useTranslations("Cart.Pickup");
   const all = useTranslations("All");
   const { orderData, setOrderData } = useOrderStore();
+  const { setActiveTab } = useStore();
 
   const handleSelectAddress = (spot) => {
     setOrderData({
@@ -29,6 +30,12 @@ const Pickup = ({
       spot_id: spot?.spot_id,
     });
   };
+
+    useEffect(() => {
+      if (place == "branch") {
+        setActiveTab("spot");
+      }
+    }, []);
 
   return (
     <div className="w-full flex flex-col gap-6">

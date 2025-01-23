@@ -21,7 +21,6 @@ export const useStore = create((set) => ({
     const savedProducts = localStorage.getItem("isFavorites");
     
     const savedActiveTab = localStorage.getItem("activeTab");
-    console.log(savedActiveTab,"yobana");
     const parsedProducts = savedProducts ? JSON.parse(savedProducts) : [];
     set({ favorites: parsedProducts });
     set({ activeTab: savedActiveTab });

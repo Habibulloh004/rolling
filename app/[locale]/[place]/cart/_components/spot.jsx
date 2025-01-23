@@ -2,15 +2,21 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { translateTextSpot } from "@/lib/utils";
 import { location, pencil } from "@/public";
+import { useStore } from "@/store";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect } from "react";
 import { useTranslations } from "use-intl";
 
-const Spot = ({ locale, spotData, searchParamsData }) => {
+const Spot = ({ place, locale, spotData, searchParamsData }) => {
   const spotText = useTranslations("Cart.Spot");
   const allT = useTranslations("All");
   const { spot, table_id, table_num, service } = searchParamsData;
-
+  const { setActiveTab } = useStore();
+  useEffect(() => {
+    if (place == "web") {
+      setActiveTab("delivery");
+    }
+  }, []);
   return (
     <div className="w-full flex flex-col">
       <div className="w-full md:space-y-2">

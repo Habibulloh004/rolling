@@ -7,7 +7,9 @@ import { gift, gold } from "@/public";
 import { useOrderStore, useProductStore, useStore } from "@/store";
 import { ChevronRight } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import React, { useState } from "react";
+import { toast } from "sonner";
 import { useTranslations } from "use-intl";
 
 // DiscountBadge Component
@@ -64,7 +66,7 @@ const DiscountBadge = () => {
 };
 
 // Main Order Component
-const Order = ({ auth, searchParamsData }) => {
+const Order = ({ auth, searchParamsData, locale, place }) => {
   const all = useTranslations("All");
   const total = useTranslations("Cart.Total");
   const { activeTab } = useStore();
@@ -79,6 +81,21 @@ const Order = ({ auth, searchParamsData }) => {
     setActiveBonus(false);
   };
   const handleSubmit = async () => {
+    if (!auth?.client_id) {
+      toast.warning(
+        <div className="w-full h-full flex justify-between items-center">
+          {all("no_auth")}{" "}
+          <Link
+            href={`/${locale}/${place}/login`}
+            className="bg-black text-white rounded-md px-2 py-1"
+          >
+            {all("sign_in")}
+          </Link>
+        </div>
+      );
+
+      return;
+    }
     try {
       const {
         spot_id,
@@ -138,7 +155,7 @@ const Order = ({ auth, searchParamsData }) => {
       <div className="flex flex-col gap-y-4">
         <div className="w-full flex justify-between">
           <p className="font-medium textSmall3 leading-5 text-[#2E2E2E] text-start md:text-end">
-            {total("products_sum")}
+            {service == "self" ? total("total") : total("products_sum")}{" "}
           </p>
           <p className="font-normal textNormal2 leading-7 text-[#2E2E2E]">
             {formatNumber(totalSum)} {all("sum")}
@@ -179,21 +196,6 @@ const Order = ({ auth, searchParamsData }) => {
             </p>
           </div>
         )}
-        {activeTab !== "spot" && (
-          <div className="w-full flex justify-between">
-            <p className="font-medium textSmall3 leading-5 text-[#2E2E2E] text-start md:text-end">
-              {total("total")}
-            </p>
-            <p className="font-normal textNormal3 leading-7 text-[#2E2E2E]">
-              {formatNumber(
-                Number(totalSum) -
-                  Number(orderData?.pay_bonus) +
-                  (orderData?.service_mode == 3 ? orderData?.delivery_price : 0)
-              )}{" "}
-              {all("sum")}
-            </p>
-          </div>
-        )}
         {activeTab == "spot" && service == "waiter" && (
           <div className="w-full flex justify-between">
             <p className="font-medium textSmall3 leading-5 text-[#2E2E2E] text-start md:text-end">
@@ -204,7 +206,7 @@ const Order = ({ auth, searchParamsData }) => {
             </p>
           </div>
         )}
-        {activeTab == "spot" && (
+        {activeTab == "spot" && service == "waiter" && (
           <div className="w-full flex justify-between">
             <p className="font-medium textSmall3 leading-5 text-[#2E2E2E] text-start md:text-end">
               {total("total")}
@@ -216,11 +218,27 @@ const Order = ({ auth, searchParamsData }) => {
           </div>
         )}
       </div>
-      <div className="">
+      <div className="space-y-2 md:space-y-4">
         {activeTab !== "spot" && (
           <>
             <Button
-              onClick={() => setActiveBonus(true)}
+              onClick={() => {
+                if (auth?.client_id) {
+                  setActiveBonus(true);
+                } else {
+                  toast.warning(
+                    <div className="w-full h-full flex justify-between items-center">
+                      {all("no_auth")}{" "}
+                      <Link
+                        href={`/${locale}/${place}/login`}
+                        className="bg-black text-white rounded-md px-2 py-1"
+                      >
+                        {all("sign_in")}
+                      </Link>
+                    </div>
+                  );
+                }
+              }}
               className="bg-[#F5F5F5] w-full h-10 md:h-12 flex justify-center items-center gap-1 border-[1px] rounded-xl"
             >
               <Image
@@ -237,7 +255,7 @@ const Order = ({ auth, searchParamsData }) => {
                 <ChevronRight />
               </p>
             </Button>
-            {activeBonus && auth && (
+            {activeBonus && auth?.client_id && (
               <div className="flex-col w-full p-5 border-[1px] shadow-md rounded-xl mt-3">
                 <div className="w-full flex justify-between gap-2">
                   <div className="flex flex-col items-center gap-4">

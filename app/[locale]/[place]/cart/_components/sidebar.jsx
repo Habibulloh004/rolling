@@ -39,30 +39,29 @@ const CartSidebar = ({ locale, place, spotData, searchParamsData, auth }) => {
   };
 
   useEffect(() => {
-    if (place === "web") {
-      setActiveTab("delivery");
-    } else {
-      setActiveTab("spot");
+    const fetchData = async () => {
+      try {
+        const response = await getClientData(Number(auth.client_id));
+        setClientData(response[0]);
+      } catch (error) {}
+    };
+    if (auth) {
+      fetchData();
     }
-  }, [place]);
+  }, [auth]);
 
   useEffect(() => {
     const fetchData = async () => {
-      setIsLoading(true);
       try {
-        const response = await getClientData(Number(auth.client_id));
         const spots = await getSpotsData();
-        setClientData(response[0]);
         setBranchesData(spots);
       } catch (error) {
       } finally {
         setIsLoading(false);
       }
     };
-    if (auth) {
-      fetchData();
-    }
-  }, [auth]);
+    fetchData();
+  }, []);
 
   return (
     <div className="">
@@ -116,6 +115,7 @@ const CartSidebar = ({ locale, place, spotData, searchParamsData, auth }) => {
         <TabsContent className="md:px-10" value="spot">
           <Spot
             locale={locale}
+            place={place}
             spotData={spotData}
             searchParamsData={searchParamsData}
           />

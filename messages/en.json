@@ -27,6 +27,7 @@
     "save": "Save",
     "choose": "Choose",
     "add_comment": "Add Comments",
+    "add_comment_pls": "Enter Text",
     "add_comment_info": "Add any important information for the courier: entrance, intercom code, floor, or other details.",
     "services": "Services",
     "table": "Table",
@@ -35,7 +36,9 @@
     "waiter": "Waiter service",
     "waiter_desc": "Service is provided by our establishment's waiters",
     "self": "Self-service",
-    "self_desc": "The customer serves himself"
+    "self_desc": "The customer serves himself",
+    "selected":"Selected",
+    "no_active":"Currently inactive"
   },
   "Bonus": {
     "bonus": "Bonus",
@@ -265,7 +268,7 @@
       "comment": "Add Comments"
     },
     "Spot": {
-      "title": "Spots",
+      "title": "Restaurants",
       "choose_spot": "Choose a Branch",
       "choose_table": "Choose a Table",
       "phone": "Phone Number",
@@ -277,10 +280,13 @@
     },
     "Payment": {
       "card": "By Card",
-      "cash": "By Cash"
+      "cash": "By Cash",
+      "card_name": "Card Name",
+      "thanks_payment": "Thanks for pay"
     },
     "Total": {
       "total": "Total Amount",
+      "products_sum": "Products",
       "discount": "Discount",
       "delivery": "Delivery",
       "to_pay": "To Pay",

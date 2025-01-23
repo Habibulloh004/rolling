@@ -2,13 +2,34 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { location, pencil } from "@/public";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect } from "react";
 import { useTranslations } from "use-intl";
 import Products from "./products";
+import { useOrderStore } from "@/store";
+import { Textarea } from "@/components/ui/textarea";
+import { translateTextSpot, translateTextSpotAddress } from "@/lib/utils";
+import { Skeleton } from "@/components/ui/skeleton";
 
-const Pickup = ({ locale }) => {
+const Pickup = ({
+  locale,
+  auth,
+  clientData,
+  place,
+  branchsData,
+  isLoading,
+}) => {
   const pickupText = useTranslations("Cart.Pickup");
   const all = useTranslations("All");
+  const { orderData, setOrderData } = useOrderStore();
+
+  const handleSelectAddress = (spot) => {
+    setOrderData({
+      ...orderData,
+      spot_name: spot?.name,
+      spot_id: spot?.spot_id,
+    });
+  };
+
   return (
     <div className="w-full flex flex-col gap-6">
       {/* <Products locale={locale} /> */}
@@ -16,100 +37,118 @@ const Pickup = ({ locale }) => {
         <p className="text-[#A098AE] font-normal textSmall3">
           {pickupText("address")}
         </p>
-        <section className="flex flex-col gap-2 rounded-md border border-primary p-3">
-          <div className="flex flex-col w-full justify-between gap-1">
-            <div className="flex justify-between items-center gap-2">
-              <p className="flex items-center textSmall3 font-bold leading-7">
-                <Image
-                  src={location}
-                  alt="location"
-                  width={100}
-                  height={100}
-                  className="w-6 h-6 md:w-8 md:h-8"
-                />
-                Яккасарайский филиал
-              </p>
-              <Button
-                className={
-                  "h-8 max-sm:text-[12px] md:h-10 px-4 md:px-5 bg-transparent text-[#004032] shadow-none border-[1px] rounded-[8px] border-[#004032]"
-                }
-              >
-                {all("choose")}
-              </Button>
-            </div>
-            <p className="text-[#A098AE] text-normal textSmall1">
-              Яшнабадский р-й. Улица Боткина 1А дом №20
-            </p>
-          </div>
-          <div className="flex flex-col w-full justify-between gap-1">
-            <div className="flex justify-between items-center gap-2">
-              <p className="flex items-center textSmall3 font-bold leading-7">
-                <Image
-                  src={location}
-                  alt="location"
-                  width={100}
-                  height={100}
-                  className="w-6 h-6 md:w-8 md:h-8"
-                />
-                Яккасарайский филиал
-              </p>
-              <Button
-                className={
-                  "h-8 max-sm:text-[12px] md:h-10 px-4 md:px-5 bg-transparent text-[#004032] shadow-none border-[1px] rounded-[8px] border-[#004032]"
-                }
-              >
-                {all("choose")}
-              </Button>
-            </div>
-            <p className="text-[#A098AE] text-normal textSmall1">
-              Яшнабадский р-й. Улица Боткина 1А дом №20
-            </p>
-          </div>
-          <div className="flex flex-col w-full justify-between gap-1">
-            <div className="flex justify-between items-center gap-2">
-              <p className="flex items-center textSmall3 font-bold leading-7">
-                <Image
-                  src={location}
-                  alt="location"
-                  width={100}
-                  height={100}
-                  className="w-6 h-6 md:w-8 md:h-8"
-                />
-                Яккасарайский филиал
-              </p>
-              <Button
-                className={
-                  "h-8 max-sm:text-[12px] md:h-10 px-4 md:px-5 bg-transparent text-[#004032] shadow-none border-[1px] rounded-[8px] border-[#004032]"
-                }
-              >
-                {all("choose")}
-              </Button>
-            </div>
-            <p className="text-[#A098AE] text-normal textSmall1">
-              Яшнабадский р-й. Улица Боткина 1А дом №20
-            </p>
-          </div>
+        <section className="flex flex-col gap-2 rounded-md sm:border border-primary sm:p-3">
+          {isLoading ? (
+            // Skeleton loading view
+            <>
+              {Array.from({ length: 3 }).map((_, index) => (
+                <div
+                  key={index}
+                  className="flex flex-col w-full justify-between gap-2"
+                >
+                  <div
+                    className={`w-full flex justify-between items-center gap-2 max-sm:p-1 max-sm:rounded-md max-sm:border-2`}
+                  >
+                    <div className="w-full flex flex-col items-start">
+                      <Skeleton className="bg-primary-modal w-1/2 h-[20px] sm:h-[24px] rounded-full mb-2" />
+                      <Skeleton className="bg-primary-modal w-10/12 h-[16px] sm:h-[16px] rounded-md" />
+                    </div>
+                    <Skeleton className="max-sm:hidden bg-primary-modal h-8 md:h-10 max-w-[100px] w-full rounded-md" />
+                  </div>
+                </div>
+              ))}
+            </>
+          ) : (
+            // Render branch data
+            <>
+              {branchsData?.map((spot, i) => {
+                return (
+                  <div
+                    key={i}
+                    className="flex flex-col w-full justify-between gap-1"
+                  >
+                    {/* Mobile */}
+                    <div
+                      onClick={() => handleSelectAddress(spot)}
+                      className={`${
+                        orderData?.spot_id == spot?.spot_id
+                          ? "border-primary bg-primary-modal/10"
+                          : ""
+                      } sm:hidden flex justify-between items-center gap-2 max-sm:border-2 max-sm:rounded-md max-sm:p-1 active:border-primary max-sm:cursor-pointer`}
+                    >
+                      <div className="flex flex-col items-start">
+                        <div className="flex items-center textSmall3 font-bold  leading-3 lg:leading-7">
+                          <Image
+                            src={location}
+                            alt="location"
+                            width={100}
+                            height={100}
+                            className="w-6 h-6 md:w-8 md:h-8"
+                          />
+                          {translateTextSpot(spot?.name, locale)}
+                        </div>
+                        <p className="text-[#A098AE] text-normal textSmall1">
+                          {translateTextSpotAddress(spot?.address, locale)}
+                        </p>
+                      </div>
+                    </div>
+                    {/* Desktop */}
+                    <div className="max-sm:hidden flex justify-between items-center gap-2 max-sm:border-2 max-sm:rounded-md max-sm:p-1 active:border-primary max-sm:cursor-pointer">
+                      <div className="flex flex-col items-start">
+                        <div className="flex items-center textSmall3 font-bold  leading-3 lg:leading-7">
+                          <Image
+                            src={location}
+                            alt="location"
+                            width={100}
+                            height={100}
+                            className="w-6 h-6 md:w-8 md:h-8"
+                          />
+                          {translateTextSpot(spot?.name, locale)}
+                        </div>
+                        <p className="text-[#A098AE] text-normal textSmall1">
+                          {translateTextSpotAddress(spot?.address, locale)}
+                        </p>
+                      </div>
+                      <Button
+                        onClick={() => handleSelectAddress(spot)}
+                        className={`${
+                          orderData?.spot_id == spot?.spot_id
+                            ? "bg-primary text-white"
+                            : "text-primary bg-transparent"
+                        } max-sm:hidden h-8 max-sm:text-[12px] md:h-10 px-4 md:px-5 shadow-none border-[1px] rounded-[8px] border-[#004032] max-w-[100px] w-full`}
+                      >
+                        {orderData?.spot_id == spot?.spot_id
+                          ? all("selected")
+                          : all("choose")}
+                      </Button>
+                    </div>
+                  </div>
+                );
+              })}
+            </>
+          )}
         </section>
       </div>
-      <div className="flex w-full items-center justify-between pt-2 gap-2">
-        <div className="w-2/3 flex border-[1px] border-[#A098AE] rounded-[8px] pr-6">
-          {" "}
-          <Input
+      <div className="flex w-full items-center justify-between pt-2 md:gap-2">
+        <div className="w-full md:w-2/3 flex flex-col gap-1">
+          <p className="text-[#A098AE] font-normal textSmall3">
+            {all("add_comment")}
+          </p>
+          <Textarea
             type="text"
-            placeholder={all("add_comment")}
+            value={orderData?.comment || ""}
+            onChange={(e) =>
+              setOrderData({
+                ...orderData,
+                comment: e.target.value,
+              })
+            }
+            placeholder={all("add_comment_pls")}
             className={
-              "text-[12px] md:text-sm max-md:h-8 border-none outline-none shadow-none focus:outline-none focus-visible:ring-0"
+              "text-[12px] md:text-sm max-md:h-8 border-2 focus-visible:ring-0 focus:border-primary"
             }
           />{" "}
-          <Image src={pencil} alt="pencil" width={16} height={16} />
         </div>
-        <Button
-          className={
-            "h-8 max-sm:text-[12px] md:h-10 px-4 md:px-5 bg-transparent text-[#004032] shadow-none border-[1px] rounded-[8px] border-[#004032]"
-          }
-        >
-          {all("save")}
-        </Button>
       </div>
     </div>
   );

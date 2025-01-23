@@ -19,10 +19,12 @@ export const useStore = create((set) => ({
     }),
   initializeFavorites: () => {
     const savedProducts = localStorage.getItem("isFavorites");
+    
     const savedActiveTab = localStorage.getItem("activeTab");
+    console.log(savedActiveTab,"yobana");
     const parsedProducts = savedProducts ? JSON.parse(savedProducts) : [];
     set({ favorites: parsedProducts });
-    set({ activeTab: savedActiveTab ? savedActiveTab : "delivery" });
+    set({ activeTab: savedActiveTab });
   },
 }));
 
@@ -194,4 +196,71 @@ export const useProductStore = create((set) => ({
       localStorage.setItem("products", JSON.stringify(updatedProducts));
       return { products: updatedProducts };
     }),
+}));
+
+export const useOrderStore = create((set) => ({
+  orderData: {
+    spot_id: 0,
+    spot_name: "",
+    phone: "",
+    products: [],
+    service_mode: 3,
+    payment_method: "cash",
+    total: 0,
+    delivery_price: 10000,
+    lng: 0,
+    lat: 0,
+    client: null,
+    pay_cash: null,
+    pay_card: null,
+    pay_click: null,
+    pay_payme: null,
+    pay_uzum: null,
+    pay_bonus: null,
+    comment: "",
+    address: "",
+    client_addresses_id: null,
+  },
+  totalSum: 0,
+  setTotalSum: (data) =>
+    set(() => {
+      localStorage.setItem("totalSum", JSON.stringify(data));
+      return { totalSum: data };
+    }),
+  setOrderData: (data) =>
+    set(() => {
+      localStorage.setItem("orderData", JSON.stringify(data));
+      return { orderData: data };
+    }),
+
+  initializeOrderData: () => {
+    const orderData = localStorage.getItem("orderData");
+    const totalSum = localStorage.getItem("totalSum");
+    const parsedOrderData = orderData
+      ? JSON.parse(orderData)
+      : {
+          spot_id: 0,
+          spot_name: "",
+          phone: "",
+          products: [],
+          service_mode: 3,
+          payment_method: "cash",
+          total: 0,
+          delivery_price: 10000,
+          lng: 0,
+          lat: 0,
+          client: null,
+          pay_cash: null,
+          pay_card: null,
+          pay_click: null,
+          pay_payme: null,
+          pay_uzum: null,
+          pay_bonus: null,
+          comment: "",
+          address: "",
+          client_addresses_id: null,
+        };
+    set({ orderData: parsedOrderData });
+    set({ totalSum: totalSum || 0 });
+  },
 }));

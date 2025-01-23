@@ -1,35 +1,74 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslations } from "use-intl";
 import Delivery from "./delivery";
 import Pickup from "./pickup";
 import Spot from "./spot";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useStore } from "@/store";
+import { useOrderStore, useStore } from "@/store";
+import Cookies from "js-cookie";
+import { getClientData, getSpotsData } from "@/actions";
 
-const CartSidebar = ({ locale, place, spotData, searchParamsData }) => {
+const CartSidebar = ({ locale, place, spotData, searchParamsData, auth }) => {
   const deliveryText = useTranslations("Cart.Delivery");
   const pickupText = useTranslations("Cart.Pickup");
   const spot = useTranslations("Cart.Spot");
-  const { setActiveTab } = useStore();
+  const { setActiveTab, activeTab } = useStore();
+  const [clientData, setClientData] = useState(null);
+  const [branchsData, setBranchesData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const { setOrderData, orderData } = useOrderStore();
   const handleTabChange = (value) => {
-    console.log("Selected Tab:", value);
     setActiveTab(value);
+    setOrderData({
+      ...orderData,
+      service_mode: (() => {
+        switch (value) {
+          case "delivery":
+            return 3;
+          case "pickup":
+            return 2;
+          case "spot":
+            return 2;
+          default:
+            return 3;
+        }
+      })(),
+    });
   };
 
   useEffect(() => {
-    if (place == "web") {
+    if (place === "web") {
       setActiveTab("delivery");
     } else {
       setActiveTab("spot");
     }
   }, [place]);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        const response = await getClientData(Number(auth.client_id));
+        const spots = await getSpotsData();
+        setClientData(response[0]);
+        setBranchesData(spots);
+      } catch (error) {
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    if (auth) {
+      fetchData();
+    }
+  }, [auth]);
+
   return (
     <div className="">
       <Tabs
-        defaultValue={place == "web" ? "delivery" : "spot"}
+        defaultValue={activeTab}
+        value={activeTab}
         onValueChange={handleTabChange}
         className="w-full"
       >
@@ -57,13 +96,29 @@ const CartSidebar = ({ locale, place, spotData, searchParamsData }) => {
           </TabsTrigger>
         </TabsList>
         <TabsContent className="md:px-10" value="delivery">
-          <Delivery locale={locale} />
+          <Delivery
+            locale={locale}
+            clientData={clientData}
+            spotData={spotData}
+            auth={auth}
+            place={place}
+          />
         </TabsContent>
         <TabsContent className="md:px-10" value="pickup">
-          <Pickup locale={locale} />
+          <Pickup
+            locale={locale}
+            isLoading={isLoading}
+            clientData={clientData}
+            auth={auth}
+            branchsData={branchsData}
+          />
         </TabsContent>
         <TabsContent className="md:px-10" value="spot">
-          <Spot locale={locale} spotData={spotData} searchParamsData={searchParamsData} />
+          <Spot
+            locale={locale}
+            spotData={spotData}
+            searchParamsData={searchParamsData}
+          />
         </TabsContent>
       </Tabs>
     </div>

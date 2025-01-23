@@ -10,7 +10,6 @@ const Spot = ({ locale, spotData, searchParamsData }) => {
   const spotText = useTranslations("Cart.Spot");
   const allT = useTranslations("All");
   const { spot, table_id, table_num, service } = searchParamsData;
-  console.log("spot", spotData?.response?.name);
 
   return (
     <div className="w-full flex flex-col">

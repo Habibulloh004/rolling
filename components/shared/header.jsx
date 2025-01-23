@@ -14,7 +14,12 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import ResponsiveSVG from "@/public/assets/responsive";
-import { useClientStore, useProductStore, useStore } from "@/store";
+import {
+  useClientStore,
+  useProductStore,
+  useStore,
+  useOrderStore,
+} from "@/store";
 import Link from "next/link";
 import LngChange from "./lngChange";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -23,38 +28,33 @@ import { Button } from "../ui/button";
 import Cookies from "js-cookie";
 import Marquee from "../ui/marquee";
 
-export default function Header({ locale, param, spotData }) {
+export default function Header({ auth, locale, param, spotData }) {
   const searchParams = useSearchParams();
   const spot = searchParams.get("spot");
   const table_id = searchParams.get("table_id");
   const table_num = searchParams.get("table_num");
   const service = searchParams.get("service");
-  const { client, setClient } = useClientStore();
   const pathName = usePathname();
   const navbar = useTranslations("Navbar");
   const allT = useTranslations("All");
   const t = useTranslations("HomePage");
   const { products } = useProductStore();
   const { toggleOpen, open, initializeFavorites } = useStore();
+  const { initializeOrderData } = useOrderStore();
   const { initializeProducts } = useProductStore();
   const [isOpen, setisOpen] = useState(true);
-  const router = useRouter();
   const [cl, setCl] = useState(null);
 
   useEffect(() => {
     initializeFavorites();
     initializeProducts();
-    if (!client) {
-      setClient(
-        Cookies.get("client") ? JSON.parse(Cookies.get("client")) : null
-      );
-    }
-    setCl(client);
+    initializeOrderData();
   }, []);
 
   useEffect(() => {
-    setCl(client);
-  }, [client]);
+    const authenticated = auth ? JSON.parse(auth.value) : {};
+    setCl(authenticated);
+  }, [auth]);
 
   useEffect(() => {
     if (spot && table_id && table_num && !service && param.place == "branch") {
@@ -183,6 +183,9 @@ export default function Header({ locale, param, spotData }) {
               </p>
             </Link>
           </nav>
+          <div className="flex justify-start items-center w-10/12">
+            <LngChange param={param} />
+          </div>
         </div>
 
         {/* Overlay for closing the menu */}

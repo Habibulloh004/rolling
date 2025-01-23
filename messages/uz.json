@@ -27,6 +27,7 @@
     "save": "Saqlash",
     "choose": "Tanlash",
     "add_comment": "Izoh qo'shish",
+    "add_comment_pls": "Matn kiriting",
     "add_comment_info": "Kuryer uchun muhim ma'lumotlarni qo'shing: kirish joyi, domofon kodi, qavat yoki boshqa tafsilotlar.",
     "services": "Xizmatlar",
     "table": "Stol",
@@ -35,7 +36,9 @@
     "waiter": "Ofitsiant xizmati",
     "waiter_desc": "Xizmatlarimiz ofitsiantlar tomonidan ko'rsatiladi",
     "self": "O'z-o'ziga xizmat ko'rsatish",
-    "self_desc": "Xaridor o'ziga xizmat qiladi"
+    "self_desc": "Xaridor o'ziga xizmat qiladi",
+    "selected": "Tanlangan",
+    "no_active": "Hozirda faol emas"
   },
   "Bonus": {
     "bonus": "Bonus",
@@ -265,7 +268,7 @@
       "comment": "Izoh qo'shish"
     },
     "Spot": {
-      "title": "Joylar",
+      "title": "Restoranlar",
       "choose_spot": "Filialni tanlang",
       "choose_table": "Stolni tanlang",
       "phone": "Telefon raqami",
@@ -277,10 +280,13 @@
     },
     "Payment": {
       "card": "Karta orqali",
-      "cash": "Naqd pulda"
+      "cash": "Naqd pulda",
+      "card_name": "Karta nomi",
+      "thanks_payment": "To'lov uchun rahmat"
     },
     "Total": {
       "total": "Umumiy summa",
+      "products_sum": "Mahsulotlar",
       "discount": "Chegirma",
       "delivery": "Yetkazib berish",
       "to_pay": "To'lash uchun",

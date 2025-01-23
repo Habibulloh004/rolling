@@ -30,12 +30,6 @@ export async function createClient(data) {
 }
 export async function updateClient(data) {
   const myHeaders = new Headers();
-  // const cookieStore = await cookies();
-  // cookieStore.set({
-  //   name: "client",
-  //   value: JSON.stringify(data),
-  // });
-  // (await cookies())?.set("client", JSON.stringify(data))();
   myHeaders.append("Content-Type", "application/json");
   const raw = JSON.stringify(data);
 

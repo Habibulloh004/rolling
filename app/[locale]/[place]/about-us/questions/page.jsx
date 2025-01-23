@@ -5,13 +5,14 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
+import Container from '@/components/shared/container'
 
 const Questions = () => {
   return (
-    <Conttainer>
+    <Container>
 
       
-    </Conttainer>
+    </Container>
   )
 }
 

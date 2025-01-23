@@ -3,22 +3,44 @@ import React from "react";
 import TextBonus from "../_components/textBonus";
 import Image from "next/image";
 import { gold } from "@/public";
+import Cookies from "js-cookie";
+import { getTranslations } from "next-intl/server";
+import { formatCurrency } from "@/lib/utils";
+import { cookies } from "next/headers";
 
-const Bonuses = () => {
+export default async function Bonus() {
+  const getClient = await cookies();
+  const { value } = getClient.get("client");
+  const client = JSON.parse(value);
+
+  const [allT, profileT, bonusT] = await Promise.all([
+    getTranslations("All"),
+    getTranslations("Profile"),
+    getTranslations("Bonus"),
+  ]);
+
   return (
     <Container className={"w-11/12 flex flex-col pt-3 md:pt-8"}>
-      <h1 className="w-full textNormal4 text-primary font-semibold">Бонусы</h1>
+      <h1 className="w-full textNormal4 text-primary font-semibold">{bonusT("bonus")}</h1>
       <div className="flex justify-around pt-6 w-full">
         <div className="flex flex-col items-center">
           <div className="bg-primary rounded-xl w-full max-w-md h-[240px] flex flex-col justify-between items-center relative py-[5px] ">
             <div className="flex flex-col items-center justify-center pt-5">
-              <p className="font-bold text-white text-[32px] ">GOLD</p>
-              <p className="font-bold text-white text-center text-2xl ">30%</p>
-              <p className="font-bold text-white text-center text-[10px] ">
-                Имеющиеся бонусы:
+              <p className="font-bold text-white text-[32px] ">
+                {client.client_groups_discount == "30"
+                  ? "GOLD"
+                  : client.client_groups_discount == "20"
+                  ? "SILVER"
+                  : "BRONZE"}
               </p>
               <p className="font-bold text-white text-center text-2xl ">
-                45 000 сум
+                {client.client_groups_discount}%
+              </p>
+              <p className="font-bold text-white text-center text-[10px] ">
+                {profileT("have_bonus")}
+              </p>
+              <p className="font-bold text-white text-center text-2xl ">
+                {formatCurrency(client.bonus / 100)} {allT("sum")}
               </p>
             </div>
             <Image
@@ -34,7 +56,7 @@ const Bonuses = () => {
           </div>
           <TextBonus className={"flex lg:hidden flex-col gap-5 pt-7 w-full"} />
           <p className="my-4 text-base font-medium">
-            Чем чаще вы заказываете — тем больше ваша выгода!
+            {bonusT("title")}
           </p>
         </div>
 
@@ -42,6 +64,4 @@ const Bonuses = () => {
       </div>
     </Container>
   );
-};
-
-export default Bonuses;
+}

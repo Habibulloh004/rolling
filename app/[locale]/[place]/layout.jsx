@@ -5,14 +5,13 @@ import { routing } from "@/i18n/routing";
 import { Poppins } from "next/font/google";
 import "../../globals.css";
 import Header from "@/components/shared/header";
-import Marquee from "@/components/ui/marquee";
 import Footer from "@/components/shared/footer";
-import Link from "next/link";
 import Script from "next/script";
 import GoogleAnalytics from "@/app/googleAnalytics";
-import { Toaster } from "@/components/ui/toaster";
 import { ApiService } from "@/service/api.services";
 import NextTopLoader from "nextjs-toploader";
+import Cookies from "js-cookie";
+import { Toaster } from "sonner";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -27,13 +26,11 @@ export const metadata = {
 export default async function Layout({
   children,
   params,
-  searchParams,
-  modal,
 }) {
-  const [param, t, searchParamsData] = await Promise.all([
+  const client = Cookies.get("client") || null;
+  const [param, t] = await Promise.all([
     params,
     getTranslations("HomePage"),
-    searchParams,
   ]);
 
   // Validate the locale
@@ -45,30 +42,6 @@ export default async function Layout({
   if (param.place === "branch") {
     spotData = await ApiService.getPosterData("spots.getSpots");
   }
-
-  const wrapWithLink = (text, words, loc) => {
-    const parts = text.split(new RegExp(`(${words.join("|")})`, "g"));
-    return parts.map((part, index) =>
-      words.includes(part) ? (
-        <Link
-          key={index}
-          className="font-semibold inline"
-          href={`/${param.locale}/${param.place}/sign-up`}
-        >
-          {part}
-        </Link>
-      ) : (
-        part
-      )
-    );
-  };
-
-  const introText = wrapWithLink(
-    t("intro"),
-    ["Зарегистрируйтесь", "Register", "Hozir ro'yxatdan o'ting"],
-    param.locale
-  );
-  console.log(param);
 
   // Retrieve messages for the specified locale
   const messages = await getMessages(param.locale);
@@ -144,21 +117,20 @@ export default async function Layout({
         />
         <NextIntlClientProvider locale={param.locale} messages={messages}>
           <Header param={param} locale={param.locale} spotData={spotData} />
-          {param.place !== "branch" && (
-            <div className="bg-secondary text-primary text-center">
-              <div className="max-xl:block hidden max-sm:text-xs">
-                <Marquee pauseOnHover className="[--duration:20s]">
-                  <p>{introText}</p>
-                </Marquee>
-              </div>
-              <p className="hidden xl:block py-2">{introText}</p>
-            </div>
-          )}
           <main className="grow">
             {children}
-            {modal}
           </main>
-          <Toaster />
+          <Toaster
+            position="bottom-right"
+            toastOptions={{
+              classNames: {
+                error: "bg-red-500 text-white",
+                success: "bg-white text-primary",
+                warning: "bg-yellow-400 text-white",
+                info: "bg-blue-400",
+              },
+            }}
+          />
           <Footer params={param} />
         </NextIntlClientProvider>
       </body>

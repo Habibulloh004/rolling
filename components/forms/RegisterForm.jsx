@@ -122,7 +122,7 @@ export default function RegisterForm() {
     }
 
     await getClient(posterClient.response);
-    router.replace(`${getUrl(pathname)}`);
+    router.replace(`${getUrl(pathname)}/login`);
     setIsLoading(false)
   };
 
@@ -186,6 +186,8 @@ export default function RegisterForm() {
       text: descriptionT("4_text")
     },
   ]
+
+  
 
   const { errors } = form.formState;
   return (
@@ -297,8 +299,8 @@ export default function RegisterForm() {
             fieldType={FormFieldType.PASSWORDINPUT}
             control={form.control}
             name="password"
-            label={register("password")}
-            placeholder=""
+            label="Parol" // Labelni matn sifatida uzatish
+            placeholder="Parolni kiriting"
             inputClass="rounded-md border-[1px]"
           />
           <div className="sm:hidden flex items-center space-x-2">

@@ -18,6 +18,7 @@ import {
   FormMessage,
 } from "../ui/form";
 import { DatePicker } from "../ui/date-picker";
+import { rule } from "postcss";
 
 export const FormFieldType = {
   INPUT: "input",
@@ -31,7 +32,7 @@ export const FormFieldType = {
   CURRENCY: "currency",
 };
 
-const RenderInput = ({ field, className, props }) => {
+const RenderInput = ({ field, className, props, rules }) => {
   switch (props.fieldType) {
     case FormFieldType.INPUT:
       return (
@@ -76,9 +77,16 @@ const RenderInput = ({ field, className, props }) => {
               props.className,
               className
             )}
+            onChange={(e) => {
+              const value = e.target.value;
+              if (/^\d*$/.test(value)) {
+                field.onChange(value); // Faqat raqam qabul qilish
+              }
+            }}
           />
         </FormControl>
       );
+
     case FormFieldType.TEXTAREA:
       return (
         <FormControl>
@@ -181,7 +189,6 @@ const CustomFormField = (props) => {
             field={field}
             props={props}
           />
-
           <FormMessage className="shad-error" />
         </FormItem>
       )}

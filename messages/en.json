@@ -37,6 +37,10 @@
     "self": "Self-service",
     "self_desc": "The customer serves himself"
   },
+  "Bonus": {
+    "bonus": "Bonus",
+    "title": "The more often you order, the greater your benefit!"
+  },
   "Profile": {
     "title": "Profile",
     "userName": "Username",
@@ -48,6 +52,8 @@
     "my_order": "My orders",
     "my_bonus": "My bonuses",
     "logout": "Log out",
+    "have_bonus": "Available bonuses:",
+    "btnAddAddress": "Add Address",
     "Links": {
       "my_card": "My Cards",
       "address": "Delivery Addresses",

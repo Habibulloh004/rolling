@@ -21,7 +21,7 @@ import Link from "next/link";
 import { getURL } from "next/dist/shared/lib/utils";
 import { usePathname } from "next/navigation";
 
-export const map = [
+export const mapArray = [
   {
     id: 1,
     title: "Дом 1",
@@ -67,13 +67,13 @@ const Adress = () => {
         <h1 className="w-full font-semibold text-primary textNormal4 text-start">
           {profileT("my_address")}
         </h1>
-        <Link href={`${getURL(pathName)}/add-address`} className="h-10 bg-primary">
+        <Link href={`${getURL(pathName)}/add-address`} className="h-10 px-4 bg-primary">
 
         {profileT("btnAddAddress")}
         </Link>
       </div>
       <div className="w-full hidden lg:grid lg:grid-cols-3 xl:grid-cols-4 gap-3">
-        {map.map((item, i) => (
+        {mapArray.map((item, i) => (
           <Card key={i}>
             <CardHeader>
               <div className="w-full overflow-hidden min-w-[266px] h-[180px] rounded-2xl relative">
@@ -107,7 +107,7 @@ const Adress = () => {
         className="lg:hidden w-full mx-2"
       >
         <CarouselContent>
-          {map.map((item, i) => (
+          {mapArray.map((item, i) => (
             <CarouselItem key={i} className="basis-80 md:basis-auto ">
               <div className="p-1">
                 <Card key={i}>

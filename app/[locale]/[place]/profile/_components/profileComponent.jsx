@@ -4,7 +4,7 @@ import { formatCurrency, getUrl } from "@/lib/utils";
 import React, { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { pencil } from "@/public";
+import {  gold, pencil } from "@/public";
 import Image from "next/image";
 import Link from "next/link";
 import { useTranslations } from "use-intl";
@@ -182,13 +182,13 @@ export default function ProfileComponent({ client }) {
               {formatCurrency(client.bonus / 100)} {allT("sum")}
             </p>
           </div>
-          {/* <Image
-            src={"/assets/Gold.png"}
+          <Image
+            src={gold}
             alt="gold"
             width={350}
             height={100}
             className="absolute top-0 h-full"
-          /> */}
+          />
           <p className="font-bold text-white text-center text-[10px]  tracking-[0.12rem]">
             ROLLINGSUSHI
           </p>

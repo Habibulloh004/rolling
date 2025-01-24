@@ -2,6 +2,7 @@ import Container from "@/components/shared/container";
 import React from "react";
 import TextBonus from "../_components/textBonus";
 import Image from "next/image";
+import { gold } from "@/public";
 import Cookies from "js-cookie";
 import { getTranslations } from "next-intl/server";
 import { formatCurrency } from "@/lib/utils";
@@ -42,13 +43,13 @@ export default async function Bonus() {
                 {formatCurrency(client.bonus / 100)} {allT("sum")}
               </p>
             </div>
-            {/* <Image
+            <Image
               src={gold}
               alt="gold"
               width={400}
               height={100}
               className="absolute top-0 w-[350px] lg:w-[400px]"
-            /> */}
+            />
             <p className="font-bold text-white text-center text-[10px]  tracking-[0.12rem]">
               ROLLINGSUSHI
             </p>

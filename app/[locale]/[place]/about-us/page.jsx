@@ -57,10 +57,16 @@ const AboutUs = async ({ params }) => {
           <p>{aboutUsT("descriptionBottom")}</p>
           <div className="flex flex-col gap-3 sm:hidden mt-4">
           <Link
-              href={`/${param.locale}/${param.place}/about-us/questions`}
+              href={`/${param.locale}/${param.place}/about-us/question`}
               className="w-full h-[50px] flex items-center justify-center rounded-md bg-primary text-white py-2 text-xs md:text-sm text-center"
             >
               {aboutUsT("btnQuestions")}
+            </Link>
+            <Link
+              href={`/${param.locale}/${param.place}/about-us/privacy-policy`}
+              className="w-full h-[50px] flex items-center justify-center rounded-md bg-primary text-white py-2 text-xs md:text-sm text-center"
+            >
+              {aboutUsT("btnPolicy")}
             </Link>
             <Link
               href={`/${param.locale}/${param.place}/about-us/contact`}
@@ -82,7 +88,7 @@ const AboutUs = async ({ params }) => {
             </Link>
           </div>
         </section>
-        <section className="hidden sm:block pt-10 w-[30%] space-y-6">
+        <section className="hidden sm:block  w-[30%] space-y-4">
           <Image
             src={aboutLogo}
             alt={`aboutlogo`}
@@ -95,10 +101,16 @@ const AboutUs = async ({ params }) => {
           <div className="flex flex-col gap-3">
             {/* <CreateReview /> */}
             <Link
-              href={`/${param.locale}/${param.place}/about-us/questions`}
+              href={`/${param.locale}/${param.place}/about-us/question`}
               className="w-full lg:w-3/4 mx-auto rounded-md bg-primary text-white py-4 text-xs md:text-sm text-center"
             >
               {aboutUsT("btnQuestions")}
+            </Link>
+            <Link
+              href={`/${param.locale}/${param.place}/about-us/privacy-policy`}
+              className="w-full lg:w-3/4 mx-auto rounded-md bg-primary text-white py-4 text-xs md:text-sm text-center"
+            >
+              {aboutUsT("btnPolicy")}
             </Link>
             <Link
               href={`/${param.locale}/${param.place}/about-us/contact`}

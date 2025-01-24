@@ -150,6 +150,7 @@
     "logoBottom": "Thank you for trusting us to make your day a little better!",
     "btnReview": "Reviews",
     "btnContact": "Contact",
+    "btnPolicy": "Privacy Policy",
     "btnQuestions": "Frequently asked questions",
     "btnVacansy": "Vacancies",
     "ourComand": "Our Team"
@@ -365,7 +366,7 @@
     "title": "Privacy Policy",
     "description": {
       "0_title": "General Provisions",
-      "0_text": "This Privacy Policy describes how Rolling Sushi (hereinafter referred to as 'Company') collects, uses, stores, and protects customer information.",
+      "0_text": "This Privacy Policy describes how Rolling Sushi (here in after referred to as 'Company') collects, uses, stores, and protects customer information.",
       "1_title": "Data Collection We may collect the following data:",
       "1_text": "• Personal data: name, surname, phone number, email address. \n• Delivery data: delivery address, additional comments.\n• Payment information: transaction data (but not bank card details).\n• Technical data: IP address, device data, browser type, cookies.",
       "2_title": "Data Usage Collected data may be used for:",

@@ -1,5 +1,7 @@
 {
   "All": {
+    "buy": "Buy at Rolling Sushi Tashkent",
+    "city": "Rolling Sushi Tashkent",
     "sign_in": "Sign in",
     "review_err": "Register to write a feedback",
     "client_err": "There is no such user! Please register.",

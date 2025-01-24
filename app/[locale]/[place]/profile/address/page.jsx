@@ -47,14 +47,14 @@ const Address = async ({ params }) => {
   ]);
 
   return (
-    <Container className={"flex flex-col pt-3 md:pt-8 gap-5"}>
+    <Container className={"w-11/12 flex flex-col pt-3 md:pt-8 gap-5 md:px-10"}>
       <div className="w-full flex justify-between">
-        <h1 className="w-full font-semibold text-primary textNormal4 text-start">
+        <h1 className="font-semibold text-primary textNormal4 text-start">
           {profileT("my_address")}
         </h1>
         <Link
           href={`/${locale}/${path?.place}/profile/address/add`}
-          className="h-10 px-4 bg-primary"
+          className="h-10 px-4 bg-primary rounded-xl flex items-center justify-center font-medium text-white"
         >
           {profileT("btnAddAddress")}
         </Link>

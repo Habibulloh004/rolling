@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useTranslations } from "use-intl";
-import { truncateText } from "@/lib/utils";
+import { hashSecretKey, truncateText } from "@/lib/utils";
+import { decryptData, encryptData, hashWithSecret } from "@/lib/hashing";
 
 const MyCard = () => {
   const [color, setColor] = useState("#B18CFE");
@@ -50,6 +51,21 @@ const MyCard = () => {
 
     setExpiryDate(value);
   };
+
+  function getHash(params) {
+    const cardData = JSON.stringify({ cardName: cardName, cardNumber: cardNumber, expiryDate: expiryDate, color: color });
+
+    if (!hashSecretKey) {
+      console.error("Secret key is not defined!");
+      return;
+    }
+    const encryptedCard = encryptData(cardData, hashSecretKey);
+    localStorage.setItem("hashedCard", encryptedCard);
+    const decryptedCard = decryptData(localStorage.getItem("hashedCard"), hashSecretKey);
+    setCardNumber("")
+    setCardName("")
+    setExpiryDate("")
+  }
 
   return (
     <Container className={"w-11/12 flex flex-col pt-3 md:pt-8"}>
@@ -104,7 +120,7 @@ const MyCard = () => {
         </div>
         <div className="lg:w-1/2 flex flex-col justify-center items-center">
           <div
-            className="w-full max-w-md relative rounded-[17px] h-44 md:h-48 overflow-hidden my-4"
+            className="w-full  max-w-[350px] relative rounded-[17px] h-44 md:h-48 overflow-hidden my-4"
             style={{ backgroundColor: color }}
           >
             <Image
@@ -127,44 +143,38 @@ const MyCard = () => {
           <div className="flex justify-between w-11/12 md:w-full max-w-72">
             <Button
               onClick={() => setColor("#B18CFE")}
-              className={`rounded-full w-[30px] p-0 h-[30px] bg-[#B18CFE] hover:bg-[#B18CFE] border-[#004032] ${
-                color == "#B18CFE" ? "border-[3px]" : ""
-              }`}
+              className={`rounded-full w-[30px] p-0 h-[30px] bg-[#B18CFE] hover:bg-[#B18CFE] border-[#004032] ${color == "#B18CFE" ? "border-[3px]" : ""
+                }`}
             ></Button>
             <Button
               onClick={() => setColor("#EE719E")}
-              className={`rounded-full w-[30px] p-0 h-[30px] bg-[#EE719E] hover:bg-[#EE719E] border-[#004032] ${
-                color == "#EE719E" ? "border-[3px]" : ""
-              }`}
+              className={`rounded-full w-[30px] p-0 h-[30px] bg-[#EE719E] hover:bg-[#EE719E] border-[#004032] ${color == "#EE719E" ? "border-[3px]" : ""
+                }`}
             ></Button>
             <Button
               onClick={() => setColor("#4D22B2")}
-              className={`rounded-full w-[30px] p-0 h-[30px] bg-[#4D22B2] hover:bg-[#4D22B2] border-[#004032] ${
-                color == "#4D22B2" ? "border-[3px]" : ""
-              }`}
+              className={`rounded-full w-[30px] p-0 h-[30px] bg-[#4D22B2] hover:bg-[#4D22B2] border-[#004032] ${color == "#4D22B2" ? "border-[3px]" : ""
+                }`}
             ></Button>
             <Button
               onClick={() => setColor("#D8C9FE")}
-              className={`rounded-full w-[30px] p-0 h-[30px] bg-[#D8C9FE] hover:bg-[#D8C9FE] border-[#004032] ${
-                color == "#D8C9FE" ? "border-[3px]" : ""
-              }`}
+              className={`rounded-full w-[30px] p-0 h-[30px] bg-[#D8C9FE] hover:bg-[#D8C9FE] border-[#004032] ${color == "#D8C9FE" ? "border-[3px]" : ""
+                }`}
             ></Button>
             <Button
               onClick={() => setColor("#FFAB01")}
-              className={`rounded-full w-[30px] p-0 h-[30px] bg-[#FFAB01] hover:bg-[#FFAB01] border-[#004032] ${
-                color == "#FFAB01" ? "border-[3px]" : ""
-              }`}
+              className={`rounded-full w-[30px] p-0 h-[30px] bg-[#FFAB01] hover:bg-[#FFAB01] border-[#004032] ${color == "#FFAB01" ? "border-[3px]" : ""
+                }`}
             ></Button>
             <Button
               onClick={() => setColor("#FF8C82")}
-              className={`rounded-full w-[30px] p-0 h-[30px] bg-[#FF8C82] hover:bg-[#FF8C82] border-[#004032] ${
-                color == "#FF8C82" ? "border-[3px]" : ""
-              }`}
+              className={`rounded-full w-[30px] p-0 h-[30px] bg-[#FF8C82] hover:bg-[#FF8C82] border-[#004032] ${color == "#FF8C82" ? "border-[3px]" : ""
+                }`}
             ></Button>
           </div>
 
           <div className="w-full max-w-md grid grid-cols-1 gap-y-4 lg:grid-cols-2 gap-x-2 mt-10 mx-7">
-            <Button className={"hover:bg-primary h-11 rounded-xl"}>
+            <Button onClick={getHash} className={"hover:bg-primary h-11 rounded-xl"}>
               {allT("confirm")}
             </Button>
             <Button variant={"ghost"} className={"border-2 h-11 rounded-xl"}>

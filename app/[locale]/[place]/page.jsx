@@ -56,7 +56,7 @@ export default async function HomePage({ params, searchParams }) {
       {path.place == "branch" && (
         <TitleComponent
           searchParamsData={searchParamsData}
-          products={products}
+          products={productsData?.response}
           categories={categories}
           locale={locale}
           path={path}

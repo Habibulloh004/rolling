@@ -61,6 +61,9 @@ const CartSidebar = ({ locale, place, spotData, searchParamsData, auth }) => {
       }
     };
     fetchData();
+    if (place == "branch") {
+      setActiveTab("spot");
+    }
   }, []);
 
   return (

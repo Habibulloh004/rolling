@@ -284,7 +284,7 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
                       {formatNumber(Number(auth.bonus / 100))} {all("sum")}
                     </p>
                   </div>
-                  <DiscountBadge auth={auth} />
+                  <DiscountBadge auth={auth} />   
                 </div>
                 <div className="mt-[7px]">
                   <p className="text-[#373737] pb-1 font-medium">

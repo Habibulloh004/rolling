@@ -11,7 +11,7 @@ export default async function Profile({ params }) {
     params,
   ]);
   const clientData = getClient.get("client");
-  const client = clientData ? JSON.parse(clientData?.value) : null;
+  const client = clientData ? JSON.parse(clientData?.value) : {};
   return (
     <Container
       className={`flex-col items-start min-h-[400px] justify-start pt-3 md:pt-8`}

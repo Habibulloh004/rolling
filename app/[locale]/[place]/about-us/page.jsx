@@ -3,7 +3,6 @@ import { aboutLogo } from "@/public";
 import { getTranslations, getLocale } from "next-intl/server";
 import Image from "next/legacy/image";
 import React from "react";
-import TeamCards from "./_components/cards";
 import Link from "next/link";
 
 export const metadata = {

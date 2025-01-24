@@ -182,13 +182,13 @@ export default function ProfileComponent({ client }) {
               {formatCurrency(client.bonus / 100)} {allT("sum")}
             </p>
           </div>
-          <Image
+          {/* <Image
             src={"/assets/Gold.png"}
             alt="gold"
             width={350}
             height={100}
             className="absolute top-0 h-full"
-          />
+          /> */}
           <p className="font-bold text-white text-center text-[10px]  tracking-[0.12rem]">
             ROLLINGSUSHI
           </p>

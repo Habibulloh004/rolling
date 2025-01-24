@@ -1,4 +1,4 @@
-import {ApiService} from "@/app/lib/apiService";
+import { ApiService } from "@/service/api.services";
 import { baseUrl } from "@/lib/utils";
 
 // Utility function to slugify text

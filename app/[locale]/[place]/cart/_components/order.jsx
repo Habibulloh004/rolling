@@ -27,7 +27,7 @@ const DiscountBadge = () => {
   const discountImage = {
     10: "/assets/Silver.png",
     20: "/assets/Bronze.png",
-    30: gold,
+    30: "/assets/Gold.png",
   };
 
   // const discount = auth?.client_groups_discount || 0;
@@ -49,7 +49,7 @@ const DiscountBadge = () => {
         </div>
       )}
       <Image
-        src={discountImage[discount] || gold}
+        src={discountImage[discount]}
         alt={discountLabel[discount] || "gold"}
         width={150}
         height={100}

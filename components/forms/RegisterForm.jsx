@@ -44,19 +44,19 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
+} from "@/components/ui/dialog";
 import {
   getCategories,
   getClient,
   getClientGroup,
   sendSmsToUser,
 } from "@/actions";
-import { ScrollArea } from "@/components/ui/scroll-area"
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
 import { createClient } from "@/actions/post";
 
-
 export default function RegisterForm() {
+  const [open, setOpen] = useState(false);
   const { toast } = useToast();
   const [clientGroup, setClientGroup] = useState("");
   const [registerBtnDisabled, setRegisterBtnDisabled] = useState(true);
@@ -95,35 +95,38 @@ export default function RegisterForm() {
   }, []);
 
   const onSubmit = async (values) => {
-    setIsLoading(true)
+    setIsLoading(true);
     const posterClient = await createClient({
       client_name: `${form.getValues("last_name")} ${form.getValues(
         "first_name"
       )}`,
-      client_sex: `${form.getValues("genter") == "male"
-        ? "1"
-        : form.getValues("genter") == "female"
+      client_sex: `${
+        form.getValues("genter") == "male"
+          ? "1"
+          : form.getValues("genter") == "female"
           ? "2"
           : "0"
-        }`,
+      }`,
       client_groups_id_client: clientGroup
         ? clientGroup[0].client_groups_id
         : "1",
       phone: `${form.getValues("phone")}`,
       email: `${form.getValues("email")}`,
       birthday: formatTimestampToDate(form.getValues("birthday")),
-      comment: JSON.stringify({ password: `password ${form.getValues("password")}` }),
+      comment: JSON.stringify({
+        password: `password ${form.getValues("password")}`,
+      }),
     });
 
     if (posterClient.error && posterClient.error == 167) {
       router.replace(`${getUrl(pathname)}/login`);
-      setIsLoading(false)
+      setIsLoading(false);
       return;
     }
 
     await getClient(posterClient.response);
     router.replace(`${getUrl(pathname)}/login`);
-    setIsLoading(false)
+    setIsLoading(false);
   };
 
   const phone = form.watch("phone");
@@ -155,6 +158,7 @@ export default function RegisterForm() {
   };
 
   const sendSms = async () => {
+    setOpen(true);
     const code = generateRandomFourDigitNumber();
     setGeneratingValue(code);
     await sendSmsToUser(code, form.getValues("phone"));
@@ -163,31 +167,29 @@ export default function RegisterForm() {
     {
       id: 1,
       title: descriptionT("0_title"),
-      text: descriptionT("0_text")
+      text: descriptionT("0_text"),
     },
     {
       id: 2,
       title: descriptionT("1_title"),
-      text: descriptionT("1_text")
+      text: descriptionT("1_text"),
     },
     {
       id: 3,
       title: descriptionT("2_title"),
-      text: descriptionT("2_text")
+      text: descriptionT("2_text"),
     },
     {
       id: 4,
       title: descriptionT("3_title"),
-      text: descriptionT("3_text")
+      text: descriptionT("3_text"),
     },
     {
       id: 5,
       title: descriptionT("4_title"),
-      text: descriptionT("4_text")
+      text: descriptionT("4_text"),
     },
-  ]
-
-  
+  ];
 
   const { errors } = form.formState;
   return (
@@ -213,8 +215,8 @@ export default function RegisterForm() {
             label={register("last_name")}
             inputClass="rounded-md border-[1px] col-span-2 md:col-span-1"
           />
-          <div className="w-full flex col-span-2 sm:grid grid-cols-2 lg:grid-cols-4 justify-start items-end gap-2">
-            <div className="lg:col-span-3 w-full">
+          <div className="w-full flex col-span-2 sm:grid grid-cols-2 lg:grid-cols-3 justify-start items-end gap-2">
+            <div className="lg:col-span-2 w-full">
               <CustomFormField
                 fieldType={FormFieldType.PHONE_INPUT}
                 control={form.control}
@@ -225,11 +227,12 @@ export default function RegisterForm() {
               />
             </div>
             <div
-              className={`${errors.phone && "pb-7"
-                } h-full flex justify-end items-end col-span-1`}
+              className={`${
+                errors.phone && "pb-7"
+              } h-full flex justify-end items-end col-span-1`}
             >
               <div></div>
-              <AlertDialog>
+              <AlertDialog open={open}>
                 <AlertDialogTrigger asChild>
                   <div>
                     <Button
@@ -254,7 +257,7 @@ export default function RegisterForm() {
                   <AlertDialogHeader>
                     <AlertDialogTitle className="text-xl text-center relative">
                       {optLang("title")}
-                      <AlertDialogCancel className="w-2 aspect-square absolute right-0 -top-2">
+                      <AlertDialogCancel className="w-2 aspect-square absolute right-0 -top-2" onClick={() => setOpen(false)}>
                         <X className="size-2" />
                       </AlertDialogCancel>
                     </AlertDialogTitle>
@@ -300,7 +303,6 @@ export default function RegisterForm() {
             control={form.control}
             name="password"
             label="Parol" // Labelni matn sifatida uzatish
-            placeholder="Parolni kiriting"
             inputClass="rounded-md border-[1px]"
           />
           <div className="sm:hidden flex items-center space-x-2">
@@ -315,27 +317,48 @@ export default function RegisterForm() {
 
             <div className="w-5/6">
               <Dialog>
-                <DialogTrigger as="div"><p className="text-[12px] text-white text-start">{register("privacy_policy").split(" ").slice(0, 12).join(" ")} <span className="underline underline-offset-1">{register("privacy_policy").split(" ").slice(-2).join(" ")}</span></p></DialogTrigger>
+                <DialogTrigger as="div">
+                  <p className="text-[12px] text-white text-start">
+                    {register("privacy_policy")
+                      .split(" ")
+                      .slice(0, 12)
+                      .join(" ")}{" "}
+                    <span className="underline underline-offset-1">
+                      {register("privacy_policy")
+                        .split(" ")
+                        .slice(-2)
+                        .join(" ")}
+                    </span>
+                  </p>
+                </DialogTrigger>
 
                 <DialogContent as="div" mark="false" className={"px-5"}>
                   <ScrollArea as="div" className="h-[500px] py-4">
-                    <h1 className="text-xl md:text-2xl font-semibold text-start w-full text-[#004032] mt-3">{policyT("title")}</h1>
+                    <h1 className="text-xl md:text-2xl font-semibold text-start w-full text-[#004032] mt-3">
+                      {policyT("title")}
+                    </h1>
                     {descriptionArray.map((item, i) => (
                       <DialogHeader as="div" key={i}>
-                        <DialogTitle as="div"><p className="text-base lg:test-lg text-start  w-5/6">{item.title}</p></DialogTitle>
+                        <DialogTitle as="div">
+                          <p className="text-base lg:test-lg text-start  w-5/6">
+                            {item.title}
+                          </p>
+                        </DialogTitle>
 
-                        {item.text.split('\n').map((line, idx) => (
-                          <DialogDescription className="text-xs md:text-base font-normal text-start" key={idx}>{line}</DialogDescription>
+                        {item.text.split("\n").map((line, idx) => (
+                          <DialogDescription
+                            className="text-xs md:text-base font-normal text-start"
+                            key={idx}
+                          >
+                            {line}
+                          </DialogDescription>
                         ))}
-
                       </DialogHeader>
                     ))}
                   </ScrollArea>
                 </DialogContent>
-
               </Dialog>
             </div>
-
           </div>
           <CustomFormField
             fieldType={FormFieldType.DATE_PICKER}
@@ -387,15 +410,33 @@ export default function RegisterForm() {
             }
           />
           <Dialog>
-            <DialogTrigger as="div"><p className="text-[13px] text-white ">{register("privacy_policy").split(" ").slice(0, 12).join(" ")} <span className="underline underline-offset-2">{register("privacy_policy").split(" ").slice(-2).join(" ")}</span></p></DialogTrigger>
+            <DialogTrigger as="div">
+              <p className="text-xs text-left text-white ">
+                {register("privacy_policy").split(" ").slice(0, 12).join(" ")}{" "}
+                <span className="underline underline-offset-2">
+                  {register("privacy_policy").split(" ").slice(-2).join(" ")}
+                </span>
+              </p>
+            </DialogTrigger>
             <DialogContent mark="false" className={"px-5"}>
               <ScrollArea as="div" className="h-[400px] py-7">
-                <h1 className="text-xl md:text-2xl font-semibold text-start w-full text-[#004032] mt-3">{policyT("title")}</h1>
+                <h1 className="text-xl md:text-2xl font-semibold text-start w-full text-[#004032] mt-3">
+                  {policyT("title")}
+                </h1>
                 {descriptionArray.map((item, i) => (
                   <DialogHeader as="div" key={i}>
-                    <DialogTitle as="div"><p className="text-base lg:test-lg text-start  w-5/6">{item.title}</p></DialogTitle>
-                    {item.text.split('\n').map((line, idx) => (
-                      <DialogDescription className="text-xs md:text-base font-normal text-start" key={idx}>{line}</DialogDescription>
+                    <DialogTitle as="div">
+                      <p className="text-base lg:test-lg text-start  w-5/6">
+                        {item.title}
+                      </p>
+                    </DialogTitle>
+                    {item.text.split("\n").map((line, idx) => (
+                      <DialogDescription
+                        className="text-xs md:text-base font-normal text-start"
+                        key={idx}
+                      >
+                        {line}
+                      </DialogDescription>
                     ))}
                   </DialogHeader>
                 ))}

@@ -41,7 +41,10 @@
     "self_desc": "Xaridor o'ziga xizmat qiladi",
     "selected": "Tanlangan",
     "no_active": "Hozirda faol emas",
-    "no_auth": "Siz tizimga kirmagansiz!"
+    "no_auth": "Siz tizimga kirmagansiz!",
+    "products_empty": "Siz mahsulot tanlamadingiz!",
+    "phone_empty": "Telefon raqam mavjud emas!",
+    "order_created":"Buyurtmangiz qabul qilindi"
   },
   "Bonus": {
     "bonus": "Bonus",

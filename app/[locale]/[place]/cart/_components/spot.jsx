@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { translateTextSpot } from "@/lib/utils";
 import { location, pencil } from "@/public";
-import { useStore } from "@/store";
+import { useOrderStore, useStore } from "@/store";
 import Image from "next/image";
 import React, { useEffect } from "react";
 import { useTranslations } from "use-intl";
@@ -10,13 +10,36 @@ import { useTranslations } from "use-intl";
 const Spot = ({ place, locale, spotData, searchParamsData }) => {
   const spotText = useTranslations("Cart.Spot");
   const allT = useTranslations("All");
+  const profileT = useTranslations("Profile");
   const { spot, table_id, table_num, service } = searchParamsData;
   const { setActiveTab } = useStore();
+  const { orderData, setOrderData } = useOrderStore();
+
+  // Telefon raqami o'zgarishini boshqaruvchi funksiya
+  const handleChangePhone = (e) => {
+    const inputValue = e.target.value;
+
+    // Faqat raqamlar va "+" belgisi kiritilishi mumkin
+    const sanitizedValue = inputValue.replace(/[^0-9+]/g, "");
+
+    // "+ bilan boshlashni tekshirish"
+    if (!sanitizedValue.startsWith("+")) {
+      setOrderData({ ...orderData, phone: "+" });
+      return;
+    }
+
+    // Maksimal uzunlikni 13 ta belgiga cheklash
+    if (sanitizedValue.length <= 13) {
+      setOrderData({ ...orderData, phone: sanitizedValue });
+    }
+  };
+
   useEffect(() => {
     if (place == "web") {
       setActiveTab("delivery");
     }
   }, []);
+
   return (
     <div className="w-full flex flex-col">
       <div className="w-full md:space-y-2">
@@ -35,13 +58,6 @@ const Spot = ({ place, locale, spotData, searchParamsData }) => {
             {translateTextSpot(spotData?.response?.name, locale)?.split("-")[1]}{" "}
             {allT("spot")}
           </p>
-          {/* <Button
-            className={
-              "h-8 max-sm:text-[12px] md:h-10 px-4 md:px-5 bg-transparent text-[#004032] shadow-none border-[1px] rounded-[8px] border-[#004032]"
-            }
-          >
-            {all("choose")}
-          </Button> */}
         </div>
         <p className="text-[#A098AE] font-normal textSmall3 pt-2">
           {spotText("choose_table")}
@@ -57,13 +73,16 @@ const Spot = ({ place, locale, spotData, searchParamsData }) => {
             />
             {allT("table")} № {table_num}
           </p>
-          {/* <Button
-            className={
-              "h-8 max-sm:text-[12px] md:h-10 px-4 md:px-5 bg-transparent text-[#004032] shadow-none border-[1px] rounded-[8px] border-[#004032]"
-            }
-          >
-            {all("choose")}
-          </Button> */}
+        </div>
+        <p className="text-[#A098AE] font-normal textSmall3 pt-2">
+          {profileT("phone")}
+        </p>
+        <div className="flex w-full justify-between pt-2 md:gap-2">
+          {/* Telefon raqami uchun input */}
+          <Input
+            onChange={handleChangePhone}
+            value={orderData?.phone || "+"} // "+" bilan boshlanadi
+          />
         </div>
       </div>
     </div>

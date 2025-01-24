@@ -116,7 +116,7 @@ export default async function Layout({ children, params }) {
           showAtBottom={false}
         />
         <NextIntlClientProvider locale={param.locale} messages={messages}>
-          {/* <Header param={param} locale={param.locale} spotData={spotData} /> */}
+          <Header param={param} locale={param.locale} spotData={spotData} />
           <main className="grow">{children}</main>
           <Toaster
             position="bottom-right"

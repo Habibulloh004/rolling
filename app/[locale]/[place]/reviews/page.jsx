@@ -11,7 +11,6 @@ import {
 
 const Reviews = async ({ params }) => {
   const [allT, param] = await Promise.all([getTranslations("All"), params]);
-  console.log(param);
   const fakeData = [
     {
       id: 1,

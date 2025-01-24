@@ -10,8 +10,8 @@ export default async function Profile({ params }) {
     getLocale(),
     params,
   ]);
-  const { value } = getClient.get("client");
-  const client = JSON.parse(value);
+  const clientData = getClient.get("client");
+  const client = clientData ? JSON.parse(clientData?.value) : null;
   return (
     <Container
       className={`flex-col items-start min-h-[400px] justify-start pt-3 md:pt-8`}

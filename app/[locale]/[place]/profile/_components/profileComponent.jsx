@@ -95,7 +95,6 @@ export default function ProfileComponent({ client }) {
                       firstname: firstname == undefined ? "" : firstname,
                       lastname: lastname == undefined ? "" : lastname,
                     };
-                    console.log("upda", updatedClient);
                     const res = await updateClient(updatedClient);
                     if (!res.error) {
                       Cookies.set(

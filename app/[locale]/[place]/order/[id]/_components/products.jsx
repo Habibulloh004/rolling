@@ -1,9 +1,6 @@
 "use client";
-import { Button } from "@/components/ui/button";
 import { formatNumber, getLocalizedProduct, posterUrl } from "@/lib/utils";
-import { bucket } from "@/public";
 import { useProductStore } from "@/store";
-import { Minus, Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import React from "react";
@@ -11,8 +8,8 @@ import React from "react";
 const Products = ({ locale }) => {
   const cart = useTranslations("Cart");
   const all = useTranslations("All");
-  const { products, incrementCount, decrementCount, deleteProduct } =
-    useProductStore();
+  const { products } = useProductStore();
+
   return (
     <div className="max-md:bg-white max-md:p-3 w-full rounded-md pb-4 space-y-4">
       <h1 className="font-bold textNormal3 text-black text-start">

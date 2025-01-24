@@ -7,13 +7,9 @@ import TeamCards from "./_components/cards";
 import Link from "next/link";
 
 export const metadata = {
-  title: "О нас - Rolling Sushi",
-  description:
-    "Узнайте больше о Rolling Sushi: наш подход, качество, миссия, ценности. Мы предлагаем свежие и вкусные суши с доставкой и в ресторане.",
-  keywords: "О нас, Rolling Sushi, японская кухня, свежие суши, доставка еды",
-  alternates: {
-    canonical: "https://rollingsushi.uz/about-us",
-  },
+  title: "О нас | Rolling Sushi - ваша любимая суши-доставка",
+  description: "Узнайте историю нашей компании, наши принципы и почему тысячи людей выбирают Rolling Sushi для заказа суши в Ташкенте.",
+  keywords: "о нас, Rolling Sushi, японская кухня, суши, доставка еды, Ташкент"
 };
 
 const AboutUs = async ({ params }) => {
@@ -57,10 +53,16 @@ const AboutUs = async ({ params }) => {
           <p>{aboutUsT("descriptionBottom")}</p>
           <div className="flex flex-col gap-3 sm:hidden mt-4">
           <Link
-              href={`/${param.locale}/${param.place}/about-us/questions`}
+              href={`/${param.locale}/${param.place}/about-us/question`}
               className="w-full h-[50px] flex items-center justify-center rounded-md bg-primary text-white py-2 text-xs md:text-sm text-center"
             >
               {aboutUsT("btnQuestions")}
+            </Link>
+            <Link
+              href={`/${param.locale}/${param.place}/about-us/privacy-policy`}
+              className="w-full h-[50px] flex items-center justify-center rounded-md bg-primary text-white py-2 text-xs md:text-sm text-center"
+            >
+              {aboutUsT("btnPolicy")}
             </Link>
             <Link
               href={`/${param.locale}/${param.place}/about-us/contact`}
@@ -82,7 +84,7 @@ const AboutUs = async ({ params }) => {
             </Link>
           </div>
         </section>
-        <section className="hidden sm:block pt-10 w-[30%] space-y-6">
+        <section className="hidden sm:block  w-[30%] space-y-4">
           <Image
             src={aboutLogo}
             alt={`aboutlogo`}
@@ -95,10 +97,16 @@ const AboutUs = async ({ params }) => {
           <div className="flex flex-col gap-3">
             {/* <CreateReview /> */}
             <Link
-              href={`/${param.locale}/${param.place}/about-us/questions`}
+              href={`/${param.locale}/${param.place}/about-us/question`}
               className="w-full lg:w-3/4 mx-auto rounded-md bg-primary text-white py-4 text-xs md:text-sm text-center"
             >
               {aboutUsT("btnQuestions")}
+            </Link>
+            <Link
+              href={`/${param.locale}/${param.place}/about-us/privacy-policy`}
+              className="w-full lg:w-3/4 mx-auto rounded-md bg-primary text-white py-4 text-xs md:text-sm text-center"
+            >
+              {aboutUsT("btnPolicy")}
             </Link>
             <Link
               href={`/${param.locale}/${param.place}/about-us/contact`}

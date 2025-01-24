@@ -8,7 +8,15 @@ import {
 import Container from "@/components/shared/container";
 import { getTranslations } from "next-intl/server";
 
-const Questions = async ({ params }) => {
+export const metadata = {
+  title: "Часто задаваемые вопросы - Rolling Sushi",
+  description:
+    "Найдите ответы на популярные вопросы о меню, доставке, бонусах и работе Rolling Sushi в Ташкенте.",
+  keywords:
+    "вопросы и ответы, FAQ Rolling Sushi, бонусы, доставка суши, меню",
+};
+
+export default async function Faq({ params }) {
   const [param, questionsT, questions] = await Promise.all([
     params,
     getTranslations("FAQ"),
@@ -107,4 +115,3 @@ const Questions = async ({ params }) => {
   );
 };
 
-export default Questions;

@@ -79,7 +79,7 @@ export default function RegisterForm() {
       last_name: "",
       email: "",
       birthday: "",
-      genter: "male",
+      genter: "",
       phone: "",
       password: "",
       privacy_policy: false,
@@ -392,7 +392,7 @@ export default function RegisterForm() {
                 {t("gender_fimale")}
               </span>
             </label>
-            <label className="flex items-center space-x-2">
+            {/* <label className="flex items-center space-x-2">
               <Checkbox
                 checked={gender.none}
                 onCheckedChange={() => handleCheckboxChange("none")}
@@ -400,7 +400,7 @@ export default function RegisterForm() {
               <span className="text-[13px] text-white">
                 {t("gender_other")}
               </span>
-            </label>
+            </label> */}
           </div>
         </div>
         <div className="max-sm:hidden flex items-center space-x-2">

@@ -19,11 +19,11 @@ export const useStore = create((set) => ({
     }),
   initializeFavorites: () => {
     const savedProducts = localStorage.getItem("isFavorites");
-    
+
     const savedActiveTab = localStorage.getItem("activeTab");
     const parsedProducts = savedProducts ? JSON.parse(savedProducts) : [];
     set({ favorites: parsedProducts });
-    set({ activeTab: savedActiveTab });
+    set({ activeTab: savedActiveTab ? savedActiveTab : "delivery" });
   },
 }));
 

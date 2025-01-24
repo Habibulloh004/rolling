@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { formatCreatedAt, formatNumber } from "@/lib/utils";
-import { gift, gold } from "@/public";
+import { gift } from "@/public";
 import { useOrderStore, useProductStore, useStore } from "@/store";
 import { ChevronRight } from "lucide-react";
 import Image from "next/image";
@@ -13,7 +13,7 @@ import { toast } from "sonner";
 import { useTranslations } from "use-intl";
 
 // DiscountBadge Component
-const DiscountBadge = () => {
+const DiscountBadge = ({ auth }) => {
   const discountColor = {
     10: "#E2E2E2",
     20: "#ED7403",
@@ -30,8 +30,7 @@ const DiscountBadge = () => {
     30: "/assets/Gold.png",
   };
 
-  // const discount = auth?.client_groups_discount || 0;
-  const discount = 10;
+  const discount = auth?.client_groups_discount || 0;
 
   return (
     <div className="bg-primary rounded-xl w-[150px] h-[100px] flex flex-col justify-between items-center relative py-[5px]">
@@ -75,6 +74,7 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
   const { orderData, setOrderData, totalSum } = useOrderStore();
   const { products } = useProductStore();
   const { service } = searchParamsData;
+
   const handleSetBonus = () => {
     setOrderData({ ...orderData, pay_bonus: Number(bonus) });
     setBonus(0);
@@ -128,7 +128,7 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
       let deliveryData = {
         address_comment,
         all_price: Number((+totalSum + +delivery_price) * 100),
-        client_address: `${lat},${lng}`,
+        client_address: `${lat || 42},${lng || 62}`,
         client_id: Number(auth?.client_id),
         comment,
         created_at: formatCreatedAt(),
@@ -142,9 +142,27 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
         promotion: "no",
         spot_id: Number(spot_id),
         status: "accept",
-        type: service_mode == 3 ? "delivery" : `take_away ${spot_name}`,
+        type: "delivery",
       };
-      let pickupData = {};
+
+      let pickupData = {
+        address_comment: "no",
+        all_price: Number((+totalSum + +delivery_price) * 100),
+        client_address: `${42},${62}`,
+        client_id: Number(auth?.client_id),
+        comment,
+        created_at: formatCreatedAt(),
+        payed_bonus: pay_bonus ? Number(pay_bonus) * 100 : 0,
+        payed_sum: Number(+totalSum - (pay_bonus ? +pay_bonus : 0)),
+        payment: payment_method,
+        phone: `+${auth?.phone_number}`,
+        products: JSON.stringify(filterProductsAbdugani),
+        promotion: "no",
+        spot_id: Number(spot_id),
+        status: "accept",
+        type: `take_away ${spot_name}`,
+      };
+
       let spotData = {};
     } catch (error) {}
   };

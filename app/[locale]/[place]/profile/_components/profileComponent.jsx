@@ -4,7 +4,7 @@ import { formatCurrency, getUrl } from "@/lib/utils";
 import React, { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { gold, pencil } from "@/public";
+import {  pencil } from "@/public";
 import Image from "next/image";
 import Link from "next/link";
 import { useTranslations } from "use-intl";
@@ -22,7 +22,7 @@ export default function ProfileComponent({ client }) {
       client.lastname && client.lastname
     }`
   );
-  
+
   const router = useRouter();
   const pathName = usePathname();
   const allT = useTranslations("All");
@@ -149,16 +149,17 @@ export default function ProfileComponent({ client }) {
                 {item.title}
               </Link>
             ))}
-            <Button
-              onClick={() => {
-                Cookies.remove("client");
-                setClient(null);
-                router.replace(`${getUrl(pathName)}/login`);
-              }}
-              className="bg-primary h-[50px] flex justify-center items-center text-white font-normal text-sm rounded-[10px]"
-            >
-              {profileLinksT("log_out")}
-            </Button>
+            <Link href={`${getUrl(pathName)}/login`} className="w-full">
+              <Button
+                onClick={() => {
+                  Cookies.remove("client");
+                  setClient(null);
+                }}
+                className="w-full bg-primary h-[50px] flex justify-center items-center text-white font-normal text-sm rounded-[10px]"
+              >
+                {profileLinksT("log_out")}
+              </Button>
+            </Link>
           </div>
         </div>
 
@@ -182,7 +183,7 @@ export default function ProfileComponent({ client }) {
             </p>
           </div>
           <Image
-            src={gold}
+            src={'/assets/Gold.png'}
             alt="gold"
             width={350}
             height={100}
@@ -204,16 +205,17 @@ export default function ProfileComponent({ client }) {
               {item.title}
             </Link>
           ))}
-          <Button
-            onClick={() => {
-              Cookies.remove("client");
-              setClient(null);
-              router.replace(`${getUrl(pathName)}/login`);
-            }}
-            className="bg-primary h-[50px] flex justify-center items-center text-white font-normal text-sm rounded-[10px]"
-          >
-            {profileLinksT("log_out")}
-          </Button>
+          <Link href={`${getUrl(pathName)}/login`} className="w-full">
+            <Button
+              onClick={() => {
+                Cookies.remove("client");
+                setClient(null);
+              }}
+              className="w-full bg-primary h-[50px] flex justify-center items-center text-white font-normal text-sm rounded-[10px]"
+            >
+              {profileLinksT("log_out")}
+            </Button>
+          </Link>
         </div>
       </section>
     </main>

@@ -66,7 +66,7 @@ const CartSidebar = ({ locale, place, spotData, searchParamsData, auth }) => {
   return (
     <div className="">
       <Tabs
-        defaultValue={activeTab}
+        defaultValue={activeTab ? activeTab : "delivery"}
         value={activeTab}
         onValueChange={handleTabChange}
         className="w-full"

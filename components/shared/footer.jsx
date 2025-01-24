@@ -9,18 +9,20 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { usePathname } from "next/navigation";
 
-
 export default function Footer({ params: path }) {
   const pathname = usePathname();
   const footerT = useTranslations("Footer");
   const footNavT = useTranslations("FootNav");
+  const AboutUsPage = useTranslations("AboutUsPage");
   if (path.place !== "branch") {
     return (
       <footer
         className={`bg-white min-h-[300px] flex items-center flex-shrink-0 py-3 ${
           pathname.includes("/login") ||
           pathname.includes("/sign-up") ||
-          pathname.includes("/reset-password") ? "" : "mt-8"
+          pathname.includes("/reset-password")
+            ? ""
+            : "mt-8"
         }`}
       >
         <Container className={`border-b border-primary py-2`}>
@@ -99,7 +101,10 @@ export default function Footer({ params: path }) {
                   className=""
                 />
               </a>
-              <a href="https://apps.apple.com/uz/app/rolling-sushi/id6483865556" target="blank"> 
+              <a
+                href="https://apps.apple.com/uz/app/rolling-sushi/id6483865556"
+                target="blank"
+              >
                 <Image
                   src={playMarketIcon}
                   alt="play market icon"
@@ -124,6 +129,13 @@ export default function Footer({ params: path }) {
                     </li>
                   );
                 })}
+                <Link
+                  href={`/${path.locale}/${path.place}/about-us/privacy-policy`}
+                  className="flex items-center gap-1 font-semibold"
+                >
+                  <ChevronRight className="size-4 md:size-5" />
+                  {AboutUsPage(`btnPolicy`)}
+                </Link>
               </ul>
               <article className="flex flex-col gap-2">
                 <p>{footerT("addressName")}</p>

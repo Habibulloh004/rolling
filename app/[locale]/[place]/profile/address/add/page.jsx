@@ -72,6 +72,7 @@ const EditAddress = () => {
     useMapEvents({
       click(e) {
         const { lat, lng } = e.latlng;
+        console.log(e.latlng)
         setLocation({ lat, lng });
         localStorage.setItem("yourLocation", JSON.stringify({ lat, lng }));
       },

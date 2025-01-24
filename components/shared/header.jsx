@@ -14,21 +14,16 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import ResponsiveSVG from "@/public/assets/responsive";
-import {
-  useClientStore,
-  useProductStore,
-  useStore,
-  useOrderStore,
-} from "@/store";
+import { useProductStore, useStore, useOrderStore } from "@/store";
 import Link from "next/link";
 import LngChange from "./lngChange";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import Cookies from "js-cookie";
 import Marquee from "../ui/marquee";
 
-export default function Header({ auth, locale, param, spotData }) {
+export default function Header({ locale, param, spotData }) {
   const searchParams = useSearchParams();
   const spot = searchParams.get("spot");
   const table_id = searchParams.get("table_id");
@@ -45,15 +40,15 @@ export default function Header({ auth, locale, param, spotData }) {
   const [isOpen, setisOpen] = useState(true);
   const [cl, setCl] = useState(null);
 
+  const auth = Cookies.get("client");
+
   useEffect(() => {
     initializeFavorites();
     initializeProducts();
     initializeOrderData();
-  }, []);
-
-  useEffect(() => {
-    const authenticated = auth ? JSON.parse(auth.value) : {};
-    setCl(authenticated);
+    if (auth) {
+      setCl(JSON.parse(auth)); // Parse JSON string if it's a JSON object
+    }
   }, [auth]);
 
   useEffect(() => {
@@ -125,7 +120,6 @@ export default function Header({ auth, locale, param, spotData }) {
               className=""
             />
           </Link>
-
           {/* Navigation */}
           <nav className="max-sm:w-10/12 flex flex-col gap-5 sm:gap-7 mt-5 justify-start items-start">
             {navItems.map((item) => {

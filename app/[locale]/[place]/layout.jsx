@@ -25,7 +25,6 @@ export const metadata = {
 };
 
 export default async function Layout({ children, params }) {
-  const client = Cookies.get("client") || null;
   const [param, t] = await Promise.all([params, getTranslations("HomePage")]);
 
   // Validate the locale
@@ -40,10 +39,6 @@ export default async function Layout({ children, params }) {
 
   // Retrieve messages for the specified locale
   const messages = await getMessages(param.locale);
-  const cookieStore = await cookies();
-  const auth = cookieStore.get("client");
-  console.log(auth);
-
   return (
     <html lang={param.locale}>
       <head>
@@ -115,7 +110,6 @@ export default async function Layout({ children, params }) {
         />
         <NextIntlClientProvider locale={param.locale} messages={messages}>
           <Header
-            auth={auth}
             param={param}
             locale={param.locale}
             spotData={spotData}

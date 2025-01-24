@@ -262,4 +262,30 @@ export const useOrderStore = create((set) => ({
     set({ orderData: parsedOrderData });
     set({ totalSum: totalSum || 0 });
   },
+  resetOrder: () => {
+    set({
+orderData: {
+        spot_id: 0,
+        spot_name: "",
+        phone: "",
+        products: [],
+        service_mode: 3,
+        payment_method: "cash",
+        total: 0,
+        delivery_price: 10000,
+        lng: 0,
+        lat: 0,
+        client: null,
+        pay_cash: null,
+        pay_card: null,
+        pay_click: null,
+        pay_payme: null,
+        pay_uzum: null,
+        pay_bonus: null,
+        comment: "",
+        address: "",
+        client_addresses_id: null,
+      },
+    });
+  },
 }));

@@ -66,7 +66,6 @@ export default function Header({
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [openSearch, setOpenSearch] = useState(false);
   const auth = Cookies.get("client");
-  console.log(categories, productsData);
 
   useEffect(() => {
     if (searchTerm.trim() === "") {

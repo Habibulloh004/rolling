@@ -54,25 +54,25 @@ const AboutUs = async ({ params }) => {
           <div className="flex flex-col gap-3 sm:hidden mt-4">
           <Link
               href={`/${param.locale}/${param.place}/about-us/questions`}
-              className="w-full rounded-md bg-primary text-white py-2 text-xs md:text-sm text-center"
+              className="w-full h-[50px] flex items-center justify-center rounded-md bg-primary text-white py-2 text-xs md:text-sm text-center"
             >
               {aboutUsT("btnQuestions")}
             </Link>
             <Link
               href={`/${param.locale}/${param.place}/about-us/contact`}
-              className="w-full rounded-md bg-primary text-white py-2 text-xs md:text-sm text-center"
+              className="w-full h-[50px] flex items-center justify-center rounded-md bg-primary text-white py-2 text-xs md:text-sm text-center"
             >
               {aboutUsT("btnContact")}
             </Link>
             <Link
               href={`/${param.locale}/${param.place}/reviews`}
-              className="w-full rounded-md bg-primary text-white py-2 text-xs md:text-sm text-center"
+              className="w-full h-[50px] flex items-center justify-center rounded-md bg-primary text-white py-2 text-xs md:text-sm text-center"
             >
               {aboutUsT("btnReview")}
             </Link>
             <Link
               href={`/${param.locale}/${param.place}/create-vacansy`}
-              className="w-full rounded-md bg-primary text-white py-2 text-xs md:text-sm text-center"
+              className="w-full h-[50px] flex items-center justify-center rounded-md bg-primary text-white py-2 text-xs md:text-sm text-center"
             >
               {aboutUsT("btnVacansy")}
             </Link>

@@ -12,6 +12,7 @@ import { ApiService } from "@/service/api.services";
 import NextTopLoader from "nextjs-toploader";
 import Cookies from "js-cookie";
 import { Toaster } from "sonner";
+import { cookies } from "next/headers";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -28,8 +29,9 @@ export const metadata = {
     canonical: "https://rollingsushi.uz/",
   },
 };
+
+
 export default async function Layout({ children, params }) {
-  const client = Cookies.get("client") || null;
   const [param, t] = await Promise.all([params, getTranslations("HomePage")]);
 
   // Validate the locale
@@ -44,7 +46,6 @@ export default async function Layout({ children, params }) {
 
   // Retrieve messages for the specified locale
   const messages = await getMessages(param.locale);
-
   return (
     <html lang={param.locale}>
       <head>

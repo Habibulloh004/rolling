@@ -55,7 +55,7 @@ export default async function HomePage({ params, searchParams }) {
     <Container className={"w-full flex-col"}>
       {path.place == "branch" && (
         <TitleComponent
-        searchParamsData={searchParamsData}
+          searchParamsData={searchParamsData}
           products={products}
           categories={categories}
           locale={locale}

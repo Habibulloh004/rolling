@@ -66,7 +66,7 @@ export default function Footer({ params: path }) {
             <div className="flex flex-col gap-2 text-sm lg:hidden max-md:items-center">
               <p className="font-semibold">{footerT("download")}</p>
               <div className="md:-translate-x-3 w-full max-sm:flex items-center justify-between flex-col gap-2">
-                <a href="/">
+                <a href="https://play.google.com/store/apps/details?id=com.abdurrahmonxoja.RollingSushi">
                   <Image
                     src={appStoreIcon}
                     alt="app store icon"
@@ -75,7 +75,7 @@ export default function Footer({ params: path }) {
                     className=""
                   />
                 </a>
-                <a href="/">
+                <a href="https://apps.apple.com/uz/app/rolling-sushi/id6483865556">
                   <Image
                     src={playMarketIcon}
                     alt="play market icon"
@@ -90,7 +90,7 @@ export default function Footer({ params: path }) {
           <section className="w-1/2 hidden lg:flex flex-col items-end gap-2 text-sm">
             <p className="font-semibold">{footerT("download")}</p>
             <div className="translate-x-2">
-              <a href="/">
+              <a href="https://play.google.com/store/apps/details?id=com.abdurrahmonxoja.RollingSushi">
                 <Image
                   src={appStoreIcon}
                   alt="app store icon"
@@ -99,7 +99,7 @@ export default function Footer({ params: path }) {
                   className=""
                 />
               </a>
-              <a href="/">
+              <a href="https://apps.apple.com/uz/app/rolling-sushi/id6483865556" target="blank"> 
                 <Image
                   src={playMarketIcon}
                   alt="play market icon"

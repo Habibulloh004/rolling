@@ -1,24 +1,10 @@
-"use client"
-
 import React from "react";
-import {
-  Card,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-} from "@/components/ui/carousel";
 import Container from "@/components/shared/container";
-import { Button } from "@/components/ui/button";
-import MyMap from "../_components/map";
-import { useTranslations } from "use-intl";
+import Link from "next/link";
+import { getLocale, getTranslations } from "next-intl/server";
+import MyAddressComponent from "./_components/myAddressComponent";
 
-export const map = [
+export const mapArray = [
   {
     id: 1,
     title: "Дом 1",
@@ -53,87 +39,29 @@ export const map = [
   },
 ];
 
-const Adress = () => {
-  const allT = useTranslations("All");
-  const profileT = useTranslations("Profile");
-  return (
-    <Container className={"w-11/12 flex flex-col pt-3 md:pt-8 gap-5"}>
-      <h1 className="w-full font-semibold text-primary textNormal4 text-start">
-        {profileT("my_address")}
-      </h1>
-      <div className="w-full hidden lg:grid lg:grid-cols-3 xl:grid-cols-4 gap-3">
-        {map.map((item, i) => (
-          <Card key={i}>
-            <CardHeader>
-              <div className="w-full overflow-hidden min-w-[266px] h-[180px] rounded-2xl relative">
-                <MyMap latitude={item.latitude} longitude={item.longitude} />
-                <div className="h-full w-full absolute top-0 z-20"></div>
-              </div>
-              <CardTitle className={"textSmall3 font-bold"}>
-                {item.title}
-              </CardTitle>
-              <CardDescription
-                className={"text-[#2E2E2E] textSmall2 font-semibold"}
-              >
-                {item.adress}
-              </CardDescription>
-            </CardHeader>
-            <CardFooter
-              className={
-                "grid grid-cols-1 gap-y-4 lg:grid-cols-2 w-full gap-x-2"
-              }
-            >
-              <Button className={"hover:bg-primary"}>{allT("edit")}</Button>
-              <Button className={"hover:bg-primary"}>{allT("delete")}</Button>
-            </CardFooter>
-          </Card>
-        ))}
-      </div>
+const Address = async ({ params }) => {
+  const [profileT, locale, path] = await Promise.all([
+    getTranslations("Profile"),
+    getLocale(),
+    params,
+  ]);
 
-      <Carousel
-        opts={{
-          align: "start",
-        }}
-        className="lg:hidden w-full mx-2"
-      >
-        <CarouselContent>
-          {map.map((item, i) => (
-            <CarouselItem key={i} className="basis-80 md:basis-auto ">
-              <div className="p-1">
-                <Card key={i}>
-                  <CardHeader>
-                    <div className="w-full lg:w-[266px] h-[180px] rounded-2xl relative">
-                      {/* <MyMap
-                        latitude={item.latitude}
-                        longitude={item.longitude}
-                      /> */}
-                      <div className="h-full w-full absolute top-0"></div>
-                    </div>
-                    <CardTitle className={"text-xl font-bold"}>
-                      {item.title}
-                    </CardTitle>
-                    <CardDescription
-                      className={"text-[#2E2E2E] text-sm font-semibold"}
-                    >
-                      {item.adress}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardFooter
-                    className={
-                      "grid grid-cols-1 gap-y-4 lg:grid-cols-2 w-full gap-x-2"
-                    }
-                  >
-                    <Button className={"hover:bg-primary"}>Изменить</Button>
-                    <Button className={"hover:bg-primary"}>Удалить</Button>
-                  </CardFooter>
-                </Card>
-              </div>
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-      </Carousel>
+  return (
+    <Container className={"flex flex-col pt-3 md:pt-8 gap-5"}>
+      <div className="w-full flex justify-between">
+        <h1 className="w-full font-semibold text-primary textNormal4 text-start">
+          {profileT("my_address")}
+        </h1>
+        <Link
+          href={`/${locale}/${path?.place}/profile/address/add`}
+          className="h-10 px-4 bg-primary"
+        >
+          {profileT("btnAddAddress")}
+        </Link>
+      </div>
+      <MyAddressComponent addressData={mapArray} />
     </Container>
   );
 };
 
-export default Adress;
+export default Address;

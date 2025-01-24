@@ -44,7 +44,7 @@ export default async function Page({ params, searchParams }) {
             {all("categories")}
           </h1>
         </div>
-        <div className="w-full grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 2xl:grid-cols-6 gap-5">
+        <div className="w-full grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 2xl:grid-cols-7 gap-5">
           {categories?.map((item, i) => {
             const localizedName = getLocalizedCategoryName(
               item.category_name,
@@ -63,9 +63,9 @@ export default async function Page({ params, searchParams }) {
                     ? `/${locale}/${path.place}/category/${item?.category_id}-${linkName}`
                     : `/${locale}/${path.place}/category/${item?.category_id}-${linkName}?spot=${spot}&table_id=${table_id}&table_num=${table_num}&service=${service}`
                 }
-                className="relative w-full flex justify-start items-center flex-col gap-2"
+                className="relative w-full h-full flex justify-start items-center flex-col gap-2"
               >
-                <div className="w-full h-full aspect-square relative rounded-[40px] overflow-hidden">
+                <div className="w-full max-sm:max-h-32 aspect-square relative rounded-[20px] md:rounded-[40px] overflow-hidden">
                   <CustomImage
                     src={`${posterUrl}${item?.category_photo}`}
                     className="w-full h-full object-cover aspect-square"

@@ -27,7 +27,7 @@ const DialogOverlay = React.forwardRef(({ className, ...props }, ref) => (
 DialogOverlay.displayName = DialogPrimitive.Overlay.displayName;
 
 const DialogContent = React.forwardRef(
-  ({ className, children, ...props }, ref) => (
+  ({ className, children, handleClose, ...props }, ref) => (
     <DialogPortal className="">
       <DialogOverlay>
         <DialogPrimitive.Content
@@ -40,7 +40,10 @@ const DialogContent = React.forwardRef(
         >
           {children}
           {props.mark == "false" ? (
-            <DialogPrimitive.Close className="sm:w-6 w-5 absolute left-2 top-2 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-0 focus:ring-ring focus:ring-offset-0 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
+            <DialogPrimitive.Close
+              onClick={handleClose}
+              className="sm:w-6 w-5 absolute left-2 top-2 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-0 focus:ring-ring focus:ring-offset-0 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
+            >
               <div className="size-5 sm:size-6 rounded-full bg-red-500 hover:bg-red-500 group flex items-center justify-center">
                 <X
                   className={`h-3 w-3 text-secondary-foreground hidden group-hover:block`}

@@ -7,6 +7,29 @@ body {
   background: hsla(0, 0%, 96%, 1);
 }
 
+.toast-container {
+  position: fixed;
+  z-index: 9999;
+}
+
+@media (max-width: 768px) {
+  /* Mobile: Toast appears at the top center */
+  .toast-container {
+    top: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+@media (min-width: 769px) {
+  /* Desktop: Toast appears at the bottom-right */
+  .toast-container {
+    bottom: 1rem;
+    right: 1rem;
+  }
+}
+
+
 .empty-icons > * {
   display: inline-block !important;
 }

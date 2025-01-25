@@ -154,18 +154,20 @@ const Pickup = ({
           )}
         </section>
       </div>
-      <div>
-        <p className="text-[#A098AE] font-normal textSmall3 pt-2">
-          {profileT("phone")}
-        </p>
-        <div className="lg:w-2/3 flex w-full justify-between pt-2 md:gap-2">
-          {/* Telefon raqami uchun input */}
-          <Input
-            onChange={handleChangePhone}
-            value={orderData?.phone || "+"} // "+" bilan boshlanadi
-          />
+      {auth?.client_id && (
+        <div>
+          <p className="text-[#A098AE] font-normal textSmall3 pt-2">
+            {profileT("phone")}
+          </p>
+          <div className="lg:w-2/3 flex w-full justify-between pt-2 md:gap-2">
+            {/* Telefon raqami uchun input */}
+            <Input
+              onChange={handleChangePhone}
+              value={orderData?.phone || "+"} // "+" bilan boshlanadi
+            />
+          </div>
         </div>
-      </div>
+      )}
       <div className="flex w-full items-center justify-between pt-2 md:gap-2">
         <div className="w-full md:w-2/3 flex flex-col gap-1">
           <p className="text-[#A098AE] font-normal textSmall3">

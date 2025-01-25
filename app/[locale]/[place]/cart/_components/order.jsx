@@ -145,7 +145,7 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
         address_comment,
         all_price: Number((+totalSum + +delivery_price) * 100),
         client_address: `${lat || 0},${lng || 0}`,
-        client_id: null,
+        client_id: auth?.client_id,
         comment,
         created_at: formatCreatedAt(),
         payed_bonus: pay_bonus ? Number(pay_bonus) * 100 : 0,
@@ -156,8 +156,8 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
         phone: auth?.client_id ? `+${auth?.phone_number}` : phone,
         products: JSON.stringify(filterProductsAbdugani),
         promotion: "no",
-        spot_id: Number(spot_id),
-        status: "accept",
+        spot_id: 0,
+        status: "",
         type: "delivery",
       };
 
@@ -165,7 +165,7 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
         address_comment: "no",
         all_price: Number(totalSum * 100),
         client_address: `${0},${0}`,
-        client_id: null,
+        client_id: auth?.client_id,
         comment,
         created_at: formatCreatedAt(),
         payed_bonus: pay_bonus ? Number(pay_bonus) * 100 : 0,

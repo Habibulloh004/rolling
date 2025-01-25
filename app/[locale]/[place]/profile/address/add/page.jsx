@@ -17,11 +17,15 @@ import { Icon } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { Navigation } from "lucide-react";
 import { toast } from "sonner";
+import { usePathname, useRouter } from "next/navigation";
+import { getUrl } from "@/lib/utils";
+import { useOrderStore } from "@/store";
 
 // Custom user marker
 
 const EditAddress = () => {
   const [open, setOpen] = useState(true);
+  const { orderData, setOrderData } = useOrderStore();
   const [addressData, setAddressData] = useState({
     id: 0,
     address: "",
@@ -41,7 +45,8 @@ const EditAddress = () => {
   });
   const addressT = useTranslations("Profile.Address");
   const allT = useTranslations("All");
-
+  const pathname = usePathname();
+  const router = useRouter();
   const SmoothTransition = ({ lng, lat, zoom = 14 }) => {
     const map = useMap();
     map.flyTo([lat, lng], zoom, { duration: 1.5 });
@@ -98,6 +103,15 @@ const EditAddress = () => {
     myAddresses.push(newAddress);
     localStorage.setItem("myAddresses", JSON.stringify(myAddresses));
     toast.success(addressT("address_saved"));
+    router.push(`${getUrl(pathname)}/cart`);
+    setOrderData({
+      ...orderData,
+      address: addressData?.address,
+      client_addresses_id: id,
+      lat: addressData?.lat,
+      lng: addressData?.lng,
+      address_comment: addressData?.comment,
+    });
     setAddressData({
       id: 0,
       address: "",

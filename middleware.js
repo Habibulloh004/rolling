@@ -13,7 +13,9 @@ export default function middleware(req) {
   const matchLocaleOnly = /^\/(uz|ru|en)$/;
   if (matchLocaleOnly.test(pathname)) {
     const locale = pathname.slice(1) || defaultLocale;
-    return NextResponse.redirect(new URL(`/${locale}/${defaultPlace}`, req.url));
+    return NextResponse.redirect(
+      new URL(`/${locale}/${defaultPlace}`, req.url)
+    );
   }
 
   // Apply `intlMiddleware` for other requests
@@ -26,9 +28,12 @@ export default function middleware(req) {
 }
 
 export const config = {
-  matcher: ["/", "/(uz|ru|en)/:path*","/(uz|ru|en)/register","/(uz|ru|en)/login"], // Match root `/`, locales, and paths
+  matcher: ["/", "/(uz|ru|en)/:path*", "!/_next/static/*", "!/_next/data/*"],
 };
 
+// export const config = {
+//   matcher: ["/", "/(uz|ru|en)/:path*","/(uz|ru|en)/register","/(uz|ru|en)/login"], // Match root `/`, locales, and paths
+// };
 
 // import createMiddleware from "next-intl/middleware";
 // import { routing } from "./i18n/routing";

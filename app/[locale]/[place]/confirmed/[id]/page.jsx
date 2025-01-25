@@ -5,11 +5,12 @@ import OrderItemComponent from "./_components/orderItemComponent";
 import { ApiService } from "@/service/api.services";
 
 const Confirmed = async ({ params }) => {
-  const [param, locale, orderText, productsData] = await Promise.all([
+  const [param, locale, orderText, productsData, spotsData] = await Promise.all([
     params,
     getLocale(),
     getTranslations("Order.Item"),
     ApiService.getPosterData("menu.getProducts"),
+    ApiService.getPosterData("access.getSpots"),
   ]);
   return (
     <Container className="w-11/12 pt-3 md:pt-8 flex flex-col ">
@@ -29,6 +30,7 @@ const Confirmed = async ({ params }) => {
         locale={locale}
         param={param}
         productsData={productsData?.response}
+        spotsData={spotsData?.response}
       />
       <p
         className="block lg:hidden textSmall4 font-normal text-[#004032] pt-4"

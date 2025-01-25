@@ -225,10 +225,10 @@ export default function Header({
                   : allT("sign_in")}
               </p>
             </Link>
+            <div className="flex justify-start items-center w-10/12">
+              <LngChange param={param} />
+            </div>
           </nav>
-          <div className="flex justify-start items-center w-10/12">
-            <LngChange param={param} />
-          </div>
         </div>
 
         {/* Overlay for closing the menu */}
@@ -300,7 +300,6 @@ export default function Header({
           {param.place !== "branch" && (
             <nav className="hidden lg:flex items-center lg:space-x-4 xl:space-x-6">
               {navItems.map((item) => {
-                console.log(item)
                 return (
                   <Link
                     key={item.id}

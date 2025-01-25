@@ -7,7 +7,6 @@ import React, { useEffect, useState } from "react";
 import { useTranslations } from "use-intl";
 import Stepper from "./stepper";
 import Products from "./products";
-import { location } from "@/public";
 import { getOrder } from "@/actions";
 import {
   formatNumber,
@@ -100,8 +99,6 @@ export default function OrderItemComponent({
     fetchAddress();
   }, []);
 
-  console.log(orderData);
-
   return (
     <div className="w-full lg:w-10/12 lg:space-x-10">
       <div className="flex flex-col-reverse lg:flex-row lg:justify-between w-full gap-4">
@@ -114,7 +111,7 @@ export default function OrderItemComponent({
                 </p>
                 <p className="md:w-10/12 flex items-center textSmall2 font-bold gap-3">
                   <Image
-                    src={location}
+                    src={"/assets/Location.svg"}
                     alt="location"
                     width={100}
                     height={100}
@@ -150,7 +147,7 @@ export default function OrderItemComponent({
                   <div className="flex flex-col-reverse items-center  gap-10 lg:flex-row lg:justify-between mt-12">
                     <div className="max-sm:w-10/12 max-md:w-2/3 md:w-[300px] py-3 px-5 bg-white rounded-xl flex flex-col justify-center items-center">
                       <Image
-                        src={location}
+                        src={"/assets/Location.svg"}
                         alt="image"
                         width={100}
                         height={100}
@@ -158,11 +155,15 @@ export default function OrderItemComponent({
                       />
                       <article className="pt-3 space-y-1">
                         <p className="text-xs font-medium">
-                          {translateTextSpot(orderData?.spotData?.spot_name)}
+                          {translateTextSpot(
+                            orderData?.spotData?.spot_name,
+                            locale
+                          )}
                         </p>
                         <p className="text-[9px] font-light">
                           {translateTextSpotAddress(
-                            orderData?.spotData?.spot_adress
+                            orderData?.spotData?.spot_adress,
+                            locale
                           )}
                         </p>
                       </article>
@@ -214,7 +215,8 @@ export default function OrderItemComponent({
                   {cartText("products_sum")}
                 </p>
                 <p className="font-normal textNormal2 leading-7 text-[#2E2E2E]">
-                  {formatNumber(Number(orderData?.all_price))} {all("sum")}
+                  {formatNumber(Number(orderData?.all_price) / 100)}{" "}
+                  {all("sum")}
                 </p>
               </div>
               <div className="w-full flex justify-between">

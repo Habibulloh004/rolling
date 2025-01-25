@@ -1,6 +1,10 @@
 "use client";
 
-import { createIncomingOrder, createOrder } from "@/actions/post";
+import {
+  createIncomingOrder,
+  createOrder,
+  createOrderPoster,
+} from "@/actions/post";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { formatCreatedAt, formatNumber } from "@/lib/utils";
@@ -9,6 +13,7 @@ import { useOrderStore, useProductStore, useStore } from "@/store";
 import { ChevronRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { toast } from "sonner";
 import { useTranslations } from "use-intl";
@@ -76,7 +81,8 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
   const { orderData, setOrderData, totalSum, resetOrder } = useOrderStore();
   const { products, setProductsData } = useProductStore();
   const { spot: spotIdSpot, table_id, table_num, service } = searchParamsData;
-
+  const router = useRouter();
+  const pathname = usePathname();
   const handleSetBonus = () => {
     setOrderData({ ...orderData, pay_bonus: Number(bonus) });
     setBonus(0);
@@ -87,6 +93,10 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
       toast.error(all("products_empty"));
       return;
     }
+    if (!orderData?.phone && !auth?.client_id) {
+      toast.error(all("phone_empty"));
+      return;
+    }
     if (!orderData?.phone && spotIdSpot) {
       toast.error(all("phone_empty"));
       return;
@@ -95,21 +105,7 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
     let orderList = localStorage.getItem("orderList")
       ? JSON.parse(localStorage.getItem("orderList"))
       : [];
-    if (!auth?.client_id) {
-      toast.warning(
-        <div className="w-full h-full flex justify-between items-center">
-          {all("no_auth")}{" "}
-          <Link
-            href={`/${locale}/${place}/login`}
-            className="bg-black text-white rounded-md px-2 py-1"
-          >
-            {all("sign_in")}
-          </Link>
-        </div>
-      );
 
-      return;
-    }
     try {
       const {
         spot_id,
@@ -149,7 +145,7 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
         address_comment,
         all_price: Number((+totalSum + +delivery_price) * 100),
         client_address: `${lat || 0},${lng || 0}`,
-        client_id: Number(auth?.client_id),
+        client_id: null,
         comment,
         created_at: formatCreatedAt(),
         payed_bonus: pay_bonus ? Number(pay_bonus) * 100 : 0,
@@ -157,7 +153,7 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
           Number(+totalSum + +delivery_price - (pay_bonus ? +pay_bonus : 0)) *
           100,
         payment: payment_method,
-        phone: `+${auth?.phone_number}`,
+        phone: auth?.client_id ? `+${auth?.phone_number}` : phone,
         products: JSON.stringify(filterProductsAbdugani),
         promotion: "no",
         spot_id: Number(spot_id),
@@ -169,20 +165,21 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
         address_comment: "no",
         all_price: Number(totalSum * 100),
         client_address: `${0},${0}`,
-        client_id: Number(auth?.client_id),
+        client_id: null,
         comment,
         created_at: formatCreatedAt(),
         payed_bonus: pay_bonus ? Number(pay_bonus) * 100 : 0,
         payed_sum: Number(+totalSum - (pay_bonus ? +pay_bonus : 0)) * 100,
         payment: payment_method,
-        phone: `+${auth?.phone_number}`,
+        phone: auth?.client_id ? `+${auth?.phone_number}` : phone,
         products: JSON.stringify(filterProductsAbdugani),
         promotion: "no",
         spot_id: Number(spot_id),
         status: "accept",
         type: `take_away ${spot_name}`,
       };
-      let commentSpot;
+
+      let commentSpot = comment ? comment : "";
       switch (payment_method) {
         case "card":
           commentSpot = `Тип оплаты : по карте`;
@@ -199,17 +196,24 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
         default:
           commentSpot = `Тип оплаты : наличными`;
       }
-      commentSpot = `${commentSpot} \n Номер стола : ${table_num} \n Тип услуги : ${
-        service == "self" ? "самообслуживание" : "официант"
-      } `;
+      if (spotIdSpot) {
+        commentSpot = `${commentSpot} \n Номер стола : ${table_num} \n Тип услуги : ${
+          service == "self" ? "самообслуживание" : "официант"
+        } `;
+      }
 
       let spotData = {
-        phone: phone,
+        phone: auth?.client_id ? `+${auth?.phone_number}` : phone,
         products: filterProductsSpot,
         service_mode: Number(2),
-        spot_id: Number(spotIdSpot),
+        spot_id: Number(spotIdSpot ? spotIdSpot : Number(spot_id)),
         comment: commentSpot,
       };
+
+      if (address) {
+        spotData.address = address;
+      }
+
       console.log({ deliveryData });
       console.log({ pickupData });
       console.log({ spotData });
@@ -251,6 +255,7 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
       } else {
         if (service_mode == 2) {
           const res = await createOrder(pickupData);
+          const res2 = await createOrderPoster(spotData);
           console.log(res);
           if (res?.order_id) {
             const nowOrder = {
@@ -283,6 +288,7 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
             });
             setProductsData([]);
             toast.success(all("order_created"));
+            router.push(`/${locale}/${place}/confirmed/${res?.order_id}`);
           }
         } else if (service_mode == 3) {
           const res = await createOrder(deliveryData);
@@ -317,6 +323,7 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
             localStorage.setItem("orderList", JSON.stringify(orderList));
             setProductsData([]);
             toast.success(all("order_created"));
+            router.push(`/${locale}/${place}/confirmed/${res?.order_id}`);
           }
         }
       }

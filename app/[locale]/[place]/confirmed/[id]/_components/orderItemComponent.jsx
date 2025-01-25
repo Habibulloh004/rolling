@@ -8,15 +8,20 @@ import {
   getLocalizedProduct,
   posterUrl,
   translateTextSpot,
+  translateTextSpotAddress,
 } from "@/lib/utils";
-import { location } from "@/public";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { useTranslations } from "use-intl";
 import confetti from "canvas-confetti";
 
-export default function OrderItemComponent({ productsData, locale, param }) {
+export default function OrderItemComponent({
+  spotsData,
+  productsData,
+  locale,
+  param,
+}) {
   const orderText = useTranslations("Order.Item");
   const all = useTranslations("All");
   const total = useTranslations("Cart.Total");
@@ -80,11 +85,23 @@ export default function OrderItemComponent({ productsData, locale, param }) {
             )}&lon=${String(location[1])}&format=json&accept-language=${locale}`
           );
           const addressRes = await res.json();
-          setOrderData({
-            ...order,
-            address: String(addressRes?.display_name),
-            products: orderedProducts,
-          });
+          console.log(order, orderedProducts);
+
+          if (order?.spot_id != 0) {
+            const spot = spotsData?.find((s) => s.spot_id == order?.spot_id);
+            setOrderData({
+              ...order,
+              address: String(addressRes?.display_name),
+              products: orderedProducts,
+              spotData: spot,
+            });
+          } else {
+            setOrderData({
+              ...order,
+              address: String(addressRes?.display_name),
+              products: orderedProducts,
+            });
+          }
         }
       } catch (error) {
       } finally {
@@ -94,6 +111,8 @@ export default function OrderItemComponent({ productsData, locale, param }) {
     };
     fetchAddress();
   }, []);
+
+  console.log(orderData);
 
   return (
     <div className="w-full lg:w-11/12 mx-auto flex flex-col lg:grid grid-cols-2 gap-5 lg:gap-20 mt-4 lg:mt-10">
@@ -179,29 +198,35 @@ export default function OrderItemComponent({ productsData, locale, param }) {
                   <Skeleton className="bg-primary-modal w-[20] sm:w-[24] h-[20px] sm:h-[24px] rounded-md" />
                   <Skeleton className="bg-primary-modal w-10/12 h-[20] sm:h-[20] rounded-md" />
                 </div>
-                {orderData?.type?.includes("delivery") && (
-                  <Skeleton className="bg-primary-modal w-10/12 h-[20] sm:h-[20] rounded-md" />
-                )}
+                <Skeleton className="bg-primary-modal w-10/12 h-[20] sm:h-[20] rounded-md" />
               </div>
             </div>
           ) : (
             <>
               <div className="flex flex-col items-start">
-                <div className="flex items-center textSmall3 font-bold">
+                <div className="flex items-center gap-2 textSmall3 font-bold">
                   <Image
-                    src={location}
+                    src={"/assets/Location.svg"}
                     alt="location"
                     width={100}
                     height={100}
                     className="w-6 h-6 md:w-8 md:h-8"
                   />
                   {orderData?.type?.includes("take_away") ? (
-                    <p className="font-semibold textSmall3">
-                      {translateTextSpot(
-                        orderData?.type?.split("take_away")[1],
-                        locale
-                      )}
-                    </p>
+                    <div>
+                      <p className="font-semibold textSmall3">
+                        {translateTextSpot(
+                          orderData?.spotData?.spot_name,
+                          locale
+                        )}
+                      </p>
+                      <p className="text-thin font-[500] textSmall2 mt-2">
+                        {translateTextSpotAddress(
+                          orderData?.spotData?.spot_adress,
+                          locale
+                        )}
+                      </p>
+                    </div>
                   ) : (
                     <p className="font-semibold textSmall3">
                       {orderData?.address}
@@ -237,7 +262,7 @@ export default function OrderItemComponent({ productsData, locale, param }) {
                   {formatNumber(orderData?.all_price / 100)} {all("sum")}
                 </p>
               </div>
-              {orderData?.payed_bonus && (
+              {orderData?.payed_bonus != 0 && orderData?.payed_bonus && (
                 <div className="w-full flex justify-between">
                   <p className="font-medium textNormal2 leading-5 text-[#2E2E2E]">
                     {total("bonus")} {all("sum")}

@@ -22,6 +22,7 @@ export default function middleware(req) {
     // Pass request through intlMiddleware
     const intlResponse = intlMiddleware(req);
     if (intlResponse) {
+      console.log(intlResponse)
       return intlResponse;
     }
 

@@ -128,13 +128,13 @@ export default function Footer({ params: path }) {
                     </li>
                   );
                 })}
-                <Link
+                {/* <Link
                   href={`/${path.locale}/${path.place}/about-us/privacy-policy`}
                   className="flex items-center gap-1 font-semibold"
                 >
                   <ChevronRight className="size-4 md:size-5" />
                   {AboutUsPage(`btnPolicy`)}
-                </Link>
+                </Link> */}
               </ul>
               <article className="flex flex-col gap-2">
                 <p>{footerT("addressName")}</p>

@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 
 const intlMiddleware = createMiddleware(routing);
 
-export default function middleware(req) {
+export default async function middleware(req) {
   const { pathname } = req.nextUrl;
   const defaultLocale = "uz"; // Default locale
   const defaultPlace = "web"; // Default place
@@ -19,16 +19,26 @@ export default function middleware(req) {
   }
 
   // Apply `intlMiddleware` for other requests
-  const intlResponse = intlMiddleware(req);
-  if (intlResponse) {
-    return intlResponse;
+  try {
+    const intlResponse = await intlMiddleware(req);
+    if (intlResponse) {
+      console.log("Intl Middleware Response:", intlResponse);
+      return intlResponse;
+    }
+  } catch (error) {
+    console.error("Intl Middleware Error:", error);
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/", "/(uz|ru|en)/:path*","/(uz|ru|en)/register","/(uz|ru|en)/login"], // Match root `/`, locales, and paths
+  matcher: [
+    "/",
+    "/(uz|ru|en)/:path*",
+    "/(uz|ru|en)/register",
+    "/(uz|ru|en)/login",
+  ],
 };
 
 // import createMiddleware from "next-intl/middleware";

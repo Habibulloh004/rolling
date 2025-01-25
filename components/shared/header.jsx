@@ -180,7 +180,7 @@ export default function Header({
                   className="flex-shrink-0 flex items-center gap-2 w-full"
                 >
                   <Image
-                    src={`${item.icon.src}`}
+                    src={`${item.icon}`}
                     alt={`${item.title}`}
                     width={33}
                     height={33}
@@ -300,6 +300,7 @@ export default function Header({
           {param.place !== "branch" && (
             <nav className="hidden lg:flex items-center lg:space-x-4 xl:space-x-6">
               {navItems.map((item) => {
+                console.log(item)
                 return (
                   <Link
                     key={item.id}
@@ -308,7 +309,7 @@ export default function Header({
                     className="flex-shrink-0 flex items-center gap-2"
                   >
                     <Image
-                      src={`${item.icon.src}`}
+                      src={`${item.icon}`}
                       alt={`${item.title}`}
                       width={30}
                       height={30}

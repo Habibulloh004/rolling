@@ -15,13 +15,10 @@ import { url } from "@/lib/utils";
 
 const PromotionCards = ({ item }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const text = item.description.replace(/\\\\n/g, '\n\n') // Ikki qator sakrash
+  .replace(/\\n/g, '\n'); 
 
-  // Matnning kesilgan qismini aniqlash
-  const shortDescription =
-    item.description.length < 70
-      ? item.description
-      : `${item.description.slice(0, 70)}...`;
-
+  console.log(item);
   return (
     <main>
       <Card>
@@ -43,18 +40,7 @@ const PromotionCards = ({ item }) => {
           </div>
         </CardHeader>
         <CardContent>
-          <p className="textSmall3">
-            {isExpanded ? item.description : shortDescription}
-            {/* Agar matn kesilgan bo‘lsa, "3 nuqta"ni yoki tugmani qo‘shamiz */}
-            {item.description.length > 70 && (
-              <button
-                onClick={() => setIsExpanded(!isExpanded)}
-                className="text-blue-500 ml-2 underline cursor-pointer"
-              >
-                {isExpanded ? "Yopish" : "Ko‘proq ko‘rish"}
-              </button>
-            )}
-          </p>
+          <p  className="whitespace-pre-line w-full">{text}</p>
         </CardContent>
         <CardFooter className="text-xs flex items-center justify-between">
           <p>{item.createdAt}</p>

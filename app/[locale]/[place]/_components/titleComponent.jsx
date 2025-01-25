@@ -45,19 +45,22 @@ export default function TitleComponent({
     }
 
     setFilteredCategories(
-      categories.filter((category) =>
-        category.category_name.toLowerCase().includes(searchTerm.toLowerCase())
+      categories?.filter((category) =>
+        String(category?.category_name)
+          ?.toLowerCase()
+          ?.includes(searchTerm?.toLowerCase())
       )
     );
 
     setFilteredProducts(
-      products.filter((product) =>
-        product.product_production_description
-          .toLowerCase()
-          .includes(searchTerm.toLowerCase())
+      products?.filter((product) =>
+        String(product?.product_production_description)
+          ?.toLowerCase()
+          ?.includes(String(searchTerm?.toLowerCase()))
       )
     );
   }, [searchTerm, categories, products]);
+
 
   return (
     <Container

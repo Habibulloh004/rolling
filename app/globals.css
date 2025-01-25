@@ -11,7 +11,9 @@ body {
   position: fixed;
   z-index: 9999;
 }
-
+.cadfd{
+  background-color: #f2f2f2;
+}
 @media (max-width: 768px) {
   /* Mobile: Toast appears at the top center */
   .toast-container {

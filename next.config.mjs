@@ -1,6 +1,6 @@
 import createNextIntlPlugin from "next-intl/plugin";
-import { generateSitemaps } from "./app/sitemap.js"; // Ensure this function exists and works properly
-import sitemap from "./app/sitemap.js";
+// import { generateSitemaps } from "./app/sitemap.js"; // Ensure this function exists and works properly
+// import sitemap from "./app/sitemap.js";
 
 const withNextIntl = createNextIntlPlugin();
 

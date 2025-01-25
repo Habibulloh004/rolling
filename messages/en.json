@@ -41,7 +41,10 @@
     "self_desc": "The customer serves himself",
     "selected": "Selected",
     "no_active": "Currently inactive",
-    "no_auth": "You are not logged in!"
+    "no_auth": "You are not logged in!",
+    "products_empty":"You have not selected a product!",
+    "phone_empty": "Phone number does not exist!",
+    "order_created":"Your order has been received."
   },
   "Bonus": {
     "bonus": "Bonus",

@@ -21,6 +21,7 @@ export const metadata = {
 export default async function HomePage({ params, searchParams }) {
   const [
     bannersData,
+    reviewsData,
     categoriesData,
     productsData,
     searchParamsData,
@@ -28,12 +29,15 @@ export default async function HomePage({ params, searchParams }) {
     path,
   ] = await Promise.all([
     getData("/banner/get_banners"),
+    getData("/poster/google"),
     ApiService.getPosterData("menu.getCategories"),
     ApiService.getPosterData("menu.getProducts"),
     searchParams,
     getLocale(),
     params,
   ]);
+
+  console.log(reviewsData)
 
   let spotData;
   if (path.place === "branch") {
@@ -66,6 +70,28 @@ export default async function HomePage({ params, searchParams }) {
       {path.place != "branch" && <Banner banners={banners} />}
       <Categories categories={categories} locale={locale} path={path} />
       <Popular products={products} locale={locale} path={path} />
+      {/* {path.place == "branch" && (
+        <Carousel
+          className="relative w-full text-foreground mt-5 md:mt-10 "
+          paginate={"false"}
+          opts={{
+            align: "center",
+          }}
+        >
+          <CarouselContent className="relative">
+            {fakeData.map((item, i) => (
+              <CarouselItem
+                key={i}
+                className={`basis-[80%] sm:basis-[45%] lg:basis-[45%] xl:basis-[30%] p-0 mx-2 ${
+                  i == 0 && "max-sm:ml-8 max-md:ml-16 ml-8"
+                }`}
+              >
+                <Cards data={item} />
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+        </Carousel>
+      )} */}
     </Container>
   );
 }

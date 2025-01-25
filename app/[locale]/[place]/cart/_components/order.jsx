@@ -1,9 +1,11 @@
 "use client";
 
+import { createIncomingOrder, createOrder } from "@/actions/post";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { formatCreatedAt, formatNumber } from "@/lib/utils";
 import { gift } from "@/public";
+import { ApiService } from "@/service/api.services";
 import { useOrderStore, useProductStore, useStore } from "@/store";
 import { ChevronRight } from "lucide-react";
 import Image from "next/image";
@@ -69,11 +71,12 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
   const all = useTranslations("All");
   const total = useTranslations("Cart.Total");
   const { activeTab } = useStore();
+  const [isLoading, setIsLoading] = useState(false);
   const [bonus, setBonus] = useState(0);
   const [activeBonus, setActiveBonus] = useState(false);
-  const { orderData, setOrderData, totalSum } = useOrderStore();
-  const { products } = useProductStore();
-  const { service } = searchParamsData;
+  const { orderData, setOrderData, totalSum, resetOrder } = useOrderStore();
+  const { products, setProductsData } = useProductStore();
+  const { spot: spotIdSpot, table_id, table_num, service } = searchParamsData;
 
   const handleSetBonus = () => {
     setOrderData({ ...orderData, pay_bonus: Number(bonus) });
@@ -81,6 +84,18 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
     setActiveBonus(false);
   };
   const handleSubmit = async () => {
+    if (products.length == 0) {
+      toast.error(all("products_empty"));
+      return;
+    }
+    if (!orderData?.phone && spotIdSpot) {
+      toast.error(all("phone_empty"));
+      return;
+    }
+
+    let orderList = localStorage.getItem("orderList")
+      ? JSON.parse(localStorage.getItem("orderList"))
+      : [];
     if (!auth?.client_id) {
       toast.warning(
         <div className="w-full h-full flex justify-between items-center">
@@ -117,18 +132,24 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
         client_addresses_id,
         address_comment,
       } = orderData;
-
+      setIsLoading(true);
       const filterProductsAbdugani = products?.map((p) => {
         return {
           product_id: +p.product_id,
           amount: +p.count,
         };
       });
+      const filterProductsSpot = products?.map((p) => {
+        return {
+          product_id: +p.product_id,
+          count: +p.count,
+        };
+      });
 
       let deliveryData = {
         address_comment,
         all_price: Number((+totalSum + +delivery_price) * 100),
-        client_address: `${lat || 42},${lng || 62}`,
+        client_address: `${lat || 0},${lng || 0}`,
         client_id: Number(auth?.client_id),
         comment,
         created_at: formatCreatedAt(),
@@ -147,13 +168,13 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
 
       let pickupData = {
         address_comment: "no",
-        all_price: Number((+totalSum + +delivery_price) * 100),
-        client_address: `${42},${62}`,
+        all_price: Number(totalSum * 100),
+        client_address: `${0},${0}`,
         client_id: Number(auth?.client_id),
         comment,
         created_at: formatCreatedAt(),
         payed_bonus: pay_bonus ? Number(pay_bonus) * 100 : 0,
-        payed_sum: Number(+totalSum - (pay_bonus ? +pay_bonus : 0)),
+        payed_sum: Number(+totalSum - (pay_bonus ? +pay_bonus : 0)) * 100,
         payment: payment_method,
         phone: `+${auth?.phone_number}`,
         products: JSON.stringify(filterProductsAbdugani),
@@ -162,11 +183,141 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
         status: "accept",
         type: `take_away ${spot_name}`,
       };
+      let commentSpot;
+      switch (payment_method) {
+        case "card":
+          commentSpot = `Тип оплаты : по карте`;
+          break;
+        case "click":
+          commentSpot = `Тип оплаты : через click`;
+          break;
+        case "payme":
+          commentSpot = `Тип оплаты : через payme`;
+          break;
+        case "uzum":
+          commentSpot = `Тип оплаты : через uzum`;
+          break;
+        default:
+          commentSpot = `Тип оплаты : наличными`;
+      }
+      commentSpot = `${commentSpot} \n Номер стола : ${table_num} \n Тип услуги : ${
+        service == "self" ? "самообслуживание" : "официант"
+      } `;
 
-      let spotData = {};
-    } catch (error) {}
+      let spotData = {
+        phone: phone,
+        products: filterProductsSpot,
+        service_mode: Number(2),
+        spot_id: Number(spotIdSpot),
+        comment: commentSpot,
+      };
+      console.log({ deliveryData });
+      console.log({ pickupData });
+      console.log({ spotData });
+      if (spotIdSpot) {
+        const res = await createIncomingOrder(spotData);
+        console.log(res);
+        if (res) {
+          const nowOrder = { ...deliveryData, response: res };
+          orderList.push(nowOrder);
+          localStorage.setItem("orderList", JSON.stringify(orderList));
+          setOrderData({
+            spot_id: 0,
+            spot_name: "",
+            phone: "",
+            products: [],
+            service_mode: 3,
+            payment_method: "cash",
+            total: 0,
+            delivery_price: 10000,
+            lng: 0,
+            lat: 0,
+            client: null,
+            pay_cash: null,
+            pay_card: null,
+            pay_click: null,
+            pay_payme: null,
+            pay_uzum: null,
+            pay_bonus: null,
+            comment: "",
+            address: "",
+            client_addresses_id: null,
+          });
+          setProductsData([]);
+          toast.success(all("order_created"));
+        }
+      } else {
+        if (service_mode == 2) {
+          const res = await createOrder(pickupData);
+          console.log(res);
+          if (res?.order_id) {
+            const nowOrder = { ...pickupData, order_id: res.order_id };
+            orderList.push(nowOrder);
+            localStorage.setItem("orderList", JSON.stringify(orderList));
+            setOrderData({
+              spot_id: 0,
+              spot_name: "",
+              phone: "",
+              products: [],
+              service_mode: 3,
+              payment_method: "cash",
+              total: 0,
+              delivery_price: 10000,
+              lng: 0,
+              lat: 0,
+              client: null,
+              pay_cash: null,
+              pay_card: null,
+              pay_click: null,
+              pay_payme: null,
+              pay_uzum: null,
+              pay_bonus: null,
+              comment: "",
+              address: "",
+              client_addresses_id: null,
+            });
+            setProductsData([]);
+            toast.success(all("order_created"));
+          }
+        } else if (service_mode == 3) {
+          const res = await createOrder(deliveryData);
+          if (res?.order_id) {
+            setOrderData({
+              spot_id: 0,
+              spot_name: "",
+              phone: "",
+              products: [],
+              service_mode: 3,
+              payment_method: "cash",
+              total: 0,
+              delivery_price: 10000,
+              lng: 0,
+              lat: 0,
+              client: null,
+              pay_cash: null,
+              pay_card: null,
+              pay_click: null,
+              pay_payme: null,
+              pay_uzum: null,
+              pay_bonus: null,
+              comment: "",
+              address: "",
+              client_addresses_id: null,
+            });
+            const nowOrder = { ...deliveryData, order_id: res.order_id };
+            orderList.push(nowOrder);
+            localStorage.setItem("orderList", JSON.stringify(orderList));
+            setProductsData([]);
+            toast.success(all("order_created"));
+          }
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
   };
-  console.log(orderData);
 
   return (
     <div className="w-full flex flex-col pt-6 gap-5">
@@ -284,7 +435,7 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
                       {formatNumber(Number(auth.bonus / 100))} {all("sum")}
                     </p>
                   </div>
-                  <DiscountBadge auth={auth} />   
+                  <DiscountBadge auth={auth} />
                 </div>
                 <div className="mt-[7px]">
                   <p className="text-[#373737] pb-1 font-medium">
@@ -326,10 +477,38 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
           </>
         )}
         <Button
+          disabled={isLoading}
           onClick={handleSubmit}
           className="mb-3 w-full h-10 md:h-12 flex justify-center items-center gap-1 border-[1px] rounded-xl hover:bg-primary md:mt-5 font-medium text-sm md:text-md"
         >
-          {total("submit")}
+          {isLoading ? (
+            <div>
+              <div className="flex items-center gap-4">
+                <div role="status">
+                  <svg
+                    aria-hidden="true"
+                    className="w-6 h-6 text-gray-300 animate-spin dark:text-gray-600 fill-gray-700"
+                    viewBox="0 0 100 101"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                      fill="currentColor"
+                    />
+                    <path
+                      d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                      fill="currentFill"
+                    />
+                  </svg>
+                  <span className="text-black sr-only">{all("loading")}</span>
+                </div>
+                {all("loading")}
+              </div>
+            </div>
+          ) : (
+            <div>{total("submit")}</div>
+          )}
         </Button>
         <div className="hidden w-full h-[141px] p-5 border-[1px] border-[#979797] rounded-xl mt-3">
           <p className="font-medium">{total("note")}</p>

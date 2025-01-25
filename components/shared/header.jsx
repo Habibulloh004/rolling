@@ -387,7 +387,7 @@ export default function Header({
                         onClick={() => setOpenSearch(true)}
                         className="w-full relative bg-white p-2 rounded-md"
                       >
-                        <Search className="text-gray-400 size-5 lg:size-7 text-primary" />
+                        <Search className="text-gray-400 size-5 xl:size-7 text-primary" />
                       </div>
                     </SheetTrigger>
                     <SheetContent

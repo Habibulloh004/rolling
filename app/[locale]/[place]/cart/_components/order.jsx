@@ -154,9 +154,9 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
         comment,
         created_at: formatCreatedAt(),
         payed_bonus: pay_bonus ? Number(pay_bonus) * 100 : 0,
-        payed_sum: Number(
-          +totalSum + +delivery_price - (pay_bonus ? +pay_bonus : 0)
-        ),
+        payed_sum:
+          Number(+totalSum + +delivery_price - (pay_bonus ? +pay_bonus : 0)) *
+          100,
         payment: payment_method,
         phone: `+${auth?.phone_number}`,
         products: JSON.stringify(filterProductsAbdugani),
@@ -221,14 +221,6 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
           const nowOrder = {
             ...deliveryData,
             response: res,
-            address: address,
-            client_addresses_id,
-            pay_cash,
-            pay_card,
-            pay_click,
-            pay_payme,
-            pay_uzum,
-            products: products,
           };
           orderList.push(nowOrder);
           localStorage.setItem("orderList", JSON.stringify(orderList));
@@ -240,7 +232,7 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
             service_mode: 3,
             payment_method: "cash",
             total: 0,
-            delivery_price: 10000,
+            delivery_price: 0,
             lng: 0,
             lat: 0,
             client: null,
@@ -265,14 +257,6 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
             const nowOrder = {
               ...pickupData,
               order_id: res.order_id,
-              address: address,
-              client_addresses_id,
-              pay_cash,
-              pay_card,
-              pay_click,
-              pay_payme,
-              pay_uzum,
-              products: products,
             };
             orderList.push(nowOrder);
             localStorage.setItem("orderList", JSON.stringify(orderList));
@@ -284,7 +268,7 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
               service_mode: 3,
               payment_method: "cash",
               total: 0,
-              delivery_price: 10000,
+              delivery_price: 0,
               lng: 0,
               lat: 0,
               client: null,
@@ -312,7 +296,7 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
               service_mode: 3,
               payment_method: "cash",
               total: 0,
-              delivery_price: 10000,
+              delivery_price: 0,
               lng: 0,
               lat: 0,
               client: null,
@@ -329,14 +313,6 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
             const nowOrder = {
               ...deliveryData,
               order_id: res.order_id,
-              address: address,
-              client_addresses_id,
-              pay_cash,
-              pay_card,
-              pay_click,
-              pay_payme,
-              pay_uzum,
-              products: products,
             };
             orderList.push(nowOrder);
             localStorage.setItem("orderList", JSON.stringify(orderList));

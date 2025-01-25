@@ -1,21 +1,19 @@
 "use client";
 import { formatNumber, getLocalizedProduct, posterUrl } from "@/lib/utils";
-import { useProductStore } from "@/store";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import React from "react";
 
-const Products = ({ locale }) => {
+const Products = ({ products, locale }) => {
   const cart = useTranslations("Cart");
   const all = useTranslations("All");
-  const { products } = useProductStore();
 
   return (
     <div className="max-md:bg-white max-md:p-3 w-full rounded-md pb-4 space-y-4">
       <h1 className="font-bold textNormal3 text-black text-start">
         {cart("your_order")}
       </h1>
-      {products.length > 0 ? (
+      {products?.length > 0 ? (
         <div className="overflow-y-scroll flex flex-col min-h-[200px] max-h-[300px] sm:max-h-[400px] w-full simple-scrollbar gap-5">
           {products
             ?.slice()

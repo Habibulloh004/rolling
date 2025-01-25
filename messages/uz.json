@@ -44,7 +44,7 @@
     "no_auth": "Siz tizimga kirmagansiz!",
     "products_empty": "Siz mahsulot tanlamadingiz!",
     "phone_empty": "Telefon raqam mavjud emas!",
-    "order_created":"Buyurtmangiz qabul qilindi"
+    "order_created": "Buyurtmangiz qabul qilindi"
   },
   "Bonus": {
     "bonus": "Bonus",
@@ -94,13 +94,13 @@
       "name": "Nomi",
       "name_pls": "Uy",
       "address": "Manzil",
-      "address_error":"Manzilni kiritmadingiz",
+      "address_error": "Manzilni kiritmadingiz",
       "pls": "Yashnobod tumani, Botkin 1a",
       "comment": "Manzilga izohlar",
       "comment_pls": "1-qavat",
-      "comment_error":"Izohlar mavjud emas.",
-      "location_error":"Lokatsiyani belgilashingiz kerak",
-      "address_saved":"Manzil muvaffaqiyatli kiritildi."
+      "comment_error": "Izohlar mavjud emas.",
+      "location_error": "Lokatsiyani belgilashingiz kerak",
+      "address_saved": "Manzil muvaffaqiyatli kiritildi."
     }
   },
   "Form": {
@@ -324,6 +324,18 @@
       "cooking": "Tayyorlanmoqda",
       "in-deliver": "Yo'lda",
       "finished": "Yetkazib berildi"
+    },
+    "Item": {
+      "title": "Buyurtma tasdiqlandi",
+      "desc": "Rolling Sushi-ni tanlaganingiz uchun rahmat! Taomlaringizni yangilik va mazali ta'm bilan tayyorlashga mehr bilan yondashamiz. Agar savollaringiz bo‘lsa, bizning jamoamiz har doim yordam berishga tayyor.",
+      "menu_btn": "Menyuga qaytish",
+      "open_btn": "Buyurtmani kuzatish",
+      "add_comment": "Fikr qoldirish",
+      "comment_desc": "Buyurtmangiz holatini real vaqt rejimida ko‘rishingiz mumkin.",
+      "status_delivery": "Yetkazib berish",
+      "status_pickup": "O'zingiz olib ketish",
+      "status_spot": "Muassasalar",
+      "my_order": "Sizning buyurtmangiz"
     },
     "delivered": "Yetkazildi",
     "info": "Nimani yaxshilashimiz kerak? Sizning fikringizni kutamiz!"

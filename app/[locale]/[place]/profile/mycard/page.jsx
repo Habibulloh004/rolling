@@ -123,7 +123,7 @@ const MyCard = () => {
             style={{ backgroundColor: color }}
           >
             <Image
-              src={`/assets/uzcard.svg`}
+              src={`/assets/uzcard.webp`}
               alt="uzcard"
               width={100}
               height={100}

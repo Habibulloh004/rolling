@@ -217,7 +217,18 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
         const res = await createIncomingOrder(spotData);
         console.log(res);
         if (res) {
-          const nowOrder = { ...deliveryData, response: res };
+          const nowOrder = {
+            ...deliveryData,
+            response: res,
+            address: address,
+            client_addresses_id,
+            pay_cash,
+            pay_card,
+            pay_click,
+            pay_payme,
+            pay_uzum,
+            products: products,
+          };
           orderList.push(nowOrder);
           localStorage.setItem("orderList", JSON.stringify(orderList));
           setOrderData({
@@ -250,7 +261,18 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
           const res = await createOrder(pickupData);
           console.log(res);
           if (res?.order_id) {
-            const nowOrder = { ...pickupData, order_id: res.order_id };
+            const nowOrder = {
+              ...pickupData,
+              order_id: res.order_id,
+              address: address,
+              client_addresses_id,
+              pay_cash,
+              pay_card,
+              pay_click,
+              pay_payme,
+              pay_uzum,
+              products: products,
+            };
             orderList.push(nowOrder);
             localStorage.setItem("orderList", JSON.stringify(orderList));
             setOrderData({
@@ -303,7 +325,18 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
               address: "",
               client_addresses_id: null,
             });
-            const nowOrder = { ...deliveryData, order_id: res.order_id };
+            const nowOrder = {
+              ...deliveryData,
+              order_id: res.order_id,
+              address: address,
+              client_addresses_id,
+              pay_cash,
+              pay_card,
+              pay_click,
+              pay_payme,
+              pay_uzum,
+              products: products,
+            };
             orderList.push(nowOrder);
             localStorage.setItem("orderList", JSON.stringify(orderList));
             setProductsData([]);
@@ -410,7 +443,7 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
               className="bg-[#F5F5F5] w-full h-10 md:h-12 flex justify-center items-center gap-1 border-[1px] rounded-xl"
             >
               <Image
-                src={"/assets/gift.svg"}
+                src={"/assets/gift.webp"}
                 alt="gift"
                 width={100}
                 height={100}

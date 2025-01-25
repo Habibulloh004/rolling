@@ -162,7 +162,7 @@ export default function Header({
             className="flex-shrink-0 mt-5"
           >
             <Image
-              src={`/assets/navLogo.svg`}
+              src={`/assets/navLogo.webp`}
               alt="Rolling Sushi"
               width={223}
               height={74}
@@ -207,7 +207,7 @@ export default function Header({
               className="flex-shrink-0 flex items-center gap-2 w-full"
             >
               <Image
-                src={`/assets/accountIcon.png`}
+                src={`/assets/accountIcon.webp`}
                 alt={`Account icon`}
                 width={33}
                 height={33}
@@ -253,7 +253,7 @@ export default function Header({
             className="hidden md:flex flex-shrink-0"
           >
             <Image
-              src={`/assets/navLogo.svg`}
+              src={`/assets/navLogo.webp`}
               alt="Rolling Sushi"
               width={223}
               height={74}
@@ -288,7 +288,7 @@ export default function Header({
               className=" flex-shrink-0"
             >
               <Image
-                src={`/assets/secondaryIcon.svg`}
+                src={`/assets/secondaryIcon.webp`}
                 alt="Rolling Sushi"
                 width={146}
                 height={36}
@@ -337,7 +337,7 @@ export default function Header({
                 className="flex-shrink-0 flex items-center gap-2 w-full"
               >
                 <Image
-                  src={`/assets/accountIcon.png`}
+                  src={`/assets/accountIcon.webp`}
                   alt={`Account icon`}
                   width={30}
                   height={30}

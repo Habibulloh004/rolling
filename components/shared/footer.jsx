@@ -31,7 +31,7 @@ export default function Footer({ params: path }) {
               className="flex-shrink-0 max-md:mx-auto mt-5 w-[200px] md:w-[280px]"
             >
               <Image
-                src={`/assets/secondaryIcon.svg`}
+                src={`/assets/secondaryIcon.webp`}
                 alt="Rolling Sushi"
                 width={282}
                 height={74}
@@ -69,7 +69,7 @@ export default function Footer({ params: path }) {
               <div className="md:-translate-x-3 w-full max-sm:flex items-center justify-between flex-col gap-2">
                 <a href="https://play.google.com/store/apps/details?id=com.abdurrahmonxoja.RollingSushi">
                   <Image
-                    src={`/assets/appStoreIcon.svg`}
+                    src={`/assets/appStoreIcon.webp`}
                     alt="app store icon"
                     width={166}
                     height={54}
@@ -78,7 +78,7 @@ export default function Footer({ params: path }) {
                 </a>
                 <a href="https://apps.apple.com/uz/app/rolling-sushi/id6483865556">
                   <Image
-                    src={`/assets/playMarketIcon.svg`}
+                    src={`/assets/playMarketIcon.webp`}
                     alt="play market icon"
                     width={166}
                     height={54}
@@ -93,7 +93,7 @@ export default function Footer({ params: path }) {
             <div className="translate-x-2">
               <a href="https://play.google.com/store/apps/details?id=com.abdurrahmonxoja.RollingSushi">
                 <Image
-                  src={`/assets/appStoreIcon.svg`}
+                  src={`/assets/appStoreIcon.webp`}
                   alt="app store icon"
                   width={166}
                   height={54}
@@ -105,7 +105,7 @@ export default function Footer({ params: path }) {
                 target="blank"
               >
                 <Image
-                  src={`/assets/playMarketIcon.svg`}
+                  src={`/assets/playMarketIcon.webp`}
                   alt="play market icon"
                   width={166}
                   height={54}

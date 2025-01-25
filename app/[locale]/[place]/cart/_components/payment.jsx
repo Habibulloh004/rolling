@@ -22,25 +22,25 @@ const Payment = ({ locale, place }) => {
     },
     {
       id: 2,
-      icon: `/assets/cash.svg`,
+      icon: `/assets/cash.webp`,
       text: paymentText("cash"),
       type: "cash",
     },
     {
       id: 3,
-      icon: `/assets/payme.svg`,
+      icon: `/assets/payme.webp`,
       text: "PayMe",
       type: "payme",
     },
     {
       id: 4,
-      icon: `/assets/click.svg`,
+      icon: `/assets/click.webp`,
       text: "Click",
       type: "click",
     },
     {
       id: 5,
-      icon: `/assets/uzum.svg`,
+      icon: `/assets/uzum.webp`,
       text: "Uzum",
       type: "uzum",
     },
@@ -103,7 +103,7 @@ const Payment = ({ locale, place }) => {
             </div>
             <div className="w-full h-full relative bg-[#428B7B] rounded-[17px] overflow-hidden my-9 blur-[1px] mx-auto">
               <Image
-                src={`/assets/uzcard.svg`}
+                src={`/assets/uzcard.webp`}
                 alt="uzcard"
                 width={100}
                 height={100}

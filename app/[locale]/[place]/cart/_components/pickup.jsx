@@ -9,6 +9,7 @@ import { useOrderStore, useStore } from "@/store";
 import { Textarea } from "@/components/ui/textarea";
 import { translateTextSpot, translateTextSpotAddress } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
+import { usePathname } from "next/navigation";
 
 const Pickup = ({
   locale,
@@ -22,7 +23,7 @@ const Pickup = ({
   const all = useTranslations("All");
   const { orderData, setOrderData } = useOrderStore();
   const { setActiveTab } = useStore();
-
+  const pathname = usePathname();
   const handleSelectAddress = (spot) => {
     setOrderData({
       ...orderData,
@@ -31,11 +32,11 @@ const Pickup = ({
     });
   };
 
-    useEffect(() => {
-      if (place == "branch") {
-        setActiveTab("spot");
-      }
-    }, []);
+  useEffect(() => {
+    if (place == "branch") {
+      setActiveTab("spot");
+    }
+  }, [pathname]);
 
   return (
     <div className="w-full flex flex-col gap-6">

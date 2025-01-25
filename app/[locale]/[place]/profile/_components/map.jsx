@@ -1,25 +1,14 @@
-"use client"
+"use client";
 
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import { Icon } from "leaflet";
 import "leaflet/dist/leaflet.css";
 
-const Map = ({ longitude: lng, latitude: lat }) => {
-  const addressMarker = new Icon({
-    iconUrl:
-      "https://fkkpuaszmvpxjoqqmlzx.supabase.co/storage/v1/object/sign/rolling-sushi/locaation.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJyb2xsaW5nLXN1c2hpL2xvY2FhdGlvbi5wbmciLCJpYXQiOjE3MzczNzk0NTksImV4cCI6MTc2ODkxNTQ1OX0.gSnye5QeEB43lsmQBXxbXTVasrR4JFKoGCcWCeIYhhg&t=2025-01-20T13%3A24%3A20.162Z",
-    iconSize: [40, 40],
-  });
+const Map = ({ longitude: lng, latitude: lat, address }) => {
   const userMarker = new Icon({
     iconUrl:
       "https://fkkpuaszmvpxjoqqmlzx.supabase.co/storage/v1/object/sign/rolling-sushi/user.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJyb2xsaW5nLXN1c2hpL3VzZXIucG5nIiwiaWF0IjoxNzM3Mzc5NDQ2LCJleHAiOjE3Njg5MTU0NDZ9._ac5SnVZfXfhP78dd2wbfQsB-kAKvxlMQvI7GNQg-QI&t=2025-01-20T13%3A24%3A07.547Z",
     iconSize: [60, 60],
-  });
-
-  const branchMarker = new Icon({
-    iconUrl:
-      "https://fkkpuaszmvpxjoqqmlzx.supabase.co/storage/v1/object/sign/rolling-sushi/branch.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJyb2xsaW5nLXN1c2hpL2JyYW5jaC5wbmciLCJpYXQiOjE3MzczNzk3MzQsImV4cCI6MTc2ODkxNTczNH0.Pmqf4d58IB_zDVfbyhpu9J-jmfhxa-_r7REEJhL92BQ&t=2025-01-20T13%3A28%3A55.611Z",
-    iconSize: [40, 40],
   });
 
   return (
@@ -28,7 +17,7 @@ const Map = ({ longitude: lng, latitude: lat }) => {
         <MapContainer
           center={[lat, lng]}
           zoom={11}
-          style={{ width: "100%", height: "100%",zIndex:"10" }}
+          style={{ width: "100%", height: "100%", zIndex: "10" }}
         >
           <TileLayer
             attribution='&copy; <a href="https://www.jawg.io/">Jawg Maps</a> contributors'
@@ -36,32 +25,7 @@ const Map = ({ longitude: lng, latitude: lat }) => {
           />
           <Marker position={[lat, lng]} icon={userMarker}>
             <Popup>
-              <h3>Привет, я клиент.</h3>
-            </Popup>
-          </Marker>
-          
-          <Marker
-            position={[41.267193, 69.226858]}
-            icon={1 === 1 ? addressMarker : branchMarker}
-          >
-            <Popup>
-              <h3>Yakkasaroy</h3>
-            </Popup>
-          </Marker>
-          <Marker
-            position={[41.350852, 69.24414]}
-            icon={1 === 2 ? addressMarker : branchMarker}
-          >
-            <Popup>
-              <h3>Olmazor</h3>
-            </Popup>
-          </Marker>
-          <Marker
-            position={[41.318682, 69.339927]}
-            icon={3 === 3 ? addressMarker : branchMarker}
-          >
-            <Popup>
-              <h3>Buyuk ipak yo'li</h3>
+              <h3>{address}</h3>
             </Popup>
           </Marker>
         </MapContainer>

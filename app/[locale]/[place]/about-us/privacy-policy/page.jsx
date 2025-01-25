@@ -2,6 +2,13 @@ import Container from '@/components/shared/container'
 import { getLocale, getTranslations } from 'next-intl/server';
 import React from 'react'
 
+export const metadata = {
+  title: "Политика конфиденциальности - Rolling Sushi",
+  description:
+    "Узнайте, как Rolling Sushi обрабатывает и защищает ваши данные при использовании нашего сайта и приложения.",
+  keywords: "политика конфиденциальности, защита данных, Rolling Sushi",
+};
+
 const Policy = async () => {
   const [ descriptionT, policyT] = await Promise.all([
     getTranslations("Policy.description"),

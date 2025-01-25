@@ -3,7 +3,6 @@ import { aboutLogo } from "@/public";
 import { getTranslations, getLocale } from "next-intl/server";
 import Image from "next/legacy/image";
 import React from "react";
-import TeamCards from "./_components/cards";
 import Link from "next/link";
 
 export const metadata = {
@@ -53,7 +52,7 @@ const AboutUs = async ({ params }) => {
           <p>{aboutUsT("descriptionBottom")}</p>
           <div className="flex flex-col gap-3 sm:hidden mt-4">
           <Link
-              href={`/${param.locale}/${param.place}/about-us/question`}
+              href={`/${param.locale}/${param.place}/about-us/faq`}
               className="w-full h-[50px] flex items-center justify-center rounded-md bg-primary text-white py-2 text-xs md:text-sm text-center"
             >
               {aboutUsT("btnQuestions")}
@@ -97,7 +96,7 @@ const AboutUs = async ({ params }) => {
           <div className="flex flex-col gap-3">
             {/* <CreateReview /> */}
             <Link
-              href={`/${param.locale}/${param.place}/about-us/question`}
+              href={`/${param.locale}/${param.place}/about-us/faq`}
               className="w-full lg:w-3/4 mx-auto rounded-md bg-primary text-white py-4 text-xs md:text-sm text-center"
             >
               {aboutUsT("btnQuestions")}

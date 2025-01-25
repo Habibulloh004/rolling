@@ -41,7 +41,10 @@
     "self_desc": "Xaridor o'ziga xizmat qiladi",
     "selected": "Tanlangan",
     "no_active": "Hozirda faol emas",
-    "no_auth": "Siz tizimga kirmagansiz!"
+    "no_auth": "Siz tizimga kirmagansiz!",
+    "products_empty": "Siz mahsulot tanlamadingiz!",
+    "phone_empty": "Telefon raqam mavjud emas!",
+    "order_created":"Buyurtmangiz qabul qilindi"
   },
   "Bonus": {
     "bonus": "Bonus",
@@ -65,7 +68,7 @@
       "address": "Yetkazib berish manzillari",
       "order": "Buyurtmalarim",
       "bonus": "Mening bonuslarim",
-      "log_out": "Hisobdan chiqish"
+      "log_out": "Akkauntdan chiqish"
     },
     "Bonus": {
       "title": "Biz sizga har bir buyurtmangiz bilan ko‘proq tejash imkonini beruvchi noyob bonus dasturini taklif qilamiz:",
@@ -91,9 +94,13 @@
       "name": "Nomi",
       "name_pls": "Uy",
       "address": "Manzil",
+      "address_error":"Manzilni kiritmadingiz",
       "pls": "Yashnobod tumani, Botkin 1a",
       "comment": "Manzilga izohlar",
-      "comment_pls": "1-qavat"
+      "comment_pls": "1-qavat",
+      "comment_error":"Izohlar mavjud emas.",
+      "location_error":"Lokatsiyani belgilashingiz kerak",
+      "address_saved":"Manzil muvaffaqiyatli kiritildi."
     }
   },
   "Form": {
@@ -184,7 +191,7 @@
       "email": "Elektron pochta",
       "birthday": "Tug‘ilgan sana",
       "gender": "Jinsi",
-      "privacy_policy": "Hisob yaratish orqali men Foydalanish shartlari va Maxfiylik siyosatimizga roziman."
+      "privacy_policy": "Akkount yaratish orqali men Foydalanish shartlari va Maxfiylik siyosatimizga roziman."
     },
     "Validation": {
       "first_name": "Ism majburiy",
@@ -205,9 +212,9 @@
     "gender_fimale": "Ayol",
     "gender_other": "Ko‘rsatilmagan",
     "send_sms": "SMS yuborish",
-    "register": "Hisob yaratish",
+    "register": "Akkount yaratish",
     "login": "Kirish",
-    "have_account": "Hisobingiz bormi?",
+    "have_account": "Akkountingiz bormi?",
     "password": "Maxfiy"
   },
   "Login": {
@@ -229,13 +236,13 @@
       "validation": "Kod yuborish"
     },
     "send_sms": "SMS yuborish",
-    "register": "Hisob yaratish",
+    "register": "Akkount yaratish",
     "login": "Kirish",
-    "have_account": "Hisobingiz yo‘qmi?",
+    "have_account": "Akkountingiz yo‘qmi?",
     "password": "Maxfiy kod"
   },
   "ResetPassword": {
-    "title": "Hisobni tiklash",
+    "title": "Akkountni tiklash",
     "Form": {
       "phone": "Telefon raqami",
       "new_password": "Yangi parol",
@@ -251,7 +258,7 @@
       "error": "Ro‘yxatdan o‘tishda xatolik yuz berdi. Iltimos, keyinroq urinib ko‘ring.",
       "validation": "Tasdiqlash"
     },
-    "register": "Yangi hisob yaratish",
+    "register": "Yangi akkount yaratish",
     "reset": "Tiklash",
     "password": "Yashirish"
   },
@@ -301,7 +308,8 @@
       "have_bonus": "Mavjud bonuslar"
     },
     "pay_success": "To'lov turi",
-    "empty_product": "Mahsulotlar mavjud emas."
+    "empty_product": "Mahsulotlar mavjud emas.",
+    "empty_address": "Manzil mavjud emas."
   },
   "Order": {
     "title": "Mening buyurtmalarim",

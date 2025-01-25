@@ -30,9 +30,13 @@ export const metadata = {
   },
 };
 
-
 export default async function Layout({ children, params }) {
-  const [param, t] = await Promise.all([params, getTranslations("HomePage")]);
+  const [param, t, categoriesData, productsData] = await Promise.all([
+    params,
+    getTranslations("HomePage"),
+    ApiService.getPosterData("menu.getCategories"),
+    ApiService.getPosterData("menu.getProducts"),
+  ]);
 
   // Validate the locale
   if (!routing.locales.includes(param.locale)) {
@@ -116,7 +120,13 @@ export default async function Layout({ children, params }) {
           showAtBottom={false}
         />
         <NextIntlClientProvider locale={param.locale} messages={messages}>
-          <Header param={param} locale={param.locale} spotData={spotData} />
+          <Header
+            categories={categoriesData?.response}
+            products={productsData?.response}
+            param={param}
+            locale={param.locale}
+            spotData={spotData}
+          />
           <main className="grow">{children}</main>
           <Toaster
             position="bottom-right"

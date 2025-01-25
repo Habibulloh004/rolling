@@ -15,10 +15,13 @@ import {
 import { useOrderStore, useStore } from "@/store";
 import Link from "next/link";
 import { Textarea } from "@/components/ui/textarea";
-import { toast } from "sonner";
 
 const Delivery = ({ locale, auth, clientData, place }) => {
+  const addressData = localStorage.getItem("myAddresses")
+    ? JSON.parse(localStorage.getItem("myAddresses"))
+    : [];
   const deliveryText = useTranslations("Cart.Delivery");
+  const cartText = useTranslations("Cart");
   const all = useTranslations("All");
   const { orderData, setOrderData } = useOrderStore();
   const [modalAdd, setModalAdd] = useState(false);
@@ -27,7 +30,7 @@ const Delivery = ({ locale, auth, clientData, place }) => {
     setModalAdd(false);
     setOrderData({
       ...orderData,
-      address: address?.address1,
+      address: address?.address,
       lat: address?.lat,
       lng: address?.lng,
       client_addresses_id: address?.id,
@@ -42,40 +45,40 @@ const Delivery = ({ locale, auth, clientData, place }) => {
   }, []);
 
   const handleSelectModal = () => {
-    if (auth?.client_id) {
-      setModalAdd(true);
-    } else {
-      toast.warning(
-        <div className="w-full h-full flex justify-between items-center">
-          {all("no_auth")}{" "}
-          <Link
-            href={`/${locale}/${place}/login`}
-            className="bg-black text-white rounded-md px-2 py-1"
-          >
-            {all("sign_in")}
-          </Link>
-        </div>
-      );
-    }
+    setModalAdd(true);
+    // if (auth?.client_id) {
+    // } else {
+    //   toast.warning(
+    //     <div className="w-full h-full flex justify-between items-center">
+    //       {all("no_auth")}{" "}
+    //       <Link
+    //         href={`/${locale}/${place}/login`}
+    //         className="bg-black text-white rounded-md px-2 py-1"
+    //       >
+    //         {all("sign_in")}
+    //       </Link>
+    //     </div>
+    //   );
+    // }
   };
 
   useEffect(() => {
-    if (clientData && clientData.addresses && clientData.addresses.length > 0) {
+    if (addressData && addressData?.length > 0) {
       const savedOrderData =
         JSON.parse(localStorage.getItem("orderData")) || null;
 
       if (!savedOrderData?.client_addresses_id) {
         setOrderData({
           ...orderData,
-          address: clientData.addresses[0]?.address1 || "",
-          lat: Number(clientData.addresses[0]?.lat || 0),
-          lng: Number(clientData.addresses[0]?.lng || 0),
-          client_addresses_id: clientData.addresses[0]?.id,
-          address_comment: clientData.addresses[0]?.comment || "",
+          address: addressData[0]?.address || "",
+          lat: Number(addressData[0]?.lat || 0),
+          lng: Number(addressData[0]?.lng || 0),
+          client_addresses_id: addressData[0]?.id,
+          address_comment: addressData[0]?.comment || "",
         });
       }
     }
-  }, [clientData, setOrderData]);
+  }, [addressData, setOrderData]);
 
   return (
     <div className="w-full flex flex-col">
@@ -93,7 +96,7 @@ const Delivery = ({ locale, auth, clientData, place }) => {
               height={100}
               className="w-6 h-6 md:w-8 md:h-8"
             />
-            {orderData?.address ? orderData.address : "addres mavjud emas"}
+            {orderData?.address ? orderData.address : cartText("empty_address")}
           </p>
           <Dialog open={modalAdd}>
             <DialogTrigger asChild>
@@ -119,16 +122,16 @@ const Delivery = ({ locale, auth, clientData, place }) => {
                 </DialogDescription>
               </DialogHeader>
               <main>
-                {auth ? (
-                  <section className="space-y-3">
+                <section className="space-y-3">
+                  {addressData?.length > 0 ? (
                     <div className="space-y-2">
-                      {clientData?.addresses.map((address, i) => (
+                      {addressData?.map((address, i) => (
                         <div
                           key={i}
                           className="w-full flex items-center justify-between gap-2 px-2 py-1 rounded-md border"
                         >
                           <p className="textSmall3 font-medium">
-                            {address.address1}
+                            {address.address}
                           </p>
                           <Button
                             onClick={() => handleSelectAddress(address)}
@@ -139,29 +142,23 @@ const Delivery = ({ locale, auth, clientData, place }) => {
                         </div>
                       ))}
                     </div>
-                    <div className="flex justify-end items-center w-full">
-                      <Link href={`/${locale}/${place}/profile/address/add`}>
-                        <Button
-                          className={
-                            "h-8 max-sm:w-full max-sm:text-[12px] md:h-10 px-4 md:px-5 bg-transparent text-[#004032] shadow-none border-[1px] rounded-[8px] border-[#004032]"
-                          }
-                        >
-                          {all("add")}
-                        </Button>
-                      </Link>
-                    </div>
-                  </section>
-                ) : (
-                  <h1 className="text-thin">
-                    Tizimga kirmagansiz.{" "}
-                    <Link
-                      href={`/${locale}/${place}/login`}
-                      className="font-bold underline text-blue-600"
-                    >
-                      Kirish
+                  ) : (
+                    <p className="text-[#A098AE] text-normal textSmall2">
+                      {cartText("empty_address")}
+                    </p>
+                  )}
+                  <div className="flex justify-end items-center w-full">
+                    <Link href={`/${locale}/${place}/profile/address/add`}>
+                      <Button
+                        className={
+                          "h-8 max-sm:w-full max-sm:text-[12px] md:h-10 px-4 md:px-5 bg-transparent text-[#004032] shadow-none border-[1px] rounded-[8px] border-[#004032]"
+                        }
+                      >
+                        {all("add")}
+                      </Button>
                     </Link>
-                  </h1>
-                )}
+                  </div>
+                </section>
               </main>
             </DialogContent>
           </Dialog>

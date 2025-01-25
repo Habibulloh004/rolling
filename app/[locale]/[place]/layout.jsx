@@ -10,9 +10,7 @@ import Script from "next/script";
 import GoogleAnalytics from "@/app/googleAnalytics";
 import { ApiService } from "@/service/api.services";
 import NextTopLoader from "nextjs-toploader";
-import Cookies from "js-cookie";
 import { Toaster } from "sonner";
-import { cookies } from "next/headers";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -133,7 +131,6 @@ export default async function Layout({ children, params }) {
   `}
         </Script>
 
-        {/* Google Analytics Route Tracking */}
         <GoogleAnalytics />
         <NextTopLoader
           color="hsl(138, 21%, 33%)"
@@ -171,7 +168,6 @@ export default async function Layout({ children, params }) {
           />
           <Footer params={param} />
         </NextIntlClientProvider>
-        {/* Verification: 01b6250c84c27d7e */}
       </body>
     </html>
   );

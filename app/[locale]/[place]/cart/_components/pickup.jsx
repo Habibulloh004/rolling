@@ -1,10 +1,7 @@
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { location, pencil } from "@/public";
 import Image from "next/image";
 import React, { useEffect } from "react";
 import { useTranslations } from "use-intl";
-import Products from "./products";
 import { useOrderStore, useStore } from "@/store";
 import { Textarea } from "@/components/ui/textarea";
 import { translateTextSpot, translateTextSpotAddress } from "@/lib/utils";
@@ -87,7 +84,7 @@ const Pickup = ({
                       <div className="flex flex-col items-start">
                         <div className="flex items-center textSmall3 font-bold  leading-3 lg:leading-7">
                           <Image
-                            src={location}
+                            src={`/assets/Location.svg`}
                             alt="location"
                             width={100}
                             height={100}
@@ -105,7 +102,7 @@ const Pickup = ({
                       <div className="flex flex-col items-start">
                         <div className="flex items-center textSmall3 font-bold  leading-3 lg:leading-7">
                           <Image
-                            src={location}
+                            src={`/assets/Location.svg`}
                             alt="location"
                             width={100}
                             height={100}

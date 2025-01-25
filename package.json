@@ -59,6 +59,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@svgr/webpack": "^8.1.0",
     "eslint": "^9",
     "eslint-config-next": "15.1.1",
     "postcss": "^8",

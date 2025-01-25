@@ -1,6 +1,5 @@
 "use client";
 
-import { card, cash, click, payme, uzcard, uzum } from "@/public";
 import { useOrderStore, useStore } from "@/store";
 import { Plus } from "lucide-react";
 import Image from "next/image";
@@ -17,31 +16,31 @@ const Payment = ({ locale, place }) => {
   const pay = [
     {
       id: 1,
-      icon: card,
+      icon: `/assets/card.svg`,
       text: paymentText("card"),
       type: "card",
     },
     {
       id: 2,
-      icon: cash,
+      icon: `/assets/cash.webp`,
       text: paymentText("cash"),
       type: "cash",
     },
     {
       id: 3,
-      icon: payme,
+      icon: `/assets/payme.webp`,
       text: "PayMe",
       type: "payme",
     },
     {
       id: 4,
-      icon: click,
+      icon: `/assets/click.webp`,
       text: "Click",
       type: "click",
     },
     {
       id: 5,
-      icon: uzum,
+      icon: `/assets/uzum.webp`,
       text: "Uzum",
       type: "uzum",
     },
@@ -104,7 +103,7 @@ const Payment = ({ locale, place }) => {
             </div>
             <div className="w-full h-full relative bg-[#428B7B] rounded-[17px] overflow-hidden my-9 blur-[1px] mx-auto">
               <Image
-                src={uzcard}
+                src={`/assets/uzcard.webp`}
                 alt="uzcard"
                 width={100}
                 height={100}

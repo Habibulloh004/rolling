@@ -1,6 +1,5 @@
 import Container from "@/components/shared/container";
-import { aboutLogo } from "@/public";
-import { getTranslations, getLocale } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import Image from "next/legacy/image";
 import React from "react";
 import Link from "next/link";
@@ -30,7 +29,7 @@ const AboutUs = async ({ params }) => {
           </p>
           <div className="sm:hidden flex justify-center my-6">
             <Image
-              src={aboutLogo}
+              src={`/assets/aboutLogo.svg`}
               alt={`aboutlogo`}
               // fill={true}
               className="w-[400px] aspect-[4/1]"
@@ -85,7 +84,7 @@ const AboutUs = async ({ params }) => {
         </section>
         <section className="hidden sm:block  w-[30%] space-y-4">
           <Image
-            src={aboutLogo}
+            src={`/assets/aboutLogo.svg`}
             alt={`aboutlogo`}
             // fill
             className="w-[400px] aspect-[4/1]"

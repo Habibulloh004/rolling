@@ -2,7 +2,6 @@
 import Container from "@/components/shared/container";
 import React, { useState } from "react";
 import Image from "next/image";
-import { uzcard } from "@/public";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -124,7 +123,7 @@ const MyCard = () => {
             style={{ backgroundColor: color }}
           >
             <Image
-              src={uzcard}
+              src={`/assets/uzcard.webp`}
               alt="uzcard"
               width={100}
               height={100}

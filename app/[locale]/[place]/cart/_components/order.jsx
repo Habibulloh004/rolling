@@ -4,7 +4,6 @@ import { createIncomingOrder, createOrder } from "@/actions/post";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { formatCreatedAt, formatNumber } from "@/lib/utils";
-import { gift } from "@/public";
 import { ApiService } from "@/service/api.services";
 import { useOrderStore, useProductStore, useStore } from "@/store";
 import { ChevronRight } from "lucide-react";
@@ -420,7 +419,7 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
               className="bg-[#F5F5F5] w-full h-10 md:h-12 flex justify-center items-center gap-1 border-[1px] rounded-xl"
             >
               <Image
-                src={gift}
+                src={"/assets/gift.webp"}
                 alt="gift"
                 width={100}
                 height={100}

@@ -51,6 +51,7 @@ export default async function Layout({ children, params }) {
   return (
     <html lang={param.locale}>
       <head>
+        <meta name="yandex-verification" content="01b6250c84c27d7e" />
         <meta httpEquiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta
           name="viewport"

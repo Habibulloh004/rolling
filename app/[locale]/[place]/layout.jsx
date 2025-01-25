@@ -53,6 +53,7 @@ export default async function Layout({ children, params }) {
   return (
     <html lang={param.locale}>
       <head>
+        <meta httpEquiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta
           name="viewport"
           content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=no"
@@ -68,6 +69,15 @@ export default async function Layout({ children, params }) {
             width="0"
             style={{ display: "none", visibility: "hidden" }}
           ></iframe>
+        </noscript>
+        <noscript>
+          <div>
+            <img
+              src="https://mc.yandex.ru/watch/99650561"
+              style={{ position: "absolute", left: "-9999px" }}
+              alt=""
+            />
+          </div>
         </noscript>
 
         {/* Google Analytics Script */}
@@ -101,6 +111,26 @@ export default async function Layout({ children, params }) {
               f.parentNode.insertBefore(j,f);
             })(window,document,'script','dataLayer','GTM-M3LDW3FG');
           `}
+        </Script>
+        <Script id="yandex-metrika-init" strategy="afterInteractive">
+          {`
+    (function(m,e,t,r,i,k,a){
+      m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+      m[i].l=1*new Date();
+      for (var j = 0; j < document.scripts.length; j++) {
+        if (document.scripts[j].src === r) { return; }
+      }
+      k=e.createElement(t),a=e.getElementsByTagName(t)[0];
+      k.async=1;k.src=r;a.parentNode.insertBefore(k,a);
+    })(window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+    ym(99650561, "init", {
+      clickmap:true,
+      trackLinks:true,
+      accurateTrackBounce:true,
+      webvisor:true
+    });
+  `}
         </Script>
 
         {/* Google Analytics Route Tracking */}
@@ -141,6 +171,7 @@ export default async function Layout({ children, params }) {
           />
           <Footer params={param} />
         </NextIntlClientProvider>
+        {/* Verification: 01b6250c84c27d7e */}
       </body>
     </html>
   );

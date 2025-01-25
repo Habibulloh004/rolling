@@ -6,7 +6,6 @@ import {
   posterUrl,
   roundToTwoDecimals,
 } from "@/lib/utils";
-import { bucket } from "@/public";
 import { useOrderStore, useProductStore } from "@/store";
 import { Minus, Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -86,7 +85,7 @@ const Products = ({ locale }) => {
                         }
                       >
                         <Image
-                          src={bucket}
+                          src={`/assets/bucket.svg`}
                           alt="bucket"
                           width={16}
                           height={16}

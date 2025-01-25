@@ -8,7 +8,6 @@ import {
   navItems,
   translateTextSpot,
 } from "@/lib/utils";
-import { accountIcon, hamburgerIcon, navLogo, secondaryIcon } from "@/public";
 import { Search } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Image from "next/legacy/image";
@@ -38,6 +37,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Input } from "../ui/input";
+
 export default function Header({
   locale,
   param,
@@ -162,7 +162,7 @@ export default function Header({
             className="flex-shrink-0 mt-5"
           >
             <Image
-              src={navLogo}
+              src={`/assets/navLogo.svg`}
               alt="Rolling Sushi"
               width={223}
               height={74}
@@ -207,7 +207,7 @@ export default function Header({
               className="flex-shrink-0 flex items-center gap-2 w-full"
             >
               <Image
-                src={`${accountIcon.src}`}
+                src={`/assets/accountIcon.png`}
                 alt={`Account icon`}
                 width={33}
                 height={33}
@@ -253,7 +253,7 @@ export default function Header({
             className="hidden md:flex flex-shrink-0"
           >
             <Image
-              src={navLogo}
+              src={`/assets/navLogo.svg`}
               alt="Rolling Sushi"
               width={223}
               height={74}
@@ -269,7 +269,7 @@ export default function Header({
                 onClick={toggleOpen}
               >
                 <Image
-                  src={hamburgerIcon}
+                  src={"/assets/hamburgerIcon.svg"}
                   alt="Menu"
                   width={25}
                   height={25}
@@ -288,7 +288,7 @@ export default function Header({
               className=" flex-shrink-0"
             >
               <Image
-                src={secondaryIcon}
+                src={`/assets/secondaryIcon.svg`}
                 alt="Rolling Sushi"
                 width={146}
                 height={36}
@@ -337,7 +337,7 @@ export default function Header({
                 className="flex-shrink-0 flex items-center gap-2 w-full"
               >
                 <Image
-                  src={`${accountIcon.src}`}
+                  src={`/assets/accountIcon.png`}
                   alt={`Account icon`}
                   width={30}
                   height={30}
@@ -365,7 +365,7 @@ export default function Header({
                 onClick={toggleOpen}
               >
                 <Image
-                  src={hamburgerIcon}
+                  src={"/assets/hamburgerIcon.svg"}
                   alt="Menu"
                   width={25}
                   height={25}

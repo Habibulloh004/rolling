@@ -1,11 +1,14 @@
+import path from "path";
+import fs from "fs";
 import createNextIntlPlugin from "next-intl/plugin";
+import { generateSitemaps } from "./app/sitemap.js"; // Ensure the file exists and exports generateSitemaps
+import sitemap from "./app/sitemap.js"; // Ensure this import is accurate
 
 const withNextIntl = createNextIntlPlugin();
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {
-    // dynamicIO: true,
     serverActions: {
       bodySizeLimit: "50mb",
     },
@@ -14,6 +17,13 @@ const nextConfig = {
       static: 180,
     },
   },
+  // webpack(config, { isServer }) {
+  //   config.module.rules.push({
+  //     test: /\.svg$/,
+  //     use: ["@svgr/webpack"], // Allows importing SVG files as React components
+  //   });
+  //   return config;
+  // },
   images: {
     minimumCacheTTL: 3600,
     remotePatterns: [
@@ -21,7 +31,6 @@ const nextConfig = {
         protocol: "https",
         hostname: "vm4983125.25ssd.had.wf",
         port: "5000",
-        pathname: "/banner/get_banner/**",
       },
       {
         protocol: "https",
@@ -30,13 +39,7 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "joinposter.com",
-        pathname: "/upload/**",
-      },
-      {
-        protocol: "https",
-        hostname: "joinposter.comundefined",
-        pathname: "/upload/**",
-      },
+      }
     ],
   },
   async headers() {
@@ -60,11 +63,51 @@ const nextConfig = {
           },
           {
             key: "Cache-Control",
-            value: "public, max-age=600, stale-while-revalidate=600", // 10 daqiqa soat
+            value: "public, max-age=600, stale-while-revalidate=600", // 10 minutes
           },
         ],
       },
     ];
+  },
+  async generateStaticParams() {
+    // Generate the sitemap data
+    const sitemapData = await generateSitemaps();
+    const urls = await Promise.all(
+      sitemapData.map(async ({ type, id }) => {
+        const result = await sitemap({ type, id }); // Ensure sitemap function is defined or imported
+        return result;
+      })
+    );
+
+    // Flatten the URLs array
+    const flatUrls = urls.flat();
+
+    // Generate the XML content for the sitemap
+    const sitemapXml = `
+      <?xml version="1.0" encoding="UTF-8"?>
+      <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+        ${flatUrls
+          .map(
+            (urlObj) => `
+          <url>
+            <loc>${urlObj.url}</loc>
+            <lastmod>${urlObj.lastModified}</lastmod>
+            <changefreq>daily</changefreq>
+            <priority>0.8</priority>
+          </url>
+        `
+          )
+          .join("\n")}
+      </urlset>
+    `;
+
+    // Write the sitemap to the public directory
+    fs.writeFileSync(
+      path.join(process.cwd(), "public", "sitemap.xml"),
+      sitemapXml
+    );
+
+    return {}; // Adjust as necessary
   },
 };
 

@@ -1,4 +1,4 @@
-import { posterToken, posterUrl } from "@/lib/utils";
+import { posterToken, posterUrl } from "../lib/utils.js";
 import axios from "axios";
 
 export const ApiService = {

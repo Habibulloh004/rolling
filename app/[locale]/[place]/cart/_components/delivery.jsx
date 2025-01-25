@@ -1,6 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { location, pencil } from "@/public";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { useTranslations } from "use-intl";
@@ -87,7 +85,7 @@ const Delivery = ({ locale, auth, clientData, place }) => {
         <div className="flex w-full justify-between">
           <p className="flex items-center textSmall3 font-bold leading-7 md:gap-2">
             <Image
-              src={location}
+              src={"/assets/Location.svg"}
               alt="location"
               width={100}
               height={100}

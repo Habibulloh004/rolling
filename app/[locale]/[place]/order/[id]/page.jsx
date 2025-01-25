@@ -1,7 +1,5 @@
 import Container from "@/components/shared/container";
 import { Button } from "@/components/ui/button";
-import { posterUrl } from "@/lib/utils";
-import { location } from "@/public";
 import Image from "next/image";
 import React from "react";
 import Stepper from "./_components/stepper";
@@ -220,7 +218,7 @@ export default async function OrderList({ params }) {
             </p>
             <p className="flex items-center textSmall3 font-bold leading-7 md:gap-2">
               <Image
-                src={location}
+                src={`/assets/Location.svg`}
                 alt="location"
                 width={100}
                 height={100}
@@ -240,7 +238,7 @@ export default async function OrderList({ params }) {
           <div className="flex flex-col-reverse items-center  gap-10 lg:flex-row lg:justify-between mt-12">
             <div className="max-sm:w-10/12 max-md:w-2/3 md:w-[300px] py-3 px-5 bg-white rounded-xl flex flex-col justify-center items-center">
               <Image
-                src={location}
+                src={`/assets/Location.svg`}
                 alt="image"
                 width={100}
                 height={100}

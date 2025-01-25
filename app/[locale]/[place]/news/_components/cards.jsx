@@ -8,7 +8,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { news } from "@/public";
 import { Eye } from "lucide-react";
 import CustomImage from "@/components/shared/customImage";
 
@@ -27,7 +26,7 @@ const PromotionCards = ({ item }) => {
         <CardHeader className="p-0">
           <div className="relative h-40 md:h-60">
             <CustomImage
-              src={`${news.src}`}
+              src={`/assets/news.svg`}
               alt="news-img"
               className="w-full object-cover aspect-video"
             />

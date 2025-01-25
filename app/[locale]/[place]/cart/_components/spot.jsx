@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { translateTextSpot } from "@/lib/utils";
-import { location, pencil } from "@/public";
 import { useOrderStore, useStore } from "@/store";
 import Image from "next/image";
 import React, { useEffect } from "react";
@@ -49,7 +48,7 @@ const Spot = ({ place, locale, spotData, searchParamsData }) => {
         <div className="flex w-full justify-between pt-2">
           <p className="flex items-center textSmall3 font-bold md:gap-2">
             <Image
-              src={location}
+              src={`/assets/Location.svg`}
               alt="location"
               width={100}
               height={100}
@@ -65,7 +64,7 @@ const Spot = ({ place, locale, spotData, searchParamsData }) => {
         <div className="flex w-full justify-between pt-2 md:gap-2">
           <p className="flex items-center textSmall3 font-bold leading-7">
             <Image
-              src={location}
+              src={`/assets/Location.svg`}
               alt="location"
               width={100}
               height={100}

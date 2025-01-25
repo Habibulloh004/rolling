@@ -1,6 +1,5 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { aboutLogo, appStoreIcon, facebook, instagram, playMarketIcon, telegram } from "@/public";
 import { Mail, PhoneCallIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
@@ -67,7 +66,7 @@ const ClientContact = ({ spotData, locale }) => {
 
             <div className="flex justify-center py-8 lg:hidden">
                 <Image
-                    src={aboutLogo}
+                    src={`/assets/aboutLogo.svg`}
                     alt="about logo"
                     className="w-[400px] aspect-[4/1]"
                 />
@@ -148,7 +147,7 @@ const ClientContact = ({ spotData, locale }) => {
                 <div className="lg:w-1/3 flex flex-col mt-5 lg:mt-0">
                     <div className="hidden lg:flex justify-center pb-6">
                         <Image
-                            src={aboutLogo}
+                            src={`/assets/aboutLogo.svg`}
                             alt="about logo"
                             className="w-[400px] aspect-[4/1]"
                         />
@@ -162,21 +161,21 @@ const ClientContact = ({ spotData, locale }) => {
                             target="_blank"
                             rel="noopener noreferrer"
                         >
-                            <Image src={facebook} alt="facebook" />
+                            <Image src={`/assets/facebook.svg`} alt="facebook" />
                         </Link>
                         <Link
                             href="https://t.me/rollingsushi_uz"
                             target="_blank"
                             rel="noopener noreferrer"
                         >
-                            <Image src={telegram} alt="telegram" />
+                            <Image src={`/assets/telegram.svg`} alt="telegram" />
                         </Link>
                         <Link
                             href="https://www.instagram.com/rollingsushiuz/"
                             target="_blank"
                             rel="noopener noreferrer"
                         >
-                            <Image src={instagram} alt="instagram" />
+                            <Image src={`/assets/instagram.svg`} alt="instagram" />
                         </Link>
                     </div>
                 </div>

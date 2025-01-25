@@ -9,6 +9,19 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { ApiService } from "@/service/api.services";
 import CartSidebar from "./_components/sidebar";
 import { cookies } from "next/headers";
+import Head from "next/head";
+
+export async function generateMetadata() {
+  return {
+    title: "Корзина - Rolling Sushi",
+    description: "Просмотрите ваш заказ, выберите способ доставки и оформите покупку в Rolling Sushi.",
+    keywords: "корзина, оформить заказ, доставка суши, Rolling Sushi, Ташкент",
+    alternates: {
+      canonical: "https://rollingsushi.uz/cart",
+    },
+  };
+}
+
 
 const Basket = async ({ params, searchParams }) => {
   const cookieStore = await cookies();
@@ -31,48 +44,52 @@ const Basket = async ({ params, searchParams }) => {
     );
   }
   return (
-    <Container className={"w-11/12 flex flex-col md:gap-5 pt-4 md:pt-8 gap-2"}>
-      <h1 className="w-full text-primary font-bold font-Poppins leading-10 text-start textNormal4">
-        {cart("title")}
-      </h1>
-      {/* Desktop version */}
-      <div className="hidden lg:grid lg:grid-cols-2 lg:gap-16 w-full">
-        <Left
-          auth={auth}
-          place={path.place}
-          locale={locale}
-          spotData={spotData}
-          searchParamsData={searchParamsData}
-        />
-        <Right
-          auth={auth}
-          products={products.response
-            .filter((c) => c.menu_category_id != 0)
-            .slice(0, 10)}
-          locale={locale}
-          place={path.place}
-          searchParamsData={searchParamsData}
-        />
-      </div>
-      {/* Mobile version */}
-      <div className="lg:hidden w-full space-y-2">
-        <CartSidebar
-          auth={auth}
-          locale={locale}
-          place={path.place}
-          spotData={spotData}
-          searchParamsData={searchParamsData}
-        />
-        <Products locale={locale} auth={auth} />
-        <Payment locale={locale} place={path.place} auth={auth} />
-        <Order
-          auth={auth}
-          searchParamsData={searchParamsData}
-          locale={locale}
-          place={path.place}
-        />
-      </div>
-    </Container>
+    <>
+      <Container
+        className={"w-11/12 flex flex-col md:gap-5 pt-4 md:pt-8 gap-2"}
+      >
+        <h1 className="w-full text-primary font-bold font-Poppins leading-10 text-start textNormal4">
+          {cart("title")}
+        </h1>
+        {/* Desktop version */}
+        <div className="hidden lg:grid lg:grid-cols-2 lg:gap-16 w-full">
+          <Left
+            auth={auth}
+            place={path.place}
+            locale={locale}
+            spotData={spotData}
+            searchParamsData={searchParamsData}
+          />
+          <Right
+            auth={auth}
+            products={products.response
+              .filter((c) => c.menu_category_id != 0)
+              .slice(0, 10)}
+            locale={locale}
+            place={path.place}
+            searchParamsData={searchParamsData}
+          />
+        </div>
+        {/* Mobile version */}
+        <div className="lg:hidden w-full space-y-2">
+          <CartSidebar
+            auth={auth}
+            locale={locale}
+            place={path.place}
+            spotData={spotData}
+            searchParamsData={searchParamsData}
+          />
+          <Products locale={locale} auth={auth} />
+          <Payment locale={locale} place={path.place} auth={auth} />
+          <Order
+            auth={auth}
+            searchParamsData={searchParamsData}
+            locale={locale}
+            place={path.place}
+          />
+        </div>
+      </Container>
+    </>
   );
 };
 

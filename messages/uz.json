@@ -94,9 +94,13 @@
       "name": "Nomi",
       "name_pls": "Uy",
       "address": "Manzil",
+      "address_error":"Manzilni kiritmadingiz",
       "pls": "Yashnobod tumani, Botkin 1a",
       "comment": "Manzilga izohlar",
-      "comment_pls": "1-qavat"
+      "comment_pls": "1-qavat",
+      "comment_error":"Izohlar mavjud emas.",
+      "location_error":"Lokatsiyani belgilashingiz kerak",
+      "address_saved":"Manzil muvaffaqiyatli kiritildi."
     }
   },
   "Form": {
@@ -304,7 +308,8 @@
       "have_bonus": "Mavjud bonuslar"
     },
     "pay_success": "To'lov turi",
-    "empty_product": "Mahsulotlar mavjud emas."
+    "empty_product": "Mahsulotlar mavjud emas.",
+    "empty_address": "Manzil mavjud emas."
   },
   "Order": {
     "title": "Mening buyurtmalarim",

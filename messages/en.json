@@ -42,9 +42,9 @@
     "selected": "Selected",
     "no_active": "Currently inactive",
     "no_auth": "You are not logged in!",
-    "products_empty":"You have not selected a product!",
+    "products_empty": "You have not selected a product!",
     "phone_empty": "Phone number does not exist!",
-    "order_created":"Your order has been received."
+    "order_created": "Your order has been received."
   },
   "Bonus": {
     "bonus": "Bonus",
@@ -94,9 +94,13 @@
       "name": "Name",
       "name_pls": "Home",
       "address": "Address",
+      "address_error":"You did not enter an address.",
+      "address_saved":"Address added successfully.",
       "pls": "Yashnobod district, Botkin 1a",
       "comment": "Comments on the address",
-      "comment_pls": "Entrance 1"
+      "comment_pls": "Entrance 1",
+      "comment_error": "You have not added a comment.",
+      "location_error": "You need to specify the location."
     }
   },
   "Form": {
@@ -304,7 +308,8 @@
       "have_bonus": "Available bonuses"
     },
     "pay_success": "Payment Method",
-    "empty_product": "No products available."
+    "empty_product": "No products available.",
+    "empty_address": "Address not available."
   },
   "Order": {
     "title": "My Orders",

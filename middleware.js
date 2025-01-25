@@ -2,9 +2,10 @@ import { NextResponse } from "next/server";
 import createMiddleware from "next-intl/middleware";
 import { routing } from "./i18n/routing";
 
+// Initialize intlMiddleware
 const intlMiddleware = createMiddleware(routing);
 
-export default function middleware(req) {
+export default async function middleware(req) {
   try {
     const { pathname } = req.nextUrl;
     const defaultLocale = "uz";
@@ -19,24 +20,67 @@ export default function middleware(req) {
       );
     }
 
-    // Pass request through intlMiddleware
-    const intlResponse = intlMiddleware(req);
+    // Handle internationalization middleware
+    const intlResponse = await intlMiddleware(req);
     if (intlResponse) {
-      console.log(intlResponse)
       return intlResponse;
     }
 
-    // Fallback to next request
+    // Fallback to the next response
     return NextResponse.next();
   } catch (error) {
+    // Log middleware errors for debugging
     console.error("Middleware error:", error);
     return new NextResponse("Internal Server Error", { status: 500 });
   }
 }
 
+// Middleware route matcher
 export const config = {
-  matcher: ["/", "/(uz|ru|en)/:path*"],
+  matcher: ["/", "/(uz|ru|en)/:path*"], // Match root, locales, and sub-paths
 };
+
+// import { NextResponse } from "next/server";
+// import createMiddleware from "next-intl/middleware";
+// import { routing } from "./i18n/routing";
+
+// const intlMiddleware = createMiddleware(routing);
+
+// export default function middleware(req) {
+//   try {
+//     const { pathname } = req.nextUrl;
+//     const defaultLocale = "uz";
+//     const defaultPlace = "web";
+
+//     // Handle locale-only paths (e.g., `/uz`, `/ru`, `/en`)
+//     const matchLocaleOnly = /^\/(uz|ru|en)$/;
+//     if (matchLocaleOnly.test(pathname)) {
+//       const locale = pathname.slice(1) || defaultLocale;
+//       return NextResponse.redirect(
+//         new URL(`/${locale}/${defaultPlace}`, req.url)
+//       );
+//     }
+
+//     // Pass request through intlMiddleware
+//     const intlResponse = intlMiddleware(req);
+//     if (intlResponse) {
+//       console.log(intlResponse)
+//       return intlResponse;
+//     }
+
+//     // Fallback to next request
+//     return NextResponse.next();
+//   } catch (error) {
+//     console.error("Middleware error:", error);
+//     return new NextResponse("Internal Server Error", { status: 500 });
+//   }
+// }
+
+// export const config = {
+//   matcher: ["/", "/(uz|ru|en)/:path*"],
+// };
+
+// ====================================================
 
 // import createMiddleware from "next-intl/middleware";
 // import { routing } from "./i18n/routing";

@@ -17,13 +17,13 @@ const nextConfig = {
       static: 180,
     },
   },
-  // webpack(config, { isServer }) {
-  //   config.module.rules.push({
-  //     test: /\.svg$/,
-  //     use: ["@svgr/webpack"], // Allows importing SVG files as React components
-  //   });
-  //   return config;
-  // },
+  webpack(config, { isServer }) {
+    config.module.rules.push({
+      test: /\.svg$/,
+      use: ["@svgr/webpack"], // Allows importing SVG files as React components
+    });
+    return config;
+  },
   images: {
     minimumCacheTTL: 3600,
     remotePatterns: [
@@ -39,7 +39,7 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "joinposter.com",
-      }
+      },
     ],
   },
   async headers() {
@@ -50,7 +50,7 @@ const nextConfig = {
           { key: "Access-Control-Allow-Credentials", value: "true" },
           {
             key: "Access-Control-Allow-Origin",
-            value: "https://rolling-sushi.uz",
+            value: "https://rolling-sushi.uz", // Ensure this matches your deployment URL
           },
           {
             key: "Access-Control-Allow-Methods",
@@ -70,44 +70,59 @@ const nextConfig = {
     ];
   },
   async generateStaticParams() {
-    // Generate the sitemap data
-    const sitemapData = await generateSitemaps();
-    const urls = await Promise.all(
-      sitemapData.map(async ({ type, id }) => {
-        const result = await sitemap({ type, id }); // Ensure sitemap function is defined or imported
-        return result;
-      })
-    );
+    try {
+      // Generate the sitemap data
+      const sitemapData = await generateSitemaps();
 
-    // Flatten the URLs array
-    const flatUrls = urls.flat();
+      // Map through the sitemap data and ensure it resolves correctly
+      const urls = await Promise.all(
+        sitemapData.map(async ({ type, id }) => {
+          try {
+            const result = await sitemap({ type, id });
+            return result;
+          } catch (error) {
+            console.error(
+              `Error generating sitemap for type=${type} and id=${id}:`,
+              error
+            );
+            return []; // Prevent crashing if one entry fails
+          }
+        })
+      );
 
-    // Generate the XML content for the sitemap
-    const sitemapXml = `
-      <?xml version="1.0" encoding="UTF-8"?>
-      <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-        ${flatUrls
-          .map(
-            (urlObj) => `
-          <url>
-            <loc>${urlObj.url}</loc>
-            <lastmod>${urlObj.lastModified}</lastmod>
-            <changefreq>daily</changefreq>
-            <priority>0.8</priority>
-          </url>
-        `
-          )
-          .join("\n")}
-      </urlset>
-    `;
+      // Flatten the URLs array
+      const flatUrls = urls.flat();
 
-    // Write the sitemap to the public directory
-    fs.writeFileSync(
-      path.join(process.cwd(), "public", "sitemap.xml"),
-      sitemapXml
-    );
+      // Generate the XML content for the sitemap
+      const sitemapXml = `
+        <?xml version="1.0" encoding="UTF-8"?>
+        <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+          ${flatUrls
+            .map(
+              (urlObj) => `
+            <url>
+              <loc>${urlObj.url}</loc>
+              <lastmod>${urlObj.lastModified}</lastmod>
+              <changefreq>daily</changefreq>
+              <priority>0.8</priority>
+            </url>
+          `
+            )
+            .join("\n")}
+        </urlset>
+      `;
 
-    return {}; // Adjust as necessary
+      // Write the sitemap to the public directory
+      fs.writeFileSync(
+        path.join(process.cwd(), "public", "sitemap.xml"),
+        sitemapXml
+      );
+
+      return {};
+    } catch (error) {
+      console.error("Error generating sitemap:", error);
+      return {}; // Return an empty object if there's an error
+    }
   },
 };
 

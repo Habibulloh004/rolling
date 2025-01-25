@@ -225,10 +225,10 @@ export default function Header({
                   : allT("sign_in")}
               </p>
             </Link>
+            <div className="flex justify-start items-center w-10/12">
+              <LngChange param={param} />
+            </div>
           </nav>
-          <div className="flex justify-start items-center w-10/12">
-            <LngChange param={param} />
-          </div>
         </div>
 
         {/* Overlay for closing the menu */}
@@ -300,7 +300,6 @@ export default function Header({
           {param.place !== "branch" && (
             <nav className="hidden lg:flex items-center lg:space-x-4 xl:space-x-6">
               {navItems.map((item) => {
-                console.log(item)
                 return (
                   <Link
                     key={item.id}
@@ -388,7 +387,7 @@ export default function Header({
                         onClick={() => setOpenSearch(true)}
                         className="w-full relative bg-white p-2 rounded-md"
                       >
-                        <Search className="text-gray-400 size-5 lg:size-7 text-primary" />
+                        <Search className="text-gray-400 size-5 xl:size-7 text-primary" />
                       </div>
                     </SheetTrigger>
                     <SheetContent

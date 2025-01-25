@@ -97,9 +97,14 @@ export default async function HomePage({ params, searchParams }) {
   const categories = categoriesData.response.filter(
     (item) => item.category_photo != null && item.category_hidden != "1"
   );
-  const products = productsData.response
-    .filter((item) => item.photo_origin != null && item?.menu_category_id != 0)
-    .slice(0, 10);
+  const products = productsData.response.filter((item) => {
+    const findIngr = item?.ingredients?.find((ingr) => ingr?.ingredient_id == 211);
+    if (item.photo_origin != null && item?.menu_category_id != 0 && findIngr) {
+      return true;
+    } else {
+      return false;
+    }
+  });
 
   return (
     <Container className={"w-full flex-col pb-10"}>

@@ -206,7 +206,7 @@ export const useOrderStore = create((set) => ({
     service_mode: 3,
     payment_method: "cash",
     total: 0,
-    delivery_price: 10000,
+    delivery_price: 0,
     lng: 0,
     lat: 0,
     client: null,
@@ -245,7 +245,7 @@ export const useOrderStore = create((set) => ({
           service_mode: 3,
           payment_method: "cash",
           total: 0,
-          delivery_price: 10000,
+          delivery_price: 0,
           lng: 0,
           lat: 0,
           client: null,
@@ -264,7 +264,7 @@ export const useOrderStore = create((set) => ({
   },
   resetOrder: () => {
     set({
-orderData: {
+      orderData: {
         spot_id: 0,
         spot_name: "",
         phone: "",
@@ -272,7 +272,7 @@ orderData: {
         service_mode: 3,
         payment_method: "cash",
         total: 0,
-        delivery_price: 10000,
+        delivery_price: -0,
         lng: 0,
         lat: 0,
         client: null,

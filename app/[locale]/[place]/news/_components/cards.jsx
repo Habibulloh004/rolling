@@ -8,59 +8,63 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { news } from "@/public";
-import { Eye } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import CustomImage from "@/components/shared/customImage";
+import { url } from "@/lib/utils";
+import { useTranslations } from "next-intl";
+import { DialogTitle } from "@radix-ui/react-dialog";
 
 const PromotionCards = ({ item }) => {
+  const allT = useTranslations("All")
   const [isExpanded, setIsExpanded] = useState(false);
-
-  // Matnning kesilgan qismini aniqlash
-  const shortDescription =
-    item.description.length < 70
-      ? item.description
-      : `${item.description.slice(0, 70)}...`;
-
+  const text = item.description.replace(/\\\\n/g, '\n\n') // Ikki qator sakrash
+    .replace(/\\n/g, '\n');
+  const firstLine = text.split("\n")[0];
   return (
     <main>
       <Card>
         <CardHeader className="p-0">
-          <div className="relative h-40 md:h-60">
+          <div className="relative aspect-[15/5]">
             <CustomImage
-              src={`${news.src}`}
+              src={`${url}/banner/get_banner/${item.id}`}
               alt="news-img"
-              className="w-full object-cover aspect-video"
+              className="w-full h-full object-cover "
             />
           </div>
           <div className="p-6">
             <CardDescription className="text-primary textNormal">
-              {item.text}
+              {item.subtitle}
             </CardDescription>
-            <CardTitle className="textSmall4 tracking-wider">
+            <CardTitle className="textSmall4 tracking-wider pt-3">
               {item.title}
             </CardTitle>
           </div>
         </CardHeader>
         <CardContent>
-          <p className="textSmall3">
-            {isExpanded ? item.description : shortDescription}
-            {/* Agar matn kesilgan bo‘lsa, "3 nuqta"ni yoki tugmani qo‘shamiz */}
-            {item.description.length > 70 && (
-              <button
-                onClick={() => setIsExpanded(!isExpanded)}
-                className="text-blue-500 ml-2 underline cursor-pointer"
-              >
-                {isExpanded ? "Yopish" : "Ko‘proq ko‘rish"}
-              </button>
-            )}
-          </p>
+          <p className="whitespace-pre-line w-full">{firstLine}</p>
+          <Dialog>
+            <DialogTrigger >
+              <p className="text-sm lg:text-base text-[#5353e7]">{allT("more")}</p>
+            </DialogTrigger>
+            <DialogContent mark="false" className={"px-5"}> 
+                <DialogHeader>
+                <DialogTitle as="div">
+                        </DialogTitle>
+                  <DialogDescription className="text-xs md:text-base font-normal text-start whitespace-pre-line">
+                    {text}
+                  </DialogDescription>
+                </DialogHeader>
+            </DialogContent>
+          </Dialog>
         </CardContent>
         <CardFooter className="text-xs flex items-center justify-between">
-          <p>{item.date}</p>
-          <span className="flex items-center">
-            <Eye className="size-4 inline mr-1 align-middle" />
-            <p>{item.view}</p>
-          </span>
+          <p>{item.createdAt}</p>
         </CardFooter>
       </Card>
     </main>

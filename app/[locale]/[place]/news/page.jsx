@@ -1,9 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import Container from "@/components/shared/container";
-import Banner from "@/components/shared/banner";
 import { getData } from "@/service";
 import PromotionCards from "./_components/cards";
-import { View } from "lucide-react";
 import {
   Carousel,
   CarouselContent,

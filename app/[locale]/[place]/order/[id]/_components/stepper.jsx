@@ -7,10 +7,10 @@ import { useTranslations } from "use-intl";
 const Stepper = ({ currentStep }) => {
   const statusData = useTranslations("Order.OrderStatus");
   const steps = [
-    { id: 1, label: statusData("confirmed"), icon: "/assets/Confirmation.svg" },
-    { id: 2, label: statusData("cooking"), icon: "/assets/Cooking.svg" },
+    { id: 1, label: statusData("confirmed"), icon: "/assets/Confirmation.webp" },
+    { id: 2, label: statusData("cooking"), icon: "/assets/Cooking.webp" },
     { id: 3, label: statusData("in-deliver"), icon: "/assets/Shipped.svg" },
-    { id: 4, label: statusData("finished"), icon: "/assets/Delivered.svg" },
+    { id: 4, label: statusData("finished"), icon: "/assets/Delivered.webp" },
   ];
 
   return (

@@ -7,11 +7,12 @@ import OrderItemComponent from "./_components/orderItemComponent";
 import { ApiService } from "@/service/api.services";
 
 export default async function OrderList({ params }) {
-  const [locale, path, orderText, productsData] = await Promise.all([
+  const [locale, path, orderText, productsData, spotsData] = await Promise.all([
     getLocale(),
     params,
     getTranslations("Order"),
     ApiService.getPosterData("menu.getProducts"),
+    ApiService.getPosterData("access.getSpots"),
   ]);
   return (
     <Container className={"w-11/12 py-5 flex flex-col gap-5"}>
@@ -39,6 +40,7 @@ export default async function OrderList({ params }) {
         productsData={productsData?.response}
         locale={locale}
         param={path}
+        spotsData={spotsData?.response}
       />
     </Container>
   );

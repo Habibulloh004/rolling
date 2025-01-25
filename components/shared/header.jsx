@@ -300,7 +300,6 @@ export default function Header({
           {param.place !== "branch" && (
             <nav className="hidden lg:flex items-center lg:space-x-4 xl:space-x-6">
               {navItems.map((item) => {
-                console.log(item)
                 return (
                   <Link
                     key={item.id}

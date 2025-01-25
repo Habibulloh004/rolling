@@ -93,6 +93,8 @@ export default async function HomePage({ params, searchParams }) {
     );
   }
 
+
+  console.log(reviewsData)
   const banners = bannersData.banners;
   const categories = categoriesData.response.filter(
     (item) => item.category_photo != null && item.category_hidden != "1"
@@ -124,16 +126,19 @@ export default async function HomePage({ params, searchParams }) {
         }}
       >
         <CarouselContent className="relative">
-          {fakeData.map((item, i) => (
-            <CarouselItem
-              key={i}
-              className={`basis-[80%] sm:basis-[45%] lg:basis-[45%] xl:basis-[30%] p-0 mx-2 ${
-                i == 0 && "max-sm:ml-8 max-md:ml-16 ml-8"
-              }`}
-            >
-              <Cards data={item} />
-            </CarouselItem>
-          ))}
+          {reviewsData.result.reviews.map((item, i) => {
+            if(item.rating < 4) return
+            return(
+              <CarouselItem
+                key={i}
+                className={`basis-[80%] sm:basis-[45%] lg:basis-[45%] xl:basis-[30%] p-0 mx-2 ${
+                  i == 0 && "max-sm:ml-8 max-md:ml-16 ml-8"
+                }`}
+              >
+                <Cards data={item} />
+              </CarouselItem>
+            )
+          })}
         </CarouselContent>
       </Carousel>
     </Container>

@@ -5,6 +5,13 @@ const withNextIntl = createNextIntlPlugin();
 export default withNextIntl({
   experimental: {
     runtime: "edge", // Ensure Edge runtime compatibility
+    serverActions: {
+      bodySizeLimit: "50mb",
+    },
+    staleTimes: {
+      dynamic: 30,
+      static: 180,
+    },
   },
   images: {
     remotePatterns: [

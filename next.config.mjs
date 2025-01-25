@@ -67,35 +67,35 @@ const nextConfig = {
       },
     ];
   },
-  async generateStaticParams() {
-    try {
-      const sitemapData = await generateSitemaps();
+  // async generateStaticParams() {
+  //   try {
+  //     const sitemapData = await generateSitemaps();
 
-      const urls = await Promise.all(
-        sitemapData.map(async ({ type, id }) => {
-          try {
-            const result = await sitemap({ type, id });
-            return result;
-          } catch (error) {
-            console.error(
-              `Error generating sitemap for type=${type} and id=${id}:`,
-              error
-            );
-            return []; // Prevent crashing if one entry fails
-          }
-        })
-      );
+  //     const urls = await Promise.all(
+  //       sitemapData.map(async ({ type, id }) => {
+  //         try {
+  //           const result = await sitemap({ type, id });
+  //           return result;
+  //         } catch (error) {
+  //           console.error(
+  //             `Error generating sitemap for type=${type} and id=${id}:`,
+  //             error
+  //           );
+  //           return []; // Prevent crashing if one entry fails
+  //         }
+  //       })
+  //     );
 
-      const flatUrls = urls.flat();
+  //     const flatUrls = urls.flat();
 
-      return flatUrls.map((urlObj) => ({
-        params: { path: urlObj.url.replace(/^\/|\/$/g, "") }, // Adjust based on your URL structure
-      }));
-    } catch (error) {
-      console.error("Error generating sitemap:", error);
-      return [];
-    }
-  },
+  //     return flatUrls.map((urlObj) => ({
+  //       params: { path: urlObj.url.replace(/^\/|\/$/g, "") }, // Adjust based on your URL structure
+  //     }));
+  //   } catch (error) {
+  //     console.error("Error generating sitemap:", error);
+  //     return [];
+  //   }
+  // },
 };
 
 export default withNextIntl(nextConfig);

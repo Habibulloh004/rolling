@@ -1,44 +1,34 @@
-import { NextResponse } from "next/server";
 import createMiddleware from "next-intl/middleware";
 import { routing } from "./i18n/routing";
+import { NextResponse } from "next/server";
 
-// Initialize intlMiddleware
 const intlMiddleware = createMiddleware(routing);
 
-export default async function middleware(req) {
-  try {
-    const { pathname } = req.nextUrl;
-    const defaultLocale = "uz";
-    const defaultPlace = "web";
+export default function middleware(req) {
+  const { pathname } = req.nextUrl;
+  const defaultLocale = "uz"; // Default locale
+  const defaultPlace = "web"; // Default place
 
-    // Handle locale-only paths (e.g., `/uz`, `/ru`, `/en`)
-    const matchLocaleOnly = /^\/(uz|ru|en)$/;
-    if (matchLocaleOnly.test(pathname)) {
-      const locale = pathname.slice(1) || defaultLocale;
-      return NextResponse.redirect(
-        new URL(`/${locale}/${defaultPlace}`, req.url)
-      );
-    }
-
-    // Handle internationalization middleware
-    const intlResponse = await intlMiddleware(req);
-    if (intlResponse) {
-      return intlResponse;
-    }
-
-    // Fallback to the next response
-    return NextResponse.next();
-  } catch (error) {
-    // Log middleware errors for debugging
-    console.error("Middleware error:", error);
-    return new NextResponse("Internal Server Error", { status: 500 });
+  // Match root or locale-only paths and redirect to default `/web`
+  const matchLocaleOnly = /^\/(uz|ru|en)$/;
+  if (matchLocaleOnly.test(pathname)) {
+    const locale = pathname.slice(1) || defaultLocale;
+    return NextResponse.redirect(new URL(`/${locale}/${defaultPlace}`, req.url));
   }
+
+  // Apply `intlMiddleware` for other requests
+  const intlResponse = intlMiddleware(req);
+  if (intlResponse) {
+    return intlResponse;
+  }
+
+  return NextResponse.next();
 }
 
-// Middleware route matcher
 export const config = {
-  matcher: ["/", "/(uz|ru|en)/:path*"], // Match root, locales, and sub-paths
+  matcher: ["/", "/(uz|ru|en)/:path*","/(uz|ru|en)/register","/(uz|ru|en)/login"], // Match root `/`, locales, and paths
 };
+
 
 // import { NextResponse } from "next/server";
 // import createMiddleware from "next-intl/middleware";

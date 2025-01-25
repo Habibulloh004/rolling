@@ -22,7 +22,8 @@ async function CreateReview() {
           <Image
             src={`/assets/aboutLogo.svg`}
             alt={`aboutlogo`}
-            // fill
+            width={500}
+            height={100}
             className="w-[400px] aspect-[4/1]"
           />
           <p className="font-semibold text-muted text-center">

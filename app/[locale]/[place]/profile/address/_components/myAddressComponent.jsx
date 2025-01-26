@@ -33,7 +33,8 @@ export default function MyAddressComponent() {
       ? JSON.parse(localStorage.getItem("myAddresses"))
       : [];
     setAddressData(addresses);
-  },[]);
+  }, []);
+
   return (
     <div>
       <div className="w-full hidden lg:grid lg:grid-cols-3 xl:grid-cols-4 gap-3">
@@ -73,15 +74,18 @@ export default function MyAddressComponent() {
         opts={{
           align: "start",
         }}
-        className="lg:hidden w-full mx-2"
+        className="w-full mt-[29px] flex gap-5 lg:hidden"
       >
         <CarouselContent>
           {addressData?.map((item, i) => (
-            <CarouselItem key={i} className="basis-80 md:basis-auto ">
-              <div className="p-1">
+            <CarouselItem
+              key={i}
+              className="basis-auto flex-shrink-0 w-[300px] max-w-full"
+            >
+              <div className="bg-white rounded-2xl p-1 flex flex-col justify-between min-w-[300px]">
                 <Card key={i}>
                   <CardHeader>
-                    <div className="w-full overflow-hidden min-w-[266px] h-[180px] rounded-2xl relative">
+                    <div className="w-full max-w-[300px] overflow-hidden lg:min-w-[266px] h-[180px] rounded-xl relative">
                       <MyMap
                         latitude={item.lat}
                         longitude={item.lng}

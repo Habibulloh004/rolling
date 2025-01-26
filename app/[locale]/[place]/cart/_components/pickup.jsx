@@ -4,10 +4,12 @@ import React, { useEffect } from "react";
 import { useTranslations } from "use-intl";
 import { useOrderStore, useStore } from "@/store";
 import { Textarea } from "@/components/ui/textarea";
-import { translateTextSpot, translateTextSpotAddress } from "@/lib/utils";
+import { cn, translateTextSpot, translateTextSpotAddress } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import { usePathname } from "next/navigation";
 import { Input } from "@/components/ui/input";
+import PhoneInput from "react-phone-number-input";
+import "react-phone-number-input/style.css";
 
 const Pickup = ({
   locale,
@@ -31,22 +33,8 @@ const Pickup = ({
     });
   };
 
-  const handleChangePhone = (e) => {
-    const inputValue = e.target.value;
-
-    // Faqat raqamlar va "+" belgisi kiritilishi mumkin
-    const sanitizedValue = inputValue.replace(/[^0-9+]/g, "");
-
-    // "+ bilan boshlashni tekshirish"
-    if (!sanitizedValue.startsWith("+")) {
-      setOrderData({ ...orderData, phone: "+" });
-      return;
-    }
-
-    // Maksimal uzunlikni 13 ta belgiga cheklash
-    if (sanitizedValue.length <= 13) {
-      setOrderData({ ...orderData, phone: sanitizedValue });
-    }
+  const handleChangePhone = (value) => {
+    setOrderData({ ...orderData, phone: value });
   };
 
   useEffect(() => {
@@ -154,18 +142,26 @@ const Pickup = ({
           )}
         </section>
       </div>
-      {auth?.client_id && (
+      {!auth?.client_id && (
         <div>
           <p className="text-[#A098AE] font-normal textSmall3 pt-2">
             {profileT("phone")}
           </p>
           <div className="lg:w-2/3 flex w-full justify-between pt-2 md:gap-2">
-            {/* Telefon raqami uchun input */}
-            <Input
-              onChange={handleChangePhone}
-              value={orderData?.phone || "+"} // "+" bilan boshlanadi
-            />
-          </div>
+              <PhoneInput
+                country="UZ"
+                defaultCountry="UZ"
+                placeholder=""
+                international
+                withCountryCallingCode
+                value={orderData?.phone || ""}
+                onChange={handleChangePhone}
+                className={cn("input-phone-cart rounded-md w-full")}
+                style={{ borderColor: "white" }}
+                countryCallingCodeEditable={false}
+                focusInputOnCountrySelection  
+              />
+            </div>
         </div>
       )}
       <div className="flex w-full items-center justify-between pt-2 md:gap-2">

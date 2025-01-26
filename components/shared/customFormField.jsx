@@ -152,6 +152,8 @@ const RenderInput = ({ field, className, props, rules }) => {
             onChange={field.onChange}
             className={cn("input-phone rounded-md", props.className, className)}
             style={{ borderColor: "transparent" }} // or borderColor: 'initial' to reset
+            countryCallingCodeEditable={false}
+            focusInputOnCountrySelection
           />
         </FormControl>
       );
@@ -172,9 +174,7 @@ const CustomFormField = (props) => {
       render={({ field }) => (
         <FormItem className="flex-1 flex flex-col">
           {props.fieldType !== FormFieldType.CHECKBOX && label && (
-            <FormLabel
-              className={cn("text-white text-sm", labelClass)}
-            >
+            <FormLabel className={cn("text-white text-sm", labelClass)}>
               {label}{" "}
               {optional && (
                 <span className="text-[12px] text-white/50">{optional}</span>

@@ -60,7 +60,7 @@ const EditAddress = () => {
 
   const handleFoundLocation = () => {
     if (!navigator.geolocation) {
-      alert("Geolokatsiya sizning brauzeringizda qo'llab-quvvatlanmaydi.");
+      toast.warning(addressT("geolocation"));
       return;
     }
 
@@ -72,13 +72,10 @@ const EditAddress = () => {
         localStorage.setItem("yourLocation", JSON.stringify(newLocation));
       },
       (error) => {
-        console.error(
-          "Joylashuvni aniqlashda xatolik yuz berdi:",
-          error.message
-        );
-        alert(
-          "Joylashuvni aniqlashda xatolik yuz berdi. Iltimos, ruxsat bering."
-        );
+        if (!navigator.geolocation) {
+          toast.warning(addressT("geolocation"));
+          return;
+        }
       },
       { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
     );
@@ -135,7 +132,7 @@ const EditAddress = () => {
   const MapClickHandler = () => {
     useMapEvents({
       click(e) {
-        const { lat, lng } = e.latlng;
+        const { lat, lng } = e?.latlng;
         setLocation({ lat, lng });
         localStorage.setItem("yourLocation", JSON.stringify({ lat, lng }));
       },
@@ -243,7 +240,7 @@ const EditAddress = () => {
         <div className="lg:w-full h-48 lg:h-80 rounded-xl overflow-hidden relative z-0 ">
           {open && (
             <div className="md:hidden absolute top-0 left-0 w-full h-full z-30 backdrop-blur-[1px] bg-black/10 flex justify-center items-center">
-              <Button onClick={() => setOpen(false)}>Xaritadan tanlash</Button>
+              <Button onClick={() => setOpen(false)}>{addressT("select_map")}</Button>
             </div>
           )}
           <MapContainer
@@ -276,10 +273,10 @@ const EditAddress = () => {
           <Button
             onClick={handleFoundLocation}
             className={
-              "hidden lg:flex bg-primary hover:bg-opacity-70 text-base gap-3 items-center text-white px-3 py-2 h-10 absolute bottom-3 left-3 z-30"
+              "flex bg-primary hover:bg-opacity-70 text-base gap-3 items-center text-white px-3 py-2 h-10 absolute bottom-3 left-3 z-50"
             }
           >
-            <Navigation size={16} /> 
+            <Navigation size={16} />
           </Button>
         </div>
       </div>

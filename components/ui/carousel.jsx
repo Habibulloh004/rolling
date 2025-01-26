@@ -18,7 +18,7 @@ function useCarousel() {
   return context
 }
 
-const   Carousel = React.forwardRef((
+const Carousel = React.forwardRef((
   {
     orientation = "horizontal",
     opts,

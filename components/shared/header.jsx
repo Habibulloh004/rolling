@@ -280,10 +280,10 @@ export default function Header({
             <Link
               href={
                 param?.place !== "branch"
-                  ? `${getUrl(pathName)}}`
+                  ? `${getUrl(pathName)}`
                   : `${getUrl(
                       pathName
-                    )}}?spot=${spot}&table_id=${table_id}&table_num=${table_num}&service=${service}`
+                    )}?spot=${spot}&table_id=${table_id}&table_num=${table_num}&service=${service}`
               }
               className=" flex-shrink-0"
             >
@@ -310,9 +310,9 @@ export default function Header({
                     <Image
                       src={`${item.icon}`}
                       alt={`${item.title}`}
-                      width={28}
+                      width={30}
                       height={30}
-                      className="lg:w-7 lg:h-7 w-full max-w-[35]"
+                      className="lg:w-7 lg:h-7"
                     />
                     <p
                       className={`${

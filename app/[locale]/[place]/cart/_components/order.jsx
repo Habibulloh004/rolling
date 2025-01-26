@@ -97,8 +97,26 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
       toast.error(all("phone_empty"));
       return;
     }
+    if (orderData?.phone && orderData?.phone.length != 13) {
+      toast.error(all("phone_empty"));
+      return;
+    }
     if (!orderData?.phone && spotIdSpot) {
       toast.error(all("phone_empty"));
+      return;
+    }
+
+    if (activeTab == "pickup" && orderData?.spot_id == 0) {
+      toast.error(all("spot_empty"));
+      return;
+    }
+
+    if (
+      activeTab == "delivery" &&
+      (!orderData?.lat || orderData?.lat == 0) &&
+      (!orderData?.lng || orderData?.lng == 0)
+    ) {
+      toast.error(all("location_empty"));
       return;
     }
 
@@ -165,7 +183,7 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
         address_comment: "no",
         all_price: Number(totalSum * 100),
         client_address: `${0},${0}`,
-        client_id: auth?.client_id,
+        client_id: auth?.client_id ? auth?.client_id : "",
         comment,
         created_at: formatCreatedAt(),
         payed_bonus: pay_bonus ? Number(pay_bonus) * 100 : 0,
@@ -178,8 +196,10 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
         status: "accept",
         type: `take_away ${spot_name}`,
       };
-
-      let commentSpot = comment ? comment : "";
+      let commentSpot;
+      if (!spotIdSpot) {
+        commentSpot = comment ? comment : "";
+      }
       switch (payment_method) {
         case "card":
           commentSpot = `Тип оплаты : по карте`;
@@ -197,7 +217,7 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
           commentSpot = `Тип оплаты : наличными`;
       }
       if (spotIdSpot) {
-        commentSpot = `${commentSpot} \n Номер стола : ${table_num} \n Тип услуги : ${
+        commentSpot = `${commentSpot} \nНомер стола : ${table_num} \nТип услуги : ${
           service == "self" ? "самообслуживание" : "официант"
         } `;
       }
@@ -210,13 +230,15 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
         comment: commentSpot,
       };
 
-      if (address) {
+      if (address && !spotIdSpot) {
         spotData.address = address;
       }
 
       console.log({ deliveryData });
       console.log({ pickupData });
       console.log({ spotData });
+      console.log(orderData);
+
       if (spotIdSpot) {
         const res = await createIncomingOrder(spotData);
         console.log(res);
@@ -256,7 +278,8 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
         if (service_mode == 2) {
           const res = await createOrder(pickupData);
           const res2 = await createOrderPoster(spotData);
-          console.log(res);
+          console.log({ res });
+          console.log({ res2 });
           if (res?.order_id) {
             const nowOrder = {
               ...pickupData,
@@ -292,6 +315,8 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
           }
         } else if (service_mode == 3) {
           const res = await createOrder(deliveryData);
+          console.log(res);
+
           if (res?.order_id) {
             setOrderData({
               spot_id: 0,

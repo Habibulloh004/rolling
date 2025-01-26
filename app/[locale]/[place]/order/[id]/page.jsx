@@ -19,7 +19,7 @@ export default async function OrderList({ params }) {
       <div className="w-full flex justify-between items-start ">
         <div>
           <h1 className="text-[#004032] textNormal4 font-bold">
-            {orderText("order_title")} №{""}1
+            {orderText("order_title")} <span>№ {path?.id}</span>
             <span className="hidden">{orderText("delivered")}!</span>
           </h1>
           <p className="hidden text-[#004032] text-xl font-bold lg:text-2xl pt-3">

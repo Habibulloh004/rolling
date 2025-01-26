@@ -154,7 +154,7 @@ const Pickup = ({
                 placeholder=""
                 international
                 withCountryCallingCode
-                value={orderData?.phone || ""}
+                value={orderData?.phone}
                 onChange={handleChangePhone}
                 className={cn("input-phone-cart rounded-md w-full")}
                 style={{ borderColor: "white" }}

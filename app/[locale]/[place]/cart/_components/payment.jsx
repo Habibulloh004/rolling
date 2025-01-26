@@ -13,8 +13,11 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
+import { useSearchParams } from "next/navigation";
 
 const Payment = ({ locale, place, auth }) => {
+  const searchParams = useSearchParams();
+  const spot = searchParams.get("spot");
   const paymentText = useTranslations("Cart.Payment");
   const cardT = useTranslations("Profile.MyCard");
   const all = useTranslations("All");
@@ -48,15 +51,25 @@ const Payment = ({ locale, place, auth }) => {
     .filter(Boolean);
 
   const pay = [
-    { id: 1, icon: `/assets/card.svg`, text: paymentText("card"), type: "card" },
-    { id: 2, icon: `/assets/cash.webp`, text: paymentText("cash"), type: "cash" },
+    {
+      id: 1,
+      icon: `/assets/card.svg`,
+      text: paymentText("card"),
+      type: "card",
+    },
+    {
+      id: 2,
+      icon: `/assets/cash.webp`,
+      text: paymentText("cash"),
+      type: "cash",
+    },
     { id: 3, icon: `/assets/payme.webp`, text: "PayMe", type: "payme" },
     { id: 4, icon: `/assets/click.webp`, text: "Click", type: "click" },
     { id: 5, icon: `/assets/uzum.webp`, text: "Uzum", type: "uzum" },
   ];
 
   const handleSelectPayment = (item) => {
-    if (!auth?.client_id && item?.type === "cash") {
+    if (!auth?.client_id && item?.type === "cash" && !spot) {
       toast.warning(
         <div className="w-full h-full flex justify-between items-center">
           {all("no_auth")}{" "}
@@ -68,7 +81,15 @@ const Payment = ({ locale, place, auth }) => {
           </Link>
         </div>
       );
-    } else if (item.type === "card") {
+    } else if (
+      item.type === "card" ||
+      (item.type == "cash" && auth?.client_id)
+    ) {
+      setOrderData({
+        ...orderData,
+        payment_method: item.type,
+      });
+    } else if (spot && (item.type === "card" || item.type == "cash")) {
       setOrderData({
         ...orderData,
         payment_method: item.type,
@@ -92,7 +113,7 @@ const Payment = ({ locale, place, auth }) => {
   }, [api]);
 
   useEffect(() => {
-    if (!auth?.client_id && orderData?.payment_method === "cash") {
+    if (!auth?.client_id && orderData?.payment_method === "cash" && !spot) {
       setOrderData({
         ...orderData,
         payment_method: "card",
@@ -112,7 +133,9 @@ const Payment = ({ locale, place, auth }) => {
             key={item.id}
             className={`w-[118px] min-h-[70px] rounded-[7px] border-[#004032] border-b-2 p-3 flex flex-col justify-start gap-1
               ${
-                item.type === "card" || (item.type === "cash" && auth?.client_id)
+                item.type === "card" ||
+                (item.type === "cash" && auth?.client_id) ||
+                (item.type == "cash" && spot)
                   ? ""
                   : "opacity-[0.5]"
               }

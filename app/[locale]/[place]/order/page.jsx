@@ -6,7 +6,7 @@ import React from "react";
 import OrderDataComponent from "./_components/orderDataComponent";
 
 export default async function Order({ params }) {
-  const [locale, path, orderText, all] = await Promise.all([
+  const [locale, path, orderText, all,] = await Promise.all([
     getLocale(),
     params,
     getTranslations("Order"),

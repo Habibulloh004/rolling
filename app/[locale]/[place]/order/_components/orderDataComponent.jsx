@@ -13,6 +13,7 @@ import { formatNumber } from "@/lib/utils";
 
 export default function OrderDataComponent({ locale, path }) {
   const orderText = useTranslations("Order");
+  const orderTextItem = useTranslations("Cart.Payment");
   const all = useTranslations("All");
   const [orderData, setOrderData] = useState([]);
 
@@ -23,39 +24,57 @@ export default function OrderDataComponent({ locale, path }) {
     setOrderData(order);
   }, []);
   return (
-    <div>
-      <div className="hidden lg:grid grid-cols-4 w-full gap-6">
-        {orderData?.map((item, i) => (
-          <Link
-            href={`/${locale}/${path.place}/order/${item?.order_id}`}
-            className="w-full rounded-2xl bg-background p-5 flex flex-col justify-between gap-4"
-            key={i}
-          >
-            <div className="flex flex-col gap-y-3">
-              <p className="textSmall4 font-semibold text-thin">
-                {orderText("order_title")} № {item?.order_id}
-              </p>
-              <p className="textNormal4 font-bold text-thin">
-                {formatNumber(item?.all_price / 100)} {all("sum")}
-              </p>
-              <p className="textSmall3 font-semibold text-thin">
-                {orderText("product_title")}: {item?.address}
-              </p>
-              <p className="hidden lg:block textSmall1 pt-[14px]">
-                {orderText("payment_method")} :{" "}
-                <span className="text-[#0000009E]">{item?.type}</span>{" "}
-              </p>
-              <p className="textSmall2 font-normal text-[#A098AE]">
-                {item?.created_at}
-              </p>
-            </div>
-            <Button
-              className={"w-full hover:bg-primary text-[13px] text-white"}
-            >
-              {orderText("show_order")}
-            </Button>
-          </Link>
-        ))}
+    <div className="w-full">
+      <div className="hidden lg:grid md:grid-cols-3 w-full gap-6">
+        {orderData?.length > 0 ? (
+          <>
+            {orderData?.map((item, i) => {
+              const products = JSON.parse(item.products);
+              let countProducts = 0;
+              products?.map((product, i) => {
+                countProducts += product.amount;
+              });
+              return (
+                <Link
+                  href={`/${locale}/${path.place}/order/${item?.order_id}`}
+                  className="w-full rounded-2xl bg-background p-5 flex flex-col justify-between gap-4"
+                  key={i}
+                >
+                  <div className="flex flex-col gap-y-3">
+                    <p className="textSmall4 font-semibold text-thin">
+                      {orderText("order_title")} № {item?.order_id}
+                    </p>
+                    <p className="textNormal4 font-bold text-thin">
+                      {formatNumber(item?.all_price / 100)} {all("sum")}
+                    </p>
+                    <p className="w-full textSmall3 text-thin flex justify-between">
+                      <strong>{orderText("product_title")}: </strong>
+                      <span>{countProducts}</span>
+                    </p>
+                    <div className="w-full hidden lg:flex justify-between textSmall1 pt-[14px]">
+                      {orderText("payment_method")} :{" "}
+                      <p className="textSmall3 text-thin">
+                        {item?.payment == "cash"
+                          ? orderTextItem("cash")
+                          : orderTextItem("card")}
+                      </p>
+                    </div>
+                    <p className="textSmall2 font-normal text-[#A098AE]">
+                      {item?.created_at}
+                    </p>
+                  </div>
+                  <Button
+                    className={"w-full hover:bg-primary text-[13px] text-white"}
+                  >
+                    {orderText("show_order")}
+                  </Button>
+                </Link>
+              );
+            })}
+          </>
+        ) : (
+          <div>{all("order_empty")}</div>
+        )}
       </div>
       <Carousel
         opts={{

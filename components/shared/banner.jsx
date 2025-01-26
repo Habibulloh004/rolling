@@ -8,7 +8,6 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 
 const Banner = ({ banners }) => {
-  console.log(banners);
 
   const pathname = usePathname();
   return (

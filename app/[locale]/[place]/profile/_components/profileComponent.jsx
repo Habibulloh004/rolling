@@ -4,7 +4,6 @@ import { formatCurrency, getUrl } from "@/lib/utils";
 import React, { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {  gold, pencil } from "@/public";
 import Image from "next/image";
 import Link from "next/link";
 import { useTranslations } from "use-intl";
@@ -112,8 +111,8 @@ export default function ProfileComponent({ client }) {
                   }}
                 >
                   <Image
-                    src={pencil}
-                    alt=""
+                    src={`/assets/pencil.svg`}
+                    alt="pencil"
                     width={100}
                     height={20}
                     className="h-5 w-4"
@@ -183,7 +182,7 @@ export default function ProfileComponent({ client }) {
             </p>
           </div>
           <Image
-            src={gold}
+            src={`/assets/Gold.png`}
             alt="gold"
             width={350}
             height={100}

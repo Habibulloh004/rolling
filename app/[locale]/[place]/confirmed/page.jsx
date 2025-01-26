@@ -1,7 +1,6 @@
 import Container from "@/components/shared/container";
 import { Button } from "@/components/ui/button";
 import { posterUrl } from "@/lib/utils";
-import { location } from "@/public";
 import Image from "next/image";
 import React from "react";
 
@@ -226,7 +225,7 @@ const Confirmed = () => {
           <div className="flex flex-col w-full justify-between pt-2">
             <p className="flex items-center text-lg font-bold leading-7">
               <Image
-                src={location}
+                src={`/assets/Location.svg`}
                 alt="location"
                 width={100}
                 height={100}

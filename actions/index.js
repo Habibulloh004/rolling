@@ -43,6 +43,21 @@ export async function getCategories() {
     .catch((error) => console.error(error));
   return res;
 }
+export async function getOrder(id) {
+  const myHeaders = new Headers();
+
+  const requestOptions = {
+    method: "GET",
+    headers: myHeaders,
+    redirect: "follow",
+  };
+
+  const res = fetch(`${url}/get_order/${id}`, requestOptions)
+    .then((response) => response.json())
+    .then((result) => result)
+    .catch((error) => console.error(error));
+  return res;
+}
 
 export async function getClientGroup() {
   const myHeaders = new Headers();
@@ -67,7 +82,7 @@ export async function getClient(id) {
   const cookieStore = await cookies();
   const myHeaders = new Headers();
 
-  console.log(id)
+  console.log(id);
   const requestOptions = {
     method: "GET",
     headers: myHeaders,
@@ -87,7 +102,7 @@ export async function getClient(id) {
       return result.response;
     })
     .catch((error) => {
-      console.log(error)
+      console.log(error);
     });
 
   return res;
@@ -96,7 +111,7 @@ export async function getClientData(id) {
   const cookieStore = await cookies();
   const myHeaders = new Headers();
 
-  console.log(id)
+  console.log(id);
   const requestOptions = {
     method: "GET",
     headers: myHeaders,
@@ -112,7 +127,7 @@ export async function getClientData(id) {
       return result.response;
     })
     .catch((error) => {
-      console.log(error,"error")
+      console.log(error, "error");
     });
 
   return res;
@@ -135,7 +150,7 @@ export async function getSpotsData() {
       return result.response;
     })
     .catch((error) => {
-      console.log(error)
+      console.log(error);
     });
 
   return res;

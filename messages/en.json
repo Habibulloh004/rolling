@@ -94,8 +94,8 @@
       "name": "Name",
       "name_pls": "Home",
       "address": "Address",
-      "address_error":"You did not enter an address.",
-      "address_saved":"Address added successfully.",
+      "address_error": "You did not enter an address.",
+      "address_saved": "Address added successfully.",
       "pls": "Yashnobod district, Botkin 1a",
       "comment": "Comments on the address",
       "comment_pls": "Entrance 1",
@@ -326,7 +326,19 @@
       "finished": "Delivered"
     },
     "delivered": "Delivered",
-    "info": "What should we improve? We’re waiting for your feedback!"
+    "info": "What should we improve? We’re waiting for your feedback!",
+    "Item": {
+      "title": "Order Confirmed",
+      "desc": "Thank you for choosing Rolling Sushi! We prepare your dishes with love and care to delight you with their freshness and taste. If you have any questions, our team is always ready to help.",
+      "menu_btn": "Return to Menu",
+      "open_btn": "Track Order",
+      "add_comment": "Leave a Review",
+      "comment_desc": "You can see the status of your order in real time.",
+      "status_delivery": "Delivery",
+      "status_pickup": "Pickup",
+      "status_spot": "Establishments",
+      "my_order": "Your order"
+    }
   },
   "Search": {
     "search_pr": "Products",

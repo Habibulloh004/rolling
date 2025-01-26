@@ -1,5 +1,4 @@
 "use client";
-
 import { decryptData } from "@/lib/hashing";
 import { hashSecretKey } from "@/lib/utils";
 import { card, cash, click, payme, uzcard, uzum } from "@/public";
@@ -40,38 +39,39 @@ const Payment = ({ locale, place }) => {
         return null; // Xatoli kartalarni null qilib qaytaramiz
       }
     })
-    .filter(Boolean); const pay = [
-      {
-        id: 1,
-        icon: card,
-        text: paymentText("card"),
-        type: "card",
-      },
-      {
-        id: 2,
-        icon: cash,
-        text: paymentText("cash"),
-        type: "cash",
-      },
-      {
-        id: 3,
-        icon: payme,
-        text: "PayMe",
-        type: "payme",
-      },
-      {
-        id: 4,
-        icon: click,
-        text: "Click",
-        type: "click",
-      },
-      {
-        id: 5,
-        icon: uzum,
-        text: "Uzum",
-        type: "uzum",
-      },
-    ];
+    .filter(Boolean);
+  const pay = [
+    {
+      id: 1,
+      icon: `/assets/card.svg`,
+      text: paymentText("card"),
+      type: "card",
+    },
+    {
+      id: 2,
+      icon: `/assets/cash.webp`,
+      text: paymentText("cash"),
+      type: "cash",
+    },
+    {
+      id: 3,
+      icon: `/assets/payme.webp`,
+      text: "PayMe",
+      type: "payme",
+    },
+    {
+      id: 4,
+      icon: `/assets/click.webp`,
+      text: "Click",
+      type: "click",
+    },
+    {
+      id: 5,
+      icon: `/assets/uzum.webp`,
+      text: "Uzum",
+      type: "uzum",
+    },
+  ];
 
   const handleSelectPayment = (item) => {
     if (item.type === "cash" || item.type === "card") {
@@ -142,7 +142,7 @@ const Payment = ({ locale, place }) => {
             </div>
             <div className="w-full h-full relative bg-[#428B7B] rounded-[17px] overflow-hidden my-9 blur-[1px] mx-auto">
               <Image
-                src={uzcard}
+                src={`/assets/uzcard.webp`}
                 alt="uzcard"
                 width={100}
                 height={100}

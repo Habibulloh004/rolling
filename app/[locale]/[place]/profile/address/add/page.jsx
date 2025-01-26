@@ -17,16 +17,20 @@ import { Icon } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { Navigation } from "lucide-react";
 import { toast } from "sonner";
+import { usePathname, useRouter } from "next/navigation";
+import { getUrl } from "@/lib/utils";
+import { useOrderStore } from "@/store";
 
 // Custom user marker
 
 const EditAddress = () => {
   const [open, setOpen] = useState(true);
+  const { orderData, setOrderData } = useOrderStore();
   const [addressData, setAddressData] = useState({
     id: 0,
     address: "",
-    lat: null,
-    lng: null,
+    lat: 42,
+    lng: 64,
     comment: "",
     name: "",
   });
@@ -36,15 +40,16 @@ const EditAddress = () => {
     iconSize: [60, 60],
   });
   const [location, setLocation] = useState({
-    lat: 41.311081,
-    lng: 69.240562,
+    lat: 42,
+    lng: 64,
   });
   const addressT = useTranslations("Profile.Address");
   const allT = useTranslations("All");
-
+  const pathname = usePathname();
+  const router = useRouter();
   const SmoothTransition = ({ lng, lat, zoom = 14 }) => {
     const map = useMap();
-    map.flyTo([lat, lng], zoom, { duration: 1.5 });
+    map.flyTo([lat ? lat : 42, lng ? lat : 64], zoom, { duration: 1.5 });
     return null;
   };
 
@@ -57,17 +62,16 @@ const EditAddress = () => {
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const { latitude, longitude } = position.coords;
-        setLocation({ lat: latitude, lng: longitude });
+        setLocation({
+          lat: latitude ? latitude : 42,
+          lng: longitude ? longitude : 64,
+        });
         localStorage.setItem(
           "yourLocation",
-          JSON.stringify({ lat: latitude, lng: longitude })
+          JSON.stringify({ lat: latitude || 42, lng: longitude || 64 })
         );
       },
       (error) => {
-        console.error(
-          "Joylashuvni aniqlashda xatolik yuz berdi:",
-          error.message
-        );
         alert(
           "Joylashuvni aniqlashda xatolik yuz berdi. Iltimos, ruxsat bering."
         );
@@ -98,6 +102,15 @@ const EditAddress = () => {
     myAddresses.push(newAddress);
     localStorage.setItem("myAddresses", JSON.stringify(myAddresses));
     toast.success(addressT("address_saved"));
+    router.push(`${getUrl(pathname)}/cart`);
+    setOrderData({
+      ...orderData,
+      address: addressData?.address,
+      client_addresses_id: id,
+      lat: addressData?.lat,
+      lng: addressData?.lng,
+      address_comment: addressData?.comment,
+    });
     setAddressData({
       id: 0,
       address: "",
@@ -118,8 +131,7 @@ const EditAddress = () => {
     useMapEvents({
       click(e) {
         const { lat, lng } = e.latlng;
-        console.log(e.latlng);
-        setLocation({ lat, lng });
+        setLocation({ lat: lat ? lat : 42, lng: lng ? lng : 64 });
         localStorage.setItem("yourLocation", JSON.stringify({ lat, lng }));
       },
     });
@@ -142,17 +154,13 @@ const EditAddress = () => {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
-          setLocation({ lat: latitude, lng: longitude });
+          setLocation({ lat: latitude || 42, lng: longitude || 64});
           localStorage.setItem(
             "yourLocation",
             JSON.stringify({ lat: latitude, lng: longitude })
           );
         },
         (error) => {
-          console.error(
-            "Joylashuvni aniqlashda xatolik yuz berdi:",
-            error.message
-          );
           alert(
             "Joylashuvni aniqlashda xatolik yuz berdi. Iltimos, ruxsat bering."
           );
@@ -241,7 +249,7 @@ const EditAddress = () => {
             </div>
           )}
           <MapContainer
-            center={[41.2995, 69.2401]}
+            center={[42, 64]}
             zoom={16}
             scrollWheelZoom
             style={{ height: "100%", width: "100%", zIndex: 10 }}
@@ -251,8 +259,8 @@ const EditAddress = () => {
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
             <SmoothTransition
-              lng={location?.lng}
-              lat={location?.lat}
+              lng={location?.lng || 42}
+              lat={location?.lat || 64}
               zoom={16}
             />
             <MapClickHandler />

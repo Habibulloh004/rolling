@@ -1,15 +1,13 @@
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { location, pencil } from "@/public";
 import Image from "next/image";
 import React, { useEffect } from "react";
 import { useTranslations } from "use-intl";
-import Products from "./products";
 import { useOrderStore, useStore } from "@/store";
 import { Textarea } from "@/components/ui/textarea";
 import { translateTextSpot, translateTextSpotAddress } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import { usePathname } from "next/navigation";
+import { Input } from "@/components/ui/input";
 
 const Pickup = ({
   locale,
@@ -20,6 +18,7 @@ const Pickup = ({
   isLoading,
 }) => {
   const pickupText = useTranslations("Cart.Pickup");
+  const profileT = useTranslations("Profile");
   const all = useTranslations("All");
   const { orderData, setOrderData } = useOrderStore();
   const { setActiveTab } = useStore();
@@ -30,6 +29,24 @@ const Pickup = ({
       spot_name: spot?.name,
       spot_id: spot?.spot_id,
     });
+  };
+
+  const handleChangePhone = (e) => {
+    const inputValue = e.target.value;
+
+    // Faqat raqamlar va "+" belgisi kiritilishi mumkin
+    const sanitizedValue = inputValue.replace(/[^0-9+]/g, "");
+
+    // "+ bilan boshlashni tekshirish"
+    if (!sanitizedValue.startsWith("+")) {
+      setOrderData({ ...orderData, phone: "+" });
+      return;
+    }
+
+    // Maksimal uzunlikni 13 ta belgiga cheklash
+    if (sanitizedValue.length <= 13) {
+      setOrderData({ ...orderData, phone: sanitizedValue });
+    }
   };
 
   useEffect(() => {
@@ -87,7 +104,7 @@ const Pickup = ({
                       <div className="flex flex-col items-start">
                         <div className="flex items-center textSmall3 font-bold  leading-3 lg:leading-7">
                           <Image
-                            src={location}
+                            src={`/assets/Location.svg`}
                             alt="location"
                             width={100}
                             height={100}
@@ -105,7 +122,7 @@ const Pickup = ({
                       <div className="flex flex-col items-start">
                         <div className="flex items-center textSmall3 font-bold  leading-3 lg:leading-7">
                           <Image
-                            src={location}
+                            src={`/assets/Location.svg`}
                             alt="location"
                             width={100}
                             height={100}
@@ -137,6 +154,20 @@ const Pickup = ({
           )}
         </section>
       </div>
+      {auth?.client_id && (
+        <div>
+          <p className="text-[#A098AE] font-normal textSmall3 pt-2">
+            {profileT("phone")}
+          </p>
+          <div className="lg:w-2/3 flex w-full justify-between pt-2 md:gap-2">
+            {/* Telefon raqami uchun input */}
+            <Input
+              onChange={handleChangePhone}
+              value={orderData?.phone || "+"} // "+" bilan boshlanadi
+            />
+          </div>
+        </div>
+      )}
       <div className="flex w-full items-center justify-between pt-2 md:gap-2">
         <div className="w-full md:w-2/3 flex flex-col gap-1">
           <p className="text-[#A098AE] font-normal textSmall3">

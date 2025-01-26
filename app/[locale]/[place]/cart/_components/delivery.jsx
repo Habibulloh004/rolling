@@ -1,6 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { location, pencil } from "@/public";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { useTranslations } from "use-intl";
@@ -15,12 +13,14 @@ import {
 import { useOrderStore, useStore } from "@/store";
 import Link from "next/link";
 import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 
 const Delivery = ({ locale, auth, clientData, place }) => {
   const addressData = localStorage.getItem("myAddresses")
     ? JSON.parse(localStorage.getItem("myAddresses"))
     : [];
   const deliveryText = useTranslations("Cart.Delivery");
+  const profileT = useTranslations("Profile");
   const cartText = useTranslations("Cart");
   const all = useTranslations("All");
   const { orderData, setOrderData } = useOrderStore();
@@ -62,6 +62,24 @@ const Delivery = ({ locale, auth, clientData, place }) => {
     // }
   };
 
+  const handleChangePhone = (e) => {
+    const inputValue = e.target.value;
+
+    // Faqat raqamlar va "+" belgisi kiritilishi mumkin
+    const sanitizedValue = inputValue.replace(/[^0-9+]/g, "");
+
+    // "+ bilan boshlashni tekshirish"
+    if (!sanitizedValue.startsWith("+")) {
+      setOrderData({ ...orderData, phone: "+" });
+      return;
+    }
+
+    // Maksimal uzunlikni 13 ta belgiga cheklash
+    if (sanitizedValue.length <= 13) {
+      setOrderData({ ...orderData, phone: sanitizedValue });
+    }
+  };
+
   useEffect(() => {
     if (addressData && addressData?.length > 0) {
       const savedOrderData =
@@ -90,7 +108,7 @@ const Delivery = ({ locale, auth, clientData, place }) => {
         <div className="flex w-full justify-between">
           <p className="flex items-center textSmall3 font-bold leading-7 md:gap-2">
             <Image
-              src={location}
+              src={"/assets/Location.svg"}
               alt="location"
               width={100}
               height={100}
@@ -167,6 +185,20 @@ const Delivery = ({ locale, auth, clientData, place }) => {
           <p className="text-[#A098AE] text-normal textSmall2">
             {orderData?.address_comment}
           </p>
+        )}
+        {!auth?.client_id && (
+          <div>
+            <p className="text-[#A098AE] font-normal textSmall3 pt-2">
+              {profileT("phone")}
+            </p>
+            <div className="lg:w-2/3 flex w-full justify-between pt-2 md:gap-2">
+              {/* Telefon raqami uchun input */}
+              <Input
+                onChange={handleChangePhone}
+                value={orderData?.phone || "+"} // "+" bilan boshlanadi
+              />
+            </div>
+          </div>
         )}
         <div className="flex w-full items-center justify-between pt-2 md:gap-2">
           <div className="w-full md:w-2/3 flex flex-col gap-1">

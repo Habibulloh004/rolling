@@ -53,19 +53,44 @@ const MyCard = () => {
   };
 
   function getHash(params) {
-    const cardData = JSON.stringify({ cardName: cardName, cardNumber: cardNumber, expiryDate: expiryDate, color: color });
-
+    if (!cardNumber.trim()) {
+      alert("Iltimos Tuliq tuldiring")
+      console.warn("Card number is empty. Skipping save operation.");
+      return;
+    }
+  
     if (!hashSecretKey) {
       console.error("Secret key is not defined!");
       return;
     }
+  
+    const cardData = JSON.stringify({
+      cardName: cardName,
+      cardNumber: cardNumber,
+      expiryDate: expiryDate,
+      color: color
+    });
+  
+    // Ma'lumotlarni shifrlash
     const encryptedCard = encryptData(cardData, hashSecretKey);
-    localStorage.setItem("hashedCard", encryptedCard);
-    const decryptedCard = decryptData(localStorage.getItem("hashedCard"), hashSecretKey);
-    setCardNumber("")
-    setCardName("")
-    setExpiryDate("")
+    // Avvalgi kartalarni olish
+    const existingCards = JSON.parse(localStorage.getItem("hashedCards")) || [];
+    // Yangi kartani ro'yxatga qo'shish
+    existingCards.push(encryptedCard);
+    // Yangilangan ro'yxatni saqlash
+    localStorage.setItem("hashedCards", JSON.stringify(existingCards));
+    // Shifrlangan kartalarni ochish
+    const decryptedCards = existingCards.map((card) => decryptData(card, hashSecretKey));
+  
+    console.log(decryptedCards);
+  
+    // Formani tozalash
+    setCardNumber("");
+    setCardName("");
+    setExpiryDate("");
   }
+  
+  
 
   return (
     <Container className={"w-11/12 flex flex-col pt-3 md:pt-8"}>

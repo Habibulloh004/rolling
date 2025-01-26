@@ -310,9 +310,9 @@ export default function Header({
                     <Image
                       src={`${item.icon.src}`}
                       alt={`${item.title}`}
-                      width={30}
+                      width={28}
                       height={30}
-                      className="lg:w-7 lg:h-7"
+                      className="lg:w-7 lg:h-7 w-full max-w-[35]"
                     />
                     <p
                       className={`${

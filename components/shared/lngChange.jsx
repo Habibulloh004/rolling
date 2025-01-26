@@ -51,7 +51,7 @@ const LngChange = () => {
           <Image
             src={findLocale?.icon.src} // Hozirgi til ikonkasi
             alt={findLocale?.title} // Hozirgi til nomi
-            width={25}
+            width={30}
             height={25}
           />
         </SelectValue>
@@ -65,7 +65,7 @@ const LngChange = () => {
               <Image
                 src={item.icon.src}
                 alt={item.title}
-                width={25}
+                width={30}
                 height={25}
               />
               <span

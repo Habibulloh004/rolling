@@ -18,7 +18,7 @@ function useCarousel() {
   return context
 }
 
-const Carousel = React.forwardRef((
+const   Carousel = React.forwardRef((
   {
     orientation = "horizontal",
     opts,
@@ -41,7 +41,6 @@ const Carousel = React.forwardRef((
     if (!api) {
       return
     }
-
     setCanScrollPrev(api.canScrollPrev())
     setCanScrollNext(api.canScrollNext())
   }, [])

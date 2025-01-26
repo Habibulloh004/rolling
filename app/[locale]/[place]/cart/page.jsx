@@ -79,7 +79,7 @@ const Basket = async ({ params, searchParams }) => {
             spotData={spotData}
             searchParamsData={searchParamsData}
           />
-          <Products locale={locale} auth={auth} />
+          <Products locale={locale} auth={auth} place={path.place} />
           <Payment locale={locale} place={path.place} auth={auth} />
           <Order
             auth={auth}

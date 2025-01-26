@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import {
   formatNumber,
   getLocalizedProduct,
+  getUrl,
   posterUrl,
   roundToTwoDecimals,
 } from "@/lib/utils";
@@ -10,11 +11,20 @@ import { useOrderStore, useProductStore } from "@/store";
 import { Minus, Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
+import Link from "next/link";
+import { usePathname, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 
-const Products = ({ locale }) => {
+const Products = ({ locale, place }) => {
+  const searchParams = useSearchParams();
+  const spot = searchParams.get("spot");
+  const table_id = searchParams.get("table_id");
+  const table_num = searchParams.get("table_num");
+  const service = searchParams.get("service");
   const cart = useTranslations("Cart");
   const all = useTranslations("All");
+  const orderT = useTranslations("Order.Item");
+  const pathname = usePathname();
   const { products, incrementCount, decrementCount, deleteProduct } =
     useProductStore();
   const { setOrderData, setTotalSum, orderData } = useOrderStore();
@@ -128,7 +138,22 @@ const Products = ({ locale }) => {
             })}
         </div>
       ) : (
-        <h1 className="textSmall3">{cart("empty_product")}</h1>
+        <div className="flex flex-col gap-2 justify-start items-start">
+          <h1 className="textSmall3">{cart("empty_product")}</h1>
+          <Link
+            href={
+              place != "branch"
+                ? `${getUrl(pathname)}`
+                : `${getUrl(
+                    pathname
+                  )}?spot=${spot}&table_id=${table_id}&table_num=${table_num}&service=${service}`
+            }
+          >
+            <Button className="w-full p-3 text-white text-center font-bold">
+              {orderT("menu_btn")}
+            </Button>
+          </Link>
+        </div>
       )}
     </div>
   );

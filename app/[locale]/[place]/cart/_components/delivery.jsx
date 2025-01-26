@@ -66,7 +66,6 @@ const Delivery = ({ locale, auth, clientData, place }) => {
     if (addressData && addressData?.length > 0) {
       const savedOrderData =
         JSON.parse(localStorage.getItem("orderData")) || null;
-
       if (!savedOrderData?.client_addresses_id) {
         setOrderData({
           ...orderData,
@@ -179,7 +178,7 @@ const Delivery = ({ locale, auth, clientData, place }) => {
                 placeholder=""
                 international
                 withCountryCallingCode
-                value={orderData?.phone || ""}
+                value={orderData?.phone}
                 onChange={handleChangePhone}
                 className={cn("input-phone-cart rounded-md w-full")}
                 style={{ borderColor: "white" }}

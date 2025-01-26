@@ -100,7 +100,9 @@
       "comment": "Comments on the address",
       "comment_pls": "Entrance 1",
       "comment_error": "You have not added a comment.",
-      "location_error": "You need to specify the location."
+      "location_error": "You need to specify the location.",
+      "geolocation":"Please allow location access to determine your address!",
+      "select_map":"Select from the map"
     }
   },
   "Form": {
@@ -270,7 +272,8 @@
       "address": "Delivery Address",
       "phone": "Phone Number",
       "comment": "Add Comments",
-      "delivery_price": "Delivery Cost"
+      "delivery_price": "Delivery Cost",
+      "selected_address":"Select location"
     },
     "Pickup": {
       "title": "Pickup",

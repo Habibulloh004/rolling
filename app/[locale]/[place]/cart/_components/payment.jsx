@@ -1,18 +1,45 @@
 "use client";
-
+import { decryptData } from "@/lib/hashing";
+import { hashSecretKey } from "@/lib/utils";
+import { card, cash, click, payme, uzcard, uzum } from "@/public";
 import { useOrderStore, useStore } from "@/store";
 import { Plus } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useTranslations } from "use-intl";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel"
 
 const Payment = ({ locale, place }) => {
   const paymentText = useTranslations("Cart.Payment");
+  const cardT = useTranslations("Profile.MyCard")
   const all = useTranslations("All");
-  const { activeTab } = useStore();
   const { orderData, setOrderData } = useOrderStore();
+  const existingCards = JSON.parse(localStorage.getItem("hashedCards")) || [];
+  const [api, setApi] = useState()
+  const [current, setCurrent] = useState(0)
+  const [count, setCount] = useState(0)
+  const decryptedCards = existingCards
+    .map((card) => {
+      try {
+        // Kartani shifrdan chiqarish
+        const decryptedString = decryptData(card, hashSecretKey);
+
+        // JSON stringni obyektga aylantirish
+        return JSON.parse(decryptedString);
+      } catch (error) {
+        console.error("Failed to decrypt or parse card:", error);
+        return null; // Xatoli kartalarni null qilib qaytaramiz
+      }
+    })
+    .filter(Boolean);
   const pay = [
     {
       id: 1,
@@ -57,6 +84,20 @@ const Payment = ({ locale, place }) => {
     }
   };
 
+
+  useEffect(() => {
+    if (!api) {
+      return
+    }
+
+    setCount(api.scrollSnapList().length)
+    setCurrent(api.selectedScrollSnap())
+
+    api.on("select", () => {
+      setCurrent(api.selectedScrollSnap())
+    })
+  }, [api])
+
   return (
     <div className="w-full flex flex-col items-start md:px-12 pt-6 gap-5">
       <h2 className="hidden textNormal4 font-bold leading-9">
@@ -68,15 +109,13 @@ const Payment = ({ locale, place }) => {
             onClick={() => handleSelectPayment(item)}
             key={item.id}
             className={`w-[118px] min-h-[70px] rounded-[7px] border-[#004032] border-b-2 p-3 flex flex-col justify-start gap-1
-              ${
-                item.type == "card" || item.type == "cash"
-                  ? ""
-                  : "opacity-[0.5]"
+              ${item.type == "card" || item.type == "cash"
+                ? ""
+                : "opacity-[0.5]"
               }
-              ${
-                orderData?.payment_method == item?.type
-                  ? "border-2 font-semibold"
-                  : ""
+              ${orderData?.payment_method == item?.type
+                ? "border-2 font-semibold"
+                : ""
               }`}
           >
             <Image
@@ -92,8 +131,8 @@ const Payment = ({ locale, place }) => {
           </button>
         ))}
       </div>
-      {activeTab !== "spot" ||
-        (false && (
+      {
+        !decryptedCards.length ? (
           <Link
             href={`/${locale}/${place}/create-card`}
             className="w-full sm:w-2/3 md:w-8/12 lg:w-full 2xl:w-9/12 h-40 md:h-48 flex justify-center items-center"
@@ -107,7 +146,7 @@ const Payment = ({ locale, place }) => {
                 alt="uzcard"
                 width={100}
                 height={100}
-                className=" absolute z-40 top-[18px] right-[5%]"
+                className="absolute z-40 top-[18px] right-[5%]"
               />
               <div className="bg-[#EB5757] absolute w-60 h-60 rounded-full -left-[120px] -top-10 opacity-50"></div>
               <div className="bg-[#A6C44A] absolute w-60 h-60 rounded-full left-0 -bottom-32 opacity-50 z-10"></div>
@@ -122,7 +161,53 @@ const Payment = ({ locale, place }) => {
               </p>
             </div>
           </Link>
-        ))}
+        ) : (
+
+
+          <Carousel setApi={setApi} className="w-full max-w-xs">
+            <CarouselContent >
+              {decryptedCards.map((item, i) => (
+                <CarouselItem key={i}>
+                  <div
+                    key={i}
+                    className="w-full max-w-[350px] relative rounded-[17px] h-44 md:h-48 overflow-hidden my-4"
+                    style={{ backgroundColor: item.color }}
+                  >
+                    <Image
+                      src={uzcard}
+                      alt="uzcard"
+                      width={100}
+                      height={100}
+                      className="h-11 w-[83px] absolute z-20 top-[18px] right-[22px]"
+                    />
+                    <p className="absolute font-semibold text-base leading-6 left-5 top-5 text-white">
+                      {item.cardName ? item.cardName : cardT("card_name")}
+                    </p>
+                    <p className="absolute font-semibold text-sm leading-6 right-11 top-[88px] text-white">
+                      {item.expiryDate ? item.expiryDate : "00/00"}
+                    </p>
+                    <p className="font-semibold text-lg leading-6 absolute text-center w-full bottom-[16px] text-white z-50">
+                      {item.cardNumber ? item.cardNumber : "0000 0000 0000 0000"}
+                    </p>
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <div className="py-1 flex gap-2 justify-center">
+              {Array.from({ length: count }).map((_, index) => (
+                <div
+                  key={index}
+                  className={`w-3 h-3 rounded-full ${current === index ? "bg-blue-500" : "bg-gray-400"
+                    }`}
+                />
+              ))}
+            </div>
+          </Carousel>
+
+        )}
+
+
+
     </div>
   );
 };

@@ -30,7 +30,7 @@ export default function ProfileComponent({ client }) {
   const profileLinksData = [
     {
       title: profileLinksT("my_card"),
-      route: "/mycard",
+      route: "/add-card",
     },
     {
       title: profileLinksT("address"),

@@ -125,31 +125,7 @@ export default async function HomePage({ params, searchParams }) {
           </CarouselContent>
         </Carousel>
       </div>
-      <Carousel
-        className="relative w-full text-foreground mt-5 md:mt-10 "
-        paginate={"false"}
-        opts={{
-          align: "center",
-        }}
-      >
-        <CarouselContent className="relative">
-          {reviewsData.result.reviews.map((item, i) => {
-            if (item.rating < 4) return;
-            return (
-              <CarouselItem
-                key={i}
-                className={`basis-[80%] sm:basis-[45%] lg:basis-[45%] xl:basis-[30%] p-0 mx-2 ${
-                  i == 0 && "max-sm:ml-8 max-md:ml-16 ml-8"
-                }`}
-              >
-                <Link href="https://g.co/kgs/YJy7TYy" target="_blank">
-                  <Cards data={item} />
-                </Link>
-              </CarouselItem>
-            );
-          })}
-        </CarouselContent>
-      </Carousel>
+  
     </Container>
   );
 }

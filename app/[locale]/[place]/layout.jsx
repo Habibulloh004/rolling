@@ -95,7 +95,7 @@ export default async function Layout({ children, params }) {
             }}
           />
           <Footer params={param} />
-          <Chat />
+    
         </NextIntlClientProvider>
 
         <noscript>

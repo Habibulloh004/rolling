@@ -105,6 +105,7 @@ export async function createOrderPoster(data) {
 }
 
 export async function updateClient(data) {
+  const cookieStore = await cookies();
   const myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
   const raw = JSON.stringify(data);
@@ -115,14 +116,39 @@ export async function updateClient(data) {
     headers: myHeaders,
     redirect: "follow",
   };
+  const requestOptionsGet = {
+    method: "GET",
+    headers: myHeaders,
+    redirect: "follow",
+  };
 
   const res = fetch(
     `${posterUrl}/api/clients.updateClient?token=${posterToken}`,
     requestOptions
   )
     .then((response) => response.json())
-    .then((result) => {
-      return result;
+    .then(async (result) => {
+      if (result.response) {
+        const response = await fetch(
+          `${posterUrl}/api/clients.getClient?token=${posterToken}&client_id=${result.response}`,
+          requestOptionsGet
+        );
+        const client = await response.json();
+        if (client) {
+          const {
+            addresses,
+            prize_products,
+            accumulation_products,
+            ...clientData
+          } = client.response[0];
+          console.log( clientData );
+          cookieStore.set({
+            name: "client",
+            value: JSON.stringify(clientData),
+          });
+        }
+        return result;
+      }
     })
     .catch((error) => console.error(error));
   return res;

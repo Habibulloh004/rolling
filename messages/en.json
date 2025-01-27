@@ -47,7 +47,8 @@
     "order_empty": "No orders available.",
     "order_created": "Your order has been received.",
     "spot_empty": "You have not selected a branch.",
-    "location_empty": "Invalid delivery address"
+    "location_empty": "Invalid delivery address",
+    "cart_ingredient": "Take more!"
   },
   "Bonus": {
     "bonus": "Bonus",
@@ -94,8 +95,8 @@
     },
     "Address": {
       "title": "My Addresses",
-      "name": "Name",
-      "name_pls": "Home",
+      "house": "House, entrance, apartment",
+      "house_pls": "House 12, entrance 3, apartment 34",
       "address": "Address",
       "address_error": "You did not enter an address.",
       "address_saved": "Address added successfully.",

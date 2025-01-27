@@ -1,5 +1,5 @@
 "use server";
-import { url, posterToken, posterUrl } from "@/lib/utils";
+import { url, posterToken, posterUrl, production } from "@/lib/utils";
 import { cookies } from "next/headers";
 
 export async function sendSmsToUser(code, phone) {
@@ -113,6 +113,11 @@ export async function getClient(id) {
       await cookieStore.set({
         name: "client",
         value: JSON.stringify(result.response),
+        options: {
+          maxAge: 7 * 24 * 60 * 60, // 7 days in seconds
+          httpOnly: true, // Optional: Prevent access to the cookie from client-side JavaScript
+          secure: production, // Optional: Ensures the cookie is sent over HTTPS only
+        },
       });
       return result.response;
     })

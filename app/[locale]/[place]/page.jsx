@@ -12,6 +12,7 @@ import {
   CarouselItem,
 } from "@/components/ui/carousel";
 import Cards from "./reviews/_components/cards";
+import Link from "next/link";
 
 export const metadata = {
   title: "Rolling Sushi - Свежие суши и роллы в Ташкенте",
@@ -140,9 +141,9 @@ export default async function HomePage({ params, searchParams }) {
                   i == 0 && "max-sm:ml-8 max-md:ml-16 ml-8"
                 }`}
               >
-                <a href="https://g.co/kgs/YJy7TYy" target="_blank">
+                <Link href="https://g.co/kgs/YJy7TYy" target="_blank">
                   <Cards data={item} />
-                </a>
+                </Link>
               </CarouselItem>
             );
           })}

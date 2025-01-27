@@ -26,7 +26,7 @@ const Cards = ({ data }) => {
               <div className="flex items-start justify-between w-full gap-2">
                 <span className="font-medium w-3/5">
                   <Avatar className="bg-[#D9D9D9] mb-2">
-                    <AvatarImage src={profile_photo_url} />
+                    <AvatarImage src={profile_photo_url} alt="avatar image" />
                     {/* <AvatarFallback>{profile_photo_url}</AvatarFallback> */}
                   </Avatar>{" "}
                   {name}

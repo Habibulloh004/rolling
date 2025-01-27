@@ -58,6 +58,21 @@ export async function getOrder(id) {
     .catch((error) => console.error(error));
   return res;
 }
+export async function getAllOrders() {
+  const myHeaders = new Headers();
+
+  const requestOptions = {
+    method: "GET",
+    headers: myHeaders,
+    redirect: "follow",
+  };
+
+  const res = fetch(`${url}/get_all_orders`, requestOptions)
+    .then((response) => response.json())
+    .then((result) => result)
+    .catch((error) => console.error(error));
+  return res;
+}
 
 export async function getClientGroup() {
   const myHeaders = new Headers();

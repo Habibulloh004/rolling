@@ -5,8 +5,16 @@ import OrderItemComponent from "./_components/orderItemComponent";
 import { ApiService } from "@/service/api.services";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
-import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
-import { formatText, getLocalizedCategoryName, getLocalizedProduct } from "@/lib/utils";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+} from "@/components/ui/carousel";
+import {
+  formatText,
+  getLocalizedCategoryName,
+  getLocalizedProduct,
+} from "@/lib/utils";
 import Card from "@/components/shared/card";
 
 const Confirmed = async ({ params }) => {
@@ -80,9 +88,10 @@ const Confirmed = async ({ params }) => {
           {/* <div className="absolute -right-1 -top-4 w-2 h-48 bg-[#F5F5F5] z-50 shadow-custom" /> */}
           <CarouselContent className="relative">
             {products?.map((item, i) => {
-              const localizedName = getLocalizedCategoryName(
-                item.category_name,
-                locale
+              const localizedName = getLocalizedProduct(
+                item.product_production_description,
+                locale,
+                "name"
               );
               const linkNameCategory = formatText(
                 getLocalizedCategoryName(item.category_name, "en")

@@ -4,6 +4,7 @@ import {
   createIncomingOrder,
   createOrder,
   createOrderPoster,
+  updateClient,
 } from "@/actions/post";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,18 +22,18 @@ import { useTranslations } from "use-intl";
 // DiscountBadge Component
 const DiscountBadge = ({ auth }) => {
   const discountColor = {
-    10: "#E2E2E2",
-    20: "#ED7403",
+    10: "#ED7403",
+    20: "#E2E2E2",
     30: "#F3D67E",
   };
   const discountLabel = {
-    10: "SILVER",
-    20: "BRONZA",
+    10: "BRONZA",
+    20: "SILVER",
     30: "GOLD",
   };
   const discountImage = {
-    10: "/assets/Silver.png",
-    20: "/assets/Bronze.png",
+    10: "/assets/Bronze.png",
+    20: "/assets/Silver.png",
     30: "/assets/Gold.png",
   };
 
@@ -83,12 +84,28 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
   const { spot: spotIdSpot, table_id, table_num, service } = searchParamsData;
   const router = useRouter();
   const pathname = usePathname();
+
   const handleSetBonus = () => {
     setOrderData({ ...orderData, pay_bonus: Number(bonus) });
     setBonus(0);
     setActiveBonus(false);
   };
+
   const handleSubmit = async () => {
+    if (!auth?.client_id && !spotIdSpot) {
+      toast.error(
+        <div className="w-full h-full flex justify-between items-center">
+          {all("no_auth")}{" "}
+          <Link
+            href={`/${locale}/${place}/login`}
+            className="bg-black text-white rounded-md px-2 py-1"
+          >
+            {all("sign_in")}
+          </Link>
+        </div>
+      );
+    }
+
     if (products.length == 0) {
       toast.error(all("products_empty"));
       return;
@@ -159,19 +176,48 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
         };
       });
 
+      let commentSpot;
+      if (!spotIdSpot) {
+        commentSpot = comment ? `${comment}, ` : "";
+      }
+      switch (payment_method) {
+        case "card":
+          commentSpot = `${commentSpot}Тип оплаты : по карте`;
+          break;
+        case "click":
+          commentSpot = `${commentSpot}Тип оплаты : через click`;
+          break;
+        case "payme":
+          commentSpot = `${commentSpot}Тип оплаты : через payme`;
+          break;
+        case "uzum":
+          commentSpot = `${commentSpot}Тип оплаты : через uzum`;
+          break;
+        default:
+          commentSpot = `${commentSpot}Тип оплаты : наличными`;
+      }
+      if (spotIdSpot) {
+        commentSpot = `${commentSpot} \nНомер стола : ${table_num} \nТип услуги : ${
+          service == "self" ? "самообслуживание" : "официант"
+        }/\nНомер телефона : ${phone}`;
+      } else if (!auth?.client_id) {
+        commentSpot = `${commentSpot}\nНомер телефона : ${phone}`;
+      }
+      console.log(commentSpot);
+
       let deliveryData = {
         address_comment,
         all_price: Number((+totalSum + +delivery_price) * 100),
         client_address: `${lat || 0},${lng || 0}`,
-        client_id: auth?.client_id,
-        comment,
+        client_id: auth?.client_id ? auth.client_id : "25562",
+        comment: commentSpot,
         created_at: formatCreatedAt(),
         payed_bonus: pay_bonus ? Number(pay_bonus) * 100 : 0,
         payed_sum:
           Number(+totalSum + +delivery_price - (pay_bonus ? +pay_bonus : 0)) *
           100,
         payment: payment_method,
-        phone: auth?.client_id ? `+${auth?.phone_number}` : phone,
+        phone: auth?.client_id ? `+${auth?.phone_number}` : "+998000000000",
         products: JSON.stringify(filterProductsAbdugani),
         promotion: "no",
         spot_id: 0,
@@ -183,8 +229,8 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
         address_comment: "no",
         all_price: Number(totalSum * 100),
         client_address: `${0},${0}`,
-        client_id: auth?.client_id ? auth?.client_id : "",
-        comment,
+        client_id: auth?.client_id ? auth?.client_id : "25562",
+        comment: commentSpot,
         created_at: formatCreatedAt(),
         payed_bonus: pay_bonus ? Number(pay_bonus) * 100 : 0,
         payed_sum: Number(+totalSum - (pay_bonus ? +pay_bonus : 0)) * 100,
@@ -196,34 +242,13 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
         status: "accept",
         type: `take_away ${spot_name}`,
       };
-      let commentSpot;
-      if (!spotIdSpot) {
-        commentSpot = comment ? comment : "";
-      }
-      switch (payment_method) {
-        case "card":
-          commentSpot = `Тип оплаты : по карте`;
-          break;
-        case "click":
-          commentSpot = `Тип оплаты : через click`;
-          break;
-        case "payme":
-          commentSpot = `Тип оплаты : через payme`;
-          break;
-        case "uzum":
-          commentSpot = `Тип оплаты : через uzum`;
-          break;
-        default:
-          commentSpot = `Тип оплаты : наличными`;
-      }
-      if (spotIdSpot) {
-        commentSpot = `${commentSpot} \nНомер стола : ${table_num} \nТип услуги : ${
-          service == "self" ? "самообслуживание" : "официант"
-        } `;
-      }
 
       let spotData = {
-        phone: auth?.client_id ? `+${auth?.phone_number}` : phone,
+        phone: spotIdSpot
+          ? "+998771244444"
+          : auth?.client_id
+          ? `+${auth?.phone_number}`
+          : "+998000000000",
         products: filterProductsSpot,
         service_mode: Number(2),
         spot_id: Number(spotIdSpot ? spotIdSpot : Number(spot_id)),
@@ -238,6 +263,30 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
       console.log({ pickupData });
       console.log({ spotData });
       console.log(orderData);
+      console.log({ auth });
+      let commentClient;
+      let clinetGroupId;
+      if (auth?.client_id) {
+        const commentC = auth?.comment ? JSON.parse(auth?.comment) : null;
+        if (Number(commentC?.length) > 0) {
+          commentClient = {
+            password: commentC?.password,
+            length: Number(commentC?.length) + 1,
+          };
+        } else {
+          commentClient = {
+            password: commentC?.password,
+            length: 1,
+          };
+        }
+        if (commentClient.length < 4) {
+          clinetGroupId = 5;
+        } else if (commentC.length >= 4 && commentC?.length < 9) {
+          clinetGroupId = 3;
+        } else if (commentC.length >= 9) {
+          clinetGroupId = 4;
+        }
+      }
 
       if (spotIdSpot) {
         const res = await createIncomingOrder(spotData);
@@ -310,6 +359,13 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
               client_addresses_id: null,
             });
             setProductsData([]);
+            if (auth?.client_id) {
+              await updateClient({
+                client_id: auth?.client_id,
+                comment: JSON.stringify(commentClient),
+                client_groups_id_client: clinetGroupId,
+              });
+            }
             toast.success(all("order_created"));
             router.push(`/${locale}/${place}/confirmed/${res?.order_id}`);
           }
@@ -349,6 +405,13 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
             setProductsData([]);
             toast.success(all("order_created"));
             router.push(`/${locale}/${place}/confirmed/${res?.order_id}`);
+            if (auth?.client_id) {
+              await updateClient({
+                client_id: auth?.client_id,
+                comment: JSON.stringify(commentClient),
+                client_groups_id_client: clinetGroupId,
+              });
+            }
           }
         }
       }

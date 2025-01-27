@@ -86,7 +86,7 @@ const Delivery = ({ locale, auth, clientData, place }) => {
           {deliveryText("address")}
         </p>
         <div className="flex w-full justify-between">
-          <p className="flex items-center textSmall3 font-bold leading-7 md:gap-2">
+          <p className="flex items-center textSmall3 font-bold gap-2">
             <Image
               src={"/assets/Location.svg"}
               alt="location"

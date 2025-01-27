@@ -20,8 +20,8 @@ const Stepper = ({ currentStep }) => {
   return (
     <div className="max-w-xl w-full flex flex-col items-center justify-center relative">
       {steps.map((step, index) => (
-        <div key={step.id} className="w-full grid grid-cols-3 gap-5">
-          <div className="w-full flex justify-end">
+        <div key={step.id} className="w-full grid grid-cols-5 gap-5">
+          <div className="w-full flex justify-end col-span-2">
             <Image
               src={step.icon}
               alt="image"

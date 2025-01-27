@@ -103,7 +103,8 @@ export default function ProfileComponent({ client }) {
                           firstname: firstname == undefined ? "" : firstname,
                           lastname: lastname == undefined ? "" : lastname,
                           addresses: null,
-                        })
+                        }),
+                        { expires: 7, secure: true }
                       );
                       window.location.reload();
                     }

@@ -86,7 +86,6 @@ const MyCard = () => {
       decryptData(card, hashSecretKey)
     );
 
-    console.log(decryptedCards);
 
     // Formani tozalash
     setCardNumber("");

@@ -1,5 +1,5 @@
 "use server";
-import { posterToken, posterUrl, url } from "@/lib/utils";
+import { posterToken, posterUrl, production, url } from "@/lib/utils";
 import { cookies } from "next/headers";
 
 export async function createClient(data) {
@@ -135,6 +135,11 @@ export async function saveCookie(cookie) {
     await cookieStore.set({
       name: "client",
       value: JSON.stringify(cookie),
+      options: {
+        maxAge: 7 * 24 * 60 * 60, // 7 days in seconds
+        httpOnly: true, // Optional: Prevent access to the cookie from client-side JavaScript
+        secure: production, // Optional: Ensures the cookie is sent over HTTPS only
+      },
     });
 
     return "data"; // or return a success status if needed

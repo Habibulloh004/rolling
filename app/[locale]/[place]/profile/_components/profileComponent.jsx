@@ -182,7 +182,13 @@ export default function ProfileComponent({ client }) {
             </p>
           </div>
           <Image
-            src={`/assets/Gold.png`}
+            src={`${
+              client.client_groups_discount == "30"
+                ? "/assets/Gold.png"
+                : client.client_groups_discount == "20"
+                ? "/assets/Silver.png"
+                : "/assets/Bronze.png"
+            }`}
             alt="gold"
             width={350}
             height={100}

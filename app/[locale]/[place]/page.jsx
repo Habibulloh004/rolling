@@ -93,14 +93,14 @@ export default async function HomePage({ params, searchParams }) {
     );
   }
 
-
-  console.log(reviewsData)
   const banners = bannersData.banners;
   const categories = categoriesData.response.filter(
     (item) => item.category_photo != null && item.category_hidden != "1"
   );
   const products = productsData.response.filter((item) => {
-    const findIngr = item?.ingredients?.find((ingr) => ingr?.ingredient_id == 211);
+    const findIngr = item?.ingredients?.find(
+      (ingr) => ingr?.ingredient_id == 211
+    );
     if (item.photo_origin != null && item?.menu_category_id != 0 && findIngr) {
       return true;
     } else {
@@ -132,17 +132,19 @@ export default async function HomePage({ params, searchParams }) {
       >
         <CarouselContent className="relative">
           {reviewsData.result.reviews.map((item, i) => {
-            if(item.rating < 4) return
-            return(
+            if (item.rating < 4) return;
+            return (
               <CarouselItem
                 key={i}
                 className={`basis-[80%] sm:basis-[45%] lg:basis-[45%] xl:basis-[30%] p-0 mx-2 ${
                   i == 0 && "max-sm:ml-8 max-md:ml-16 ml-8"
                 }`}
               >
-                <Cards data={item} />
+                <a href="https://g.co/kgs/YJy7TYy" target="_blank">
+                  <Cards data={item} />
+                </a>
               </CarouselItem>
-            )
+            );
           })}
         </CarouselContent>
       </Carousel>

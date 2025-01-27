@@ -3,6 +3,7 @@ import TextBonus from "./_components/textBonus";
 import ProfileComponent from "./_components/profileComponent";
 import { getLocale } from "next-intl/server";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 export default async function Profile({ params }) {
   const [getClient, locale, path] = await Promise.all([
@@ -11,9 +12,13 @@ export default async function Profile({ params }) {
     params,
   ]);
   const clientData = getClient.get("client");
-  const client = clientData ? JSON.parse(clientData?.value) : {};
+  const client = clientData ? JSON.parse(clientData?.value) : null;
+  if (client == null) {
+    redirect(`/${path.locale}/${path.place}/login`);
+  }
+
   return (
-    <Container
+    <Container 
       className={`flex-col items-start min-h-[400px] justify-start pt-3 md:pt-8`}
     >
       <ProfileComponent locale={locale} path={path} client={client} />

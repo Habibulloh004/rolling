@@ -69,8 +69,8 @@ const Payment = ({ locale, place, auth }) => {
   ];
 
   const handleSelectPayment = (item) => {
-    if (!auth?.client_id && item?.type === "cash" && !spot) {
-      toast.warning(
+    if (!auth?.client_id && !spot) {
+      toast.error(
         <div className="w-full h-full flex justify-between items-center">
           {all("no_auth")}{" "}
           <Link
@@ -81,21 +81,18 @@ const Payment = ({ locale, place, auth }) => {
           </Link>
         </div>
       );
-    } else if (
-      item.type === "card" ||
-      (item.type == "cash" && auth?.client_id)
-    ) {
+    } else if (item.type == "cash") {
       setOrderData({
         ...orderData,
         payment_method: item.type,
       });
-    } else if (spot && (item.type === "card" || item.type == "cash")) {
+    } else if (spot && item.type == "cash") {
       setOrderData({
         ...orderData,
         payment_method: item.type,
       });
     } else {
-      toast.warning(all("no_active"));
+      toast.error(all("no_active"));
     }
   };
 
@@ -112,14 +109,14 @@ const Payment = ({ locale, place, auth }) => {
     });
   }, [api]);
 
-  useEffect(() => {
-    if (!auth?.client_id && orderData?.payment_method === "cash" && !spot) {
-      setOrderData({
-        ...orderData,
-        payment_method: "card",
-      });
-    }
-  }, [auth, orderData?.payment_method]);
+  // useEffect(() => {
+  //   if (!auth?.client_id && orderData?.payment_method === "cash" && !spot) {
+  //     setOrderData({
+  //       ...orderData,
+  //       payment_method: "card",
+  //     });
+  //   }
+  // }, [auth, orderData?.payment_method]);
 
   return (
     <div className="w-full flex flex-col items-start md:px-12 pt-6 gap-5">
@@ -133,7 +130,6 @@ const Payment = ({ locale, place, auth }) => {
             key={item.id}
             className={`w-[118px] min-h-[70px] rounded-[7px] border-[#004032] border-b-2 p-3 flex flex-col justify-start gap-1
               ${
-                item.type === "card" ||
                 (item.type === "cash" && auth?.client_id) ||
                 (item.type == "cash" && spot)
                   ? ""

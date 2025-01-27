@@ -280,10 +280,10 @@ export default function Header({
             <Link
               href={
                 param?.place !== "branch"
-                  ? `${getUrl(pathName)}}`
+                  ? `${getUrl(pathName)}`
                   : `${getUrl(
                       pathName
-                    )}}?spot=${spot}&table_id=${table_id}&table_num=${table_num}&service=${service}`
+                    )}?spot=${spot}&table_id=${table_id}&table_num=${table_num}&service=${service}`
               }
               className=" flex-shrink-0"
             >

@@ -100,7 +100,7 @@ export default function OrderItemComponent({
   }, []);
 
   return (
-    <div className="w-full lg:w-10/12 lg:space-x-10">
+    <div className="w-full lg:w-full lg:space-x-10">
       <div className="flex flex-col-reverse lg:flex-row lg:justify-between w-full gap-4">
         <div className=" lg:w-2/3">
           {orderData?.type.includes("delivery") && (
@@ -122,7 +122,7 @@ export default function OrderItemComponent({
                 <p className="textSmall2 text-[#2E2E2E] text-center ">
                   {orderData?.address_comment}
                 </p>
-                <div className="mt-5">
+                <div className="mt-5 w-full">
                   <Stepper currentStep={1} />
                 </div>
               </div>
@@ -144,7 +144,7 @@ export default function OrderItemComponent({
             <>
               {orderData?.type.includes("take_away") && (
                 <>
-                  <div className="flex flex-col-reverse items-center  gap-10 lg:flex-row lg:justify-between mt-12">
+                  <div className="flex flex-col-reverse items-center  gap-10 lg:flex-row lg:justify-center mt-12">
                     <div className="max-sm:w-10/12 max-md:w-2/3 md:w-[300px] py-3 px-5 bg-white rounded-xl flex flex-col justify-center items-center">
                       <Image
                         src={"/assets/Location.svg"}

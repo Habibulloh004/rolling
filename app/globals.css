@@ -11,7 +11,7 @@ body {
   position: fixed;
   z-index: 9999;
 }
-.cadfd{
+.cadfd {
   background-color: #f2f2f2;
 }
 @media (max-width: 768px) {
@@ -30,7 +30,6 @@ body {
     right: 1rem;
   }
 }
-
 
 .empty-icons > * {
   display: inline-block !important;
@@ -51,9 +50,24 @@ body {
   outline: none;
   border: 1px solid rgba(255, 255, 255, 0.8);
 }
+.input-phone-cart > * {
+  background-color: white;
+  border: 1px solid #ffffff;
+  height: 40px;
+  border-radius: 5px;
+  padding: 6px;
+}
+.input-phone-cart select {
+  display: none !important;
+}
+
+.input-phone-cart > *:focus {
+  outline: none;
+  border: 1px solid rgba(67, 103, 78);
+}
 .gray > * {
   background-color: transparent;
-  border: 1px solid hsl(0 0% 89.8%) !important;
+  border: 2px solid hsl(0 0% 89.8%) !important;
   height: 40px;
   border-radius: 5px;
   padding: 6px;
@@ -64,8 +78,8 @@ body {
   border: 1px solid hsl(0 0% 3.9%) !important;
 }
 
-.input-phone > select {
-  background-color: transparent !important;
+.input-phone select {
+  display: none !important;
 }
 .input-phone select {
   color: black;

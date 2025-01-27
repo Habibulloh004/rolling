@@ -20,6 +20,7 @@ import { toast } from "sonner";
 import { usePathname, useRouter } from "next/navigation";
 import { getUrl } from "@/lib/utils";
 import { useOrderStore } from "@/store";
+import { Textarea } from "@/components/ui/textarea";
 
 // Custom user marker
 const userMarker = new Icon({
@@ -36,8 +37,7 @@ const EditAddress = () => {
     address: "",
     lat: null,
     lng: null,
-    comment: "",
-    name: "",
+    house: "",
   });
 
   const [location, setLocation] = useState({
@@ -49,6 +49,7 @@ const EditAddress = () => {
   const allT = useTranslations("All");
   const pathname = usePathname();
   const router = useRouter();
+  console.log(pathname.split("/"));
 
   const SmoothTransition = ({ lng, lat, zoom = 14 }) => {
     const map = useMap();
@@ -96,10 +97,21 @@ const EditAddress = () => {
     }
 
     const id = myAddresses.length + 1;
+    let commentAddress;
+    if (addressData.house) {
+      commentAddress = addressData.house + ". ";
+    }
+    if (addressData?.comment) {
+      commentAddress += addressData?.comment + ". ";
+    }
     const newAddress = {
-      ...addressData,
       id,
+      address: addressData.address,
+      lat: addressData.lat,
+      lng: addressData.lng,
+      comment: commentAddress ? commentAddress : "",
     };
+
     myAddresses.push(newAddress);
     localStorage.setItem("myAddresses", JSON.stringify(myAddresses));
     toast.success(addressT("address_saved"));
@@ -110,7 +122,7 @@ const EditAddress = () => {
       client_addresses_id: id,
       lat: addressData.lat,
       lng: addressData.lng,
-      address_comment: addressData.comment,
+      address_comment: commentAddress ? commentAddress : "",
     });
 
     // Reset form
@@ -119,8 +131,7 @@ const EditAddress = () => {
       address: "",
       lat: null,
       lng: null,
-      comment: "",
-      name: "",
+      house: "",
     });
   };
 
@@ -166,11 +177,28 @@ const EditAddress = () => {
   }, []);
 
   useEffect(() => {
-    setAddressData((prev) => ({
-      ...prev,
-      lat: location.lat,
-      lng: location.lng,
-    }));
+    const fetchData = async () => {
+      try {
+        const res = await fetch(
+          `https://nominatim.openstreetmap.org/reverse?lat=${String(
+            location?.lat
+          )}&lon=${String(location?.lng)}&format=json&accept-language=${
+            pathname.split("/")[1]
+          }`
+        );
+        const addressRes = await res.json();
+        console.log(addressRes?.display_name);
+        setAddressData({
+          ...addressData,
+          lat: location.lat,
+          lng: location.lng,
+          address: addressRes?.display_name,
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchData();
   }, [location]);
 
   return (
@@ -179,28 +207,12 @@ const EditAddress = () => {
         {addressT("title")}
       </h1>
       <div className="w-full flex flex-col lg:flex-row my-6 justify-around gap-5 md:gap-16">
-        <div className="w-full">
-          <Label htmlFor="name" className={"text-base leading-6"}>
-            {addressT("name")}
-          </Label>
-          <div className="max-w-xl w-full flex items-center bg-[#F5F5F5] border-[0.5px] border-[#B9B9BB] rounded-[10px] pr-7 mt-2 mb-5 h-12">
-            <Input
-              id="name"
-              name="name"
-              type="text"
-              value={addressData.name}
-              onChange={handleChangeInput}
-              placeholder={addressT("name_pls")}
-              className={
-                "w-full focus-visible:outline-none focus-visible:ring-0 border-none shadow-none"
-              }
-            />
-          </div>
+        <div className="w-full flex flex-col gap-2">
           <Label htmlFor="address" className={"text-base leading-6"}>
             {addressT("address")}
           </Label>
-          <div className="max-w-xl w-full flex items-center bg-[#F5F5F5] border-[0.5px] border-[#B9B9BB] rounded-[10px] pr-7 mt-2 mb-5 h-12">
-            <Input
+          <div className="max-w-xl w-full flex items-center bg-[#F5F5F5] border-[0.5px] border-[#B9B9BB] rounded-[10px] px-2 py-1 mt-2">
+            <Textarea
               id="address"
               name="address"
               type="text"
@@ -212,17 +224,33 @@ const EditAddress = () => {
               }
             />
           </div>
-          <Label htmlFor="comment" className={"text-base leading-6"}>
+          <Label htmlFor="house" className={"text-base leading-6 mt-3"}>
+            {addressT("house")}
+          </Label>
+          <div className="max-w-xl w-full flex items-center bg-[#F5F5F5] border-[0.5px] border-[#B9B9BB] rounded-[10px] mt-2 px-2  h-12">
+            <Input
+              id="house"
+              name="house"
+              type="text"
+              value={addressData.house}
+              onChange={handleChangeInput}
+              placeholder={addressT("house_pls")}
+              className={
+                "w-full focus-visible:outline-none focus-visible:ring-0 border-none shadow-none"
+              }
+            />
+          </div>
+          <Label htmlFor="comment" className={"text-base leading-6 mt-3"}>
             {addressT("comment")}
           </Label>
-          <div className="max-w-xl w-full flex items-center bg-[#F5F5F5] border-[0.5px] border-[#B9B9BB] rounded-[10px] pr-7 mt-2 mb-5 h-12">
-            <Input
+          <div className="max-w-xl w-full flex items-center bg-[#F5F5F5] border-[0.5px] border-[#B9B9BB] rounded-[10px] mt-2 px-2 py-1">
+            <Textarea
               id="comment"
               type="text"
               value={addressData.comment}
               onChange={handleChangeInput}
               name="comment"
-              placeholder={addressT("name_pls")}
+              placeholder={""}
               className={
                 "text-base focus-visible:outline-none focus-visible:ring-0 border-none shadow-none"
               }
@@ -240,7 +268,9 @@ const EditAddress = () => {
         <div className="lg:w-full h-48 lg:h-80 rounded-xl overflow-hidden relative z-0 ">
           {open && (
             <div className="md:hidden absolute top-0 left-0 w-full h-full z-30 backdrop-blur-[1px] bg-black/10 flex justify-center items-center">
-              <Button onClick={() => setOpen(false)}>{addressT("select_map")}</Button>
+              <Button onClick={() => setOpen(false)}>
+                {addressT("select_map")}
+              </Button>
             </div>
           )}
           <MapContainer

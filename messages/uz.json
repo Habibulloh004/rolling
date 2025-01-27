@@ -47,7 +47,8 @@
     "order_empty": "Buyurtmalar mavjud emas.",
     "order_created": "Buyurtmangiz qabul qilindi",
     "spot_empty": "Siz filial tanlamadingiz.",
-    "location_empty": "Yetkazib berish manzili yaroqsiz"
+    "location_empty": "Yetkazib berish manzili yaroqsiz",
+    "cart_ingredient":"Yana birini qo'shing!"
   },
   "Bonus": {
     "bonus": "Bonus",
@@ -94,8 +95,8 @@
     },
     "Address": {
       "title": "Manzillarim",
-      "name": "Nomi",
-      "name_pls": "Uy",
+      "house": "Uy, pod'yezd, xonadon",
+      "house_pls": "Uy 12, pod'yezd 3, xonadon 34",
       "address": "Manzil",
       "address_error": "Manzilni kiritmadingiz",
       "pls": "Yashnobod tumani, Botkin 1a",

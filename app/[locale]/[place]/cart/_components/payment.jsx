@@ -65,7 +65,7 @@ const Payment = ({ locale, place, auth }) => {
     },
     { id: 3, icon: `/assets/payme.webp`, text: "PayMe", type: "payme" },
     { id: 4, icon: `/assets/click.webp`, text: "Click", type: "click" },
-    { id: 5, icon: `/assets/uzum.webp`, text: "Uzum", type: "uzum" },
+    // { id: 5, icon: `/assets/uzum.webp`, text: "Uzum", type: "uzum" },
   ];
 
   const handleSelectPayment = (item) => {
@@ -130,8 +130,7 @@ const Payment = ({ locale, place, auth }) => {
             key={item.id}
             className={`w-[118px] min-h-[70px] rounded-[7px] border-[#004032] border-b-2 p-3 flex flex-col justify-start gap-1
               ${
-                (item.type === "cash" && auth?.client_id) ||
-                (item.type == "cash" && spot)
+                item.type === "cash" || (item.type == "cash" && spot)
                   ? ""
                   : "opacity-[0.5]"
               }

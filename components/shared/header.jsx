@@ -78,7 +78,7 @@ export default function Header({
       categories?.filter((category) =>
         String(category?.category_name)
           ?.toLowerCase()
-          ?.includes(searchTerm?.toLowerCase())
+          ?.includes(String(searchTerm?.toLowerCase()))
       )
     );
 
@@ -422,21 +422,25 @@ export default function Header({
                             </h2>
                             {filteredProducts.length > 0 ? (
                               <ul className="max-md:flex flex-col gap-3 md:space-x-3 md:space-y-3">
-                                {filteredProducts.map((product, index) => {
+                                {filteredProducts?.map((product, index) => {
                                   const localizedName = getLocalizedProduct(
-                                    product.product_production_description,
+                                    String(
+                                      product.product_production_description
+                                    ),
                                     locale,
                                     "name"
                                   );
                                   const linkNameCategory = formatText(
                                     getLocalizedCategoryName(
-                                      product.category_name,
+                                      String(product.category_name),
                                       "en"
                                     )
                                   );
                                   const linkNameProducts = formatText(
                                     getLocalizedProduct(
-                                      product?.product_production_description,
+                                      String(
+                                        product?.product_production_description
+                                      ),
                                       "en",
                                       "name"
                                     )
@@ -473,12 +477,12 @@ export default function Header({
                                 {filteredCategories.map((category, index) => {
                                   const linkNameCategory = formatText(
                                     getLocalizedCategoryName(
-                                      category.category_name,
+                                      String(category.category_name),
                                       "en"
                                     )
                                   );
                                   const nameCategory = getLocalizedCategoryName(
-                                    category.category_name,
+                                    String(category.category_name),
                                     locale
                                   );
 

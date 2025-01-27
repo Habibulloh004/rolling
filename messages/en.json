@@ -48,6 +48,9 @@
     "order_created": "Your order has been received.",
     "spot_empty": "You have not selected a branch.",
     "location_empty": "Invalid delivery address",
+    "discount": "Discount",
+    "promotion": "Promotions",
+    "news": "News",
     "cart_ingredient": "Take more!"
   },
   "Bonus": {

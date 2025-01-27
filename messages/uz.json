@@ -48,6 +48,9 @@
     "order_created": "Buyurtmangiz qabul qilindi",
     "spot_empty": "Siz filial tanlamadingiz.",
     "location_empty": "Yetkazib berish manzili yaroqsiz",
+    "discount": "Chegirma",
+    "promotion": "Aksiyalar",
+    "news": "Yangiliklar",
     "cart_ingredient":"Yana birini qo'shing!"
   },
   "Bonus": {

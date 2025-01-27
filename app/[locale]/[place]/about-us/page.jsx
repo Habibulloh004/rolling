@@ -31,6 +31,8 @@ const AboutUs = async ({ params }) => {
             <Image
               src={`/assets/aboutLogo.svg`}
               alt={`aboutlogo`}
+              width={100}
+              height={100}
               // fill={true}
               className="w-[400px] aspect-[4/1]"
             />

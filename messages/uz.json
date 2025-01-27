@@ -50,7 +50,8 @@
     "location_empty": "Yetkazib berish manzili yaroqsiz",
     "discount": "Chegirma",
     "promotion": "Aksiyalar",
-    "news": "Yangiliklar"
+    "news": "Yangiliklar",
+    "cart_ingredient":"Yana birini qo'shing!"
   },
   "Bonus": {
     "bonus": "Bonus",
@@ -97,8 +98,8 @@
     },
     "Address": {
       "title": "Manzillarim",
-      "name": "Nomi",
-      "name_pls": "Uy",
+      "house": "Uy, pod'yezd, xonadon",
+      "house_pls": "Uy 12, pod'yezd 3, xonadon 34",
       "address": "Manzil",
       "address_error": "Manzilni kiritmadingiz",
       "pls": "Yashnobod tumani, Botkin 1a",

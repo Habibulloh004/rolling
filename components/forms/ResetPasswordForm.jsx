@@ -104,7 +104,8 @@ export default function ResetPasswordForm() {
       JSON.stringify({
         ...updatedClient,
         addresses: null,
-      })
+      }),
+      { expires: 7, secure: true }
     );
     router.replace(`${getUrl(pathname)}/login`);
     setIsLoading(false);
@@ -117,16 +118,12 @@ export default function ResetPasswordForm() {
       return;
     }
     setResetPasswordBtnDisabled(false);
-    console.log(form);
-    console.log("OTP:", otpValues);
-    console.log("val", generatingValue);
   };
 
   const sendSms = async () => {
     const code = generateRandomFourDigitNumber();
     setGeneratingValue(code);
     const res = await sendSmsToUser(code, form.getValues("phone"));
-    console.log(res);
   };
 
   return (

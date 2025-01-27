@@ -11,6 +11,7 @@ import GoogleAnalytics from "@/app/googleAnalytics";
 import { ApiService } from "@/service/api.services";
 import NextTopLoader from "nextjs-toploader";
 import { Toaster } from "sonner";
+import Chat from "@/app/chat";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -24,7 +25,9 @@ export const metadata = {
   keywords:
     "суши, роллы, доставка суши, японская кухня, Rolling Sushi, Ташкент, акции суши",
   alternates: {
-    canonical: "https://rollingsushi.uz/",
+    canonical: "https://rollingsushi.uz/uz/web",
+    ru: "https://rollingsushi.uz/ru/web",
+    en: "https://rollingsushi.uz/en/web",
   },
 };
 
@@ -51,16 +54,50 @@ export default async function Layout({ children, params }) {
   return (
     <html lang={param.locale}>
       <head>
-        <meta name="yandex-verification" content="01b6250c84c27d7e" />
+        <meta name="yandex-verification" content="2eb6c0631cdd4d80" />
         <meta httpEquiv="Content-Type" content="text/html; charset=UTF-8" />
-        <meta
-          name="viewport"
-          content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=no"
-        />
       </head>
       <body
         className={`${poppins.className} antialiased min-h-screen flex flex-col`}
       >
+        <NextTopLoader
+          color="hsl(138, 21%, 33%)"
+          crawlSpeed={200}
+          height={3}
+          crawl={true}
+          showSpinner={false}
+          easing="ease"
+          speed={200}
+          shadow="0 0 10px #5b8a69,0 0 5px #5b8a69"
+          template='<div class="bar" role="bar"><div class="peg"></div></div> 
+  <div class="spinner" role="spinner"><div class="spinner-icon"></div></div>'
+          zIndex={999999999}
+          showAtBottom={false}
+        />
+        <NextIntlClientProvider locale={param.locale} messages={messages}>
+          <Header
+            categories={categoriesData?.response}
+            products={productsData?.response}
+            param={param}
+            locale={param.locale}
+            spotData={spotData}
+          />
+          <main className="grow">{children}</main>
+          <Toaster
+            position="bottom-right"
+            toastOptions={{
+              classNames: {
+                error: "bg-red-500 text-white",
+                success: "bg-white text-primary",
+                warning: "bg-yellow-400 text-white",
+                info: "bg-blue-400",
+              },
+            }}
+          />
+          <Footer params={param} />
+          <Chat />
+        </NextIntlClientProvider>
+
         <noscript>
           <iframe
             src="https://www.googletagmanager.com/ns.html?id=GTM-M3LDW3FG"
@@ -133,42 +170,6 @@ export default async function Layout({ children, params }) {
         </Script>
 
         <GoogleAnalytics />
-        <NextTopLoader
-          color="hsl(138, 21%, 33%)"
-          crawlSpeed={200}
-          height={3}
-          crawl={true}
-          showSpinner={false}
-          easing="ease"
-          speed={200}
-          shadow="0 0 10px #5b8a69,0 0 5px #5b8a69"
-          template='<div class="bar" role="bar"><div class="peg"></div></div> 
-  <div class="spinner" role="spinner"><div class="spinner-icon"></div></div>'
-          zIndex={999999999}
-          showAtBottom={false}
-        />
-        <NextIntlClientProvider locale={param.locale} messages={messages}>
-          <Header
-            categories={categoriesData?.response}
-            products={productsData?.response}
-            param={param}
-            locale={param.locale}
-            spotData={spotData}
-          />
-          <main className="grow">{children}</main>
-          <Toaster
-            position="bottom-right"
-            toastOptions={{
-              classNames: {
-                error: "bg-red-500 text-white",
-                success: "bg-white text-primary",
-                warning: "bg-yellow-400 text-white",
-                info: "bg-blue-400",
-              },
-            }}
-          />
-          <Footer params={param} />
-        </NextIntlClientProvider>
       </body>
     </html>
   );

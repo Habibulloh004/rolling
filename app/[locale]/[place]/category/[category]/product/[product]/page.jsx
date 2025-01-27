@@ -36,12 +36,12 @@ export async function generateMetadata({ params }) {
     keywords: extractKeywords(productData.product_production_description),
     openGraph: {
       url: `https://rolling.uz/${generateUrl(path)}`,
-      title: `${productData.product_name || "Product title"}`,
+      title: `${getLocalizedProduct(productData.product_production_description, path.locale, "name").replace(".", "") || "Product title"}`,
       description: extractDescription(
         productData.product_production_description
       ),
       images: [
-        `${posterUrl}${productData.photo_originF}`
+        `${posterUrl}${productData.photo_origin}`
       ], // You can add images if necessary
     },
     alternates: {
@@ -50,7 +50,7 @@ export async function generateMetadata({ params }) {
     structuredData: {
       "@context": "https://schema.org",
       "@type": "Product",
-      name: productData.product_name,
+      name: `${getLocalizedProduct(productData.product_production_description, path.locale, "name").replace(".", "") || "Product title"}`,
       description: extractDescription(
         productData.product_production_description
       ),
@@ -64,7 +64,7 @@ export async function generateMetadata({ params }) {
       "script:ld+json": JSON.stringify({
         "@context": "https://schema.org",
         "@type": "Product",
-        name: productData.product_name,
+        name: `${getLocalizedProduct(productData.product_production_description, path.locale, "name").replace(".", "") || "Product title"}`,
         description: extractDescription(
           productData.product_production_description
         ),
@@ -91,7 +91,6 @@ export default async function ProductPage({ params, searchParams }) {
     `menu.getProduct`,
     `&product_id=${path.product}`
   );
-  console.log(productData);
 
   const localizedName = getLocalizedProduct(
     productData.product_production_description,
@@ -110,47 +109,6 @@ export default async function ProductPage({ params, searchParams }) {
 
   return (
     <>
-      {/* <Head>
-        <title>
-          {productData.product_name || "Default Title"} - Your Store
-        </title>
-        <meta
-          name="description"
-          content={
-            extractDescription(productData.product_production_description) ||
-            "Default description"
-          }
-        />
-        <meta
-          name="keywords"
-          content={
-            extractKeywords(productData.product_production_description) ||
-            "default, keywords"
-          }
-        />
-        <link
-          rel="canonical"
-          href={`https://rolling.uz/${generateUrl(path)}`}
-        />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "Product",
-              name: productData.product_name,
-              description: extractDescription(
-                productData.product_production_description
-              ),
-              offers: {
-                "@type": "Offer",
-                priceCurrency: "USD",
-                price: productData.price?.[1] || "0.00",
-              },
-            }),
-          }}
-        />
-      </Head> */}
       <Container className={"w-11/12 flex-col justify-start items-start pt-4"}>
         <Breadcrumb>
           <BreadcrumbList>

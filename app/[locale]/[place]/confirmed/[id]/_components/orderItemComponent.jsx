@@ -85,7 +85,6 @@ export default function OrderItemComponent({
             )}&lon=${String(location[1])}&format=json&accept-language=${locale}`
           );
           const addressRes = await res.json();
-          console.log(order, orderedProducts);
 
           if (order?.spot_id != 0) {
             const spot = spotsData?.find((s) => s.spot_id == order?.spot_id);
@@ -112,7 +111,6 @@ export default function OrderItemComponent({
     fetchAddress();
   }, []);
 
-  console.log(orderData);
 
   return (
     <div className="w-full lg:w-11/12 mx-auto flex flex-col lg:grid grid-cols-2 gap-5 lg:gap-20 mt-4 lg:mt-10">

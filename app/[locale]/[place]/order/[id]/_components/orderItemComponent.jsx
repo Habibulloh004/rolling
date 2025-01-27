@@ -72,7 +72,7 @@ export default function OrderItemComponent({
               setCurrentStep(4);
               break;
             default:
-              setCurrentStep(1);
+              setCurrentStep(0);
               break;
           }
           if (order?.spot_id != 0) {
@@ -227,7 +227,7 @@ export default function OrderItemComponent({
                   0 {all("sum")}
                 </p>
               </div>
-              {orderData?.payed_bonus && (
+              {orderData?.payed_bonus && orderData?.payed_bonus != 0 ? (
                 <div className="w-full flex justify-between">
                   <p className="font-medium textSmall3 leading-5 text-[#2E2E2E] text-start md:text-end">
                     {cartText("bonus")}
@@ -237,7 +237,7 @@ export default function OrderItemComponent({
                     {all("sum")}
                   </p>
                 </div>
-              )}
+              ) : null}
               <div className="w-full flex justify-between">
                 <p className="font-medium textSmall3 leading-5 text-[#2E2E2E] text-start md:text-end">
                   {cartText("total")}

@@ -50,8 +50,8 @@
     "location_empty": "Invalid delivery address",
     "discount": "Discount",
     "promotion": "Promotions",
-    "news": "News"
-
+    "news": "News",
+    "cart_ingredient": "Take more!"
   },
   "Bonus": {
     "bonus": "Bonus",
@@ -98,8 +98,8 @@
     },
     "Address": {
       "title": "My Addresses",
-      "name": "Name",
-      "name_pls": "Home",
+      "house": "House, entrance, apartment",
+      "house_pls": "House 12, entrance 3, apartment 34",
       "address": "Address",
       "address_error": "You did not enter an address.",
       "address_saved": "Address added successfully.",

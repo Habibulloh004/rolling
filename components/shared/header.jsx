@@ -20,7 +20,12 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import ResponsiveSVG from "@/public/assets/responsive";
-import { useProductStore, useStore, useOrderStore } from "@/store";
+import {
+  useProductStore,
+  useStore,
+  useOrderStore,
+  useClientStore,
+} from "@/store";
 import Link from "next/link";
 import LngChange from "./lngChange";
 import { usePathname, useSearchParams } from "next/navigation";
@@ -45,6 +50,7 @@ export default function Header({
   products: productsData,
   categories,
 }) {
+  const { client } = useClientStore();
   const searchParams = useSearchParams();
   const spot = searchParams.get("spot");
   const table_id = searchParams.get("table_id");
@@ -59,14 +65,15 @@ export default function Header({
   const { initializeOrderData } = useOrderStore();
   const { initializeProducts } = useProductStore();
   const [isOpen, setisOpen] = useState(true);
-  const [cl, setCl] = useState(null);
+  const [cl, setCl] = useState(
+    Cookies.get("client") && JSON.parse(Cookies.get("client"))
+  );
   const SearchText = useTranslations("Search");
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredCategories, setFilteredCategories] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [openSearch, setOpenSearch] = useState(false);
-  const auth = Cookies.get("client");
-
+ 
   useEffect(() => {
     if (searchTerm.trim() === "") {
       setFilteredCategories([]);
@@ -78,7 +85,7 @@ export default function Header({
       categories?.filter((category) =>
         String(category?.category_name)
           ?.toLowerCase()
-          ?.includes(searchTerm?.toLowerCase())
+          ?.includes(String(searchTerm?.toLowerCase()))
       )
     );
 
@@ -95,10 +102,11 @@ export default function Header({
     initializeFavorites();
     initializeProducts();
     initializeOrderData();
-    if (auth) {
-      setCl(JSON.parse(auth)); // Parse JSON string if it's a JSON object
-    }
-  }, [auth]);
+  }, []);
+
+  useEffect(() => {
+    setCl(client); // Parse JSON string if it's a JSON object
+  }, [client]);
 
   useEffect(() => {
     if (spot && table_id && table_num && !service && param.place == "branch") {
@@ -423,21 +431,25 @@ export default function Header({
                             </h2>
                             {filteredProducts.length > 0 ? (
                               <ul className="max-md:flex flex-col gap-3 md:space-x-3 md:space-y-3">
-                                {filteredProducts.map((product, index) => {
+                                {filteredProducts?.map((product, index) => {
                                   const localizedName = getLocalizedProduct(
-                                    product.product_production_description,
+                                    String(
+                                      product.product_production_description
+                                    ),
                                     locale,
                                     "name"
                                   );
                                   const linkNameCategory = formatText(
                                     getLocalizedCategoryName(
-                                      product.category_name,
+                                      String(product.category_name),
                                       "en"
                                     )
                                   );
                                   const linkNameProducts = formatText(
                                     getLocalizedProduct(
-                                      product?.product_production_description,
+                                      String(
+                                        product?.product_production_description
+                                      ),
                                       "en",
                                       "name"
                                     )
@@ -474,12 +486,12 @@ export default function Header({
                                 {filteredCategories.map((category, index) => {
                                   const linkNameCategory = formatText(
                                     getLocalizedCategoryName(
-                                      category.category_name,
+                                      String(category.category_name),
                                       "en"
                                     )
                                   );
                                   const nameCategory = getLocalizedCategoryName(
-                                    category.category_name,
+                                    String(category.category_name),
                                     locale
                                   );
 

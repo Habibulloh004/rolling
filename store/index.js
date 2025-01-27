@@ -259,7 +259,7 @@ export const useOrderStore = create((set) => ({
           address: "",
           client_addresses_id: null,
         };
-    set({ orderData: parsedOrderData });
+    set({ orderData: { ...parsedOrderData, delivery_price: 0 } });
     set({ totalSum: totalSum || 0 });
   },
   resetOrder: () => {
@@ -272,7 +272,7 @@ export const useOrderStore = create((set) => ({
         service_mode: 3,
         payment_method: "cash",
         total: 0,
-        delivery_price: -0,
+        delivery_price: 0,
         lng: 0,
         lat: 0,
         client: null,

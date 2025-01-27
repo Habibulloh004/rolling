@@ -65,7 +65,7 @@ const Payment = ({ locale, place, auth }) => {
     },
     { id: 3, icon: `/assets/payme.webp`, text: "PayMe", type: "payme" },
     { id: 4, icon: `/assets/click.webp`, text: "Click", type: "click" },
-    { id: 5, icon: `/assets/uzum.webp`, text: "Uzum", type: "uzum" },
+    // { id: 5, icon: `/assets/uzum.webp`, text: "Uzum", type: "uzum" },
   ];
 
   const handleSelectPayment = (item) => {

@@ -24,7 +24,7 @@ import {
 import Card from "@/components/shared/card";
 
 export async function generateMetadata({ params }) {
-  const [ path, allT ] = await Promise.all([params, getTranslations("All")]);
+  const [path, allT] = await Promise.all([params, getTranslations("All")]);
   const { response: category } = await ApiService.getPosterData(
     `menu.getCategory`,
     `&category_id=${path.category.split("-")[0]}`
@@ -32,16 +32,23 @@ export async function generateMetadata({ params }) {
 
   return {
     title: `${
-      getLocalizedCategoryName(category.category_name, path.locale).replace(".", "") ||
-      "Category title"
+      getLocalizedCategoryName(category.category_name, path.locale).replace(
+        ".",
+        ""
+      ) || "Category title"
     } - ${allT("city")}`,
     description: extractDescription(category.category_name),
     keywords: extractKeywords(category.category_name),
     openGraph: {
       url: `https://rolling.uz/${generateUrl(path)}`,
-      title: `${category.category_name || "Category title"}`,
+      title: `${
+        getLocalizedCategoryName(category.category_name, path.locale).replace(
+          ".",
+          ""
+        ) || "Category title"
+      }`,
       description: extractDescription(category.category_name),
-      images: [`${posterUrl}${category.category_photo}`], // You can add images if necessary
+      images: [`${posterUrl}${category.category_photo_origin}`], // You can add images if necessary
     },
     alternates: {
       canonical: `https://rolling.uz/${generateUrl(path)}`,
@@ -49,7 +56,12 @@ export async function generateMetadata({ params }) {
     structuredData: {
       "@context": "https://schema.org",
       "@type": "Product",
-      name: category.category_name,
+      name: `${
+        getLocalizedCategoryName(category.category_name, path.locale).replace(
+          ".",
+          ""
+        ) || "Category title"
+      }`,
       description: extractDescription(category.category_name),
       // offers: {
       //   "@type": "Offer",
@@ -61,7 +73,12 @@ export async function generateMetadata({ params }) {
       "script:ld+json": JSON.stringify({
         "@context": "https://schema.org",
         "@type": "Product",
-        name: category.category_name,
+        name: `${
+          getLocalizedCategoryName(category.category_name, path.locale).replace(
+            ".",
+            ""
+          ) || "Category title"
+        }`,
         description: extractDescription(category.category_name),
         // offers: {
         //   "@type": "Offer",

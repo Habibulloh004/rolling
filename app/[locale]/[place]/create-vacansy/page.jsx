@@ -1,5 +1,4 @@
 import Container from "@/components/shared/container";
-import { aboutLogo } from "@/public";
 import Image from "next/legacy/image";
 import { getTranslations } from "next-intl/server";
 import VacansyForm from "@/components/forms/VacansyForm";
@@ -23,10 +22,12 @@ async function CreateVacansy() {
         </section>
         <section className="hidden sm:block pt-10 w-[30%] space-y-6">
           <Image
-            src={aboutLogo}
+            src={`/assets/aboutLogo.svg`}
             alt={`aboutlogo`}
             // fill
-            className="w-[400px] aspect-[4/1]"
+            width={500}
+            height={100}
+            className=""
           />
           <p className="font-semibold text-muted text-center">
             {aboutUsT("logoBottom")}

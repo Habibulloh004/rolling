@@ -2,8 +2,6 @@ import Container from "@/components/shared/container";
 import React from "react";
 import TextBonus from "../_components/textBonus";
 import Image from "next/image";
-import { gold } from "@/public";
-import Cookies from "js-cookie";
 import { getTranslations } from "next-intl/server";
 import { formatCurrency } from "@/lib/utils";
 import { cookies } from "next/headers";
@@ -53,7 +51,13 @@ export default async function Bonus() {
               </p>
             </div>
             <Image
-              src={gold}
+              src={`${
+                client.client_groups_discount == "30"
+                  ? "/assets/Gold.png"
+                  : client.client_groups_discount == "20"
+                  ? "/assets/Silver.png"
+                  : "/assets/Bronze.png"
+              }`}
               alt="gold"
               width={400}
               height={100}

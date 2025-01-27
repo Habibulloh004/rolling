@@ -44,7 +44,14 @@
     "no_auth": "Siz tizimga kirmagansiz!",
     "products_empty": "Siz mahsulot tanlamadingiz!",
     "phone_empty": "Telefon raqam mavjud emas!",
-    "order_created":"Buyurtmangiz qabul qilindi"
+    "order_empty": "Buyurtmalar mavjud emas.",
+    "order_created": "Buyurtmangiz qabul qilindi",
+    "spot_empty": "Siz filial tanlamadingiz.",
+    "location_empty": "Yetkazib berish manzili yaroqsiz",
+    "discount": "Chegirma",
+    "promotion": "Aksiyalar",
+    "news": "Yangiliklar",
+    "cart_ingredient":"Yana birini qo'shing!"
   },
   "Bonus": {
     "bonus": "Bonus",
@@ -64,7 +71,7 @@
     "have_bonus": "Mavjud bonuslar:",
     "btnAddAddress": "Manzilni qo'shish",
     "Links": {
-      "my_card": "Mening kartalarim",
+      "my_card": "Karta qo'shish",
       "address": "Yetkazib berish manzillari",
       "order": "Buyurtmalarim",
       "bonus": "Mening bonuslarim",
@@ -91,16 +98,18 @@
     },
     "Address": {
       "title": "Manzillarim",
-      "name": "Nomi",
-      "name_pls": "Uy",
+      "house": "Uy, pod'yezd, xonadon",
+      "house_pls": "Uy 12, pod'yezd 3, xonadon 34",
       "address": "Manzil",
-      "address_error":"Manzilni kiritmadingiz",
+      "address_error": "Manzilni kiritmadingiz",
       "pls": "Yashnobod tumani, Botkin 1a",
       "comment": "Manzilga izohlar",
       "comment_pls": "1-qavat",
-      "comment_error":"Izohlar mavjud emas.",
-      "location_error":"Lokatsiyani belgilashingiz kerak",
-      "address_saved":"Manzil muvaffaqiyatli kiritildi."
+      "comment_error": "Izohlar mavjud emas.",
+      "location_error": "Lokatsiyani belgilashingiz kerak",
+      "address_saved": "Manzil muvaffaqiyatli kiritildi.",
+      "geolocation": "Manzilingizni aniqlash uchun iltimos joylashuvga aniqlashga ruxsat bering!",
+      "select_map": "Xaritadan tanlash"
     }
   },
   "Form": {
@@ -270,7 +279,8 @@
       "address": "Yetkazib berish manzili",
       "phone": "Telefon raqami",
       "comment": "Izoh qo'shish",
-      "delivery_price": "Yetkazib berish narxi"
+      "delivery_price": "Yetkazib berish narxi",
+      "selected_address": "Manzilni tanlash"
     },
     "Pickup": {
       "title": "Olib ketish",
@@ -324,6 +334,18 @@
       "cooking": "Tayyorlanmoqda",
       "in-deliver": "Yo'lda",
       "finished": "Yetkazib berildi"
+    },
+    "Item": {
+      "title": "Buyurtma tasdiqlandi",
+      "desc": "Rolling Sushi-ni tanlaganingiz uchun rahmat! Taomlaringizni yangilik va mazali ta'm bilan tayyorlashga mehr bilan yondashamiz. Agar savollaringiz bo‘lsa, bizning jamoamiz har doim yordam berishga tayyor.",
+      "menu_btn": "Menyuga qaytish",
+      "open_btn": "Buyurtmani kuzatish",
+      "add_comment": "Fikr qoldirish",
+      "comment_desc": "Buyurtmangiz holatini real vaqt rejimida ko‘rishingiz mumkin.",
+      "status_delivery": "Yetkazib berish",
+      "status_pickup": "O'zingiz olib ketish",
+      "status_spot": "Muassasalar",
+      "my_order": "Sizning buyurtmangiz"
     },
     "delivered": "Yetkazildi",
     "info": "Nimani yaxshilashimiz kerak? Sizning fikringizni kutamiz!"

@@ -7,7 +7,7 @@ import CustomImage from "./customImage";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 
-const Banner = ({ banners }) => {
+const Banner = ({path, banners }) => {
   console.log(banners);
 
   const pathname = usePathname();
@@ -31,9 +31,12 @@ const Banner = ({ banners }) => {
           >
             <CarouselContent className="my-0 py-0 px-2 md:px-4 lg:px-8 lg:gap-8">
               {banners.map((item, i) => {
+                if (item.lang != path.locale) {
+                  return;
+                }
                 return (
                   <CarouselItem key={i} className="">
-                    <Link className="mt-1" href={`${getUrl(pathname)}/news`}>
+                    <Link className="mt-1" href={`${getUrl(pathname)}${item.path}`}>
                       <div className="relative max-w-[1440px] mx-auto aspect-[15/5] rounded-[10px] sm:rounded-[20px] md:rounded-[30px] lg:rounded-[40px] xl:rounded-[50px] overflow-hidden">
                         <CustomImage
                           src={`${url}/banner/get_banner/${item.id}`}

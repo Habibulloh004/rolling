@@ -2,25 +2,35 @@
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Rating } from "react-simple-star-rating";
-import { truncateText } from "@/lib/utils";
+import { formatTimestampToDateWithDots, truncateText } from "@/lib/utils";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 // import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 
 const Cards = ({ data }) => {
-  const { name, rating, review, date } = data;
+  const {
+    author_name: name,
+    rating,
+    profile_photo_url,
+    text: review,
+    time: date,
+  } = data;
   return (
     <Card
       key={review.id}
       className="h-52 bg-white border-0 border-t-2 rounded-none shadow-none border-t-[#43674E] flex"
     >
-      <CardContent className="pt-6">
-        <div className="h-full flex flex-col justify-between items-start gap-4">
-          {/* <Avatar className="bg-[#D9D9D9]">
-            <AvatarFallback>{review.client}</AvatarFallback>
-          </Avatar> */}
-          <div className="flex-1 flex flex-col items-start justify-between">
-            <article>
-              <div className="flex items-center gap-2">
-                <span className="font-medium w-3/5">Клиент: {name}</span>
+      <CardContent className="pt-6 w-full">
+        <div className="h-full flex flex-col justify-between items-start gap-4 w-full">
+          <div className="flex-1 flex flex-col items-start justify-between w-full">
+            <article className="w-full">
+              <div className="flex items-start justify-between w-full gap-2">
+                <span className="font-medium w-3/5">
+                  <Avatar className="bg-[#D9D9D9] mb-2">
+                    <AvatarImage src={profile_photo_url} alt="avatar image" />
+                    {/* <AvatarFallback>{profile_photo_url}</AvatarFallback> */}
+                  </Avatar>{" "}
+                  {name}
+                </span>
                 <Rating
                   initialValue={rating}
                   allowHover={false}
@@ -44,7 +54,7 @@ const Cards = ({ data }) => {
               suppressHydrationWarning
               className="mt-2 block text-sm text-gray-500"
             >
-              {date}
+              {formatTimestampToDateWithDots(date)}
             </time>
           </div>
         </div>

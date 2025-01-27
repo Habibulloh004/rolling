@@ -8,7 +8,6 @@ import {
   navItems,
   translateTextSpot,
 } from "@/lib/utils";
-import { accountIcon, hamburgerIcon, navLogo, secondaryIcon } from "@/public";
 import { Search } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Image from "next/legacy/image";
@@ -21,7 +20,12 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import ResponsiveSVG from "@/public/assets/responsive";
-import { useProductStore, useStore, useOrderStore } from "@/store";
+import {
+  useProductStore,
+  useStore,
+  useOrderStore,
+  useClientStore,
+} from "@/store";
 import Link from "next/link";
 import LngChange from "./lngChange";
 import { usePathname, useSearchParams } from "next/navigation";
@@ -38,6 +42,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Input } from "../ui/input";
+
 export default function Header({
   locale,
   param,
@@ -45,6 +50,7 @@ export default function Header({
   products: productsData,
   categories,
 }) {
+  const { client } = useClientStore();
   const searchParams = useSearchParams();
   const spot = searchParams.get("spot");
   const table_id = searchParams.get("table_id");
@@ -59,14 +65,15 @@ export default function Header({
   const { initializeOrderData } = useOrderStore();
   const { initializeProducts } = useProductStore();
   const [isOpen, setisOpen] = useState(true);
-  const [cl, setCl] = useState(null);
+  const [cl, setCl] = useState(
+    Cookies.get("client") && JSON.parse(Cookies.get("client"))
+  );
   const SearchText = useTranslations("Search");
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredCategories, setFilteredCategories] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [openSearch, setOpenSearch] = useState(false);
-  const auth = Cookies.get("client");
-
+ 
   useEffect(() => {
     if (searchTerm.trim() === "") {
       setFilteredCategories([]);
@@ -78,7 +85,7 @@ export default function Header({
       categories?.filter((category) =>
         String(category?.category_name)
           ?.toLowerCase()
-          ?.includes(searchTerm?.toLowerCase())
+          ?.includes(String(searchTerm?.toLowerCase()))
       )
     );
 
@@ -95,10 +102,11 @@ export default function Header({
     initializeFavorites();
     initializeProducts();
     initializeOrderData();
-    if (auth) {
-      setCl(JSON.parse(auth)); // Parse JSON string if it's a JSON object
-    }
-  }, [auth]);
+  }, []);
+
+  useEffect(() => {
+    setCl(client); // Parse JSON string if it's a JSON object
+  }, [client]);
 
   useEffect(() => {
     if (spot && table_id && table_num && !service && param.place == "branch") {
@@ -162,7 +170,7 @@ export default function Header({
             className="flex-shrink-0 mt-5"
           >
             <Image
-              src={navLogo}
+              src={`/assets/navLogo.webp`}
               alt="Rolling Sushi"
               width={223}
               height={74}
@@ -180,10 +188,10 @@ export default function Header({
                   className="flex-shrink-0 flex items-center gap-2 w-full"
                 >
                   <Image
-                    src={`${item.icon.src}`}
+                    src={`${item.icon}`}
                     alt={`${item.title}`}
-                    width={33}
-                    height={33}
+                    width={29}
+                    height={30}
                     className=""
                   />
                   <p
@@ -207,7 +215,7 @@ export default function Header({
               className="flex-shrink-0 flex items-center gap-2 w-full"
             >
               <Image
-                src={`${accountIcon.src}`}
+                src={`/assets/accountIcon.webp`}
                 alt={`Account icon`}
                 width={33}
                 height={33}
@@ -225,10 +233,10 @@ export default function Header({
                   : allT("sign_in")}
               </p>
             </Link>
+            <div className="flex justify-start items-center w-10/12">
+              <LngChange param={param} />
+            </div>
           </nav>
-          <div className="flex justify-start items-center w-10/12">
-            <LngChange param={param} />
-          </div>
         </div>
 
         {/* Overlay for closing the menu */}
@@ -253,7 +261,7 @@ export default function Header({
             className="hidden md:flex flex-shrink-0"
           >
             <Image
-              src={navLogo}
+              src={`/assets/navLogo.webp`}
               alt="Rolling Sushi"
               width={223}
               height={74}
@@ -269,7 +277,7 @@ export default function Header({
                 onClick={toggleOpen}
               >
                 <Image
-                  src={hamburgerIcon}
+                  src={"/assets/hamburgerIcon.svg"}
                   alt="Menu"
                   width={25}
                   height={25}
@@ -280,15 +288,15 @@ export default function Header({
             <Link
               href={
                 param?.place !== "branch"
-                  ? `${getUrl(pathName)}}`
+                  ? `${getUrl(pathName)}`
                   : `${getUrl(
                       pathName
-                    )}}?spot=${spot}&table_id=${table_id}&table_num=${table_num}&service=${service}`
+                    )}?spot=${spot}&table_id=${table_id}&table_num=${table_num}&service=${service}`
               }
               className=" flex-shrink-0"
             >
               <Image
-                src={secondaryIcon}
+                src={`/assets/secondaryIcon.webp`}
                 alt="Rolling Sushi"
                 width={146}
                 height={36}
@@ -299,6 +307,7 @@ export default function Header({
 
           {param.place !== "branch" && (
             <nav className="hidden lg:flex items-center lg:space-x-4 xl:space-x-6">
+              {/* desktop version */}
               {navItems.map((item) => {
                 return (
                   <Link
@@ -308,11 +317,11 @@ export default function Header({
                     className="flex-shrink-0 flex items-center gap-2"
                   >
                     <Image
-                      src={`${item.icon.src}`}
+                      src={`${item.icon}`}
                       alt={`${item.title}`}
-                      width={30}
+                      width={29}
                       height={30}
-                      className="lg:w-7 lg:h-7"
+                      className="lg:w-7 lg:h-7 w-[30px]"
                     />
                     <p
                       className={`${
@@ -337,7 +346,7 @@ export default function Header({
                 className="flex-shrink-0 flex items-center gap-2 w-full"
               >
                 <Image
-                  src={`${accountIcon.src}`}
+                  src={`/assets/accountIcon.webp`}
                   alt={`Account icon`}
                   width={30}
                   height={30}
@@ -365,7 +374,7 @@ export default function Header({
                 onClick={toggleOpen}
               >
                 <Image
-                  src={hamburgerIcon}
+                  src={"/assets/hamburgerIcon.svg"}
                   alt="Menu"
                   width={25}
                   height={25}
@@ -387,7 +396,7 @@ export default function Header({
                         onClick={() => setOpenSearch(true)}
                         className="w-full relative bg-white p-2 rounded-md"
                       >
-                        <Search className="text-gray-400 size-5 lg:size-7 text-primary" />
+                        <Search className="text-gray-400 size-5 xl:size-7 text-primary" />
                       </div>
                     </SheetTrigger>
                     <SheetContent
@@ -422,21 +431,25 @@ export default function Header({
                             </h2>
                             {filteredProducts.length > 0 ? (
                               <ul className="max-md:flex flex-col gap-3 md:space-x-3 md:space-y-3">
-                                {filteredProducts.map((product, index) => {
+                                {filteredProducts?.map((product, index) => {
                                   const localizedName = getLocalizedProduct(
-                                    product.product_production_description,
+                                    String(
+                                      product.product_production_description
+                                    ),
                                     locale,
                                     "name"
                                   );
                                   const linkNameCategory = formatText(
                                     getLocalizedCategoryName(
-                                      product.category_name,
+                                      String(product.category_name),
                                       "en"
                                     )
                                   );
                                   const linkNameProducts = formatText(
                                     getLocalizedProduct(
-                                      product?.product_production_description,
+                                      String(
+                                        product?.product_production_description
+                                      ),
                                       "en",
                                       "name"
                                     )
@@ -473,12 +486,12 @@ export default function Header({
                                 {filteredCategories.map((category, index) => {
                                   const linkNameCategory = formatText(
                                     getLocalizedCategoryName(
-                                      category.category_name,
+                                      String(category.category_name),
                                       "en"
                                     )
                                   );
                                   const nameCategory = getLocalizedCategoryName(
-                                    category.category_name,
+                                    String(category.category_name),
                                     locale
                                   );
 

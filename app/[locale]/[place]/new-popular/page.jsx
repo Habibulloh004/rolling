@@ -17,10 +17,16 @@ const ColdRolls = async ({ params, searchParams }) => {
     ApiService.getPosterData("menu.getProducts"),
     searchParams,
   ]);
-  const productsData = products.response
-    .filter((item) => item.photo_origin != null && item.menu_category_id != 0)
-    .slice(0, 20);
-  const { spot, table_id, table_num, service } = searchParamsData;
+  const productsData = products.response.filter((item) => {
+    const findIngr = item?.ingredients?.find(
+      (ingr) => ingr?.ingredient_id == 211
+    );
+    if (item.photo_origin != null && item?.menu_category_id != 0 && findIngr) {
+      return true;
+    } else {
+      return false;
+    }
+  });
 
   return (
     <Container className="w-11/12 flex flex-col pt-5 space-y-3">
@@ -65,7 +71,7 @@ const ColdRolls = async ({ params, searchParams }) => {
             );
           })}
         </div>
-      </section>
+      </section>  
     </Container>
   );
 };

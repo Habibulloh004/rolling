@@ -4,14 +4,18 @@ import { getLocale, getTranslations } from "next-intl/server";
 import Link from "next/link";
 import React from "react";
 import OrderDataComponent from "./_components/orderDataComponent";
+import { getAllOrders } from "@/actions";
 
 export default async function Order({ params }) {
-  const [locale, path, orderText, all] = await Promise.all([
+  const [locale, path, orderText, all, allOrders] = await Promise.all([
     getLocale(),
     params,
     getTranslations("Order"),
     getTranslations("All"),
+    getAllOrders(),
   ]);
+  // console.log(allOrders);
+// +998771244444
   return (
     <Container className={"flex flex-col pt-8 w-11/12 gap-5"}>
       <div className="w-full flex justify-between items-center ">

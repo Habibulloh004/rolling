@@ -49,9 +49,9 @@ const LngChange = () => {
       <SelectTrigger className="bg-foreground/5 md:bg-white xl:h-11 text-black border-none w-20 focus:outline-none cursor-pointer">
         <SelectValue asChild>
           <Image
-            src={findLocale?.icon.src} // Hozirgi til ikonkasi
+            src={findLocale?.icon} // Hozirgi til ikonkasi
             alt={findLocale?.title} // Hozirgi til nomi
-            width={25}
+            width={30}
             height={25}
           />
         </SelectValue>
@@ -63,9 +63,9 @@ const LngChange = () => {
           <SelectItem key={item.locale} value={item.id}>
             <div className="flex items-center pr-6 py-1.5 gap-2">
               <Image
-                src={item.icon.src}
+                src={item.icon}
                 alt={item.title}
-                width={25}
+                width={30}
                 height={25}
               />
               <span

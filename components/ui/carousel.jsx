@@ -41,7 +41,6 @@ const Carousel = React.forwardRef((
     if (!api) {
       return
     }
-
     setCanScrollPrev(api.canScrollPrev())
     setCanScrollNext(api.canScrollNext())
   }, [])

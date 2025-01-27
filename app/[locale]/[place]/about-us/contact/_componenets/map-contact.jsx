@@ -26,6 +26,7 @@ const MapContact = ({ lng, lat, address, spotData, locale }) => {
                 center={[lat, lng]} // Initial center
                 zoom={14}
                 style={{ width: "100%", height: "100%", zIndex: "10" }}
+                zoomControl={false}
             >
                 {/* Smoothly transition the map's center when lng/lat changes */}
                 <SmoothTransition lng={lng} lat={lat} zoom={14} />
@@ -43,7 +44,7 @@ const MapContact = ({ lng, lat, address, spotData, locale }) => {
                         icon={addressMarker}
                     >
                         <Popup>
-                            <h3>{translateTextSpotAddress(spot?.address, locale)}</h3>
+                            <h3 className="relative z-[999]">{translateTextSpotAddress(spot?.address, locale)}</h3>
                         </Popup>
                     </Marker>
                 ))}

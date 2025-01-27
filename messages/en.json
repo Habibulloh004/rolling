@@ -44,7 +44,14 @@
     "no_auth": "You are not logged in!",
     "products_empty": "You have not selected a product!",
     "phone_empty": "Phone number does not exist!",
-    "order_created": "Your order has been received."
+    "order_empty": "No orders available.",
+    "order_created": "Your order has been received.",
+    "spot_empty": "You have not selected a branch.",
+    "location_empty": "Invalid delivery address",
+    "discount": "Discount",
+    "promotion": "Promotions",
+    "news": "News",
+    "cart_ingredient": "Take more!"
   },
   "Bonus": {
     "bonus": "Bonus",
@@ -64,7 +71,7 @@
     "have_bonus": "Available bonuses:",
     "btnAddAddress": "Add Address",
     "Links": {
-      "my_card": "My Cards",
+      "my_card": "Add card",
       "address": "Delivery Addresses",
       "order": "My Orders",
       "bonus": "My Bonuses",
@@ -91,16 +98,18 @@
     },
     "Address": {
       "title": "My Addresses",
-      "name": "Name",
-      "name_pls": "Home",
+      "house": "House, entrance, apartment",
+      "house_pls": "House 12, entrance 3, apartment 34",
       "address": "Address",
-      "address_error":"You did not enter an address.",
-      "address_saved":"Address added successfully.",
+      "address_error": "You did not enter an address.",
+      "address_saved": "Address added successfully.",
       "pls": "Yashnobod district, Botkin 1a",
       "comment": "Comments on the address",
       "comment_pls": "Entrance 1",
       "comment_error": "You have not added a comment.",
-      "location_error": "You need to specify the location."
+      "location_error": "You need to specify the location.",
+      "geolocation": "Please allow location access to determine your address!",
+      "select_map": "Select from the map"
     }
   },
   "Form": {
@@ -270,7 +279,8 @@
       "address": "Delivery Address",
       "phone": "Phone Number",
       "comment": "Add Comments",
-      "delivery_price": "Delivery Cost"
+      "delivery_price": "Delivery Cost",
+      "selected_address": "Select location"
     },
     "Pickup": {
       "title": "Pickup",
@@ -326,7 +336,19 @@
       "finished": "Delivered"
     },
     "delivered": "Delivered",
-    "info": "What should we improve? We’re waiting for your feedback!"
+    "info": "What should we improve? We’re waiting for your feedback!",
+    "Item": {
+      "title": "Order Confirmed",
+      "desc": "Thank you for choosing Rolling Sushi! We prepare your dishes with love and care to delight you with their freshness and taste. If you have any questions, our team is always ready to help.",
+      "menu_btn": "Return to Menu",
+      "open_btn": "Track Order",
+      "add_comment": "Leave a Review",
+      "comment_desc": "You can see the status of your order in real time.",
+      "status_delivery": "Delivery",
+      "status_pickup": "Pickup",
+      "status_spot": "Establishments",
+      "my_order": "Your order"
+    }
   },
   "Search": {
     "search_pr": "Products",

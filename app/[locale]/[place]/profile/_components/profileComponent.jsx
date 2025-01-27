@@ -4,7 +4,6 @@ import { formatCurrency, getUrl } from "@/lib/utils";
 import React, { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {  gold, pencil } from "@/public";
 import Image from "next/image";
 import Link from "next/link";
 import { useTranslations } from "use-intl";
@@ -31,7 +30,7 @@ export default function ProfileComponent({ client }) {
   const profileLinksData = [
     {
       title: profileLinksT("my_card"),
-      route: "/mycard",
+      route: "/add-card",
     },
     {
       title: profileLinksT("address"),
@@ -104,7 +103,8 @@ export default function ProfileComponent({ client }) {
                           firstname: firstname == undefined ? "" : firstname,
                           lastname: lastname == undefined ? "" : lastname,
                           addresses: null,
-                        })
+                        }),
+                        { expires: 7, secure: true }
                       );
                       window.location.reload();
                     }
@@ -112,8 +112,8 @@ export default function ProfileComponent({ client }) {
                   }}
                 >
                   <Image
-                    src={pencil}
-                    alt=""
+                    src={`/assets/pencil.svg`}
+                    alt="pencil"
                     width={100}
                     height={20}
                     className="h-5 w-4"
@@ -183,7 +183,13 @@ export default function ProfileComponent({ client }) {
             </p>
           </div>
           <Image
-            src={gold}
+            src={`${
+              client.client_groups_discount == "30"
+                ? "/assets/Gold.png"
+                : client.client_groups_discount == "20"
+                ? "/assets/Silver.png"
+                : "/assets/Bronze.png"
+            }`}
             alt="gold"
             width={350}
             height={100}

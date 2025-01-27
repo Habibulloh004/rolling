@@ -41,7 +41,7 @@ const News = async ({ params }) => {
                 className={`basis-[100%] lg:basis-[45%] p-0 px-4 ${i == 0 && "max-sm:ml-8 max-md:ml-16 ml-8"
                   }`}
               >
-                <PromotionCards item={item} />
+                <PromotionCards param={param} item={item} />
               </CarouselItem>
             );
           })}

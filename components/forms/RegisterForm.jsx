@@ -154,6 +154,7 @@ export default function RegisterForm() {
       });
       return;
     }
+    setOpen(false)
     setRegisterBtnDisabled(false);
   };
 

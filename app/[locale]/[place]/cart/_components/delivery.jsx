@@ -1,6 +1,6 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { location, pencil } from "@/public";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { useTranslations } from "use-intl";
@@ -15,17 +15,20 @@ import {
 import { useOrderStore, useStore } from "@/store";
 import Link from "next/link";
 import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
+import PhoneInput from "react-phone-number-input";
+import "react-phone-number-input/style.css";
 
 const Delivery = ({ locale, auth, clientData, place }) => {
-  const addressData = localStorage.getItem("myAddresses")
-    ? JSON.parse(localStorage.getItem("myAddresses"))
-    : [];
+  const [addressData, setAddressData] = useState([]);
   const deliveryText = useTranslations("Cart.Delivery");
+  const profileT = useTranslations("Profile");
   const cartText = useTranslations("Cart");
   const all = useTranslations("All");
   const { orderData, setOrderData } = useOrderStore();
   const [modalAdd, setModalAdd] = useState(false);
   const { setActiveTab } = useStore();
+
   const handleSelectAddress = (address) => {
     setModalAdd(false);
     setOrderData({
@@ -42,31 +45,27 @@ const Delivery = ({ locale, auth, clientData, place }) => {
     if (place == "branch") {
       setActiveTab("spot");
     }
+    const address = localStorage.getItem("myAddresses")
+      ? JSON.parse(localStorage.getItem("myAddresses"))
+      : [];
+
+    if (address?.length) {
+      setAddressData(address);
+    }
   }, []);
 
   const handleSelectModal = () => {
     setModalAdd(true);
-    // if (auth?.client_id) {
-    // } else {
-    //   toast.warning(
-    //     <div className="w-full h-full flex justify-between items-center">
-    //       {all("no_auth")}{" "}
-    //       <Link
-    //         href={`/${locale}/${place}/login`}
-    //         className="bg-black text-white rounded-md px-2 py-1"
-    //       >
-    //         {all("sign_in")}
-    //       </Link>
-    //     </div>
-    //   );
-    // }
+  };
+
+  const handleChangePhone = (value) => {
+    setOrderData({ ...orderData, phone: value });
   };
 
   useEffect(() => {
     if (addressData && addressData?.length > 0) {
       const savedOrderData =
         JSON.parse(localStorage.getItem("orderData")) || null;
-
       if (!savedOrderData?.client_addresses_id) {
         setOrderData({
           ...orderData,
@@ -82,15 +81,14 @@ const Delivery = ({ locale, auth, clientData, place }) => {
 
   return (
     <div className="w-full flex flex-col">
-      {/* <Products locale={locale} /> */}
       <div className="w-full space-y-2 md:space-y-4">
         <p className="text-[#A098AE] font-normal textSmall3">
           {deliveryText("address")}
         </p>
         <div className="flex w-full justify-between">
-          <p className="flex items-center textSmall3 font-bold leading-7 md:gap-2">
+          <p className="flex items-center textSmall3 font-bold gap-2">
             <Image
-              src={location}
+              src={"/assets/Location.svg"}
               alt="location"
               width={100}
               height={100}
@@ -115,7 +113,7 @@ const Delivery = ({ locale, auth, clientData, place }) => {
               className="max-w-xl w-11/12 md:w-full rounded-md max-sm:px-3"
             >
               <DialogHeader className={""}>
-                <DialogTitle>Manzilni tanlang</DialogTitle>
+                <DialogTitle className="w-full text-start lg:text-md text-base">{deliveryText("selected_address")}</DialogTitle>
                 <DialogDescription className="hidden">
                   This action cannot be undone. This will permanently delete
                   your account and remove your data from our servers.
@@ -168,8 +166,30 @@ const Delivery = ({ locale, auth, clientData, place }) => {
             {orderData?.address_comment}
           </p>
         )}
+        {!auth?.client_id && (
+          <div>
+            <p className="text-[#A098AE] font-normal textSmall3 pt-2">
+              {profileT("phone")}
+            </p>
+            <div className="lg:w-2/3 flex w-full justify-between pt-2 md:gap-2">
+              <PhoneInput
+                country="UZ"
+                defaultCountry="UZ"
+                placeholder=""
+                international
+                withCountryCallingCode
+                value={orderData?.phone}
+                onChange={handleChangePhone}
+                className={cn("input-phone-cart rounded-md w-full")}
+                style={{ borderColor: "white" }}
+                countryCallingCodeEditable={false}
+                focusInputOnCountrySelection
+              />
+            </div>
+          </div>
+        )}
         <div className="flex w-full items-center justify-between pt-2 md:gap-2">
-          <div className="w-full md:w-2/3 flex flex-col gap-1">
+          <div className="w-full lg:w-2/3 flex flex-col gap-1">
             <p className="text-[#A098AE] font-normal textSmall3">
               {all("add_comment")}
             </p>
@@ -186,16 +206,8 @@ const Delivery = ({ locale, auth, clientData, place }) => {
               className={
                 "text-[12px] md:text-sm max-md:h-8 border-2 focus-visible:ring-0 focus:border-primary"
               }
-            />{" "}
-            {/* <Image src={pencil} alt="pencil" width={16} height={16} /> */}
+            />
           </div>
-          {/* <Button
-            className={
-              "h-8 max-sm:text-[12px] md:h-10 px-4 md:px-5 bg-transparent text-[#004032] shadow-none border-[1px] rounded-[8px] border-[#004032]"
-            }
-          >
-            {all("save")}
-          </Button> */}
         </div>
         <p className="text-[#A098AE] text-normal textSmall2 pt-2 leading-6">
           {all("add_comment_info")}

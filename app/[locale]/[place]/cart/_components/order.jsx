@@ -1,15 +1,20 @@
 "use client";
 
-import { createIncomingOrder, createOrder } from "@/actions/post";
+import {
+  createIncomingOrder,
+  createOrder,
+  createOrderPoster,
+  updateClient,
+} from "@/actions/post";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { formatCreatedAt, formatNumber } from "@/lib/utils";
-import { gift } from "@/public";
 import { ApiService } from "@/service/api.services";
 import { useOrderStore, useProductStore, useStore } from "@/store";
 import { ChevronRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { toast } from "sonner";
 import { useTranslations } from "use-intl";
@@ -17,18 +22,18 @@ import { useTranslations } from "use-intl";
 // DiscountBadge Component
 const DiscountBadge = ({ auth }) => {
   const discountColor = {
-    10: "#E2E2E2",
-    20: "#ED7403",
+    10: "#ED7403",
+    20: "#E2E2E2",
     30: "#F3D67E",
   };
   const discountLabel = {
-    10: "SILVER",
-    20: "BRONZA",
+    10: "BRONZA",
+    20: "SILVER",
     30: "GOLD",
   };
   const discountImage = {
-    10: "/assets/Silver.png",
-    20: "/assets/Bronze.png",
+    10: "/assets/Bronze.png",
+    20: "/assets/Silver.png",
     30: "/assets/Gold.png",
   };
 
@@ -77,27 +82,18 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
   const { orderData, setOrderData, totalSum, resetOrder } = useOrderStore();
   const { products, setProductsData } = useProductStore();
   const { spot: spotIdSpot, table_id, table_num, service } = searchParamsData;
+  const router = useRouter();
+  const pathname = usePathname();
 
   const handleSetBonus = () => {
     setOrderData({ ...orderData, pay_bonus: Number(bonus) });
     setBonus(0);
     setActiveBonus(false);
   };
-  const handleSubmit = async () => {
-    if (products.length == 0) {
-      toast.error(all("products_empty"));
-      return;
-    }
-    if (!orderData?.phone && spotIdSpot) {
-      toast.error(all("phone_empty"));
-      return;
-    }
 
-    let orderList = localStorage.getItem("orderList")
-      ? JSON.parse(localStorage.getItem("orderList"))
-      : [];
-    if (!auth?.client_id) {
-      toast.warning(
+  const handleSubmit = async () => {
+    if (!auth?.client_id && !spotIdSpot) {
+      toast.error(
         <div className="w-full h-full flex justify-between items-center">
           {all("no_auth")}{" "}
           <Link
@@ -108,9 +104,43 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
           </Link>
         </div>
       );
+    }
 
+    if (products.length == 0) {
+      toast.error(all("products_empty"));
       return;
     }
+    if (!orderData?.phone && !auth?.client_id) {
+      toast.error(all("phone_empty"));
+      return;
+    }
+    if (orderData?.phone && orderData?.phone.length != 13) {
+      toast.error(all("phone_empty"));
+      return;
+    }
+    if (!orderData?.phone && spotIdSpot) {
+      toast.error(all("phone_empty"));
+      return;
+    }
+
+    if (activeTab == "pickup" && orderData?.spot_id == 0) {
+      toast.error(all("spot_empty"));
+      return;
+    }
+
+    if (
+      activeTab == "delivery" &&
+      (!orderData?.lat || orderData?.lat == 0) &&
+      (!orderData?.lng || orderData?.lng == 0)
+    ) {
+      toast.error(all("location_empty"));
+      return;
+    }
+
+    let orderList = localStorage.getItem("orderList")
+      ? JSON.parse(localStorage.getItem("orderList"))
+      : [];
+
     try {
       const {
         spot_id,
@@ -146,23 +176,52 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
         };
       });
 
+      let commentSpot;
+      if (!spotIdSpot) {
+        commentSpot = comment ? `${comment}, ` : "";
+      }
+      switch (payment_method) {
+        case "card":
+          commentSpot = `${commentSpot}Тип оплаты : по карте`;
+          break;
+        case "click":
+          commentSpot = `${commentSpot}Тип оплаты : через click`;
+          break;
+        case "payme":
+          commentSpot = `${commentSpot}Тип оплаты : через payme`;
+          break;
+        case "uzum":
+          commentSpot = `${commentSpot}Тип оплаты : через uzum`;
+          break;
+        default:
+          commentSpot = `${commentSpot}Тип оплаты : наличными`;
+      }
+      if (spotIdSpot) {
+        commentSpot = `${commentSpot} \nНомер стола : ${table_num} \nТип услуги : ${
+          service == "self" ? "самообслуживание" : "официант"
+        }/\nНомер телефона : ${phone}`;
+      } else if (!auth?.client_id) {
+        commentSpot = `${commentSpot}\nНомер телефона : ${phone}`;
+      }
+      console.log(commentSpot);
+
       let deliveryData = {
         address_comment,
         all_price: Number((+totalSum + +delivery_price) * 100),
         client_address: `${lat || 0},${lng || 0}`,
-        client_id: Number(auth?.client_id),
-        comment,
+        client_id: auth?.client_id ? auth.client_id : "25562",
+        comment: commentSpot,
         created_at: formatCreatedAt(),
         payed_bonus: pay_bonus ? Number(pay_bonus) * 100 : 0,
-        payed_sum: Number(
-          +totalSum + +delivery_price - (pay_bonus ? +pay_bonus : 0)
-        ),
+        payed_sum:
+          Number(+totalSum + +delivery_price - (pay_bonus ? +pay_bonus : 0)) *
+          100,
         payment: payment_method,
-        phone: `+${auth?.phone_number}`,
+        phone: auth?.client_id ? `+${auth?.phone_number}` : "+998000000000",
         products: JSON.stringify(filterProductsAbdugani),
         promotion: "no",
-        spot_id: Number(spot_id),
-        status: "accept",
+        spot_id: 0,
+        status: "",
         type: "delivery",
       };
 
@@ -170,50 +229,65 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
         address_comment: "no",
         all_price: Number(totalSum * 100),
         client_address: `${0},${0}`,
-        client_id: Number(auth?.client_id),
-        comment,
+        client_id: auth?.client_id ? auth?.client_id : "25562",
+        comment: commentSpot,
         created_at: formatCreatedAt(),
         payed_bonus: pay_bonus ? Number(pay_bonus) * 100 : 0,
         payed_sum: Number(+totalSum - (pay_bonus ? +pay_bonus : 0)) * 100,
         payment: payment_method,
-        phone: `+${auth?.phone_number}`,
+        phone: auth?.client_id ? `+${auth?.phone_number}` : phone,
         products: JSON.stringify(filterProductsAbdugani),
         promotion: "no",
         spot_id: Number(spot_id),
         status: "accept",
         type: `take_away ${spot_name}`,
       };
-      let commentSpot;
-      switch (payment_method) {
-        case "card":
-          commentSpot = `Тип оплаты : по карте`;
-          break;
-        case "click":
-          commentSpot = `Тип оплаты : через click`;
-          break;
-        case "payme":
-          commentSpot = `Тип оплаты : через payme`;
-          break;
-        case "uzum":
-          commentSpot = `Тип оплаты : через uzum`;
-          break;
-        default:
-          commentSpot = `Тип оплаты : наличными`;
-      }
-      commentSpot = `${commentSpot} \n Номер стола : ${table_num} \n Тип услуги : ${
-        service == "self" ? "самообслуживание" : "официант"
-      } `;
 
       let spotData = {
-        phone: phone,
+        phone: spotIdSpot
+          ? "+998771244444"
+          : auth?.client_id
+          ? `+${auth?.phone_number}`
+          : "+998000000000",
         products: filterProductsSpot,
         service_mode: Number(2),
-        spot_id: Number(spotIdSpot),
+        spot_id: Number(spotIdSpot ? spotIdSpot : Number(spot_id)),
         comment: commentSpot,
       };
+
+      if (address && !spotIdSpot) {
+        spotData.address = address;
+      }
+
       console.log({ deliveryData });
       console.log({ pickupData });
       console.log({ spotData });
+      console.log(orderData);
+      console.log({ auth });
+      let commentClient;
+      let clinetGroupId;
+      if (auth?.client_id) {
+        const commentC = auth?.comment ? JSON.parse(auth?.comment) : null;
+        if (Number(commentC?.length) > 0) {
+          commentClient = {
+            password: commentC?.password,
+            length: Number(commentC?.length) + 1,
+          };
+        } else {
+          commentClient = {
+            password: commentC?.password,
+            length: 1,
+          };
+        }
+        if (commentClient.length < 4) {
+          clinetGroupId = 5;
+        } else if (commentC.length >= 4 && commentC?.length < 9) {
+          clinetGroupId = 3;
+        } else if (commentC.length >= 9) {
+          clinetGroupId = 4;
+        }
+      }
+
       if (spotIdSpot) {
         const res = await createIncomingOrder(spotData);
         console.log(res);
@@ -221,14 +295,6 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
           const nowOrder = {
             ...deliveryData,
             response: res,
-            address: address,
-            client_addresses_id,
-            pay_cash,
-            pay_card,
-            pay_click,
-            pay_payme,
-            pay_uzum,
-            products: products,
           };
           orderList.push(nowOrder);
           localStorage.setItem("orderList", JSON.stringify(orderList));
@@ -240,7 +306,7 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
             service_mode: 3,
             payment_method: "cash",
             total: 0,
-            delivery_price: 10000,
+            delivery_price: 0,
             lng: 0,
             lat: 0,
             client: null,
@@ -260,19 +326,13 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
       } else {
         if (service_mode == 2) {
           const res = await createOrder(pickupData);
-          console.log(res);
+          const res2 = await createOrderPoster(spotData);
+          console.log({ res });
+          console.log({ res2 });
           if (res?.order_id) {
             const nowOrder = {
               ...pickupData,
               order_id: res.order_id,
-              address: address,
-              client_addresses_id,
-              pay_cash,
-              pay_card,
-              pay_click,
-              pay_payme,
-              pay_uzum,
-              products: products,
             };
             orderList.push(nowOrder);
             localStorage.setItem("orderList", JSON.stringify(orderList));
@@ -284,7 +344,7 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
               service_mode: 3,
               payment_method: "cash",
               total: 0,
-              delivery_price: 10000,
+              delivery_price: 0,
               lng: 0,
               lat: 0,
               client: null,
@@ -299,10 +359,20 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
               client_addresses_id: null,
             });
             setProductsData([]);
+            if (auth?.client_id) {
+              await updateClient({
+                client_id: auth?.client_id,
+                comment: JSON.stringify(commentClient),
+                client_groups_id_client: clinetGroupId,
+              });
+            }
             toast.success(all("order_created"));
+            router.push(`/${locale}/${place}/confirmed/${res?.order_id}`);
           }
         } else if (service_mode == 3) {
           const res = await createOrder(deliveryData);
+          console.log(res);
+
           if (res?.order_id) {
             setOrderData({
               spot_id: 0,
@@ -312,7 +382,7 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
               service_mode: 3,
               payment_method: "cash",
               total: 0,
-              delivery_price: 10000,
+              delivery_price: 0,
               lng: 0,
               lat: 0,
               client: null,
@@ -329,19 +399,19 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
             const nowOrder = {
               ...deliveryData,
               order_id: res.order_id,
-              address: address,
-              client_addresses_id,
-              pay_cash,
-              pay_card,
-              pay_click,
-              pay_payme,
-              pay_uzum,
-              products: products,
             };
             orderList.push(nowOrder);
             localStorage.setItem("orderList", JSON.stringify(orderList));
             setProductsData([]);
             toast.success(all("order_created"));
+            router.push(`/${locale}/${place}/confirmed/${res?.order_id}`);
+            if (auth?.client_id) {
+              await updateClient({
+                client_id: auth?.client_id,
+                comment: JSON.stringify(commentClient),
+                client_groups_id_client: clinetGroupId,
+              });
+            }
           }
         }
       }
@@ -444,7 +514,7 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
               className="bg-[#F5F5F5] w-full h-10 md:h-12 flex justify-center items-center gap-1 border-[1px] rounded-xl"
             >
               <Image
-                src={gift}
+                src={"/assets/gift.webp"}
                 alt="gift"
                 width={100}
                 height={100}

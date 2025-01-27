@@ -75,7 +75,8 @@ export default function LoginForm() {
           JSON.stringify({
             ...client,
             addresses: null,
-          })
+          }),
+          { expires: 7, secure: true }
         );
 
         router.replace(`${getUrl(pathname)}`);

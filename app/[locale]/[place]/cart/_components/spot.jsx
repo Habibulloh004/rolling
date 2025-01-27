@@ -1,12 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { translateTextSpot } from "@/lib/utils";
-import { location, pencil } from "@/public";
+import { cn, translateTextSpot } from "@/lib/utils";
 import { useOrderStore, useStore } from "@/store";
 import Image from "next/image";
 import React, { useEffect } from "react";
 import { useTranslations } from "use-intl";
-
+import PhoneInput from "react-phone-number-input";
+import "react-phone-number-input/style.css";
 const Spot = ({ place, locale, spotData, searchParamsData }) => {
   const spotText = useTranslations("Cart.Spot");
   const allT = useTranslations("All");
@@ -15,23 +15,8 @@ const Spot = ({ place, locale, spotData, searchParamsData }) => {
   const { setActiveTab } = useStore();
   const { orderData, setOrderData } = useOrderStore();
 
-  // Telefon raqami o'zgarishini boshqaruvchi funksiya
-  const handleChangePhone = (e) => {
-    const inputValue = e.target.value;
-
-    // Faqat raqamlar va "+" belgisi kiritilishi mumkin
-    const sanitizedValue = inputValue.replace(/[^0-9+]/g, "");
-
-    // "+ bilan boshlashni tekshirish"
-    if (!sanitizedValue.startsWith("+")) {
-      setOrderData({ ...orderData, phone: "+" });
-      return;
-    }
-
-    // Maksimal uzunlikni 13 ta belgiga cheklash
-    if (sanitizedValue.length <= 13) {
-      setOrderData({ ...orderData, phone: sanitizedValue });
-    }
+  const handleChangePhone = (value) => {
+    setOrderData({ ...orderData, phone: value });
   };
 
   useEffect(() => {
@@ -41,7 +26,7 @@ const Spot = ({ place, locale, spotData, searchParamsData }) => {
   }, []);
 
   return (
-    <div className="w-full flex flex-col">
+    <div className="w-full flex flex-col mb-3">
       <div className="w-full md:space-y-2">
         <p className="text-[#A098AE] textSmall3 font-normal">
           {spotText("choose_spot")}
@@ -49,7 +34,7 @@ const Spot = ({ place, locale, spotData, searchParamsData }) => {
         <div className="flex w-full justify-between pt-2">
           <p className="flex items-center textSmall3 font-bold md:gap-2">
             <Image
-              src={location}
+              src={`/assets/Location.svg`}
               alt="location"
               width={100}
               height={100}
@@ -65,7 +50,7 @@ const Spot = ({ place, locale, spotData, searchParamsData }) => {
         <div className="flex w-full justify-between pt-2 md:gap-2">
           <p className="flex items-center textSmall3 font-bold leading-7">
             <Image
-              src={location}
+              src={`/assets/Location.svg`}
               alt="location"
               width={100}
               height={100}
@@ -77,11 +62,19 @@ const Spot = ({ place, locale, spotData, searchParamsData }) => {
         <p className="text-[#A098AE] font-normal textSmall3 pt-2">
           {profileT("phone")}
         </p>
-        <div className="flex w-full justify-between pt-2 md:gap-2">
-          {/* Telefon raqami uchun input */}
-          <Input
+        <div className="lg:w-2/3 flex w-full justify-between pt-2 md:gap-2">
+          <PhoneInput
+            country="UZ"
+            defaultCountry="UZ"
+             placeholder=""
+            international
+            withCountryCallingCode
+            value={orderData?.phone || ""}
             onChange={handleChangePhone}
-            value={orderData?.phone || "+"} // "+" bilan boshlanadi
+            className={cn("input-phone-cart rounded-md w-full")}
+            style={{ borderColor: "white" }}
+            countryCallingCodeEditable={false}
+            focusInputOnCountrySelection
           />
         </div>
       </div>

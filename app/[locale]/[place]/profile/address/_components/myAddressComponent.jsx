@@ -33,9 +33,10 @@ export default function MyAddressComponent() {
       ? JSON.parse(localStorage.getItem("myAddresses"))
       : [];
     setAddressData(addresses);
-  },[]);
+  }, []);
+
   return (
-    <div>
+    <div className="w-full">
       <div className="w-full hidden lg:grid lg:grid-cols-3 xl:grid-cols-4 gap-3">
         {addressData?.map((item, i) => (
           <Card key={i}>
@@ -57,10 +58,10 @@ export default function MyAddressComponent() {
                 {item.address}
               </CardDescription>
             </CardHeader>
-            <CardFooter className={"grid grid-cols-1 gap-y-4  w-full gap-x-2"}>
+            <CardFooter className={"w-full"}>
               <Button
                 onClick={() => handleDeleteAddress(item?.id)}
-                className={"hover:bg-primary"}
+                className={"w-full hover:bg-primary"}
               >
                 {allT("delete")}
               </Button>
@@ -70,18 +71,18 @@ export default function MyAddressComponent() {
       </div>
 
       <Carousel
-        opts={{
-          align: "start",
-        }}
-        className="lg:hidden w-full mx-2"
+        className="w-full mt-[29px] flex gap-5 lg:hidden"
       >
         <CarouselContent>
           {addressData?.map((item, i) => (
-            <CarouselItem key={i} className="basis-80 md:basis-auto ">
-              <div className="p-1">
-                <Card key={i}>
+            <CarouselItem
+              key={i}
+              className="basis-auto flex-shrink-0 w-[300px] max-w-full"
+            >
+              <div className="bg-white rounded-2xl p-1 flex flex-col min-w-[300px]">
+                <Card>
                   <CardHeader>
-                    <div className="w-full overflow-hidden min-w-[266px] h-[180px] rounded-2xl relative">
+                    <div className="w-full max-w-[300px] overflow-hidden lg:min-w-[266px] h-[180px] rounded-xl relative">
                       <MyMap
                         latitude={item.lat}
                         longitude={item.lng}
@@ -100,12 +101,12 @@ export default function MyAddressComponent() {
                   </CardHeader>
                   <CardFooter
                     className={
-                      "grid grid-cols-1 gap-y-4 lg:grid-cols-2 w-full gap-x-2"
+                      "w-full"
                     }
                   >
                     <Button
                       onClick={() => handleDeleteAddress(item?.id)}
-                      className={"hover:bg-primary"}
+                      className={"w-full hover:bg-primary"}
                     >
                       {allT("delete")}
                     </Button>

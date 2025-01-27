@@ -51,7 +51,13 @@ export default async function Bonus() {
               </p>
             </div>
             <Image
-              src={`/assets/Gold.png`}
+              src={`${
+                client.client_groups_discount == "30"
+                  ? "/assets/Gold.png"
+                  : client.client_groups_discount == "20"
+                  ? "/assets/Silver.png"
+                  : "/assets/Bronze.png"
+              }`}
               alt="gold"
               width={400}
               height={100}

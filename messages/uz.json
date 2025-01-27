@@ -44,7 +44,13 @@
     "no_auth": "Siz tizimga kirmagansiz!",
     "products_empty": "Siz mahsulot tanlamadingiz!",
     "phone_empty": "Telefon raqam mavjud emas!",
-    "order_created": "Buyurtmangiz qabul qilindi"
+    "order_empty": "Buyurtmalar mavjud emas.",
+    "order_created": "Buyurtmangiz qabul qilindi",
+    "spot_empty": "Siz filial tanlamadingiz.",
+    "location_empty": "Yetkazib berish manzili yaroqsiz",
+    "discount": "Chegirma",
+    "promotion": "Aksiyalar",
+    "news": "Yangiliklar"
   },
   "Bonus": {
     "bonus": "Bonus",
@@ -100,7 +106,9 @@
       "comment_pls": "1-qavat",
       "comment_error": "Izohlar mavjud emas.",
       "location_error": "Lokatsiyani belgilashingiz kerak",
-      "address_saved": "Manzil muvaffaqiyatli kiritildi."
+      "address_saved": "Manzil muvaffaqiyatli kiritildi.",
+      "geolocation": "Manzilingizni aniqlash uchun iltimos joylashuvga aniqlashga ruxsat bering!",
+      "select_map": "Xaritadan tanlash"
     }
   },
   "Form": {
@@ -270,7 +278,8 @@
       "address": "Yetkazib berish manzili",
       "phone": "Telefon raqami",
       "comment": "Izoh qo'shish",
-      "delivery_price": "Yetkazib berish narxi"
+      "delivery_price": "Yetkazib berish narxi",
+      "selected_address": "Manzilni tanlash"
     },
     "Pickup": {
       "title": "Olib ketish",

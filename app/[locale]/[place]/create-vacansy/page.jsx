@@ -25,7 +25,9 @@ async function CreateVacansy() {
             src={`/assets/aboutLogo.svg`}
             alt={`aboutlogo`}
             // fill
-            className="w-[400px] aspect-[4/1]"
+            width={500}
+            height={100}
+            className=""
           />
           <p className="font-semibold text-muted text-center">
             {aboutUsT("logoBottom")}

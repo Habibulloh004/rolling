@@ -31,9 +31,16 @@ export default async function Page({ params, searchParams }) {
   const categories = categoriesData.response.filter(
     (c) => c.category_photo != null && c.category_hidden != "1"
   );
-  const products = productsData.response
-    .filter((c) => c.photo_origin != null && c.menu_category_id != 0)
-    .slice(0, 10);
+  const products = productsData.response.filter((item) => {
+    const findIngr = item?.ingredients?.find(
+      (ingr) => ingr?.ingredient_id == 211
+    );
+    if (item.photo_origin != null && item?.menu_category_id != 0 && findIngr) {
+      return true;
+    } else {
+      return false;
+    }
+  });
   const { spot, table_id, table_num, service } = searchParamsData;
 
   return (
@@ -52,7 +59,7 @@ export default async function Page({ params, searchParams }) {
             );
 
             const linkName = formatText(
-              getLocalizedCategoryName(item.category_name, locale)
+              getLocalizedCategoryName(item.category_name, "en")
             );
 
             return (
@@ -130,6 +137,7 @@ export default async function Page({ params, searchParams }) {
                     defaultHref={`/${locale}/${path.place}/category/${item?.menu_category_id}-${linkNameCategory}/product/${item?.product_id}-${linkNameProduct}`}
                     localizedName={localizedName}
                     photo={item.photo_origin}
+                    price={item?.price["1"]/100}
                   />
                 </CarouselItem>
               );

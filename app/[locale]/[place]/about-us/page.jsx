@@ -6,8 +6,9 @@ import Link from "next/link";
 
 export const metadata = {
   title: "О нас | Rolling Sushi - ваша любимая суши-доставка",
-  description: "Узнайте историю нашей компании, наши принципы и почему тысячи людей выбирают Rolling Sushi для заказа суши в Ташкенте.",
-  keywords: "о нас, Rolling Sushi, японская кухня, суши, доставка еды, Ташкент"
+  description:
+    "Узнайте историю нашей компании, наши принципы и почему тысячи людей выбирают Rolling Sushi для заказа суши в Ташкенте.",
+  keywords: "о нас, Rolling Sushi, японская кухня, суши, доставка еды, Ташкент",
 };
 
 const AboutUs = async ({ params }) => {
@@ -21,21 +22,24 @@ const AboutUs = async ({ params }) => {
 
   return (
     <Container className={"flex-col items-start py-3 md:py-8 text-muted"}>
-      <h1 className="text-xl md:text-2xl font-semibold ">{aboutUsT("title")}</h1>
+      <h1 className="text-xl md:text-2xl font-semibold ">
+        {aboutUsT("title")}
+      </h1>
       <Container className={"w-[97%] items-start gap-10 justify-between"}>
         <section className="w-full sm:w-[60%]">
           <p className="font-bold py-3 md:py-5 text-lg md:text-xl">
             {aboutUsT("intro")}
           </p>
           <div className="sm:hidden flex justify-center my-6">
-            <Image
-              src={`/assets/aboutLogo.svg`}
-              alt={`aboutlogo`}
-              width={100}
-              height={100}
-              // fill={true}
-              className="w-[400px] aspect-[4/1]"
-            />
+
+          <Image
+            src={`/assets/aboutLogo.png`}
+            alt={`aboutlogo`}
+            // fill
+            width={500}
+            height={100}
+            className="w-full"
+          />
           </div>
           <p className="first-letter:pl-6">{aboutUsT("introBottom")}</p>
           <div className="md:pl-10 py-3 md:py-8">
@@ -52,7 +56,7 @@ const AboutUs = async ({ params }) => {
           </div>
           <p>{aboutUsT("descriptionBottom")}</p>
           <div className="flex flex-col gap-3 sm:hidden mt-4">
-          <Link
+            <Link
               href={`/${param.locale}/${param.place}/about-us/faq`}
               className="w-full h-[50px] flex items-center justify-center rounded-md bg-primary text-white py-2 text-xs md:text-sm text-center"
             >
@@ -71,7 +75,7 @@ const AboutUs = async ({ params }) => {
               {aboutUsT("btnContact")}
             </Link>
             <Link
-              href={`/${param.locale}/${param.place}/reviews`}
+              href={`/${param.locale}/${param.place}reviews`}
               className="w-full h-[50px] flex items-center justify-center rounded-md bg-primary text-white py-2 text-xs md:text-sm text-center"
             >
               {aboutUsT("btnReview")}
@@ -86,10 +90,12 @@ const AboutUs = async ({ params }) => {
         </section>
         <section className="hidden sm:block  w-[30%] space-y-4">
           <Image
-            src={`/assets/aboutLogo.svg`}
+            src={`/assets/aboutLogo.png`}
             alt={`aboutlogo`}
             // fill
-            className="w-[400px] aspect-[4/1]"
+            width={500}
+            height={100}
+            className="w-full"
           />
           <p className="font-semibold text-muted text-center">
             {aboutUsT("logoBottom")}

@@ -48,6 +48,9 @@
     "order_created": "Ваш заказ принят.",
     "spot_empty": "Вы не выбрали филиал.",
     "location_empty": "Неверный адрес доставки",
+    "discount": "Скидка",
+    "promotion": "Акции",
+    "news": "Новости",
     "cart_ingredient":"Возьмите ещё!"
   },
   "Bonus": {

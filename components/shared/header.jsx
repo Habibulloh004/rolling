@@ -190,8 +190,8 @@ export default function Header({
                   <Image
                     src={`${item.icon}`}
                     alt={`${item.title}`}
-                    width={33}
-                    height={33}
+                    width={29}
+                    height={30}
                     className=""
                   />
                   <p
@@ -307,6 +307,7 @@ export default function Header({
 
           {param.place !== "branch" && (
             <nav className="hidden lg:flex items-center lg:space-x-4 xl:space-x-6">
+              {/* desktop version */}
               {navItems.map((item) => {
                 return (
                   <Link
@@ -318,9 +319,9 @@ export default function Header({
                     <Image
                       src={`${item.icon}`}
                       alt={`${item.title}`}
-                      width={30}
+                      width={29}
                       height={30}
-                      className="lg:w-7 lg:h-7"
+                      className="lg:w-7 lg:h-7 w-[30px]"
                     />
                     <p
                       className={`${

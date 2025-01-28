@@ -171,6 +171,7 @@
     "btnPolicy": "Privacy Policy",
     "btnQuestions": "Frequently asked questions",
     "btnVacansy": "Vacancies",
+    "btnTerms": "Terms of Service",
     "ourComand": "Our Team"
   },
   "Months": {
@@ -408,5 +409,69 @@
       "4_title": "Data Protection We take all necessary measures to protect customer data:",
       "4_text": "• Use SSL encryption for data transmission.\n• Regularly update security systems to prevent unauthorized access."
     }
+  },
+  "TermsOfService": {
+    "title": "Terms of Service",
+    "effective_date": "January 23, 2025",
+    "text": "Welcome to the Rolling Sushi website. These Terms of Service govern access to and use of the website https://rolling.uz, the mobile application, and services provided by Rolling Sushi.",
+    "sections": {
+      "section1": {
+        "title": "Description of Services",
+        "text": "Rolling Sushi provides services for ordering, preparing, delivering, and self-pickup of food. By using our website or application, you agree to comply with these Terms. We reserve the right to modify or supplement the services and notify users accordingly."
+      },
+      "section2": {
+        "title": "Rights and Responsibilities of Users",
+        "subsections": {
+          "21": "Users must provide accurate and truthful information when placing orders.",
+          "22": "Use of the site or services for illegal purposes or actions violating the laws of the Republic of Uzbekistan is prohibited.",
+          "23": "Users are responsible for safeguarding their login credentials (username and password)."
+        }
+      },
+      "section3": {
+        "title": "Orders and Payment",
+        "subsections": {
+          "31": "Orders can be placed via our website, mobile app, or phone.",
+          "32": {
+            "title": "Payment Methods",
+            "methods": {
+             "Cash": "Cash on delivery",
+              "Online": "Online payments via Payme, Click, or Uzum"
+            }
+          },
+          "33": "Orders can be canceled before preparation begins. Once preparation has started, no refunds are issued."
+        }
+      },
+      "section4": {
+        "title": "Delivery and Pickup",
+        "subsections": {
+          "41": "Orders are delivered to addresses specified by clients. Delivery times may vary depending on distance and workload.",
+          "42": "Pickup is available at our branch: Tashkent, Yakkasaray Street, 7."
+        }
+      },
+      "section5": {
+        "title": "Limitation of Liability",
+        "subsections": {
+          "51": "We are not responsible for delivery delays caused by circumstances beyond our control (e.g., weather conditions, incorrect address).",
+          "52": "The quality of dishes is guaranteed only if storage and consumption conditions specified in the product description are followed."
+        }
+      },
+      "section6": {
+        "title": "Privacy",
+        "text": "We process your personal data in accordance with our Privacy Policy."
+      },
+      "section7": {
+        "title": "Changes to Terms",
+        "text": "Rolling Sushi reserves the right to change these Terms. Users will be notified of any changes on the website or application."
+      },
+      "section8": {
+        "title": "Contact Information",
+        "details": {
+          "email": "rollingsushi@gmail.com",
+          "phone": "+998771244444",
+          "address": "Tashkent, Yakkasaray Street, 7"
+        }
+      }
+    },
+    "closing": "Thank you for choosing Rolling Sushi!"
   }
 }

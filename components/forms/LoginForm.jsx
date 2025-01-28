@@ -94,7 +94,11 @@ export default function LoginForm() {
       toast.error(all("logErr"));
     }
     setIsLoading(false);
-    setClient(result.client);
+    // setClient(result.client);
+    setClient({
+      ...result.client,
+      addresses: null,
+    });
   };
 
   return (

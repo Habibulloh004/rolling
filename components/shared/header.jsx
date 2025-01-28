@@ -28,7 +28,7 @@ import {
 } from "@/store";
 import Link from "next/link";
 import LngChange from "./lngChange";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import Cookies from "js-cookie";
@@ -62,7 +62,7 @@ export default function Header({
   const t = useTranslations("HomePage");
   const { products } = useProductStore();
   const { toggleOpen, open, initializeFavorites } = useStore();
-  const { initializeOrderData } = useOrderStore();
+  const { initializeOrderData, paymentData } = useOrderStore();
   const { initializeProducts } = useProductStore();
   const [isOpen, setisOpen] = useState(true);
   const [cl, setCl] = useState(
@@ -73,6 +73,8 @@ export default function Header({
   const [filteredCategories, setFilteredCategories] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [openSearch, setOpenSearch] = useState(false);
+  const router = useRouter();
+
 
   const [isMounted, setIsMounted] = useState(false);
 

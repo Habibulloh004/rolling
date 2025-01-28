@@ -2,7 +2,7 @@
 
 import CustomImage from "@/components/shared/customImage";
 import { cn, formatNumber, posterUrl, truncateText } from "@/lib/utils";
-import { useProductStore, useStore } from "@/store";
+import { useOrderStore, useProductStore, useStore } from "@/store";
 import { Heart, Minus, Plus } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -21,6 +21,7 @@ const Card = ({
   const { photo, price } = props;
   const { products, setProducts, incrementCount, decrementCount } =
     useProductStore();
+  const { paymentData } = useOrderStore();
 
   useEffect(() => {
     const favorites = JSON.parse(localStorage.getItem("isFavorites")) || [];
@@ -99,6 +100,7 @@ const Card = ({
       {!findProduct ? (
         <div className="flex justify-end items-center gap-2">
           <button
+            disabled={paymentData && paymentData.payment_id}
             onClick={handleAddProduct}
             className="rounded-md p-2 bg-primary active:bg-primary-modal"
           >
@@ -112,6 +114,7 @@ const Card = ({
         <div className="flex justify-end items-center gap-2">
           <div className="max-sm:w-full flex justify-around sm:justify-center items-center gap-1 bg-primary rounded-md">
             <button
+              disabled={paymentData && paymentData.payment_id}
               onClick={handleIncrementCount}
               className="max-sm:w-full rounded-l-md p-2 bg-primary active:bg-gradient-to-r active:from-white/20 active:to-primary"
             >
@@ -126,6 +129,7 @@ const Card = ({
                 : `0${findProduct.count}`}
             </span>
             <button
+              disabled={paymentData && paymentData.payment_id}
               onClick={handleDecrementCount}
               className="max-sm:flex justify-center items-center max-sm:w-full rounded-r-md p-2 bg-primary active:bg-gradient-to-l active:from-white/20 active:to-primary"
             >

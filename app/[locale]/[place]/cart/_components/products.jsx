@@ -27,7 +27,7 @@ const Products = ({ locale, place }) => {
   const pathname = usePathname();
   const { products, incrementCount, decrementCount, deleteProduct } =
     useProductStore();
-  const { setOrderData, setTotalSum, orderData } = useOrderStore();
+  const { setOrderData, setTotalSum, orderData, paymentData } = useOrderStore();
 
   const handleIncrementCount = (item) => {
     incrementCount(item?.product_id);
@@ -89,6 +89,7 @@ const Products = ({ locale, place }) => {
                         {localizedName}
                       </p>
                       <Button
+                        disabled={paymentData && paymentData?.payment_id}
                         onClick={() => deleteProduct(item.product_id)}
                         className={
                           "bg-white active:bg-white/10 hover:bg-white p-0 h-8 w-8"
@@ -112,6 +113,7 @@ const Products = ({ locale, place }) => {
                       </p>
                       <div className="grid grid-cols-3 w-full sm:w-[100px] h-[34px] bg-white border-2 rounded-md">
                         <button
+                          disabled={paymentData && paymentData?.payment_id}
                           onClick={() => handleDecrementCount(item)}
                           className={
                             "transition-all rounded-l-md ease-linear duration-75 bg-white h-full flex items-center justify-center font-bold text-[#646464] active:shadow-[-1px_0_2px_rgba(0,0,0,0.3)] active:opacity-75"
@@ -123,6 +125,7 @@ const Products = ({ locale, place }) => {
                           {item.count > 9 ? item.count : `0${item.count}`}
                         </p>
                         <button
+                          disabled={paymentData && paymentData?.payment_id}
                           onClick={() => handleIncrementCount(item)}
                           className={
                             "transition-all rounded-r-md ease-linear duration-75 bg-white h-full flex items-center justify-center font-bold text-[#646464] active:shadow-[1px_0_2px_rgba(0,0,0,0.3)] active:opacity-75"

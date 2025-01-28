@@ -16,6 +16,7 @@ const Stepper = ({ currentStep }) => {
     { id: 3, label: statusData("in-deliver"), icon: "/assets/Shipped.png" },
     { id: 4, label: statusData("finished"), icon: "/assets/Delivered.webp" },
   ];
+  
 
   return (
     <div className="max-w-xl w-full flex flex-col items-center justify-center relative">

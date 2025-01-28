@@ -37,6 +37,7 @@ export default function ReviewForm() {
   };
 
   const onSubmit = async (values) => {
+    const auth = Cookies.get("auth");
     if(!Cookies.get("client")) {
       toast({
         variant: "destructive",
@@ -47,6 +48,7 @@ export default function ReviewForm() {
     setIsLoading(true);
     const feedbackMessage = `
 📋 Новый отзыв:
+#️⃣ Клиент ИД:
 👤 Полное имя: ${values.fullName}
 ⭐ Рейтинг: ${rating}/5
 💬 Отзыв: ${values.text}

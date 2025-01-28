@@ -74,7 +74,7 @@ const AboutUs = async ({ params }) => {
               {aboutUsT("btnContact")}
             </Link>
             <Link
-              href={`/${param.locale}/${param.place}reviews`}
+              href={`/${param.locale}/${param.place}/reviews`}
               className="w-full h-[50px] flex items-center justify-center rounded-md bg-primary text-white py-2 text-xs md:text-sm text-center"
             >
               {aboutUsT("btnReview")}

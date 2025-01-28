@@ -14,6 +14,12 @@ export default withNextIntl({
     },
   },
   images: {
+    domains: [
+      "https://vm4983125.25ssd.had.wf:5000",
+      "https://www.shutterstock.com",
+      "https://joinposter.com",
+      "https://rolling-202741958960.asia-south1.run.app",
+    ],
     remotePatterns: [
       {
         protocol: "https",

@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { translateTextSpot, translateTextSpotAddress } from "@/lib/utils";
 import MapContact from "./map-contact";
+import { toast } from "sonner"
 import { AlertDialog } from "@/components/ui/alert-dialog";
 
 const ClientContact = ({ spotData, locale }) => {
@@ -42,13 +43,34 @@ const ClientContact = ({ spotData, locale }) => {
       lng: spot.lng || 69.2401, // Default longitude
     });
   }
-  const handleShare = async (lng, lat) => {
+  const handleShare = (lng, lat) => {
     const url = `https://yandex.com/maps/?pt=${lng},${lat}&z=16&l=map`;
 
-    const message = ` ${url}`;
+    // Dinamik input maydon yaratish
+    const input = document.createElement("input");
+    input.value = url; // URL-ni inputga o'rnatish
+    document.body.appendChild(input); // Hujjatga qo'shish
+    input.select(); // Matnni tanlash
+    input.setSelectionRange(0, 99999); // Ba'zi qurilmalar uchun tanlov
 
-    alert(message);
+    try {
+      document.execCommand("copy");
+      toast("Yandex Links", {
+        description: "Copy clipboard",
+        action: {
+          label: "Undo",
+          onClick: () =>console.log(),
+        },
+      })
+      console.log();("Link clipboardga nusxalandi!");
+    } catch (err) {
+     console.log("Error");
+    }
+
+    document.body.removeChild(input); // Inputni olib tashlash
   };
+
+
 
   // Fallback for missing data
   if (!spotData || spotData.length === 0) {
@@ -83,11 +105,10 @@ const ClientContact = ({ spotData, locale }) => {
               <button
                 key={spot.spot_id}
                 onClick={() => addPhoto(spot)}
-                className={`flex gap-6 text-start underline-offset-8 py-3 px-5 rounded-xl border-2 border-[#004032] ${
-                  address?.spot_id === spot.spot_id
+                className={`flex gap-6 text-start underline-offset-8 py-3 px-5 rounded-xl border-2 border-[#004032] ${address?.spot_id === spot.spot_id
                     ? "bg-primary text-white"
                     : ""
-                }`}
+                  }`}
               >
                 {translateTextSpot(spot.name, locale)}
               </button>
@@ -108,21 +129,20 @@ const ClientContact = ({ spotData, locale }) => {
             {translateTextSpotAddress(address?.address, locale)}
           </p>
           <a
-            href={`tel:${
-              address?.spot_id === 1
+            href={`tel:${address?.spot_id === 1
                 ? "+998771212424"
                 : address?.spot_id === 2
-                ? "+998771202424"
-                : "+998770792424"
-            }`}
+                  ? "+998771202424"
+                  : "+998770792424"
+              }`}
             className="flex text-base gap-6 text-[#004032] pt-3 text-start w-full"
           >
             <PhoneCallIcon size={24} color="#004032" />
             {address?.spot_id === 1
               ? "+998 (77) 121 24 24"
               : address?.spot_id === 2
-              ? "+998 (77) 120 24 24"
-              : "+998 (77) 079 24 24"}
+                ? "+998 (77) 120 24 24"
+                : "+998 (77) 079 24 24"}
           </a>
           <div className="w-full h-40 my-4">
             {address?.lat && address?.lng ? (
@@ -139,9 +159,7 @@ const ClientContact = ({ spotData, locale }) => {
           </div>
           <Button
             className="w-full max-w-96 h-11 hover:bg-primary"
-            onClick={() =>
-              handleShare(Number(address.lng), Number(address.lat))
-            }
+            onClick={() =>  handleShare(Number(address.lng), Number(address.lat))}
           >
             {contactT("btnShare")}
           </Button>

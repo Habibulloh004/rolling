@@ -73,6 +73,7 @@ export default function Header({
   const [filteredCategories, setFilteredCategories] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [openSearch, setOpenSearch] = useState(false);
+
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -110,7 +111,7 @@ export default function Header({
   }, []);
 
   useEffect(() => {
-    setCl(client); // Parse JSON string if it's a JSON object
+    setCl(client);
   }, [client]);
 
   useEffect(() => {
@@ -131,7 +132,7 @@ export default function Header({
     }
   }, [spot, table_id, table_num, service]);
 
-  const wrapWithLink = (text, words, loc) => {
+    const wrapWithLink = (text, words, loc) => {
     const parts = text.split(new RegExp(`(${words.join("|")})`, "g"));
     return parts.map((part, index) =>
       words.includes(part) ? (
@@ -153,6 +154,7 @@ export default function Header({
     ["Зарегистрируйтесь", "Register", "Hozir ro'yxatdan o'ting"],
     param.locale
   );
+
 
   if (!isMounted) {
     return null;
@@ -215,7 +217,6 @@ export default function Header({
                 </Link>
               );
             })}
-
             <Link
               href={`${
                 cl ? `${getUrl(pathName)}/profile` : `${getUrl(pathName)}/login`

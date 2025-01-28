@@ -34,7 +34,7 @@ export default function Footer({ params: path }) {
                 src={`/assets/secondaryIcon.webp`}
                 alt="Rolling Sushi"
                 width={282}
-                height={74}
+                height={60}
                 className=""
               />
             </Link>

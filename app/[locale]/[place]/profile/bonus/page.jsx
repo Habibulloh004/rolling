@@ -61,7 +61,7 @@ export default async function Bonus() {
               alt="gold"
               width={400}
               height={100}
-              className="absolute top-0 w-[350px] lg:w-[400px]"
+              className="absolute top-0 w-[350px] lg:w-[400px] h-full"
             />
             <p className="font-bold text-white text-center text-[10px]  tracking-[0.12rem]">
               ROLLINGSUSHI

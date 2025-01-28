@@ -35,8 +35,7 @@ const AboutUs = async ({ params }) => {
           <Image
             src={`/assets/aboutLogo.png`}
             alt={`aboutlogo`}
-            // fill
-            width={500}
+            width={400}
             height={100}
             className="w-full"
           />
@@ -86,6 +85,12 @@ const AboutUs = async ({ params }) => {
             >
               {aboutUsT("btnVacansy")}
             </Link>
+            <Link
+              href={`/${param.locale}/${param.place}/about-us/terms-of-service`}
+              className="w-full h-[50px] flex items-center justify-center rounded-md bg-primary text-white py-2 text-xs md:text-sm text-center"
+            >
+              {aboutUsT("btnTerms")}
+            </Link>
           </div>
         </section>
         <section className="hidden sm:block  w-[30%] space-y-4">
@@ -131,6 +136,12 @@ const AboutUs = async ({ params }) => {
               className="w-full lg:w-3/4 mx-auto rounded-md bg-primary text-white py-4 text-xs md:text-sm text-center"
             >
               {aboutUsT("btnVacansy")}
+            </Link>
+            <Link
+              href={`/${param.locale}/${param.place}/about-us/terms-of-service`}
+              className="w-full lg:w-3/4 mx-auto rounded-md bg-primary text-white py-4 text-xs md:text-sm text-center"
+            >
+              {aboutUsT("btnTerms")}
             </Link>
           </div>
         </section>

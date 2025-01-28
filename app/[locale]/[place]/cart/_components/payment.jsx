@@ -571,9 +571,9 @@ const Payment = ({ locale, place, auth }) => {
               </button>
             ))}
           </div>
-          <div>
+          <div className="w-full">
             {orderData?.payment_method != "cash" && (
-              <div className="flex justify-between items-center gap-5">
+              <div className="w-full sm:w-2/3 md:w-full flex max-md:flex-col md:justify-between justify-center items-center gap-5">
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
                     <Button
@@ -585,9 +585,9 @@ const Payment = ({ locale, place, auth }) => {
                         (isPaymentLoading ||
                           (paymentData && !paymentData?.success)) &&
                         "opacity-[0.6]"
-                      } relative`}
+                      } relative w-full`}
                     >
-                      <div className="flex justify-center items-center gap-2">
+                      <div className="w-full flex justify-center items-center gap-2">
                         {isPaymentLoading ? (
                           <div className=" w-full h-full flex items-center gap-4 justify-center">
                             <div role="status">
@@ -648,7 +648,7 @@ const Payment = ({ locale, place, auth }) => {
                       isCheckLoading ||
                       (paymentData && paymentData?.success) ||
                       (!paymentData?.payment_id && "opacity-[0.6]")
-                    } relative`}
+                    } relative w-full`}
                   >
                     <div className="flex justify-center items-center gap-2">
                       {isCheckLoading ? (

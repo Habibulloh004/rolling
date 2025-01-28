@@ -48,7 +48,7 @@ export default function OrderDataComponent({ locale, path }) {
                 <button
                 onClick={()=>setOrderId(item?.order_id)}
                 type="button"
-                  className={`bg-white rounded-2xl p-5 flex flex-col justify-between w-[300px] duration-300 ${ orderId == item?.order_id ? "bg-gray-400" : ""}`}
+                  className={`bg-white rounded-2xl p-5 flex flex-col justify-between w-[300px] duration-300 ${orderId == item?.order_id ? "bg-slate-200" : ""}`}
                 >
                   <div className="flex flex-col gap-2 w-full">
                     <div className="w-full flex justify-between">

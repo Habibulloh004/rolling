@@ -11,7 +11,10 @@ import {
 import { getData } from "@/service";
 
 const Reviews = async ({ params }) => {
-  const [allT, param, reviewData] = await Promise.all([getTranslations("All"), params, getData("/poster/google"),
+  const [allT, param, reviewData] = await Promise.all([
+    getTranslations("All"),
+    params,
+    getData("/poster/google"),
   ]);
   return (
     <Container
@@ -36,15 +39,19 @@ const Reviews = async ({ params }) => {
         }}
       >
         <CarouselContent className="relative">
-          {reviewData.result.reviews?.map((item, i) => (
-            <CarouselItem
-              key={i}
-              className={`basis-[80%] sm:basis-[45%] lg:basis-[45%] xl:basis-[30%] p-0 mx-2 ${i == 0 && "max-sm:ml-8 max-md:ml-16 ml-8"
+          {reviewData.result.reviews?.map((item, i) => {
+            if (item.rating < 4) return;
+            return (
+              <CarouselItem
+                key={i}
+                className={`basis-[80%] sm:basis-[45%] lg:basis-[45%] xl:basis-[30%] p-0 mx-2 ${
+                  i == 0 && "max-sm:ml-8 max-md:ml-16 ml-8"
                 }`}
-            >
-              <Cards data={item} />
-            </CarouselItem>
-          ))}
+              >
+                <Cards data={item} />
+              </CarouselItem>
+            );
+          })}
         </CarouselContent>
       </Carousel>
     </Container>

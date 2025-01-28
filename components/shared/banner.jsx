@@ -8,6 +8,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 
 const Banner = ({path, banners }) => {
+
   const pathname = usePathname();
   return (
     <main className={"mx-auto w-full py-3 md:py-5"}>

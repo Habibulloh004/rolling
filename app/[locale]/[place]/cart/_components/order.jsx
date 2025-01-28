@@ -351,6 +351,7 @@ const Order = ({ spotDataFilial, auth, searchParamsData, locale, place }) => {
           setSelectCard(null);
           setProductsData([]);
           toast.success(all("order_created"));
+          router.push(`/${locale}/${place}`);
         }
       } else {
         if (activeTab == "pickup") {

@@ -240,11 +240,11 @@ const Payment = ({ locale, place, auth }) => {
           const paymeData = {
             id: getRandomDatePlusNumber(),
             order_id: "Rolling-Sushi",
-            amount: 100,
+            // amount: 100,
             place: place,
-            // amount:
-            //   Number(totalSum) -
-            //   (orderData?.pay_bonus ? Number(orderData?.pay_bonus) : 0),
+            amount:
+              Number(totalSum) -
+              (orderData?.pay_bonus ? Number(orderData?.pay_bonus) : 0),
           };
           console.log(paymeData);
           const paymeResult = await paymeCreate(paymeData);
@@ -269,16 +269,19 @@ const Payment = ({ locale, place, auth }) => {
               `https://payme.uz/checkout/${paymeResult[1]?.result?.receipt?._id}?back=null&timeout=15000&lang=${locale}`,
               "_blank"
             );
+          } else {
+            toast.error("Kartangizni tekshiring , to'lov tasdiqlanmadi!!!");
+            return;
           }
           break;
         case "click":
           const clickData = {
             id: getRandomDatePlusNumber(),
-            amount: 1000,
+            // amount: 1000,
             date: getTodayDate(),
-            // amount:
-            //   Number(totalSum) -
-            //   (orderData?.pay_bonus ? Number(orderData?.pay_bonus) : 0),
+            amount:
+              Number(totalSum) -
+              (orderData?.pay_bonus ? Number(orderData?.pay_bonus) : 0),
           };
           let paymentDataC = {
             amount: clickData?.amount,
@@ -306,16 +309,16 @@ const Payment = ({ locale, place, auth }) => {
           }
           const cardData = {
             id: getRandomDatePlusNumber(),
-            amount: 1000,
+            // amount: 1000,
             expireDate: Number(
               selectCard?.expiryDate.split("/")[1] +
                 "" +
                 selectCard?.expiryDate.split("/")[0]
             ),
             cardNumber: selectCard?.cardNumber?.replace(/\s/g, ""),
-            // amount:
-            //   Number(totalSum) -
-            //   (orderData?.pay_bonus ? Number(orderData?.pay_bonus) : 0),
+            amount:
+              Number(totalSum) -
+              (orderData?.pay_bonus ? Number(orderData?.pay_bonus) : 0),
           };
           console.log(cardData);
           const resultCard = await payCard(cardData);
@@ -344,6 +347,9 @@ const Payment = ({ locale, place, auth }) => {
               "paymentData",
               JSON.stringify(paymentDataCard)
             );
+          } else {
+            toast.error("Kartangizni tekshiring , to'lov tasdiqlanmadi!!!");
+            return;
           }
           break;
         default:
@@ -387,7 +393,7 @@ const Payment = ({ locale, place, auth }) => {
                 success: true,
               });
             } else {
-              toast.error("To'lov topilmadi!");
+              toast.error("Kartangizni tekshiring , to'lov tasdiqlanmadi!!!");
             }
           }
           break;
@@ -413,7 +419,7 @@ const Payment = ({ locale, place, auth }) => {
                 success: true,
               });
             } else {
-              toast.error("To'lov topilmadi!");
+              toast.error("Kartangizni tekshiring , to'lov tasdiqlanmadi!!!");
             }
           }
           break;
@@ -441,7 +447,7 @@ const Payment = ({ locale, place, auth }) => {
                 transactionId: result.result?.transactionId,
               });
             } else {
-              toast.error("To'lov topilmadi!");
+              toast.error("Kartangizni tekshiring , to'lov tasdiqlanmadi!!!");
             }
           }
           break;
@@ -743,6 +749,16 @@ const Payment = ({ locale, place, auth }) => {
                       </AlertDialogContent>
                     </AlertDialog>
                   </div>
+                )}
+                {paymentData && (
+                  <button
+                    onClick={() => {
+                      setPaymentData(null);
+                    }}
+                    className="w-full bg-red-500 text-white py-2 px-3 rounded-md hover:opacity-90"
+                  >
+                    Bekor qilish
+                  </button>
                 )}
               </div>
             )}

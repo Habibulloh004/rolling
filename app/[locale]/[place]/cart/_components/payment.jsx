@@ -587,7 +587,7 @@ const Payment = ({ locale, place, auth }) => {
                         "opacity-[0.6]"
                       } relative w-full`}
                     >
-                      <div className="w-full flex justify-center items-center gap-2">
+                      <div className="flex justify-center items-center gap-2">
                         {isPaymentLoading ? (
                           <div className=" w-full h-full flex items-center gap-4 justify-center">
                             <div role="status">
@@ -615,7 +615,7 @@ const Payment = ({ locale, place, auth }) => {
                         ) : (
                           <HandCoins size={48} />
                         )}
-                        <h1>To'lov qilish</h1>
+                        <h1 className="w-full">To'lov qilish</h1>
                       </div>
                     </Button>
                   </AlertDialogTrigger>

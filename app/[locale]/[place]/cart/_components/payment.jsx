@@ -288,6 +288,7 @@ const Payment = ({ locale, place, auth }) => {
             payment_id: clickData.id,
             success: false,
             place,
+            date: getTodayDate(),
           };
           if (spot && tableId && tableNum && service) {
             paymentDataC.spot = spot;
@@ -405,7 +406,11 @@ const Payment = ({ locale, place, auth }) => {
             };
             console.log(paymeData);
             const result = await clickCheck(paymeData);
-            if (result[1]?.error_code == 0) {
+            console.log(result);
+
+            if (result[1]?.error_code) {
+              toast.error("Kartangizni tekshiring , to'lov tasdiqlanmadi!!!");
+            } else {
               toast.success("To'lov muvofaqiyatli yakunlandi!");
               localStorage.setItem(
                 "paymentData",
@@ -418,8 +423,6 @@ const Payment = ({ locale, place, auth }) => {
                 ...paymentData,
                 success: true,
               });
-            } else {
-              toast.error("Kartangizni tekshiring , to'lov tasdiqlanmadi!!!");
             }
           }
           break;
@@ -573,7 +576,7 @@ const Payment = ({ locale, place, auth }) => {
           </div>
           <div className="w-full">
             {orderData?.payment_method != "cash" && (
-              <div className="w-full sm:w-2/3 md:w-full flex max-md:flex-col md:justify-between justify-center items-center gap-5">
+              <div className="w-full flex max-md:flex-col md:justify-between justify-center items-center gap-5">
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
                     <Button

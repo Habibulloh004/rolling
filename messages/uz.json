@@ -41,7 +41,7 @@
     "self_desc": "Xaridor o'ziga xizmat qiladi",
     "selected": "Tanlangan",
     "no_active": "Hozirda faol emas",
-    "no_auth": "Siz tizimga kirmagansiz!",
+    "no_auth": "Faqat ro‘yxatdan o‘tgan foydalanuvchilar bizning bonus tizimimizda ishtirok etib, har bir buyurtmadan 30% gacha bonus olishadi. Siz ularni istalgan taomni to‘lashda 100% ishlatishingiz mumkin!!",
     "products_empty": "Siz mahsulot tanlamadingiz!",
     "phone_empty": "Telefon raqam mavjud emas!",
     "order_empty": "Buyurtmalar mavjud emas.",
@@ -51,7 +51,7 @@
     "discount": "Chegirma",
     "promotion": "Aksiyalar",
     "news": "Yangiliklar",
-    "cart_ingredient":"Yana birini qo'shing!"
+    "cart_ingredient": "Yana birini qo'shing!"
   },
   "Bonus": {
     "bonus": "Bonus",
@@ -302,9 +302,22 @@
     },
     "Payment": {
       "card": "Karta orqali",
-      "cash": "Naqd pulda",
+      "cash": "Naqd pul",
       "card_name": "Karta nomi",
-      "thanks_payment": "To'lov uchun rahmat"
+      "thanks_payment": "To'lov usuli",
+      "pay": "To'lov",
+      "check": "To'lovni tekshirish",
+      "otp_desc": "SMS quyidagi raqamga yuborildi",
+      "otp_error": "",
+      "otp_again": "Qayta urinib ko'ring",
+      "otp_cancel": "Bekor qilish",
+      "secound": "soniya",
+      "sure_to_pay": "Haqiqatan ham to'lashni xohlaysizmi?",
+      "sure_desc": "To'lov amalga oshirilgandan so'ng, siz buyurtmaga o'zgartirish kiritolmaysiz. Sizga faqat to'lovni tasdiqlash qoladi!!!",
+      "pay_error": "Kartangizni tekshiring, to'lov tasdiqlanmadi!!!",
+      "pay_success": "To'lov muvaffaqiyatli amalga oshirildi!",
+      "you_not_pay": "Siz to'lovni amalga oshirmadingiz!!!",
+      "you_not_check": "Siz to'lovni tasdiqlamadingiz!!!"
     },
     "Total": {
       "total": "Umumiy summa",
@@ -410,68 +423,68 @@
       "4_text": "• Ma'lumotlarni uzatish uchun SSL shifrlashdan foydalanamiz.\n• Ruxsatsiz kirishning oldini olish uchun xavfsizlik tizimlarini muntazam yangilab boramiz."
     }
   },
-    "TermsOfService": {
-      "title": "Foydalanish shartlari",
-      "effective_date": "2025-yil 23-yanvar",
-      "text": "Rolling Sushi saytiga xush kelibsiz (keyingi o‘rinlarda “biz”, “bizning kompaniya”). Ushbu foydalanish shartlari https://rolling.uz sayti, mobil ilova va Rolling Sushi tomonidan taqdim etiladigan xizmatlarga taalluqlidir.",
-      "sections": {
-        "section1": {
-          "title": "Xizmatlar tavsifi",
-          "text": "Rolling Sushi buyurtma qilish, tayyorlash, yetkazib berish va olib ketish xizmatlarini taqdim etadi. Ushbu sayt va xizmatlardan foydalanish orqali siz ushbu shartlarga rozilik bildirasiz. Biz xizmatlarimizni o‘zgartirish yoki qo‘shimchalar kiritish huquqini saqlab qolamiz va foydalanuvchilarni bu haqda xabardor qilamiz."
-        },
-        "section2": {
-          "title": "Foydalanuvchilar huquqlari va majburiyatlari",
-          "subsections": {
-            "21": "Foydalanuvchilar buyurtma qilingan ma’lumotlarni aniq va to‘g‘ri taqdim etishlari shart.",
-            "22": "Sayt va xizmatlardan noqonuniy maqsadlarda foydalanish taqiqlanadi.",
-            "23": "Foydalanuvchilar login va parolni xavfsiz saqlashlari shart."
-          }
-        },
-        "section3": {
-          "title": "Buyurtmalar va to‘lov",
-          "subsections": {
-            "31": "Buyurtmalar sayt, mobil ilova yoki telefon orqali amalga oshiriladi.",
-            "32": {
-              "title": "Qabul qilinadigan to‘lov usullari",
-              "methods": {
-                "Cash": "Yetkazib berishda naqd pul.",
-                "Online": "Payme, Click yoki Uzum orqali to‘lov."
-              }
-            },
-            "33": "Tayyorlash boshlanishidan oldin buyurtmani bekor qilish mumkin. Tayyorlanganidan keyin mablag‘ qaytarilmaydi."
-          }
-        },
-        "section4": {
-          "title": "Yetkazib berish va olib ketish",
-          "subsections": {
-            "41": "Yetkazib berish mijoz tomonidan belgilangan manzillarga amalga oshiriladi. Yetkazib berish vaqti masofa va holatga bog‘liq holda o‘zgarishi mumkin.",
-            "42": "Olib ketish Toshkent shahrining Yakassaray ko‘chasidagi 7-uy manzilida amalga oshiriladi."
-          }
-        },
-        "section5": {
-          "title": "Mas’uliyatni cheklash",
-          "subsections": {
-            "51": "Ob-havo sharoiti yoki noto‘g‘ri kiritilgan manzil kabi tashqi sabablarga ko‘ra kechikishlar uchun biz javobgar emasmiz.",
-            "52": "Mahsulot sifati faqat tavsiya etilgan saqlash va foydalanish shartlari bajarilganda kafolatlanadi."
-          }
-        },
-        "section6": {
-          "title": "Maxfiylik",
-          "text": "Shaxsiy ma’lumotlaringizni bizning maxfiylik siyosatimizga muvofiq qayta ishlaymiz."
-        },
-        "section7": {
-          "title": "Shartlarni o‘zgartirish",
-          "text": "Rolling Sushi ushbu shartlarni o‘zgartirish huquqiga ega. Foydalanuvchilar saytda o‘zgarishlar haqida ogohlantiriladi."
-        },
-        "section8": {
-          "title": "Aloqa",
-          "details": {
-            "email": "rollingsushi@gmail.com",
-            "phone": "+998771244444",
-            "address": "Toshkent sh., Yakassaray ko‘chasi, 7"
-          }
+  "TermsOfService": {
+    "title": "Foydalanish shartlari",
+    "effective_date": "2025-yil 23-yanvar",
+    "text": "Rolling Sushi saytiga xush kelibsiz (keyingi o‘rinlarda “biz”, “bizning kompaniya”). Ushbu foydalanish shartlari https://rolling.uz sayti, mobil ilova va Rolling Sushi tomonidan taqdim etiladigan xizmatlarga taalluqlidir.",
+    "sections": {
+      "section1": {
+        "title": "Xizmatlar tavsifi",
+        "text": "Rolling Sushi buyurtma qilish, tayyorlash, yetkazib berish va olib ketish xizmatlarini taqdim etadi. Ushbu sayt va xizmatlardan foydalanish orqali siz ushbu shartlarga rozilik bildirasiz. Biz xizmatlarimizni o‘zgartirish yoki qo‘shimchalar kiritish huquqini saqlab qolamiz va foydalanuvchilarni bu haqda xabardor qilamiz."
+      },
+      "section2": {
+        "title": "Foydalanuvchilar huquqlari va majburiyatlari",
+        "subsections": {
+          "21": "Foydalanuvchilar buyurtma qilingan ma’lumotlarni aniq va to‘g‘ri taqdim etishlari shart.",
+          "22": "Sayt va xizmatlardan noqonuniy maqsadlarda foydalanish taqiqlanadi.",
+          "23": "Foydalanuvchilar login va parolni xavfsiz saqlashlari shart."
         }
       },
-      "closing": "Rolling Sushi xizmatlarimizni tanlaganingiz uchun rahmat!"
-    }
+      "section3": {
+        "title": "Buyurtmalar va to‘lov",
+        "subsections": {
+          "31": "Buyurtmalar sayt, mobil ilova yoki telefon orqali amalga oshiriladi.",
+          "32": {
+            "title": "Qabul qilinadigan to‘lov usullari",
+            "methods": {
+              "Cash": "Yetkazib berishda naqd pul.",
+              "Online": "Payme, Click yoki Uzum orqali to‘lov."
+            }
+          },
+          "33": "Tayyorlash boshlanishidan oldin buyurtmani bekor qilish mumkin. Tayyorlanganidan keyin mablag‘ qaytarilmaydi."
+        }
+      },
+      "section4": {
+        "title": "Yetkazib berish va olib ketish",
+        "subsections": {
+          "41": "Yetkazib berish mijoz tomonidan belgilangan manzillarga amalga oshiriladi. Yetkazib berish vaqti masofa va holatga bog‘liq holda o‘zgarishi mumkin.",
+          "42": "Olib ketish Toshkent shahrining Yakassaray ko‘chasidagi 7-uy manzilida amalga oshiriladi."
+        }
+      },
+      "section5": {
+        "title": "Mas’uliyatni cheklash",
+        "subsections": {
+          "51": "Ob-havo sharoiti yoki noto‘g‘ri kiritilgan manzil kabi tashqi sabablarga ko‘ra kechikishlar uchun biz javobgar emasmiz.",
+          "52": "Mahsulot sifati faqat tavsiya etilgan saqlash va foydalanish shartlari bajarilganda kafolatlanadi."
+        }
+      },
+      "section6": {
+        "title": "Maxfiylik",
+        "text": "Shaxsiy ma’lumotlaringizni bizning maxfiylik siyosatimizga muvofiq qayta ishlaymiz."
+      },
+      "section7": {
+        "title": "Shartlarni o‘zgartirish",
+        "text": "Rolling Sushi ushbu shartlarni o‘zgartirish huquqiga ega. Foydalanuvchilar saytda o‘zgarishlar haqida ogohlantiriladi."
+      },
+      "section8": {
+        "title": "Aloqa",
+        "details": {
+          "email": "rollingsushi@gmail.com",
+          "phone": "+998771244444",
+          "address": "Toshkent sh., Yakassaray ko‘chasi, 7"
+        }
+      }
+    },
+    "closing": "Rolling Sushi xizmatlarimizni tanlaganingiz uchun rahmat!"
+  }
 }

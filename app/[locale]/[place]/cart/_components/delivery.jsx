@@ -148,17 +148,15 @@ const Delivery = ({ locale, auth, clientData, place }) => {
                     </p>
                   )}
                   <div className="flex justify-end items-center w-full">
-                    {!(paymentData && paymentData?.payment_id) && (
-                      <Link href={`/${locale}/${place}/profile/address/add`}>
-                        <Button
-                          className={
-                            "h-8 max-sm:w-full max-sm:text-[12px] md:h-10 px-4 md:px-5 bg-transparent text-[#004032] shadow-none border-[1px] rounded-[8px] border-[#004032]"
-                          }
-                        >
-                          {all("add")}
-                        </Button>
-                      </Link>
-                    )}
+                    <Link href={`/${locale}/${place}/profile/address/add`}>
+                      <Button
+                        className={
+                          "h-8 max-sm:w-full max-sm:text-[12px] md:h-10 px-4 md:px-5 bg-transparent text-[#004032] shadow-none border-[1px] rounded-[8px] border-[#004032]"
+                        }
+                      >
+                        {all("add")}
+                      </Button>
+                    </Link>
                   </div>
                 </section>
               </main>

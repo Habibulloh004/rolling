@@ -124,7 +124,7 @@ const Card = ({
               />
             </button>
             <span className="font-bold text-[12px] md:textSmall4 text-white min-w-6 text-center">
-              {findProduct.count > 10
+              {findProduct.count >= 10
                 ? findProduct.count
                 : `0${findProduct.count}`}
             </span>

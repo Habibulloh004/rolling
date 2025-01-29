@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { formatCreatedAt, formatNumber } from "@/lib/utils";
 import { ApiService } from "@/service/api.services";
 import { useOrderStore, useProductStore, useStore } from "@/store";
+import axios from "axios";
 import { ChevronRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -72,14 +73,22 @@ const DiscountBadge = ({ auth }) => {
 };
 
 // Main Order Component
-const Order = ({ auth, searchParamsData, locale, place }) => {
+const Order = ({ spotDataFilial, auth, searchParamsData, locale, place }) => {
   const all = useTranslations("All");
   const total = useTranslations("Cart.Total");
   const { activeTab } = useStore();
   const [isLoading, setIsLoading] = useState(false);
   const [bonus, setBonus] = useState(0);
   const [activeBonus, setActiveBonus] = useState(false);
-  const { orderData, setOrderData, totalSum, resetOrder } = useOrderStore();
+  const {
+    orderData,
+    setOrderData,
+    totalSum,
+    resetOrder,
+    paymentData,
+    setPaymentData,
+    setSelectCard,
+  } = useOrderStore();
   const { products, setProductsData } = useProductStore();
   const { spot: spotIdSpot, table_id, table_num, service } = searchParamsData;
   const router = useRouter();
@@ -92,20 +101,19 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
   };
 
   const handleSubmit = async () => {
-    if (!auth?.client_id && !spotIdSpot) {
-      toast.error(
-        <div className="w-full h-full flex justify-between items-center">
-          {all("no_auth")}{" "}
-          <Link
-            href={`/${locale}/${place}/login`}
-            className="bg-black text-white rounded-md px-2 py-1"
-          >
-            {all("sign_in")}
-          </Link>
-        </div>
-      );
+    if (
+      (orderData?.payment_method == "click" ||
+        orderData?.payment_method == "payme") &&
+      !paymentData &&
+      !paymentData?.payment_id
+    ) {
+      toast.error("To'lovni amalga oshirmadingiz!!!");
+      return null;
     }
-
+    if (paymentData && paymentData?.payment_id && !paymentData?.success) {
+      toast.error("To'lovni tasdiqlamadingiz");
+      return null;
+    }
     if (products.length == 0) {
       toast.error(all("products_empty"));
       return;
@@ -146,20 +154,13 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
         spot_id,
         spot_name,
         phone,
-        service_mode,
         payment_method,
         delivery_price,
         lng,
         lat,
-        pay_cash,
-        pay_card,
-        pay_click,
-        pay_payme,
-        pay_uzum,
         pay_bonus,
         comment,
         address,
-        client_addresses_id,
         address_comment,
       } = orderData;
       setIsLoading(true);
@@ -182,22 +183,26 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
       }
       switch (payment_method) {
         case "card":
-          commentSpot = `${commentSpot}Тип оплаты : по карте`;
+          commentSpot = `${commentSpot ?? ""}Тип оплаты : по карте`;
           break;
         case "click":
-          commentSpot = `${commentSpot}Тип оплаты : через click`;
+          commentSpot = `${commentSpot ?? ""}Тип оплаты : через click`;
           break;
         case "payme":
-          commentSpot = `${commentSpot}Тип оплаты : через payme`;
+          commentSpot = `${commentSpot ?? ""}Тип оплаты : через payme`;
           break;
         case "uzum":
-          commentSpot = `${commentSpot}Тип оплаты : через uzum`;
+          commentSpot = `${commentSpot ?? ""}Тип оплаты : через uzum`;
           break;
         default:
-          commentSpot = `${commentSpot}Тип оплаты : наличными`;
+          commentSpot = `${commentSpot ?? ""}Тип оплаты : наличными`;
       }
+      console.log(spotDataFilial);
+
       if (spotIdSpot) {
-        commentSpot = `${commentSpot} \nНомер стола : ${table_num} \nТип услуги : ${
+        commentSpot = `${
+          commentSpot ? commentSpot : ""
+        }\nНомер стола : ${table_num} \nТип услуги : ${
           service == "self" ? "самообслуживание" : "официант"
         }/\nНомер телефона : ${phone}`;
       } else if (!auth?.client_id) {
@@ -216,8 +221,8 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
         payed_sum:
           Number(+totalSum + +delivery_price - (pay_bonus ? +pay_bonus : 0)) *
           100,
-        payment: payment_method,
-        phone: auth?.client_id ? `+${auth?.phone_number}` : "+998000000000",
+        payment: payment_method == "cash" ? "cash" : "creditCard",
+        phone: auth?.client_id ? `+${auth?.phone_number}` : "+998771052018",
         products: JSON.stringify(filterProductsAbdugani),
         promotion: "no",
         spot_id: 0,
@@ -234,7 +239,7 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
         created_at: formatCreatedAt(),
         payed_bonus: pay_bonus ? Number(pay_bonus) * 100 : 0,
         payed_sum: Number(+totalSum - (pay_bonus ? +pay_bonus : 0)) * 100,
-        payment: payment_method,
+        payment: payment_method == "cash" ? "cash" : "creditCard",
         phone: auth?.client_id ? `+${auth?.phone_number}` : phone,
         products: JSON.stringify(filterProductsAbdugani),
         promotion: "no",
@@ -248,9 +253,9 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
           ? "+998771244444"
           : auth?.client_id
           ? `+${auth?.phone_number}`
-          : "+998000000000",
+          : "+998771052018",
         products: filterProductsSpot,
-        service_mode: Number(2),
+        service_mode: spotIdSpot ? 1 : 2,
         spot_id: Number(spotIdSpot ? spotIdSpot : Number(spot_id)),
         comment: commentSpot,
       };
@@ -264,6 +269,9 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
       console.log({ spotData });
       console.log(orderData);
       console.log({ auth });
+      console.log({ activeTab });
+
+      // return null;
       let commentClient;
       let clinetGroupId;
       if (auth?.client_id) {
@@ -287,23 +295,43 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
           clinetGroupId = 4;
         }
       }
-
       if (spotIdSpot) {
         const res = await createIncomingOrder(spotData);
         console.log(res);
-        if (res) {
+        if (res?.response) {
+          const { transaction_id } = res?.response;
+
           const nowOrder = {
             ...deliveryData,
             response: res,
           };
+          const message = `
+📦 Новый заказ! №${transaction_id}
+🛒 Название филиал: ${spotDataFilial?.response?.name}
+📞 Телефон: +998771244444
+💵 Сумма заказа: ${formatNumber(totalSum)} сум
+💳 Метод оплаты: ${
+            orderData?.payment_method == "cash"
+              ? "Наличные"
+              : "Карта (Оплачено)"
+          }
+🛍 Тип заказа: Заведения
+✏️ Комментарий: ${commentSpot}`.trim();
+          console.log(message);
+
+          await axios.get(
+            `https://api.telegram.org/bot7051935328:AAFJxJAVsRTPxgj3rrHWty1pEUlMkBgg9_o/sendMessage?chat_id=-1002211902296&text=${encodeURIComponent(
+              message
+            )}`
+          );
           orderList.push(nowOrder);
           localStorage.setItem("orderList", JSON.stringify(orderList));
+          setPaymentData(null);
           setOrderData({
             spot_id: 0,
             spot_name: "",
             phone: "",
             products: [],
-            service_mode: 3,
             payment_method: "cash",
             total: 0,
             delivery_price: 0,
@@ -320,16 +348,52 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
             address: "",
             client_addresses_id: null,
           });
+          setSelectCard(null);
           setProductsData([]);
           toast.success(all("order_created"));
+          router.push(`/${locale}/${place}`);
         }
       } else {
-        if (service_mode == 2) {
+        if (activeTab == "pickup") {
           const res = await createOrder(pickupData);
-          const res2 = await createOrderPoster(spotData);
           console.log({ res });
-          console.log({ res2 });
           if (res?.order_id) {
+            const express = await createOrderPoster({
+              ...spotData,
+              comment: JSON.stringify({
+                order_id: res?.order_id,
+              }),
+            });
+
+            if (express) {
+              const message = `
+📦 Новый заказ! №${res?.order_id}
+🛒 Название филиал: ${spot_name}
+📞 Телефон: ${auth?.client_id ? `+${auth?.phone_number}` : "+998771052018"}
+🏠 Адрес: Не указан
+🔗 [Посмотреть на карте] Не указан"
+🗺️ Расстояние:0 км
+💵 Сумма заказа: ${formatNumber(totalSum)} сум
+💳 Метод оплаты: ${
+                orderData?.payment_method == "cash"
+                  ? "Наличные"
+                  : "Карта (Оплачено)"
+              }
+🎁 Бонусы: ${Number(pay_bonus ?? 0)} сум
+💵 К оплате: ${Number(totalSum) - pay_bonus ? Number(pay_bonus) : 0} сум
+🛍 Тип заказа: На вынос ${spot_name}
+🚚 Доставка: 0
+📦 Количество заказов: ${commentClient?.length}
+✏️ Комментарий:${commentSpot}
+✏️ Комментарий к адресу:${address_comment}
+`.trim();
+              console.log(message);
+              await axios.get(
+                `https://api.telegram.org/bot7051935328:AAFJxJAVsRTPxgj3rrHWty1pEUlMkBgg9_o/sendMessage?chat_id=-1002211902296&text=${encodeURIComponent(
+                  message
+                )}`
+              );
+            }
             const nowOrder = {
               ...pickupData,
               order_id: res.order_id,
@@ -341,7 +405,6 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
               spot_name: "",
               phone: "",
               products: [],
-              service_mode: 3,
               payment_method: "cash",
               total: 0,
               delivery_price: 0,
@@ -358,6 +421,8 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
               address: "",
               client_addresses_id: null,
             });
+            setSelectCard(null);
+            setPaymentData(null);
             setProductsData([]);
             if (auth?.client_id) {
               await updateClient({
@@ -369,7 +434,7 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
             toast.success(all("order_created"));
             router.push(`/${locale}/${place}/confirmed/${res?.order_id}`);
           }
-        } else if (service_mode == 3) {
+        } else if (activeTab == "delivery") {
           const res = await createOrder(deliveryData);
           console.log(res);
 
@@ -379,7 +444,6 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
               spot_name: "",
               phone: "",
               products: [],
-              service_mode: 3,
               payment_method: "cash",
               total: 0,
               delivery_price: 0,
@@ -400,9 +464,11 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
               ...deliveryData,
               order_id: res.order_id,
             };
+            setPaymentData(null);
             orderList.push(nowOrder);
             localStorage.setItem("orderList", JSON.stringify(orderList));
             setProductsData([]);
+            setSelectCard(null);
             toast.success(all("order_created"));
             router.push(`/${locale}/${place}/confirmed/${res?.order_id}`);
             if (auth?.client_id) {
@@ -462,7 +528,7 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
               {formatNumber(
                 Number(totalSum) -
                   Number(orderData?.pay_bonus) +
-                  (orderData?.service_mode == 3 ? orderData?.delivery_price : 0)
+                  (activeTab == "delivery" ? orderData?.delivery_price : 0)
               )}{" "}
               {all("sum")}
             </p>
@@ -494,6 +560,7 @@ const Order = ({ auth, searchParamsData, locale, place }) => {
         {activeTab !== "spot" && (
           <>
             <Button
+              disabled={paymentData && paymentData?.payment_id}
               onClick={() => {
                 if (auth?.client_id) {
                   setActiveBonus(true);

@@ -141,7 +141,7 @@ export async function updateClient(data) {
             accumulation_products,
             ...clientData
           } = client.response[0];
-          console.log( clientData );
+          console.log(clientData);
           cookieStore.set({
             name: "client",
             value: JSON.stringify(clientData),
@@ -173,4 +173,122 @@ export async function saveCookie(cookie) {
     console.error("Failed to save cookie:", error);
     throw error; // Propagate the error to the caller
   }
+}
+
+export async function paymeCreate(data) {
+  const myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+  myHeaders.append(
+    "Cookie",
+    "pos_session=V2YAPQJhB2pXfAghVTwGMw9tA2pQJwJxV25aIwdzVmkFYwdvAQxXN1NnAidXOgAkVjwKY1MyBDoAcFVlXWwMPVZrXmUBZVxrCTZTZldhBG5XZgAwAmcHYlcwCGtVMQZkD24DNVA3AmFXPVo1BzBWZgU5BzQBa1c%2FUzYCJ1c6ACRWPAphUzAEOgBwVW9deAxTVmteMAFiXHgJZVMmV3YEL1c8AHQCbgdhVzQIaFUkBjMPZANlUCsCM1c%2BWmgHLlYyBSIHMwFiV2hTIQI%2BV3IAbVY3CmBTOgQiACdVdV1tDH5WVV41AWFcbwluUyFXJwQ2V3QAPQJmB2FXPQhwVVYGbQ8uAyRQaAJjV2VaAgd1Vm4FeAdoAT5XO1MsAjJXLwBjVjUKflMwBCIAaVV1XTIMPVY5Xm4BJFxmCWFTJldxBFJXZgBkAiAHOVdxCDtVcgZ7D38Da1BsAjhXOlpnBzNWNgU5BzEBa1doUzsCMlc6ACRWPAppUzoEIgAnVXVdbQx%2BVlVeMAFnXH4JYVN3Vz4Eflc9ADcCbgdyVyUIaVV7"
+  );
+
+  const requestOptions = {
+    method: "POST",
+    headers: myHeaders,
+    body: JSON.stringify(data),
+    redirect: "follow",
+  };
+
+  const res = fetch(`${url}/payme/create`, requestOptions)
+    .then((response) => response.json())
+    .then((result) => {
+      return result;
+    })
+    .catch((error) => console.error(error));
+  return res;
+}
+export async function paymeCheck(data) {
+  const myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+  myHeaders.append(
+    "Cookie",
+    "pos_session=V2YAPQJhB2pXfAghVTwGMw9tA2pQJwJxV25aIwdzVmkFYwdvAQxXN1NnAidXOgAkVjwKY1MyBDoAcFVlXWwMPVZrXmUBZVxrCTZTZldhBG5XZgAwAmcHYlcwCGtVMQZkD24DNVA3AmFXPVo1BzBWZgU5BzQBa1c%2FUzYCJ1c6ACRWPAphUzAEOgBwVW9deAxTVmteMAFiXHgJZVMmV3YEL1c8AHQCbgdhVzQIaFUkBjMPZANlUCsCM1c%2BWmgHLlYyBSIHMwFiV2hTIQI%2BV3IAbVY3CmBTOgQiACdVdV1tDH5WVV41AWFcbwluUyFXJwQ2V3QAPQJmB2FXPQhwVVYGbQ8uAyRQaAJjV2VaAgd1Vm4FeAdoAT5XO1MsAjJXLwBjVjUKflMwBCIAaVV1XTIMPVY5Xm4BJFxmCWFTJldxBFJXZgBkAiAHOVdxCDtVcgZ7D38Da1BsAjhXOlpnBzNWNgU5BzEBa1doUzsCMlc6ACRWPAppUzoEIgAnVXVdbQx%2BVlVeMAFnXH4JYVN3Vz4Eflc9ADcCbgdyVyUIaVV7"
+  );
+
+  const requestOptions = {
+    method: "POST",
+    headers: myHeaders,
+    body: JSON.stringify(data),
+    redirect: "follow",
+  };
+
+  const res = fetch(`${url}/payme/checking`, requestOptions)
+    .then((response) => response.json())
+    .then((result) => {
+      return result;
+    })
+    .catch((error) => console.error(error));
+  return res;
+}
+export async function clickCheck(data) {
+  const myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+  myHeaders.append(
+    "Cookie",
+    "pos_session=V2YAPQJhB2pXfAghVTwGMw9tA2pQJwJxV25aIwdzVmkFYwdvAQxXN1NnAidXOgAkVjwKY1MyBDoAcFVlXWwMPVZrXmUBZVxrCTZTZldhBG5XZgAwAmcHYlcwCGtVMQZkD24DNVA3AmFXPVo1BzBWZgU5BzQBa1c%2FUzYCJ1c6ACRWPAphUzAEOgBwVW9deAxTVmteMAFiXHgJZVMmV3YEL1c8AHQCbgdhVzQIaFUkBjMPZANlUCsCM1c%2BWmgHLlYyBSIHMwFiV2hTIQI%2BV3IAbVY3CmBTOgQiACdVdV1tDH5WVV41AWFcbwluUyFXJwQ2V3QAPQJmB2FXPQhwVVYGbQ8uAyRQaAJjV2VaAgd1Vm4FeAdoAT5XO1MsAjJXLwBjVjUKflMwBCIAaVV1XTIMPVY5Xm4BJFxmCWFTJldxBFJXZgBkAiAHOVdxCDtVcgZ7D38Da1BsAjhXOlpnBzNWNgU5BzEBa1doUzsCMlc6ACRWPAppUzoEIgAnVXVdbQx%2BVlVeMAFnXH4JYVN3Vz4Eflc9ADcCbgdyVyUIaVV7"
+  );
+
+  const requestOptions = {
+    method: "POST",
+    headers: myHeaders,
+    body: JSON.stringify(data),
+    redirect: "follow",
+  };
+
+  const res = fetch(`${url}/click/checking`, requestOptions)
+    .then((response) => response.json())
+    .then((result) => {
+      return result;
+    })
+    .catch((error) => console.error(error));
+  return res;
+}
+
+export async function payCard(data) {
+  const myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+  myHeaders.append(
+    "Cookie",
+    "pos_session=V2YAPQJhB2pXfAghVTwGMw9tA2pQJwJxV25aIwdzVmkFYwdvAQxXN1NnAidXOgAkVjwKY1MyBDoAcFVlXWwMPVZrXmUBZVxrCTZTZldhBG5XZgAwAmcHYlcwCGtVMQZkD24DNVA3AmFXPVo1BzBWZgU5BzQBa1c%2FUzYCJ1c6ACRWPAphUzAEOgBwVW9deAxTVmteMAFiXHgJZVMmV3YEL1c8AHQCbgdhVzQIaFUkBjMPZANlUCsCM1c%2BWmgHLlYyBSIHMwFiV2hTIQI%2BV3IAbVY3CmBTOgQiACdVdV1tDH5WVV41AWFcbwluUyFXJwQ2V3QAPQJmB2FXPQhwVVYGbQ8uAyRQaAJjV2VaAgd1Vm4FeAdoAT5XO1MsAjJXLwBjVjUKflMwBCIAaVV1XTIMPVY5Xm4BJFxmCWFTJldxBFJXZgBkAiAHOVdxCDtVcgZ7D38Da1BsAjhXOlpnBzNWNgU5BzEBa1doUzsCMlc6ACRWPAppUzoEIgAnVXVdbQx%2BVlVeMAFnXH4JYVN3Vz4Eflc9ADcCbgdyVyUIaVV7"
+  );
+
+  const requestOptions = {
+    method: "POST",
+    headers: myHeaders,
+    body: JSON.stringify(data),
+    redirect: "follow",
+  };
+
+  const res = fetch(`${url}/pay`, requestOptions)
+    .then((response) => response.json())
+    .then((result) => {
+      return result;
+    })
+    .catch((error) => console.error(error));
+  return res;
+}
+
+export async function checkCard(data) {
+  const myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+  myHeaders.append(
+    "Cookie",
+    "pos_session=V2YAPQJhB2pXfAghVTwGMw9tA2pQJwJxV25aIwdzVmkFYwdvAQxXN1NnAidXOgAkVjwKY1MyBDoAcFVlXWwMPVZrXmUBZVxrCTZTZldhBG5XZgAwAmcHYlcwCGtVMQZkD24DNVA3AmFXPVo1BzBWZgU5BzQBa1c%2FUzYCJ1c6ACRWPAphUzAEOgBwVW9deAxTVmteMAFiXHgJZVMmV3YEL1c8AHQCbgdhVzQIaFUkBjMPZANlUCsCM1c%2BWmgHLlYyBSIHMwFiV2hTIQI%2BV3IAbVY3CmBTOgQiACdVdV1tDH5WVV41AWFcbwluUyFXJwQ2V3QAPQJmB2FXPQhwVVYGbQ8uAyRQaAJjV2VaAgd1Vm4FeAdoAT5XO1MsAjJXLwBjVjUKflMwBCIAaVV1XTIMPVY5Xm4BJFxmCWFTJldxBFJXZgBkAiAHOVdxCDtVcgZ7D38Da1BsAjhXOlpnBzNWNgU5BzEBa1doUzsCMlc6ACRWPAppUzoEIgAnVXVdbQx%2BVlVeMAFnXH4JYVN3Vz4Eflc9ADcCbgdyVyUIaVV7"
+  );
+
+  const requestOptions = {
+    method: "POST",
+    headers: myHeaders,
+    body: JSON.stringify(data),
+    redirect: "follow",
+  };
+
+  const res = fetch(`${url}/pay_confirm`, requestOptions)
+    .then((response) => response.json())
+    .then((result) => {
+      return result;
+    })
+    .catch((error) => console.error(error));
+  return res;
 }

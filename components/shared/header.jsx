@@ -203,7 +203,7 @@ export default function Header({
                   <Image
                     src={`${item.icon}`}
                     alt={`${item.title}`}
-                    width={29}
+                    width={item.id == 3 ? 25 : 29}
                     height={30}
                     className=""
                   />
@@ -331,7 +331,7 @@ export default function Header({
                     <Image
                       src={`${item.icon}`}
                       alt={`${item.title}`}
-                      width={29}
+                      width={item.id == 3 ? 25 : 29}
                       height={30}
                       className="lg:w-7 lg:h-7 w-[30px]"
                     />

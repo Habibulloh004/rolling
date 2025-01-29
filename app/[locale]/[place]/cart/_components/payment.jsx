@@ -177,15 +177,18 @@ const Payment = ({ locale, place, auth }) => {
   const handleSelectPayment = (item) => {
     if (!auth?.client_id && !spot && item?.type == "cash") {
       toast.error(
-        <div className="w-full h-full flex justify-between items-center">
+        <div className="w-full h-full flex justify-end flex-col items-end">
           {all("no_auth")}{" "}
           <Link
             href={`/${locale}/${place}/login`}
-            className="bg-black text-white rounded-md px-2 py-1"
+            className="bg-black text-white rounded-md px-4 py-2 text-center"
           >
             {all("sign_in")}
           </Link>
-        </div>
+        </div>,
+        {
+          duration: 5000, // 3 soniya
+        }
       );
     } else {
       setOrderData({
@@ -235,16 +238,20 @@ const Payment = ({ locale, place, auth }) => {
     }
     try {
       setIsPaymentLoading(true);
+      let totalAmount =
+        Number(totalSum) -
+        (orderData?.pay_bonus ? Number(orderData?.pay_bonus) : 0);
+
+      if (service == "waiter") {
+        totalAmount = Number(totalAmount + (totalAmount * 10) / 100);
+      }
       switch (orderData?.payment_method) {
         case "payme":
           const paymeData = {
             id: getRandomDatePlusNumber(),
             order_id: "Rolling-Sushi",
-            // amount: 100,
             place: place,
-            amount:
-              Number(totalSum) -
-              (orderData?.pay_bonus ? Number(orderData?.pay_bonus) : 0),
+            amount: totalAmount,
           };
           console.log(paymeData);
           const paymeResult = await paymeCreate(paymeData);
@@ -277,11 +284,8 @@ const Payment = ({ locale, place, auth }) => {
         case "click":
           const clickData = {
             id: getRandomDatePlusNumber(),
-            // amount: 1000,
             date: getTodayDate(),
-            amount:
-              Number(totalSum) -
-              (orderData?.pay_bonus ? Number(orderData?.pay_bonus) : 0),
+            amount: totalAmount,
           };
           let paymentDataC = {
             amount: clickData?.amount,
@@ -310,16 +314,13 @@ const Payment = ({ locale, place, auth }) => {
           }
           const cardData = {
             id: getRandomDatePlusNumber(),
-            // amount: 1000,
             expireDate: Number(
               selectCard?.expiryDate.split("/")[1] +
                 "" +
                 selectCard?.expiryDate.split("/")[0]
             ),
             cardNumber: selectCard?.cardNumber?.replace(/\s/g, ""),
-            amount:
-              Number(totalSum) -
-              (orderData?.pay_bonus ? Number(orderData?.pay_bonus) : 0),
+            amount: totalAmount,
           };
           console.log(cardData);
           const resultCard = await payCard(cardData);
@@ -381,7 +382,7 @@ const Payment = ({ locale, place, auth }) => {
             const result = await paymeCheck(paymeData);
             console.log(result);
             if (result[1]?.result?.state == 4) {
-              toast.success("To'lov muvofaqiyatli yakunlandi!");
+              toast.success(paymentText("pay_success"));
               localStorage.setItem(
                 "paymentData",
                 JSON.stringify({
@@ -394,7 +395,7 @@ const Payment = ({ locale, place, auth }) => {
                 success: true,
               });
             } else {
-              toast.error("Kartangizni tekshiring , to'lov tasdiqlanmadi!!!");
+              toast.error(paymentText("pay_error"));
             }
           }
           break;
@@ -409,9 +410,9 @@ const Payment = ({ locale, place, auth }) => {
             console.log(result);
 
             if (result[1]?.error_code) {
-              toast.error("Kartangizni tekshiring , to'lov tasdiqlanmadi!!!");
+              toast.error(paymentText("pay_error"));
             } else {
-              toast.success("To'lov muvofaqiyatli yakunlandi!");
+              toast.success(paymentText("pay_success"));
               localStorage.setItem(
                 "paymentData",
                 JSON.stringify({
@@ -435,7 +436,7 @@ const Payment = ({ locale, place, auth }) => {
             console.log(cardData);
             const result = await checkCard(cardData);
             if (result?.error == null) {
-              toast.success("To'lov muvofaqiyatli yakunlandi!");
+              toast.success(paymentText("pay_success"));
               localStorage.setItem(
                 "paymentData",
                 JSON.stringify({
@@ -450,7 +451,7 @@ const Payment = ({ locale, place, auth }) => {
                 transactionId: result.result?.transactionId,
               });
             } else {
-              toast.error("Kartangizni tekshiring , to'lov tasdiqlanmadi!!!");
+              toast.error(paymentText("pay_error"));
             }
           }
           break;
@@ -493,7 +494,6 @@ const Payment = ({ locale, place, auth }) => {
             const decryptedString = decryptData(card, hashSecretKey);
             return JSON.parse(decryptedString);
           } catch (error) {
-            console.error("Failed to decrypt or parse card:", error);
             return null;
           }
         })
@@ -539,7 +539,12 @@ const Payment = ({ locale, place, auth }) => {
         {paymentText("thanks_payment")}
       </h2>
       {paymentData && paymentData?.success ? (
-        <div>To'lov uchun raxmat</div>
+        <div className="flex justify-start items-center w-full gap-2">
+          <Image src="/assets/thankspay.png" alt="pay" height={50} width={50} />
+          <h1 className="textNormal4 font-bold text-primary">
+            {paymentText("thanks_payment")}
+          </h1>
+        </div>
       ) : (
         <>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -550,7 +555,7 @@ const Payment = ({ locale, place, auth }) => {
                 key={item.id}
                 className={`w-[118px] min-h-[70px] rounded-[7px] border-[#004032] border-b-2 p-3 flex flex-col justify-start gap-1
                   ${
-                    !auth?.client_id && item?.type == "cash"
+                    !auth?.client_id && item?.type == "cash" && !spot
                       ? "opacity-[0.5]"
                       : ""
                   }
@@ -618,27 +623,25 @@ const Payment = ({ locale, place, auth }) => {
                         ) : (
                           <HandCoins size={48} />
                         )}
-                        <h1 className="w-full">To'lov qilish</h1>
+                        <h1 className="w-full">{paymentText("pay")}</h1>
                       </div>
                     </Button>
                   </AlertDialogTrigger>
                   <AlertDialogContent className="w-11/12 rounded-md">
                     <AlertDialogHeader>
                       <AlertDialogTitle>
-                        Rostdan ham to'lov qilmoqchimisiz?
+                        {paymentText("sure_to_pay")}
                       </AlertDialogTitle>
                       <AlertDialogDescription>
-                        To'lov qilgandan so'ng buyurtmangizga o'zgartirish
-                        kirita olmaysiz. Faqatgina to'lovni tasdiqlashingiz
-                        mumkin bo'ladi!!!
+                        {paymentText("sure_desc")}
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogCancel>{all("cancel")}</AlertDialogCancel>
                       <AlertDialogAction asChild>
                         <Button onClick={handlePayment}>
                           <HandCoins size={48} />
-                          To'lov qilish
+                          {paymentText("pay")}
                         </Button>
                       </AlertDialogAction>
                     </AlertDialogFooter>
@@ -681,7 +684,7 @@ const Payment = ({ locale, place, auth }) => {
                       ) : (
                         <BadgeCheck size={48} />
                       )}
-                      <h1>To'lov tekshirish</h1>
+                      <h1>{paymentText("check")}</h1>
                     </div>
                   </Button>
                 ) : (
@@ -691,10 +694,10 @@ const Payment = ({ locale, place, auth }) => {
                       <AlertDialogContent className="rounded-md w-11/12 max-w-[365px] ">
                         <AlertDialogHeader>
                           <AlertDialogTitle className="text-xl text-center relative">
-                            To'lovni tasdiqlash
+                            {paymentText("check")}
                           </AlertDialogTitle>
                           <AlertDialogDescription className="text-black/60 text-center text-sm">
-                            Sms quyidagi raqamga yuborildi <br />
+                            {paymentText("otp_desc")} <br />
                             {paymentData?.resultCard?.otpSentPhone}
                           </AlertDialogDescription>
                         </AlertDialogHeader>
@@ -721,14 +724,14 @@ const Payment = ({ locale, place, auth }) => {
                                   onClick={handlePayment}
                                   className="w-full bg-primary text-white py-2 rounded-md hover:opacity-90"
                                 >
-                                  Qayta urunish
+                                  {paymentText("otp_again")}
                                 </button>
                               ) : (
                                 <button
                                   disabled
                                   className="w-full bg-gray-300 text-gray-600 py-2 rounded-md"
                                 >
-                                  {countdown} soniya
+                                  {countdown} {paymentText("secound")}
                                 </button>
                               )}
                             </div>
@@ -737,7 +740,7 @@ const Payment = ({ locale, place, auth }) => {
                               onClick={handleCheck}
                               className="w-full bg-primary text-white py-2 rounded-md hover:opacity-90"
                             >
-                              Tasdiqlash
+                              {all("confirm")}
                             </button>
                           )}
                         </AlertDialogFooter>
@@ -747,7 +750,7 @@ const Payment = ({ locale, place, auth }) => {
                           }}
                           className="w-full bg-red-500 text-white py-2 rounded-md hover:opacity-90"
                         >
-                          Bekor qilish
+                          {all("cancel")}
                         </button>
                       </AlertDialogContent>
                     </AlertDialog>
@@ -760,7 +763,7 @@ const Payment = ({ locale, place, auth }) => {
                     }}
                     className="w-full bg-red-500 text-white py-2 px-3 rounded-md hover:opacity-90"
                   >
-                    Bekor qilish
+                    {all("cancel")}
                   </button>
                 )}
               </div>

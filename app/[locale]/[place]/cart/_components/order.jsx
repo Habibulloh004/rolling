@@ -93,7 +93,7 @@ const Order = ({ spotDataFilial, auth, searchParamsData, locale, place }) => {
   const { spot: spotIdSpot, table_id, table_num, service } = searchParamsData;
   const router = useRouter();
   const pathname = usePathname();
-
+  const paymentText = useTranslations("Cart.Payment");
   const handleSetBonus = () => {
     setOrderData({ ...orderData, pay_bonus: Number(bonus) });
     setBonus(0);
@@ -107,11 +107,11 @@ const Order = ({ spotDataFilial, auth, searchParamsData, locale, place }) => {
       !paymentData &&
       !paymentData?.payment_id
     ) {
-      toast.error("To'lovni amalga oshirmadingiz!!!");
+      toast.error(paymentText("you_not_pay"));
       return null;
     }
     if (paymentData && paymentData?.payment_id && !paymentData?.success) {
-      toast.error("To'lovni tasdiqlamadingiz");
+      toast.error(paymentText("you_not_check"));
       return null;
     }
     if (products.length == 0) {
@@ -197,14 +197,18 @@ const Order = ({ spotDataFilial, auth, searchParamsData, locale, place }) => {
         default:
           commentSpot = `${commentSpot ?? ""}Тип оплаты : наличными`;
       }
-      console.log(spotDataFilial);
 
       if (spotIdSpot) {
         commentSpot = `${
           commentSpot ? commentSpot : ""
         }\nНомер стола : ${table_num} \nТип услуги : ${
           service == "self" ? "самообслуживание" : "официант"
-        }/\nНомер телефона : ${phone}`;
+        }\nНомер телефона : ${phone}`;
+        commentSpot = `${commentSpot ? commentSpot : ""}\nОбщая сумма : ${
+          service == "waiter"
+            ? Number(totalSum + (totalSum * 10) / 100)
+            : Number(totalSum)
+        }`;
       } else if (!auth?.client_id) {
         commentSpot = `${commentSpot}\nНомер телефона : ${phone}`;
       }
@@ -233,18 +237,18 @@ const Order = ({ spotDataFilial, auth, searchParamsData, locale, place }) => {
       let pickupData = {
         address_comment: "no",
         all_price: Number(totalSum * 100),
-        client_address: `${0},${0}`,
+        client_address: `41.316421,69.247890`,
         client_id: auth?.client_id ? auth?.client_id : "25562",
         comment: commentSpot,
         created_at: formatCreatedAt(),
         payed_bonus: pay_bonus ? Number(pay_bonus) * 100 : 0,
         payed_sum: Number(+totalSum - (pay_bonus ? +pay_bonus : 0)) * 100,
         payment: payment_method == "cash" ? "cash" : "creditCard",
-        phone: auth?.client_id ? `+${auth?.phone_number}` : phone,
+        phone: auth?.client_id ? `+${auth?.phone_number}` : "+998771052018",
         products: JSON.stringify(filterProductsAbdugani),
         promotion: "no",
         spot_id: Number(spot_id),
-        status: "accept",
+        status: "",
         type: `take_away ${spot_name}`,
       };
 
@@ -309,7 +313,11 @@ const Order = ({ spotDataFilial, auth, searchParamsData, locale, place }) => {
 📦 Новый заказ! №${transaction_id}
 🛒 Название филиал: ${spotDataFilial?.response?.name}
 📞 Телефон: +998771244444
-💵 Сумма заказа: ${formatNumber(totalSum)} сум
+💵 Сумма заказа: ${formatNumber(
+            service == "waiter"
+              ? Number(totalSum + (totalSum * 10) / 100)
+              : Number(totalSum)
+          )} сум
 💳 Метод оплаты: ${
             orderData?.payment_method == "cash"
               ? "Наличные"
@@ -351,49 +359,51 @@ const Order = ({ spotDataFilial, auth, searchParamsData, locale, place }) => {
           setSelectCard(null);
           setProductsData([]);
           toast.success(all("order_created"));
-          router.push(`/${locale}/${place}`);
+          router.push(
+            `/${locale}/${place}?spot=${spotIdSpot}&table_id=${table_id}&table_num=${table_num}&service=${service}`
+          );
         }
       } else {
         if (activeTab == "pickup") {
           const res = await createOrder(pickupData);
           console.log({ res });
           if (res?.order_id) {
-            const express = await createOrderPoster({
-              ...spotData,
-              comment: JSON.stringify({
-                order_id: res?.order_id,
-              }),
-            });
+            // const express = await createOrderPoster({
+            //   ...spotData,
+            //   comment: JSON.stringify({
+            //     order_id: res?.order_id,
+            //   }),
+            // });
 
-            if (express) {
-              const message = `
-📦 Новый заказ! №${res?.order_id}
-🛒 Название филиал: ${spot_name}
-📞 Телефон: ${auth?.client_id ? `+${auth?.phone_number}` : "+998771052018"}
-🏠 Адрес: Не указан
-🔗 [Посмотреть на карте] Не указан"
-🗺️ Расстояние:0 км
-💵 Сумма заказа: ${formatNumber(totalSum)} сум
-💳 Метод оплаты: ${
-                orderData?.payment_method == "cash"
-                  ? "Наличные"
-                  : "Карта (Оплачено)"
-              }
-🎁 Бонусы: ${Number(pay_bonus ?? 0)} сум
-💵 К оплате: ${Number(totalSum) - pay_bonus ? Number(pay_bonus) : 0} сум
-🛍 Тип заказа: На вынос ${spot_name}
-🚚 Доставка: 0
-📦 Количество заказов: ${commentClient?.length}
-✏️ Комментарий:${commentSpot}
-✏️ Комментарий к адресу:${address_comment}
-`.trim();
-              console.log(message);
-              await axios.get(
-                `https://api.telegram.org/bot7051935328:AAFJxJAVsRTPxgj3rrHWty1pEUlMkBgg9_o/sendMessage?chat_id=-1002211902296&text=${encodeURIComponent(
-                  message
-                )}`
-              );
-            }
+            //             if (express) {
+            //               const message = `
+            // 📦 Новый заказ! №${res?.order_id}
+            // 🛒 Название филиал: ${spot_name}
+            // 📞 Телефон: ${auth?.client_id ? `+${auth?.phone_number}` : "+998771052018"}
+            // 🏠 Адрес: Не указан
+            // 🔗 [Посмотреть на карте] Не указан"
+            // 🗺️ Расстояние:0 км
+            // 💵 Сумма заказа: ${formatNumber(totalSum)} сум
+            // 💳 Метод оплаты: ${
+            //                 orderData?.payment_method == "cash"
+            //                   ? "Наличные"
+            //                   : "Карта (Оплачено)"
+            //               }
+            // 🎁 Бонусы: ${Number(pay_bonus ?? 0)} сум
+            // 💵 К оплате: ${Number(totalSum) - pay_bonus ? Number(pay_bonus) : 0} сум
+            // 🛍 Тип заказа: На вынос ${spot_name}
+            // 🚚 Доставка: 0
+            // 📦 Количество заказов: ${auth?.client_id ? commentClient?.length : 1}
+            // ✏️ Комментарий:${commentSpot}
+            // ✏️ Комментарий к адресу:${address_comment}
+            // `.trim();
+            //               console.log(message);
+            //               await axios.get(
+            //                 `https://api.telegram.org/bot7051935328:AAFJxJAVsRTPxgj3rrHWty1pEUlMkBgg9_o/sendMessage?chat_id=-1002211902296&text=${encodeURIComponent(
+            //                   message
+            //                 )}`
+            //               );
+            //             }
             const nowOrder = {
               ...pickupData,
               order_id: res.order_id,

@@ -20,16 +20,20 @@ export default function middleware(req) {
       const locale = pathname.split("/")[1] || defaultLocale;
 
       // Check if the current pathname matches the desired cart URL
+      let isRederectBool = false;
 
       let cartPath = `/${locale}/${parsedPaymentData?.place}/cart`;
+      let cartPathAdd = `/${locale}/${parsedPaymentData?.place}/profile/address/add`;
+      if (pathname == cartPath || pathname == cartPathAdd) {
+        isRederectBool = false;
+      } else {
+        isRederectBool = true;
+      }
       let cartPathCheck = `/${locale}/${parsedPaymentData?.place}/cart`;
       if (parsedPaymentData?.place == "branch") {
         cartPath = `/${locale}/${parsedPaymentData?.place}/cart?spot=${parsedPaymentData?.spot}&table_id=${parsedPaymentData?.table_id}&table_num=${parsedPaymentData?.table_num}&service=${parsedPaymentData?.service}`;
       }
-      if (
-        parsedPaymentData?.payment_id &&
-        pathname !== cartPathCheck // Avoid redirect loop
-      ) {
+      if (parsedPaymentData?.payment_id && isRederectBool) {
         return NextResponse.redirect(new URL(cartPath, req.url));
       }
     } catch (error) {

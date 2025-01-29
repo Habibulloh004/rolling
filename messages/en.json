@@ -44,7 +44,7 @@
     "self_desc": "The customer serves himself",
     "selected": "Selected",
     "no_active": "Currently inactive",
-    "no_auth": "You are not logged in!",
+    "no_auth": "Only registered users participate in our bonus system and receive up to 30% bonuses from each order. You can use them 100% when paying for any dish!!",
     "products_empty": "You have not selected a product!",
     "phone_empty": "Phone number does not exist!",
     "order_empty": "No orders available.",
@@ -304,10 +304,23 @@
       "chat_info": "If there are difficulties, our operators will contact you via chat."
     },
     "Payment": {
-      "card": "By Card",
-      "cash": "By Cash",
-      "card_name": "Card Name",
-      "thanks_payment": "Thanks for pay"
+      "card": "By card",
+      "cash": "By cash",
+      "card_name": "Card name",
+      "thanks_payment": "Payment method",
+      "pay": "Payment",
+      "check": "Check payment",
+      "otp_desc": "SMS has been sent to the following number",
+      "otp_error": "",
+      "otp_again": "Try again",
+      "otp_cancel": "Cancel",
+      "secound": "seconds",
+      "sure_to_pay": "Are you sure you want to pay?",
+      "sure_desc": "After payment, you will not be able to make changes to your order. You will only have to confirm the payment!!!",
+      "pay_error": "Check your card, payment was not confirmed!!!",
+      "pay_success": "Payment was successfully completed!",
+      "you_not_pay": "You did not make the payment!!!",
+      "you_not_check": "You did not confirm the payment!!!"
     },
     "Total": {
       "total": "Total Amount",
@@ -437,7 +450,7 @@
           "32": {
             "title": "Payment Methods",
             "methods": {
-             "Cash": "Cash on delivery",
+              "Cash": "Cash on delivery",
               "Online": "Online payments via Payme, Click, or Uzum"
             }
           },

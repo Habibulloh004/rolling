@@ -56,6 +56,7 @@ export default async function Layout({ children, params }) {
       <head>
         <meta name="yandex-verification" content="2eb6c0631cdd4d80" />
         <meta httpEquiv="Content-Type" content="text/html; charset=UTF-8" />
+        <link rel="shortcut icon" href="/app/favicon.ico" type="image/x-icon" />
       </head>
       <body
         className={`${poppins.className} antialiased min-h-screen flex flex-col`}

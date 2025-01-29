@@ -90,6 +90,7 @@ const Basket = async ({ params, searchParams }) => {
               .slice(0, 10)}
             locale={locale}
             place={path.place}
+            spotData={spotData}
             searchParamsData={searchParamsData}
           />
         </div>
@@ -109,6 +110,7 @@ const Basket = async ({ params, searchParams }) => {
             searchParamsData={searchParamsData}
             locale={locale}
             place={path.place}
+            spotDataFilial={spotData}
           />
         </div>
         {/* Carousel for popular categories */}

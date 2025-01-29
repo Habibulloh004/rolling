@@ -58,17 +58,22 @@ export default function OrderItemComponent({
             )}&lon=${String(location[1])}&format=json&accept-language=${locale}`
           );
           const addressRes = await res.json();
-          switch (orderData?.status) {
+          console.log(orderData);
+
+          switch (order?.status) {
+            case "":
+              setCurrentStep(0);
+              break;
             case "accept":
               setCurrentStep(1);
               break;
-            case "waiting":
+            case "cooking":
               setCurrentStep(2);
               break;
-            case "cooking":
+            case "delivery":
               setCurrentStep(3);
               break;
-            case "delivery":
+            case "finished":
               setCurrentStep(4);
               break;
             default:
@@ -123,7 +128,7 @@ export default function OrderItemComponent({
                   {orderData?.address_comment}
                 </p>
                 <div className="mt-5 w-full">
-                  <Stepper currentStep={1} />
+                  <Stepper currentStep={currentStep} />
                 </div>
               </div>
             </>

@@ -5,18 +5,49 @@ import { NextResponse } from "next/server";
 const intlMiddleware = createMiddleware(routing);
 
 export default function middleware(req) {
-  const { pathname } = req.nextUrl;
+  const { pathname, params } = req.nextUrl;
+  console.log({ params });
+
   const defaultLocale = "uz"; // Default locale
   const defaultPlace = "web"; // Default place
 
-  // Match root or locale-only paths and redirect to default `/web`
+  const cookies = req.cookies;
+  const paymentData = cookies.get("paymentData");
+
+  // Parse paymentData cookie
+  if (paymentData?.value) {
+    try {
+      const parsedPaymentData = JSON.parse(paymentData?.value);
+      const locale = pathname.split("/")[1] || defaultLocale;
+
+      // Check if the current pathname matches the desired cart URL
+
+      let cartPath = `/${locale}/${parsedPaymentData?.place}/cart`;
+      let cartPathCheck = `/${locale}/${parsedPaymentData?.place}/cart`;
+      if (parsedPaymentData?.place == "branch") {
+        cartPath = `/${locale}/${parsedPaymentData?.place}/cart?spot=${parsedPaymentData?.spot}&table_id=${parsedPaymentData?.table_id}&table_num=${parsedPaymentData?.table_num}&service=${parsedPaymentData?.service}`;
+      }
+      if (
+        parsedPaymentData?.payment_id &&
+        pathname !== cartPathCheck // Avoid redirect loop
+      ) {
+        return NextResponse.redirect(new URL(cartPath, req.url));
+      }
+    } catch (error) {
+      console.error("Payment data parsing error:", error);
+    }
+  }
+
+  // Handle locale-only paths (e.g., `/uz`, `/ru`, `/en`)
   const matchLocaleOnly = /^\/(uz|ru|en)$/;
   if (matchLocaleOnly.test(pathname)) {
     const locale = pathname.slice(1) || defaultLocale;
-    return NextResponse.redirect(new URL(`/${locale}/${defaultPlace}`, req.url));
+    return NextResponse.redirect(
+      new URL(`/${locale}/${defaultPlace}`, req.url)
+    );
   }
 
-  // Apply `intlMiddleware` for other requests
+  // Pass request through intlMiddleware
   const intlResponse = intlMiddleware(req);
   if (intlResponse) {
     return intlResponse;
@@ -26,9 +57,13 @@ export default function middleware(req) {
 }
 
 export const config = {
-  matcher: ["/", "/(uz|ru|en)/:path*","/(uz|ru|en)/register","/(uz|ru|en)/login"], // Match root `/`, locales, and paths
+  matcher: [
+    "/",
+    "/(uz|ru|en)/:path*",
+    "/(uz|ru|en)/register",
+    "/(uz|ru|en)/login",
+  ],
 };
-
 
 // import { NextResponse } from "next/server";
 // import createMiddleware from "next-intl/middleware";

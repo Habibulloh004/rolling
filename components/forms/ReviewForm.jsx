@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Form } from "../ui/form";
 import CustomFormField, { FormFieldType } from "../shared/customFormField";
 import SubmitButton from "../shared/submitButton";
@@ -16,7 +16,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { useToast } from "@/hooks/use-toast";
 
-export default function ReviewForm() {
+export default function ReviewForm({id}) {
   const { toast } = useToast()
   const ReviewValidation = UpdateReviewValidation();
   const allT = useTranslations("All");
@@ -24,6 +24,7 @@ export default function ReviewForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [rating, setRating] = useState(0);
   const router = useRouter();
+  const [orderData, setOrderData] = useState([]);
   const form = useForm({
     resolver: zodResolver(ReviewValidation),
     defaultValues: {
@@ -36,8 +37,15 @@ export default function ReviewForm() {
     setRating(rate);
   };
 
+  useEffect(() => {
+    const order = localStorage.getItem("orderList")
+      ? JSON.parse(localStorage.getItem("orderList"))
+      : [];
+    setOrderData(order);
+  }, []);
+
   const onSubmit = async (values) => {
-    if(!Cookies.get("client")) {
+    if (!Cookies.get("client")) {
       toast({
         variant: "destructive",
         title: allT("review_err"),
@@ -47,9 +55,11 @@ export default function ReviewForm() {
     setIsLoading(true);
     const feedbackMessage = `
 📋 Новый отзыв:
+#️⃣ Клиент ИД:
 👤 Полное имя: ${values.fullName}
 ⭐ Рейтинг: ${rating}/5
 💬 Отзыв: ${values.text}
+📦 Order_id: ${id}
   `.trim();
 
     await axios.get(
@@ -63,6 +73,9 @@ export default function ReviewForm() {
     return null;
   };
 
+
+
+  console.log(orderData);
   return (
     <Form {...form}>
       <form

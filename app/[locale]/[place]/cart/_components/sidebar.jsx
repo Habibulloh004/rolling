@@ -18,24 +18,13 @@ const CartSidebar = ({ locale, place, spotData, searchParamsData, auth }) => {
   const [clientData, setClientData] = useState(null);
   const [branchsData, setBranchesData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const { setOrderData, orderData } = useOrderStore();
+  const { setOrderData, orderData, paymentData } = useOrderStore();
+
   const handleTabChange = (value) => {
+    if (paymentData && paymentData?.payment_id) {
+      return null;
+    }
     setActiveTab(value);
-    setOrderData({
-      ...orderData,
-      service_mode: (() => {
-        switch (value) {
-          case "delivery":
-            return 3;
-          case "pickup":
-            return 2;
-          case "spot":
-            return 2;
-          default:
-            return 3;
-        }
-      })(),
-    });
   };
 
   useEffect(() => {
@@ -76,21 +65,27 @@ const CartSidebar = ({ locale, place, spotData, searchParamsData, auth }) => {
       >
         <TabsList className="w-full bg-transparent min-h-8 md:min-h-10 border p-1">
           <TabsTrigger
-            disabled={place != "web"}
+            disabled={
+              place != "web" || (paymentData && paymentData?.payment_id)
+            }
             className="w-full h-8 md:h-10 textSmall2"
             value="delivery"
           >
             {deliveryText("title")}
           </TabsTrigger>
           <TabsTrigger
-            disabled={place != "web"}
+            disabled={
+              place != "web" || (paymentData && paymentData?.payment_id)
+            }
             className="w-full h-8 md:h-10 textSmall2"
             value="pickup"
           >
             {pickupText("title")}
           </TabsTrigger>
           <TabsTrigger
-            disabled={place == "web"}
+            disabled={
+              place == "web" || (paymentData && paymentData?.payment_id)
+            }
             className="w-full h-8 md:h-10 textSmall2"
             value="spot"
           >

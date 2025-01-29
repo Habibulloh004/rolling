@@ -203,7 +203,6 @@ export const useOrderStore = create((set) => ({
     spot_name: "",
     phone: "",
     products: [],
-    service_mode: 3,
     payment_method: "cash",
     total: 0,
     delivery_price: 0,
@@ -221,6 +220,21 @@ export const useOrderStore = create((set) => ({
     client_addresses_id: null,
   },
   totalSum: 0,
+  paymentData: null,
+  selectCard: null,
+  setSelectCard: (data) => {
+    set((state) => {
+      localStorage.setItem("selectCard", JSON.stringify(data));
+      return { selectCard: data };
+    });
+  },
+  setPaymentData: (data) => {
+    set((state) => {
+      localStorage.setItem("paymentData", JSON.stringify(data));
+      Cookies.set("paymentData", JSON.stringify(data), { expires: 1 });
+      return { paymentData: data };
+    });
+  },
   setTotalSum: (data) =>
     set(() => {
       localStorage.setItem("totalSum", JSON.stringify(data));
@@ -235,6 +249,8 @@ export const useOrderStore = create((set) => ({
   initializeOrderData: () => {
     const orderData = localStorage.getItem("orderData");
     const totalSum = localStorage.getItem("totalSum");
+    const paymentData = localStorage.getItem("paymentData");
+    const selectCard = localStorage.getItem("selectCard");
     const parsedOrderData = orderData
       ? JSON.parse(orderData)
       : {
@@ -242,7 +258,6 @@ export const useOrderStore = create((set) => ({
           spot_name: "",
           phone: "",
           products: [],
-          service_mode: 3,
           payment_method: "cash",
           total: 0,
           delivery_price: 0,
@@ -261,6 +276,8 @@ export const useOrderStore = create((set) => ({
         };
     set({ orderData: { ...parsedOrderData, delivery_price: 0 } });
     set({ totalSum: totalSum || 0 });
+    set({ paymentData: paymentData ? JSON.parse(paymentData) : null });
+    set({ selectCard: selectCard ? JSON.parse(selectCard) : null });
   },
   resetOrder: () => {
     set({
@@ -269,7 +286,6 @@ export const useOrderStore = create((set) => ({
         spot_name: "",
         phone: "",
         products: [],
-        service_mode: 3,
         payment_method: "cash",
         total: 0,
         delivery_price: 0,

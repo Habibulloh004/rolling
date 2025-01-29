@@ -74,7 +74,7 @@ const AboutUs = async ({ params }) => {
               {aboutUsT("btnContact")}
             </Link>
             <Link
-              href={`/${param.locale}/${param.place}reviews`}
+              href={`/${param.locale}/${param.place}/reviews`}
               className="w-full h-[50px] flex items-center justify-center rounded-md bg-primary text-white py-2 text-xs md:text-sm text-center"
             >
               {aboutUsT("btnReview")}
@@ -94,14 +94,7 @@ const AboutUs = async ({ params }) => {
           </div>
         </section>
         <section className="hidden sm:block  w-[30%] space-y-4">
-          <Image
-            src={`/assets/aboutLogo.png`}
-            alt={`aboutlogo`}
-            // fill
-            width={500}
-            height={100}
-            className="w-full"
-          />
+         
           <p className="font-semibold text-muted text-center">
             {aboutUsT("logoBottom")}
           </p>

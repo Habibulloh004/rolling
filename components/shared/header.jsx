@@ -28,7 +28,7 @@ import {
 } from "@/store";
 import Link from "next/link";
 import LngChange from "./lngChange";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import Cookies from "js-cookie";
@@ -62,7 +62,7 @@ export default function Header({
   const t = useTranslations("HomePage");
   const { products } = useProductStore();
   const { toggleOpen, open, initializeFavorites } = useStore();
-  const { initializeOrderData } = useOrderStore();
+  const { initializeOrderData, paymentData } = useOrderStore();
   const { initializeProducts } = useProductStore();
   const [isOpen, setisOpen] = useState(true);
   const [cl, setCl] = useState(
@@ -73,6 +73,14 @@ export default function Header({
   const [filteredCategories, setFilteredCategories] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [openSearch, setOpenSearch] = useState(false);
+  const router = useRouter();
+
+
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
  
   useEffect(() => {
     if (searchTerm.trim() === "") {
@@ -105,7 +113,7 @@ export default function Header({
   }, []);
 
   useEffect(() => {
-    setCl(client); // Parse JSON string if it's a JSON object
+    setCl(client);
   }, [client]);
 
   useEffect(() => {
@@ -126,7 +134,7 @@ export default function Header({
     }
   }, [spot, table_id, table_num, service]);
 
-  const wrapWithLink = (text, words, loc) => {
+    const wrapWithLink = (text, words, loc) => {
     const parts = text.split(new RegExp(`(${words.join("|")})`, "g"));
     return parts.map((part, index) =>
       words.includes(part) ? (
@@ -148,6 +156,11 @@ export default function Header({
     ["Зарегистрируйтесь", "Register", "Hozir ro'yxatdan o'ting"],
     param.locale
   );
+
+
+  if (!isMounted) {
+    return null;
+  }
 
   return (
     <>
@@ -190,7 +203,7 @@ export default function Header({
                   <Image
                     src={`${item.icon}`}
                     alt={`${item.title}`}
-                    width={29}
+                    width={item.id == 3 ? 25 : 29}
                     height={30}
                     className=""
                   />
@@ -206,7 +219,6 @@ export default function Header({
                 </Link>
               );
             })}
-
             <Link
               href={`${
                 cl ? `${getUrl(pathName)}/profile` : `${getUrl(pathName)}/login`
@@ -319,7 +331,7 @@ export default function Header({
                     <Image
                       src={`${item.icon}`}
                       alt={`${item.title}`}
-                      width={29}
+                      width={item.id == 3 ? 25 : 29}
                       height={30}
                       className="lg:w-7 lg:h-7 w-[30px]"
                     />

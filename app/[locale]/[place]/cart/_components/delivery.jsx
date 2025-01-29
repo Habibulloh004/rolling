@@ -25,7 +25,7 @@ const Delivery = ({ locale, auth, clientData, place }) => {
   const profileT = useTranslations("Profile");
   const cartText = useTranslations("Cart");
   const all = useTranslations("All");
-  const { orderData, setOrderData } = useOrderStore();
+  const { orderData, setOrderData, paymentData } = useOrderStore();
   const [modalAdd, setModalAdd] = useState(false);
   const { setActiveTab } = useStore();
 
@@ -113,7 +113,9 @@ const Delivery = ({ locale, auth, clientData, place }) => {
               className="max-w-xl w-11/12 md:w-full rounded-md max-sm:px-3"
             >
               <DialogHeader className={""}>
-                <DialogTitle className="w-full text-start lg:text-md text-base">{deliveryText("selected_address")}</DialogTitle>
+                <DialogTitle className="w-full text-start lg:text-md text-base">
+                  {deliveryText("selected_address")}
+                </DialogTitle>
                 <DialogDescription className="hidden">
                   This action cannot be undone. This will permanently delete
                   your account and remove your data from our servers.
@@ -146,15 +148,17 @@ const Delivery = ({ locale, auth, clientData, place }) => {
                     </p>
                   )}
                   <div className="flex justify-end items-center w-full">
-                    <Link href={`/${locale}/${place}/profile/address/add`}>
-                      <Button
-                        className={
-                          "h-8 max-sm:w-full max-sm:text-[12px] md:h-10 px-4 md:px-5 bg-transparent text-[#004032] shadow-none border-[1px] rounded-[8px] border-[#004032]"
-                        }
-                      >
-                        {all("add")}
-                      </Button>
-                    </Link>
+                    {!(paymentData && paymentData?.payment_id) && (
+                      <Link href={`/${locale}/${place}/profile/address/add`}>
+                        <Button
+                          className={
+                            "h-8 max-sm:w-full max-sm:text-[12px] md:h-10 px-4 md:px-5 bg-transparent text-[#004032] shadow-none border-[1px] rounded-[8px] border-[#004032]"
+                          }
+                        >
+                          {all("add")}
+                        </Button>
+                      </Link>
+                    )}
                   </div>
                 </section>
               </main>

@@ -94,14 +94,7 @@ const AboutUs = async ({ params }) => {
           </div>
         </section>
         <section className="hidden sm:block  w-[30%] space-y-4">
-          <Image
-            src={`/assets/aboutLogo.png`}
-            alt={`aboutlogo`}
-            // fill
-            width={500}
-            height={100}
-            className="w-full"
-          />
+         
           <p className="font-semibold text-muted text-center">
             {aboutUsT("logoBottom")}
           </p>

@@ -11,7 +11,6 @@ import GoogleAnalytics from "@/app/googleAnalytics";
 import { ApiService } from "@/service/api.services";
 import NextTopLoader from "nextjs-toploader";
 import { Toaster } from "sonner";
-import Chat from "@/app/chat";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -56,7 +55,16 @@ export default async function Layout({ children, params }) {
       <head>
         <meta name="yandex-verification" content="2eb6c0631cdd4d80" />
         <meta httpEquiv="Content-Type" content="text/html; charset=UTF-8" />
-        <link rel="shortcut icon" href="/app/favicon.ico" type="image/x-icon" />
+        <link
+          rel="shortcut icon"
+          href="../../favicon.ico"
+          type="image/x-icon"
+        />
+        <link
+          rel="shortcut icon"
+          href="/assets/favicon.ico"
+          type="image/x-icon"
+        />
       </head>
       <body
         className={`${poppins.className} antialiased min-h-screen flex flex-col`}
@@ -96,7 +104,6 @@ export default async function Layout({ children, params }) {
             }}
           />
           <Footer params={param} />
-    
         </NextIntlClientProvider>
 
         <noscript>

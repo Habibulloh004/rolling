@@ -5,8 +5,7 @@ import { NextResponse } from "next/server";
 const intlMiddleware = createMiddleware(routing);
 
 export default function middleware(req) {
-  const { pathname, params } = req.nextUrl;
-  console.log({ params });
+  const { pathname } = req.nextUrl;
 
   const defaultLocale = "uz"; // Default locale
   const defaultPlace = "web"; // Default place

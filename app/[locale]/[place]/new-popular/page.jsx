@@ -9,6 +9,19 @@ import {
   getLocalizedProduct,
 } from "@/lib/utils";
 
+export const metadata = {
+  title: "Популярные суши и роллы в Ташкенте | Хиты меню Rolling Sushi",
+  description:
+    "Лучшие суши и роллы в Ташкенте! Ознакомьтесь с хитами нашего меню и попробуйте самые популярные блюда от Rolling Sushi.",
+  keywords:
+    "популярные суши, топ роллы, японская кухня Ташкент, лучшие суши, доставка еды",
+  alternates: {
+    canonical: "https://rolling.uz/uz/web/new-popular",
+    ru: "https://rolling.uz/ru/web/new-popular",
+    en: "https://rolling.uz/en/web/new-popular",
+  },
+};
+
 const ColdRolls = async ({ params, searchParams }) => {
   const [locale, all, path, products, searchParamsData] = await Promise.all([
     getLocale(),

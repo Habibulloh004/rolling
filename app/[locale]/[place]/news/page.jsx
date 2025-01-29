@@ -8,6 +8,18 @@ import {
   CarouselItem,
 } from "@/components/ui/carousel";
 
+export const metadata = {
+  title: "Новости Rolling Sushi – Акции, скидки и новинки в Ташкенте",
+  description:
+    "Будьте в курсе всех новинок, акций и скидок Rolling Sushi! Следите за свежими новостями и получайте лучшие предложения.",
+  keywords:
+    "акции суши, скидки на роллы, новости японской кухни, Rolling Sushi, новинки меню",
+  alternates: {
+    canonical: "https://rolling.uz/uz/web/news",
+    ru: "https://rolling.uz/ru/web/news",
+    en: "https://rolling.uz/en/web/news",
+  },
+};
 
 const News = async ({ params }) => {
   const [param, bannersData, newsT] = await Promise.all([
@@ -38,8 +50,9 @@ const News = async ({ params }) => {
             return (
               <CarouselItem
                 key={i}
-                className={`basis-[100%] lg:basis-[45%] p-0 px-4 ${i == 0 && "max-sm:ml-8 max-md:ml-16 ml-8"
-                  }`}
+                className={`basis-[100%] lg:basis-[45%] p-0 px-4 ${
+                  i == 0 && "max-sm:ml-8 max-md:ml-16 ml-8"
+                }`}
               >
                 <PromotionCards param={param} item={item} />
               </CarouselItem>

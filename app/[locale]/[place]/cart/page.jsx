@@ -22,17 +22,18 @@ import {
 } from "@/lib/utils";
 import Card from "@/components/shared/card";
 
-export async function generateMetadata() {
-  return {
-    title: "Корзина - Rolling Sushi",
-    description:
-      "Просмотрите ваш заказ, выберите способ доставки и оформите покупку в Rolling Sushi.",
-    keywords: "корзина, оформить заказ, доставка суши, Rolling Sushi, Ташкент",
-    alternates: {
-      canonical: "https://rollingsushi.uz/cart",
-    },
-  };
-}
+export const metadata = {
+  title: "Ваш заказ в Rolling Sushi | Проверьте корзину перед оплатой",
+  description:
+    "Проверьте ваш заказ в Rolling Sushi и оформите быструю доставку суши в Ташкенте. Свежесть и качество гарантированы!",
+  keywords:
+    "корзина заказа, оформить заказ суши, доставка еды Ташкент, Rolling Sushi",
+  alternates: {
+    canonical: "https://rolling.uz/uz/web/cart",
+    ru: "https://rolling.uz/ru/web/cart",
+    en: "https://rolling.uz/en/web/cart",
+  },
+};
 
 const Basket = async ({ params, searchParams }) => {
   const cookieStore = await cookies();

@@ -43,7 +43,7 @@ const Basket = async ({ params, searchParams }) => {
   const [cart, products, locale, path, searchParamsData, all] =
     await Promise.all([
       getTranslations("Cart"),
-      ApiService.getPosterData("menu.getProducts"),
+      ApiService.getPosterData("menu.getProducts", "", 7200),
       getLocale(),
       params,
       searchParams,
@@ -54,7 +54,8 @@ const Basket = async ({ params, searchParams }) => {
   if (path.place === "branch") {
     spotData = await ApiService.getPosterData(
       "spots.getSpot",
-      `&spot_id=${searchParamsData.spot}`
+      `&spot_id=${searchParamsData.spot}`,
+      604800
     );
   }
   const productsIng = products?.response?.filter((item) => {

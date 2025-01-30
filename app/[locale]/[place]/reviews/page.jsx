@@ -14,7 +14,7 @@ const Reviews = async ({ params }) => {
   const [allT, param, reviewData] = await Promise.all([
     getTranslations("All"),
     params,
-    getData("/poster/google"),
+    getData("/poster/google", 86400),
   ]);
   return (
     <Container
@@ -48,7 +48,9 @@ const Reviews = async ({ params }) => {
                   i == 0 && "max-sm:ml-8 max-md:ml-16 ml-8"
                 }`}
               >
-                <Cards data={item} />
+                <a href="https://g.co/kgs/YJy7TYy" target="_blank">
+                  <Cards data={item} />
+                </a>
               </CarouselItem>
             );
           })}

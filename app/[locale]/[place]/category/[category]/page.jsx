@@ -27,7 +27,8 @@ export async function generateMetadata({ params }) {
   const [path, allT] = await Promise.all([params, getTranslations("All")]);
   const { response: category } = await ApiService.getPosterData(
     `menu.getCategory`,
-    `&category_id=${path.category.split("-")[0]}`
+    `&category_id=${path.category.split("-")[0]}`,
+    86400
   );
 
   return {
@@ -101,11 +102,13 @@ export default async function CategoryItems({ params, searchParams }) {
 
   const { response: categoryItems } = await ApiService.getPosterData(
     `menu.getProducts`,
-    `&category_id=${path.category}`
+    `&category_id=${path.category}`,
+    7200
   );
   const { response: category } = await ApiService.getPosterData(
     `menu.getCategory`,
-    `&category_id=${path.category}`
+    `&category_id=${path.category}`,
+    86400
   );
   const products = categoryItems.filter((c) => c.photo != null);
   const categoryName = getLocalizedCategoryName(category.category_name, locale);

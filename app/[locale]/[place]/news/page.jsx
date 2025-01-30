@@ -24,7 +24,7 @@ export const metadata = {
 const News = async ({ params }) => {
   const [param, bannersData, newsT] = await Promise.all([
     params,
-    getData("/banner/get_banners"),
+    getData("/banner/get_banners", 86400),
     getTranslations("NewsPage"),
   ]);
 

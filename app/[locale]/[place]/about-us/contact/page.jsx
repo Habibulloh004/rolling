@@ -15,7 +15,7 @@ export default async function Contact({ params }) {
   // Serverdan ma'lumotlarni olish
   const [param, spotData, locale] = await Promise.all([
     params,
-    ApiService.getPosterData("spots.getSpots"),
+    ApiService.getPosterData("spots.getSpots", "", 604800),
     getLocale(),
   ]);
 

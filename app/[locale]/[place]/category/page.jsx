@@ -37,8 +37,8 @@ export default async function Page({ params, searchParams }) {
       getLocale(),
       getTranslations("All"),
       params,
-      ApiService.getPosterData("menu.getCategories"),
-      ApiService.getPosterData("menu.getProducts"),
+      ApiService.getPosterData("menu.getCategories", "", 86400),
+      ApiService.getPosterData("menu.getProducts", "", 7200),
       searchParams,
     ]);
   const categories = categoriesData.response.filter(

@@ -2,9 +2,12 @@ import { posterToken, posterUrl } from "../lib/utils.js";
 import axios from "axios";
 
 export const ApiService = {
-  async getPosterData(url, props) {
+  async getPosterData(url, props, revalidateTime = 0) {
     const response = await axios.get(
-      `${posterUrl}/api/${url}?token=${posterToken}${props ? props : ""}`
+      `${posterUrl}/api/${url}?token=${posterToken}${props ? props : ""}`, 
+      {
+        next: { revalidate: revalidateTime }, // Данные кешируются на 60 секунд
+      }
     );
     return response.data;
   },

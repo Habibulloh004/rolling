@@ -27,7 +27,6 @@ export const metadata = {
 };
 
 export default async function HomePage({ params, searchParams }) {
-
   const [
     allT,
     bannersData,
@@ -38,11 +37,11 @@ export default async function HomePage({ params, searchParams }) {
     locale,
     path,
   ] = await Promise.all([
-    getTranslations('All'),
-    getData("/banner/get_banners"),
-    getData("/poster/google"),
-    ApiService.getPosterData("menu.getCategories"),
-    ApiService.getPosterData("menu.getProducts"),
+    getTranslations("All"),
+    getData("/banner/get_banners", 86400),
+    getData("/poster/google", 86400),
+    ApiService.getPosterData("menu.getCategories", "", 86400),
+    ApiService.getPosterData("menu.getProducts", "", 7200),
     searchParams,
     getLocale(),
     params,
@@ -52,7 +51,8 @@ export default async function HomePage({ params, searchParams }) {
   if (path.place === "branch") {
     spotData = await ApiService.getPosterData(
       "spots.getSpot",
-      `&spot_id=${searchParamsData.spot}`
+      `&spot_id=${searchParamsData.spot}`,
+      604800
     );
   }
 
@@ -97,7 +97,6 @@ export default async function HomePage({ params, searchParams }) {
           >
             {allT("more")}
             <ChevronRight size={18} />
-
           </Link>
         </div>
         <Carousel
@@ -113,8 +112,9 @@ export default async function HomePage({ params, searchParams }) {
               return (
                 <CarouselItem
                   key={i}
-                  className={`basis-[80%] sm:basis-[45%] lg:basis-[45%] xl:basis-[30%] p-0 mx-2 ${i == 0 && "max-sm:ml-8 max-md:ml-16 ml-8"
-                    }`}
+                  className={`basis-[80%] sm:basis-[45%] lg:basis-[45%] xl:basis-[30%] p-0 mx-2 ${
+                    i == 0 && "max-sm:ml-8 max-md:ml-16 ml-8"
+                  }`}
                 >
                   <a href="https://g.co/kgs/YJy7TYy" target="_blank">
                     <Cards data={item} />
@@ -125,7 +125,6 @@ export default async function HomePage({ params, searchParams }) {
           </CarouselContent>
         </Carousel>
       </div>
-  
     </Container>
   );
 }

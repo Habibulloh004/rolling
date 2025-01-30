@@ -27,7 +27,7 @@ const ColdRolls = async ({ params, searchParams }) => {
     getLocale(),
     getTranslations("All"),
     params,
-    ApiService.getPosterData("menu.getProducts"),
+    ApiService.getPosterData("menu.getProducts", "", 7200),
     searchParams,
   ]);
   const productsData = products.response.filter((item) => {

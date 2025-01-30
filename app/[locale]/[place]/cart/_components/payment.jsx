@@ -463,7 +463,7 @@ const Payment = ({ locale, place, auth }) => {
 
   useEffect(() => {
     const storedCountdown = localStorage.getItem("countdown");
-    if (storedCountdown) {
+    if (storedCountdown && !retry) {
       setCountdown(Number(storedCountdown));
     }
   }, []);
@@ -763,12 +763,30 @@ const Payment = ({ locale, place, auth }) => {
                               maxLength={6}
                             >
                               <InputOTPGroup>
-                                <InputOTPSlot index={0} />
-                                <InputOTPSlot index={1} />
-                                <InputOTPSlot index={2} />
-                                <InputOTPSlot index={3} />
-                                <InputOTPSlot index={4} />
-                                <InputOTPSlot index={5} />
+                                <InputOTPSlot
+                                  className="max-sm:w-[30px] max-sm:h-[30px]"
+                                  index={0}
+                                />
+                                <InputOTPSlot
+                                  className="max-sm:w-[30px] max-sm:h-[30px]"
+                                  index={1}
+                                />
+                                <InputOTPSlot
+                                  className="max-sm:w-[30px] max-sm:h-[30px]"
+                                  index={2}
+                                />
+                                <InputOTPSlot
+                                  className="max-sm:w-[30px] max-sm:h-[30px]"
+                                  index={3}
+                                />
+                                <InputOTPSlot
+                                  className="max-sm:w-[30px] max-sm:h-[30px]"
+                                  index={4}
+                                />
+                                <InputOTPSlot
+                                  className="max-sm:w-[30px] max-sm:h-[30px]"
+                                  index={5}
+                                />
                               </InputOTPGroup>
                             </InputOTP>
                           </div>
@@ -803,6 +821,9 @@ const Payment = ({ locale, place, auth }) => {
                           <button
                             onClick={() => {
                               setPaymentData(null);
+                              setRetry(true);
+                              setCountdown(60);
+                              localStorage.setItem("countdown",60)
                             }}
                             className="w-full bg-red-500 text-white py-2 rounded-md hover:opacity-90"
                           >
@@ -816,7 +837,7 @@ const Payment = ({ locale, place, auth }) => {
                     <button
                       onClick={() => {
                         setPaymentData(null);
-                        setRetry(true)
+                        setRetry(true);
                       }}
                       className="w-full bg-red-500 text-white py-2 px-3 rounded-md hover:opacity-90"
                     >

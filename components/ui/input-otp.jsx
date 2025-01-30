@@ -16,7 +16,7 @@ const InputOTP = React.forwardRef(({ className, containerClassName, ...props }, 
 InputOTP.displayName = "InputOTP"
 
 const InputOTPGroup = React.forwardRef(({ className, ...props }, ref) => (
-  <div ref={ref} className={cn("flex items-center gap-5", className)} {...props} />
+  <div ref={ref} className={cn("flex items-center gap-2 md:gap-5", className)} {...props} />
 ))
 InputOTPGroup.displayName = "InputOTPGroup"
 

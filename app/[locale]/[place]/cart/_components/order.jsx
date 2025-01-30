@@ -709,7 +709,7 @@ const Order = ({ spotDataFilial, auth, searchParamsData, locale, place }) => {
       </div>
       <AlertDialog open={isSuccess}>
         <AlertDialogTrigger className="hidden">Open</AlertDialogTrigger>
-        <AlertDialogContent>
+        <AlertDialogContent className="w-11/12 mx-auto rounded-md">
           <AlertDialogHeader>
             <AlertDialogTitle>{all("order_created")}</AlertDialogTitle>
             <AlertDialogDescription>
@@ -717,9 +717,7 @@ const Order = ({ spotDataFilial, auth, searchParamsData, locale, place }) => {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogAction onClick={handleRederect}>
-              {all("confirm")}
-            </AlertDialogAction>
+            <AlertDialogAction onClick={handleRederect}>OK</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

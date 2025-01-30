@@ -19,6 +19,17 @@ import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useTranslations } from "use-intl";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 // DiscountBadge Component
 const DiscountBadge = ({ auth }) => {
@@ -76,7 +87,7 @@ const DiscountBadge = ({ auth }) => {
 const Order = ({ spotDataFilial, auth, searchParamsData, locale, place }) => {
   const all = useTranslations("All");
   const total = useTranslations("Cart.Total");
-  const { activeTab,isDisabled } = useStore();
+  const { activeTab, isDisabled } = useStore();
   const [isLoading, setIsLoading] = useState(false);
   const [bonus, setBonus] = useState(0);
   const [activeBonus, setActiveBonus] = useState(false);
@@ -94,6 +105,7 @@ const Order = ({ spotDataFilial, auth, searchParamsData, locale, place }) => {
   const router = useRouter();
   const pathname = usePathname();
   const paymentText = useTranslations("Cart.Payment");
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const handleSetBonus = () => {
     setOrderData({ ...orderData, pay_bonus: Number(bonus) });
@@ -206,11 +218,6 @@ const Order = ({ spotDataFilial, auth, searchParamsData, locale, place }) => {
         }\nНомер стола : ${table_num} \nТип услуги : ${
           service == "self" ? "самообслуживание" : "официант"
         }\nНомер телефона : ${phone}`;
-        commentSpot = `${commentSpot ? commentSpot : ""}\nОбщая сумма : ${
-          service == "waiter"
-            ? Number(totalSum + (totalSum * 10) / 100)
-            : Number(totalSum)
-        }`;
       } else if (!auth?.client_id) {
         commentSpot = `${commentSpot}\nНомер телефона : ${phone}`;
       }
@@ -361,9 +368,7 @@ const Order = ({ spotDataFilial, auth, searchParamsData, locale, place }) => {
           setSelectCard(null);
           setProductsData([]);
           toast.success(all("order_created"));
-          router.push(
-            `/${locale}/${place}?spot=${spotIdSpot}&table_id=${table_id}&table_num=${table_num}&service=${service}`
-          );
+          setIsSuccess(true);
         }
       } else {
         if (activeTab == "pickup") {
@@ -498,6 +503,13 @@ const Order = ({ spotDataFilial, auth, searchParamsData, locale, place }) => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleRederect = () => {
+    setIsSuccess(false);
+    router.push(
+      `/${locale}/${place}?spot=${spotIdSpot}&table_id=${table_id}&table_num=${table_num}&service=${service}`
+    );
   };
 
   return (
@@ -698,6 +710,22 @@ const Order = ({ spotDataFilial, auth, searchParamsData, locale, place }) => {
           </div>
         )}
       </div>
+      <AlertDialog open={isSuccess}>
+        <AlertDialogTrigger className="hidden">Open</AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{all("order_created")}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {all("additional_info")}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction onClick={handleRederect}>
+              {all("confirm")}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

@@ -642,7 +642,7 @@ const Payment = ({ locale, place, auth }) => {
             ))}
           </div>
           <div className="w-full">
-            {orderData?.payment_method != "cash" && (
+            {orderData?.payment_method && orderData?.payment_method != "cash" && (
               <div className="w-full flex max-md:flex-col md:justify-between justify-center items-center gap-5">
                 <AlertDialog>
                   <AlertDialogTrigger asChild>

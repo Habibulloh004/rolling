@@ -140,16 +140,16 @@ const EditAddress = () => {
     setAddressData({ ...addressData, [name]: value });
   };
 
-  const MapClickHandler = () => {
-    useMapEvents({
-      click(e) {
-        const { lat, lng } = e?.latlng;
-        setLocation({ lat, lng });
-        localStorage.setItem("yourLocation", JSON.stringify({ lat, lng }));
-      },
-    });
-    return null;
-  };
+  // const MapClickHandler = () => {
+  //   useMapEvents({
+  //     click(e) {
+  //       const { lat, lng } = e?.latlng;
+  //       setLocation({ lat, lng });
+  //       localStorage.setItem("yourLocation", JSON.stringify({ lat, lng }));
+  //     },
+  //   });
+  //   return null;
+  // };
 
   useEffect(() => {
     const savedLocation = localStorage.getItem("yourLocation")
@@ -298,7 +298,7 @@ const EditAddress = () => {
             >
               {/* <Popup>{addressT("you_here")}</Popup> */}
             </Marker>
-            <MapClickHandler />
+            {/* <MapClickHandler /> */}
           </MapContainer>
           <Button
             onClick={handleFoundLocation}

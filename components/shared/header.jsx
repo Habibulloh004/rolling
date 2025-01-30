@@ -61,7 +61,7 @@ export default function Header({
   const allT = useTranslations("All");
   const t = useTranslations("HomePage");
   const { products } = useProductStore();
-  const { toggleOpen, open, initializeFavorites } = useStore();
+  const { toggleOpen, open, initializeFavorites, setIsDisabled } = useStore();
   const { initializeOrderData, paymentData } = useOrderStore();
   const { initializeProducts } = useProductStore();
   const [isOpen, setisOpen] = useState(true);
@@ -75,13 +75,12 @@ export default function Header({
   const [openSearch, setOpenSearch] = useState(false);
   const router = useRouter();
 
-
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
- 
+
   useEffect(() => {
     if (searchTerm.trim() === "") {
       setFilteredCategories([]);
@@ -113,6 +112,17 @@ export default function Header({
   }, []);
 
   useEffect(() => {
+    const currentTime = new Date();
+    const hours = currentTime.getHours();
+    const minutes = currentTime.getMinutes();
+    if (hours < 10 || (hours === 10 && minutes < 0) || hours >= 23) {
+      setIsDisabled(true);
+    } else {
+      setIsDisabled(false);
+    }
+  }, []);
+
+  useEffect(() => {
     setCl(client);
   }, [client]);
 
@@ -134,7 +144,7 @@ export default function Header({
     }
   }, [spot, table_id, table_num, service]);
 
-    const wrapWithLink = (text, words, loc) => {
+  const wrapWithLink = (text, words, loc) => {
     const parts = text.split(new RegExp(`(${words.join("|")})`, "g"));
     return parts.map((part, index) =>
       words.includes(part) ? (
@@ -156,7 +166,6 @@ export default function Header({
     ["Зарегистрируйтесь", "Register", "Hozir ro'yxatdan o'ting"],
     param.locale
   );
-
 
   if (!isMounted) {
     return null;

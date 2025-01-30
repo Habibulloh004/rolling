@@ -16,7 +16,7 @@ import { ChevronRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useTranslations } from "use-intl";
 
@@ -76,7 +76,7 @@ const DiscountBadge = ({ auth }) => {
 const Order = ({ spotDataFilial, auth, searchParamsData, locale, place }) => {
   const all = useTranslations("All");
   const total = useTranslations("Cart.Total");
-  const { activeTab } = useStore();
+  const { activeTab,isDisabled } = useStore();
   const [isLoading, setIsLoading] = useState(false);
   const [bonus, setBonus] = useState(0);
   const [activeBonus, setActiveBonus] = useState(false);
@@ -94,6 +94,7 @@ const Order = ({ spotDataFilial, auth, searchParamsData, locale, place }) => {
   const router = useRouter();
   const pathname = usePathname();
   const paymentText = useTranslations("Cart.Payment");
+
   const handleSetBonus = () => {
     setOrderData({ ...orderData, pay_bonus: Number(bonus) });
     setBonus(0);
@@ -103,7 +104,8 @@ const Order = ({ spotDataFilial, auth, searchParamsData, locale, place }) => {
   const handleSubmit = async () => {
     if (
       (orderData?.payment_method == "click" ||
-        orderData?.payment_method == "payme") &&
+        orderData?.payment_method == "payme" ||
+        orderData?.payment_method == "card") &&
       !paymentData &&
       !paymentData?.payment_id
     ) {
@@ -575,12 +577,12 @@ const Order = ({ spotDataFilial, auth, searchParamsData, locale, place }) => {
                 if (auth?.client_id) {
                   setActiveBonus(true);
                 } else {
-                  toast.warning(
-                    <div className="w-full h-full flex justify-between items-center">
-                      {all("no_auth")}{" "}
+                  toast.error(
+                    <div className="w-full h-full flex justify-start items-center">
+                      <h1 className="w-full">{all("no_auth")} </h1>
                       <Link
                         href={`/${locale}/${place}/login`}
-                        className="bg-black text-white rounded-md px-2 py-1"
+                        className="min-w-[80px] flex justify-center items-center h-full bg-black text-white rounded-md px-3 py-2"
                       >
                         {all("sign_in")}
                       </Link>
@@ -657,7 +659,7 @@ const Order = ({ spotDataFilial, auth, searchParamsData, locale, place }) => {
           </>
         )}
         <Button
-          disabled={isLoading}
+          disabled={isLoading || isDisabled}
           onClick={handleSubmit}
           className="mb-3 w-full h-10 md:h-12 flex justify-center items-center gap-1 border-[1px] rounded-xl hover:bg-primary md:mt-5 font-medium text-sm md:text-md"
         >
@@ -690,9 +692,11 @@ const Order = ({ spotDataFilial, auth, searchParamsData, locale, place }) => {
             <div>{total("submit")}</div>
           )}
         </Button>
-        <div className="hidden w-full h-[141px] p-5 border-[1px] border-[#979797] rounded-xl mt-3">
-          <p className="font-medium">{total("note")}</p>
-        </div>
+        {isDisabled && (
+          <div className="w-full p-5 border-[1px] border-[#979797] rounded-xl mt-3">
+            <p className="font-medium">{total("note")}</p>
+          </div>
+        )}
       </div>
     </div>
   );

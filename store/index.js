@@ -8,6 +8,8 @@ export const useClientStore = create((set) => ({
 
 export const useStore = create((set) => ({
   open: false,
+  isDisabled: true,
+  setIsDisabled: (data) => set(() => ({ isDisabled: data })),
   toggleOpen: () => set((state) => ({ open: !state.open })),
   favorites: [],
   setFavorites: (favorite) => set(() => ({ favorites: favorite })),

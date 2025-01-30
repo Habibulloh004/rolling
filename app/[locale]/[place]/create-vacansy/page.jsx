@@ -21,14 +21,14 @@ async function CreateVacansy() {
           <VacansyForm />
         </section>
         <section className="hidden sm:block pt-10 w-[30%] space-y-6">
-          <Image
+          {/* <Image
             src={`/assets/aboutLogo.svg`}
             alt={`aboutlogo`}
             // fill
             width={500}
             height={100}
             className=""
-          />
+          /> */}
           <p className="font-semibold text-muted text-center">
             {aboutUsT("logoBottom")}
           </p>

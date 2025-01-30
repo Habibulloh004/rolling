@@ -24,20 +24,8 @@ export default function Footer({ params: path }) {
             : "mt-8"
         }`}
       >
-        <Container className={`border-b border-primary py-2`}>
-          <section className="space-y-2 md:space-y-4 text-xs flex flex-col justify-center">
-            <Link
-              href={`/${path.locale}/${path.place}`}
-              className="flex-shrink-0 max-md:mx-auto mt-5 w-[200px] md:w-[280px]"
-            >
-              <Image
-                src={`/assets/secondaryIcon.webp`}
-                alt="Rolling Sushi"
-                width={282}
-                height={60}
-                className=""
-              />
-            </Link>
+        <Container className={`items-start border-b border-primary py-2`}>
+          <section className="space-y-2 md:space-y-4 text-xs flex flex-col justify-start">
             <p
               className="text-sm leading-relaxed text-center md:text-left"
               dangerouslySetInnerHTML={{ __html: footerT("logoBottom") }}

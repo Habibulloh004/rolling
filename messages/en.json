@@ -62,7 +62,8 @@
       "500_title": "No connection with the server",
       "500_desc": "An internal server error occurred. Please try again later!",
       "redirect": "Main menu"
-    }
+    },
+    "additional_info": "Would you like to place another order? Go to the main menu."
   },
   "Bonus": {
     "bonus": "Bonus",

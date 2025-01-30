@@ -28,13 +28,13 @@ export default function Footer({ params: path }) {
           <section className="space-y-2 md:space-y-4 text-xs flex flex-col justify-center">
             <Link
               href={`/${path.locale}/${path.place}`}
-              className="flex-shrink-0 max-md:mx-auto mt-5 w-[200px] md:w-[280px]"
+              className="flex-shrink-0 max-md:mx-auto mt-5"
             >
               <Image
                 src={`/assets/secondaryIcon.webp`}
                 alt="Rolling Sushi"
-                width={282}
-                height={60}
+                width={200}
+                height={50}
                 className=""
               />
             </Link>

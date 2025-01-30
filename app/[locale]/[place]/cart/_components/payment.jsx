@@ -20,7 +20,7 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   checkCard,
@@ -80,7 +80,7 @@ const Payment = ({ locale, place, auth }) => {
   const [optCheck, setOptCheck] = useState(0);
   const [existingCards, setExistingCards] = useState([]);
   const [decryptedCards, setDecryptedCards] = useState([]);
-
+  const router = useRouter();
   const pay = [
     {
       id: 1,
@@ -147,7 +147,7 @@ const Payment = ({ locale, place, auth }) => {
   }
 
   const handlePayment = async () => {
-    if(isDisabled){
+    if (isDisabled) {
       toast.error(paymentText1("note"));
       return;
     }
@@ -175,15 +175,17 @@ const Payment = ({ locale, place, auth }) => {
         case "payme":
           const paymeData = {
             id: getRandomDatePlusNumber(),
-            order_id: "Rolling-Sushi",
-            place: place,
+            order_id: getRandomDatePlusNumber(),
             amount: totalAmount,
           };
           console.log(paymeData);
           const paymeResult = await paymeCreate(paymeData);
           console.log(paymeResult[1]?.result?.receipt?._id);
 
-          if (paymeResult[1]?.result?.receipt?._id) {
+          if (
+            paymeResult[1]?.result?.receipt?.merchant?._id &&
+            paymeResult[1]?.result?.receipt?._id
+          ) {
             let paymentDataP = {
               amount: paymeData?.amount,
               payment_id: paymeResult[1]?.result?.receipt?._id,
@@ -198,14 +200,46 @@ const Payment = ({ locale, place, auth }) => {
             }
             localStorage.setItem("paymentData", JSON.stringify(paymentDataP));
             setPaymentData(paymentDataP);
-            window.open(
-              `https://payme.uz/checkout/${paymeResult[1]?.result?.receipt?._id}?back=null&timeout=15000&lang=${locale}`,
-              "_blank"
+            router.push(
+              `https://payme.uz/checkout/${paymeResult[1]?.result?.receipt?._id}?back=null&timeout=15000&lang=${locale}`
             );
+            // const params = `m=${
+            //   paymeResult[1]?.result?.receipt?.merchant?._id
+            // };ac.order_id=${
+            //   paymeResult[1]?.result?.receipt?.account?.value
+            // };a=${+paymeData?.amount * 100}`;
+            // const encodedParams = Buffer.from(params, "utf-8").toString(
+            //   "base64"
+            // );
+            // const url = `https://checkout.paycom.uz/${encodedParams}`;
+            // window.open(url, "_blank");
           } else {
             toast.error("Kartangizni tekshiring , to'lov tasdiqlanmadi!!!");
             return;
           }
+          // if (paymeResult[1]?.result?.receipt?._id) {
+          //   let paymentDataP = {
+          //     amount: paymeData?.amount,
+          //     payment_id: paymeResult[1]?.result?.receipt?._id,
+          //     success: false,
+          //     place,
+          //   };
+          //   if (spot && tableId && tableNum && service) {
+          //     paymentDataP.spot = spot;
+          //     paymentDataP.table_id = tableId;
+          //     paymentDataP.table_num = tableNum;
+          //     paymentDataP.service = service;
+          //   }
+          //   localStorage.setItem("paymentData", JSON.stringify(paymentDataP));
+          //   setPaymentData(paymentDataP);
+          //   // router.push(
+          //   //   `https://payme.uz/checkout/${paymeResult[1]?.result?.receipt?._id}?back=null&timeout=15000&lang=${locale}`
+          //   // );
+
+          // } else {
+          //   toast.error("Kartangizni tekshiring , to'lov tasdiqlanmadi!!!");
+          //   return;
+          // }
           break;
         case "click":
           const clickData = {
@@ -586,7 +620,7 @@ const Payment = ({ locale, place, auth }) => {
                     <div className="relative group">
                       <CircleAlert />
                       {/* Hover content that will be shown when parent (group) is hovered */}
-                      <div className="hidden w-[400px] bg-primary text-white z-20 textSmall1 group-hover:block absolute bottom-5 left-5 mt-2 p-4 shadow-lg space-y-2 rounded-md">
+                      <div className="hidden max-sm:w-[280px] w-[400px] bg-primary text-white z-20 textSmall1 group-hover:block absolute bottom-6 lg:bottom-5 -left-[230px] sm:left-[-50px] md:left-5 mt-2 p-4 shadow-lg space-y-2 rounded-md">
                         <h1 className="font-semibold">
                           {paymentText("auth_title")}
                         </h1>

@@ -5,6 +5,17 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { getLocalizedCategoryName } from "@/lib/utils";
 import ProductsCard from "./_components/productsCard";
 
+export const metadata = {
+  title: "Избранное – Ваши любимые суши и роллы в Rolling Sushi",
+  description:
+    "Сохраняйте любимые суши и роллы в избранное и заказывайте быстрее! Rolling Sushi – это вкус и удобство в одном месте.",
+  alternates: {
+    canonical: "https://rolling.uz/uz/web/saved",
+    ru: "https://rolling.uz/ru/web/saved",
+    en: "https://rolling.uz/en/web/saved",
+  },
+};
+
 const Favourite = async ({ params }) => {
   const [locale, all, path] = await Promise.all([
     getLocale(),

@@ -23,8 +23,8 @@ const Confirmed = async ({ params }) => {
       params,
       getLocale(),
       getTranslations("Order.Item"),
-      ApiService.getPosterData("menu.getProducts"),
-      ApiService.getPosterData("access.getSpots"),
+      ApiService.getPosterData("menu.getProducts", "", 7200),
+      ApiService.getPosterData("access.getSpots", "", 604800),
       getTranslations("All"),
     ]);
   const products = productsData?.response?.filter((item) => {

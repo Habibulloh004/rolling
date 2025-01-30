@@ -18,14 +18,27 @@ import {
 import Card from "@/components/shared/card";
 import Link from "next/link";
 
+export const metadata = {
+  title: "Суши-сеты в Ташкенте | Выгодные предложения от Rolling Sushi",
+  description:
+    "Попробуйте наши суши-сеты – идеальный выбор для компании! Выгодные цены, быстрая доставка в Ташкенте. Заказывайте прямо сейчас!",
+  keywords:
+    "суши-сеты, роллы, доставка суши Ташкент, выгодные сеты, японская кухня, Rolling Sushi",
+  alternates: {
+    canonical: "https://rolling.uz/uz/web/category",
+    ru: "https://rolling.uz/ru/web/category",
+    en: "https://rolling.uz/en/web/category",
+  },
+};
+
 export default async function Page({ params, searchParams }) {
   const [locale, all, path, categoriesData, productsData, searchParamsData] =
     await Promise.all([
       getLocale(),
       getTranslations("All"),
       params,
-      ApiService.getPosterData("menu.getCategories"),
-      ApiService.getPosterData("menu.getProducts"),
+      ApiService.getPosterData("menu.getCategories", "", 86400),
+      ApiService.getPosterData("menu.getProducts", "", 7200),
       searchParams,
     ]);
   const categories = categoriesData.response.filter(
@@ -74,7 +87,7 @@ export default async function Page({ params, searchParams }) {
               >
                 <div className="w-full max-sm:max-h-32 aspect-square relative rounded-[20px] md:rounded-[40px] overflow-hidden">
                   <CustomImage
-                    src={`${posterUrl}${item?.category_photo}`}
+                    src={`${posterUrl}${item?.category_photo_origin}`}
                     className="w-full h-full object-cover aspect-square"
                     alt={`${localizedName}`}
                   />
@@ -137,7 +150,7 @@ export default async function Page({ params, searchParams }) {
                     defaultHref={`/${locale}/${path.place}/category/${item?.menu_category_id}-${linkNameCategory}/product/${item?.product_id}-${linkNameProduct}`}
                     localizedName={localizedName}
                     photo={item.photo_origin}
-                    price={item?.price["1"]/100}
+                    price={item?.price["1"] / 100}
                   />
                 </CarouselItem>
               );

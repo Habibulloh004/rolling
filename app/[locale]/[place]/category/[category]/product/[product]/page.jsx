@@ -27,7 +27,8 @@ export async function generateMetadata({ params }) {
   const [ path, allT ] = await Promise.all([params, getTranslations("All")]);
   const { response: productData } = await ApiService.getPosterData(
     `menu.getProduct`,
-    `&product_id=${path.product.split("-")[0]}`
+    `&product_id=${path.product.split("-")[0]}`,
+    7200
   );
 
   return {
@@ -89,7 +90,8 @@ export default async function ProductPage({ params, searchParams }) {
 
   const { response: productData } = await ApiService.getPosterData(
     `menu.getProduct`,
-    `&product_id=${path.product}`
+    `&product_id=${path.product}`,
+    7200
   );
 
   const localizedName = getLocalizedProduct(

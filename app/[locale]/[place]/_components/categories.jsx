@@ -59,7 +59,7 @@ const Categories = ({ categories, locale, path }) => {
                 >
                   <div className="w-full max-sm:max-h-32 aspect-square relative rounded-[20px] md:rounded-[40px] overflow-hidden">
                   <CustomImage
-                    src={`${posterUrl}${item?.category_photo}`}
+                    src={`${posterUrl}${item?.category_photo_origin}`}
                     className="w-full h-full object-cover aspect-square"
                     alt={`${localizedName}`}
                   />

@@ -6,12 +6,9 @@ import { Poppins } from "next/font/google";
 import "../../globals.css";
 import Header from "@/components/shared/header";
 import Footer from "@/components/shared/footer";
-import Script from "next/script";
-import GoogleAnalytics from "@/app/googleAnalytics";
 import { ApiService } from "@/service/api.services";
 import NextTopLoader from "nextjs-toploader";
 import { Toaster } from "sonner";
-import Chat from "@/app/chat";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -32,11 +29,10 @@ export const metadata = {
 };
 
 export default async function Layout({ children, params }) {
-  const [param, t, categoriesData, productsData] = await Promise.all([
+  const [param, categoriesData, productsData] = await Promise.all([
     params,
-    getTranslations("HomePage"),
-    ApiService.getPosterData("menu.getCategories"),
-    ApiService.getPosterData("menu.getProducts"),
+    ApiService.getPosterData("menu.getCategories", "", 86400),
+    ApiService.getPosterData("menu.getProducts", "", 7200),
   ]);
 
   // Validate the locale
@@ -46,7 +42,7 @@ export default async function Layout({ children, params }) {
 
   let spotData = [];
   if (param.place === "branch") {
-    spotData = await ApiService.getPosterData("spots.getSpots");
+    spotData = await ApiService.getPosterData("spots.getSpots", "", 604800);
   }
 
   // Retrieve messages for the specified locale
@@ -56,6 +52,17 @@ export default async function Layout({ children, params }) {
       <head>
         <meta name="yandex-verification" content="2eb6c0631cdd4d80" />
         <meta httpEquiv="Content-Type" content="text/html; charset=UTF-8" />
+        <link
+          rel="shortcut icon"
+          href="../../favicon.ico"
+          type="image/x-icon"
+        />
+        <link
+          rel="shortcut icon"
+          href="/assets/favicon.ico"
+          type="image/x-icon"
+        />
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
       </head>
       <body
         className={`${poppins.className} antialiased min-h-screen flex flex-col`}
@@ -95,10 +102,9 @@ export default async function Layout({ children, params }) {
             }}
           />
           <Footer params={param} />
-    
         </NextIntlClientProvider>
 
-        <noscript>
+        {/* <noscript>
           <iframe
             src="https://www.googletagmanager.com/ns.html?id=GTM-M3LDW3FG"
             height="0"
@@ -114,10 +120,10 @@ export default async function Layout({ children, params }) {
               alt=""
             />
           </div>
-        </noscript>
+        </noscript> */}
 
         {/* Google Analytics Script */}
-        <Script
+        {/* <Script
           strategy="afterInteractive"
           src="https://www.googletagmanager.com/gtag/js?id=G-PN4ZZXXGHP"
         />
@@ -131,10 +137,10 @@ export default async function Layout({ children, params }) {
               page_path: window.location.pathname,
             });
           `}
-        </Script>
+        </Script> */}
 
         {/* Google Tag Manager Script */}
-        <Script id="gtm-init" strategy="afterInteractive">
+        {/* <Script id="gtm-init" strategy="afterInteractive">
           {`
             (function(w,d,s,l,i){
               w[l]=w[l]||[];
@@ -167,9 +173,9 @@ export default async function Layout({ children, params }) {
       webvisor:true
     });
   `}
-        </Script>
+        </Script> */}
 
-        <GoogleAnalytics />
+        {/* <GoogleAnalytics /> */}
       </body>
     </html>
   );

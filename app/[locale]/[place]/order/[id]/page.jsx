@@ -11,8 +11,8 @@ export default async function OrderList({ params }) {
     getLocale(),
     params,
     getTranslations("Order"),
-    ApiService.getPosterData("menu.getProducts"),
-    ApiService.getPosterData("access.getSpots"),
+    ApiService.getPosterData("menu.getProducts", "", 7200),
+    ApiService.getPosterData("access.getSpots", "", 604800),
   ]);
   return (
     <Container className={"w-11/12 py-5 flex flex-col gap-5"}>

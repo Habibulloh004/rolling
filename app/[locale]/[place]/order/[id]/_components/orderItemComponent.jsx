@@ -58,7 +58,6 @@ export default function OrderItemComponent({
             )}&lon=${String(location[1])}&format=json&accept-language=${locale}`
           );
           const addressRes = await res.json();
-          console.log(orderData);
 
           switch (order?.status) {
             case "":

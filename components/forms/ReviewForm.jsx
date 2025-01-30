@@ -74,8 +74,6 @@ export default function ReviewForm({id}) {
   };
 
 
-
-  console.log(orderData);
   return (
     <Form {...form}>
       <form

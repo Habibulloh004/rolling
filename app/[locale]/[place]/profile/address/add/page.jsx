@@ -49,7 +49,6 @@ const EditAddress = () => {
   const allT = useTranslations("All");
   const pathname = usePathname();
   const router = useRouter();
-  console.log(pathname.split("/"));
 
   const SmoothTransition = ({ lng, lat, zoom = 14 }) => {
     const map = useMap();
@@ -187,7 +186,6 @@ const EditAddress = () => {
           }`
         );
         const addressRes = await res.json();
-        console.log(addressRes?.display_name);
         setAddressData({
           ...addressData,
           lat: location.lat,

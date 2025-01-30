@@ -59,12 +59,10 @@ const ClientContact = ({ spotData, locale }) => {
         description: "Copy clipboard",
         action: {
           label: "Undo",
-          onClick: () =>console.log(),
         },
       })
-      console.log();("Link clipboardga nusxalandi!");
     } catch (err) {
-     console.log("Error");
+     console.log(err);
     }
 
     document.body.removeChild(input); // Inputni olib tashlash

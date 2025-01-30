@@ -14,8 +14,6 @@ export default async function Order({ params }) {
     getTranslations("All"),
     getAllOrders(),
   ]);
-  // console.log(allOrders);
-// +998771244444
   return (
     <Container className={"flex flex-col pt-8 w-11/12 gap-5"}>
       <div className="w-full flex justify-between items-center ">

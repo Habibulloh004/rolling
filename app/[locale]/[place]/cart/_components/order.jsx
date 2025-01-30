@@ -221,7 +221,6 @@ const Order = ({ spotDataFilial, auth, searchParamsData, locale, place }) => {
       } else if (!auth?.client_id) {
         commentSpot = `${commentSpot}\nНомер телефона : ${phone}`;
       }
-      console.log(commentSpot);
 
       let deliveryData = {
         address_comment,
@@ -310,7 +309,6 @@ const Order = ({ spotDataFilial, auth, searchParamsData, locale, place }) => {
       }
       if (spotIdSpot) {
         const res = await createIncomingOrder(spotData);
-        console.log(res);
         if (res?.response) {
           const { transaction_id } = res?.response;
 
@@ -334,7 +332,6 @@ const Order = ({ spotDataFilial, auth, searchParamsData, locale, place }) => {
           }
 🛍 Тип заказа: Заведения
 ✏️ Комментарий: ${commentSpot}`.trim();
-          console.log(message);
 
           await axios.get(
             `https://api.telegram.org/bot7051935328:AAFJxJAVsRTPxgj3rrHWty1pEUlMkBgg9_o/sendMessage?chat_id=-1002211902296&text=${encodeURIComponent(

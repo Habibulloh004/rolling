@@ -73,10 +73,8 @@ const Payment = ({ locale, place, auth }) => {
   const [isPaymentLoading, setIsPaymentLoading] = useState(false);
   const [isCheckLoading, setIsCheckLoading] = useState(false);
   const initialCountdown = 60;
-  const [countdown, setCountdown] = useState(
-    () => Number(localStorage.getItem("countdown")) || initialCountdown
-  );
-  const [retry, setRetry] = useState(false);
+  const [countdown, setCountdown] = useState(initialCountdown);
+  const [retry, setRetry] = useState(true);
   const [optCheck, setOptCheck] = useState(0);
   const [existingCards, setExistingCards] = useState([]);
   const [decryptedCards, setDecryptedCards] = useState([]);
@@ -147,10 +145,10 @@ const Payment = ({ locale, place, auth }) => {
   }
 
   const handlePayment = async () => {
-    if (isDisabled) {
-      toast.error(paymentText1("note"));
-      return;
-    }
+    // if (isDisabled) {
+    //   toast.error(paymentText1("note"));
+    //   return;
+    // }
     if (
       paymentData &&
       paymentData.payment_id &&
@@ -178,10 +176,7 @@ const Payment = ({ locale, place, auth }) => {
             order_id: getRandomDatePlusNumber(),
             amount: totalAmount,
           };
-          console.log(paymeData);
           const paymeResult = await paymeCreate(paymeData);
-          console.log(paymeResult[1]?.result?.receipt?._id);
-
           if (
             paymeResult[1]?.result?.receipt?.merchant?._id &&
             paymeResult[1]?.result?.receipt?._id
@@ -282,11 +277,8 @@ const Payment = ({ locale, place, auth }) => {
             cardNumber: selectCard?.cardNumber?.replace(/\s/g, ""),
             amount: totalAmount,
           };
-          console.log(cardData);
           const resultCard = await payCard(cardData);
-          console.log(resultCard);
           if (resultCard?.error == null) {
-            console.log(resultCard);
             let paymentDataCard = {
               amount: cardData?.amount,
               payment_id: resultCard?.result?.session,
@@ -338,9 +330,7 @@ const Payment = ({ locale, place, auth }) => {
               id: getRandomDatePlusNumber(),
               check_id: paymentData?.payment_id,
             };
-            console.log(paymeData);
             const result = await paymeCheck(paymeData);
-            console.log(result);
             if (result[1]?.result?.state == 4) {
               toast.success(paymentText("pay_success"));
               localStorage.setItem(
@@ -365,10 +355,7 @@ const Payment = ({ locale, place, auth }) => {
               id: paymentData?.payment_id,
               date: paymentData?.date,
             };
-            console.log(paymeData);
             const result = await clickCheck(paymeData);
-            console.log(result);
-
             if (result[1]?.error_code) {
               toast.error(paymentText("pay_error"));
             } else {
@@ -393,7 +380,6 @@ const Payment = ({ locale, place, auth }) => {
               session: paymentData?.payment_id,
               otp: Number(optCheck),
             };
-            console.log(cardData);
             const result = await checkCard(cardData);
             if (result?.error == null) {
               toast.success(paymentText("pay_success"));
@@ -427,7 +413,6 @@ const Payment = ({ locale, place, auth }) => {
   };
 
   const handleSelectCard = (card) => {
-    console.log(card);
     setSelectCard(card);
   };
 
@@ -475,6 +460,13 @@ const Payment = ({ locale, place, auth }) => {
       setCurrent(api.selectedScrollSnap());
     });
   }, [api]);
+
+  useEffect(() => {
+    const storedCountdown = localStorage.getItem("countdown");
+    if (storedCountdown) {
+      setCountdown(Number(storedCountdown));
+    }
+  }, []);
 
   useEffect(() => {
     const orderDataLocal = localStorage.getItem("orderData")
@@ -642,23 +634,86 @@ const Payment = ({ locale, place, auth }) => {
             ))}
           </div>
           <div className="w-full">
-            {orderData?.payment_method && orderData?.payment_method != "cash" && (
-              <div className="w-full flex max-md:flex-col md:justify-between justify-center items-center gap-5">
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
+            {orderData?.payment_method &&
+              orderData?.payment_method != "cash" && (
+                <div className="w-full flex max-md:flex-col md:justify-between justify-center items-center gap-5">
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button
+                        disabled={
+                          isPaymentLoading ||
+                          (paymentData && !paymentData?.success)
+                        }
+                        className={`${
+                          (isPaymentLoading ||
+                            (paymentData && !paymentData?.success)) &&
+                          "opacity-[0.6]"
+                        } relative w-full`}
+                      >
+                        <div className="flex justify-center items-center gap-2">
+                          {isPaymentLoading ? (
+                            <div className=" w-full h-full flex items-center gap-4 justify-center">
+                              <div role="status">
+                                <svg
+                                  aria-hidden="true"
+                                  className="w-6 h-6 text-gray-300 animate-spin dark:text-gray-600 fill-gray-700"
+                                  viewBox="0 0 100 101"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path
+                                    d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                                    fill="currentColor"
+                                  />
+                                  <path
+                                    d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                                    fill="currentFill"
+                                  />
+                                </svg>
+                                <span className="text-black sr-only">
+                                  {all("loading")}
+                                </span>
+                              </div>
+                            </div>
+                          ) : (
+                            <HandCoins size={48} />
+                          )}
+                          <h1 className="w-full">{paymentText("pay")}</h1>
+                        </div>
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent className="w-11/12 rounded-md">
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>
+                          {paymentText("sure_to_pay")}
+                        </AlertDialogTitle>
+                        <AlertDialogDescription>
+                          {paymentText("sure_desc")}
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>{all("cancel")}</AlertDialogCancel>
+                        <AlertDialogAction asChild>
+                          <Button onClick={handlePayment}>
+                            <HandCoins size={48} />
+                            {paymentText("pay")}
+                          </Button>
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                  {orderData?.payment_method &&
+                  orderData?.payment_method != "card" ? (
                     <Button
-                      disabled={
-                        isPaymentLoading ||
-                        (paymentData && !paymentData?.success)
-                      }
+                      onClick={handleCheck}
                       className={`${
-                        (isPaymentLoading ||
-                          (paymentData && !paymentData?.success)) &&
-                        "opacity-[0.6]"
+                        isCheckLoading ||
+                        (paymentData && paymentData?.success) ||
+                        (!paymentData?.payment_id && "opacity-[0.6]")
                       } relative w-full`}
                     >
                       <div className="flex justify-center items-center gap-2">
-                        {isPaymentLoading ? (
+                        {isCheckLoading ? (
                           <div className=" w-full h-full flex items-center gap-4 justify-center">
                             <div role="status">
                               <svg
@@ -683,153 +738,93 @@ const Payment = ({ locale, place, auth }) => {
                             </div>
                           </div>
                         ) : (
-                          <HandCoins size={48} />
+                          <BadgeCheck size={48} />
                         )}
-                        <h1 className="w-full">{paymentText("pay")}</h1>
+                        <h1>{paymentText("check")}</h1>
                       </div>
                     </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent className="w-11/12 rounded-md">
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>
-                        {paymentText("sure_to_pay")}
-                      </AlertDialogTitle>
-                      <AlertDialogDescription>
-                        {paymentText("sure_desc")}
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>{all("cancel")}</AlertDialogCancel>
-                      <AlertDialogAction asChild>
-                        <Button onClick={handlePayment}>
-                          <HandCoins size={48} />
-                          {paymentText("pay")}
-                        </Button>
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-                {orderData?.payment_method != "card" ? (
-                  <Button
-                    onClick={handleCheck}
-                    className={`${
-                      isCheckLoading ||
-                      (paymentData && paymentData?.success) ||
-                      (!paymentData?.payment_id && "opacity-[0.6]")
-                    } relative w-full`}
-                  >
-                    <div className="flex justify-center items-center gap-2">
-                      {isCheckLoading ? (
-                        <div className=" w-full h-full flex items-center gap-4 justify-center">
-                          <div role="status">
-                            <svg
-                              aria-hidden="true"
-                              className="w-6 h-6 text-gray-300 animate-spin dark:text-gray-600 fill-gray-700"
-                              viewBox="0 0 100 101"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
+                  ) : (
+                    <div>
+                      <AlertDialog open={paymentData?.resultCard}>
+                        <AlertDialogTrigger asChild></AlertDialogTrigger>
+                        <AlertDialogContent className="rounded-md w-11/12 max-w-[365px] ">
+                          <AlertDialogHeader>
+                            <AlertDialogTitle className="text-xl text-center relative">
+                              {paymentText("check")}
+                            </AlertDialogTitle>
+                            <AlertDialogDescription className="text-black/60 text-center text-sm">
+                              {paymentText("otp_desc")} <br />
+                              {paymentData?.resultCard?.otpSentPhone}
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <div className="w-full flex justify-center items-center">
+                            <InputOTP
+                              onChange={(e) => setOptCheck(e)}
+                              maxLength={6}
                             >
-                              <path
-                                d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                                fill="currentColor"
-                              />
-                              <path
-                                d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                                fill="currentFill"
-                              />
-                            </svg>
-                            <span className="text-black sr-only">
-                              {all("loading")}
-                            </span>
+                              <InputOTPGroup>
+                                <InputOTPSlot index={0} />
+                                <InputOTPSlot index={1} />
+                                <InputOTPSlot index={2} />
+                                <InputOTPSlot index={3} />
+                                <InputOTPSlot index={4} />
+                                <InputOTPSlot index={5} />
+                              </InputOTPGroup>
+                            </InputOTP>
                           </div>
-                        </div>
-                      ) : (
-                        <BadgeCheck size={48} />
-                      )}
-                      <h1>{paymentText("check")}</h1>
-                    </div>
-                  </Button>
-                ) : (
-                  <div>
-                    <AlertDialog open={paymentData?.resultCard}>
-                      <AlertDialogTrigger asChild></AlertDialogTrigger>
-                      <AlertDialogContent className="rounded-md w-11/12 max-w-[365px] ">
-                        <AlertDialogHeader>
-                          <AlertDialogTitle className="text-xl text-center relative">
-                            {paymentText("check")}
-                          </AlertDialogTitle>
-                          <AlertDialogDescription className="text-black/60 text-center text-sm">
-                            {paymentText("otp_desc")} <br />
-                            {paymentData?.resultCard?.otpSentPhone}
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <div className="w-full flex justify-center items-center">
-                          <InputOTP
-                            onChange={(e) => setOptCheck(e)}
-                            maxLength={6}
+                          <AlertDialogFooter className="flex justify-center gap-2 items-center w-full">
+                            {optCheck?.length != 6 ? (
+                              <div className="w-full">
+                                {retry ? (
+                                  <button
+                                    onClick={handlePayment}
+                                    className="w-full bg-primary text-white py-2 rounded-md hover:opacity-90"
+                                  >
+                                    {paymentText("otp_again")}
+                                  </button>
+                                ) : (
+                                  <button
+                                    disabled
+                                    className="w-full bg-gray-300 text-gray-600 py-2 rounded-md"
+                                  >
+                                    {countdown} {paymentText("secound")}
+                                  </button>
+                                )}
+                              </div>
+                            ) : (
+                              <button
+                                onClick={handleCheck}
+                                className="w-full bg-primary text-white py-2 rounded-md hover:opacity-90"
+                              >
+                                {all("confirm")}
+                              </button>
+                            )}
+                          </AlertDialogFooter>
+                          <button
+                            onClick={() => {
+                              setPaymentData(null);
+                            }}
+                            className="w-full bg-red-500 text-white py-2 rounded-md hover:opacity-90"
                           >
-                            <InputOTPGroup>
-                              <InputOTPSlot index={0} />
-                              <InputOTPSlot index={1} />
-                              <InputOTPSlot index={2} />
-                              <InputOTPSlot index={3} />
-                              <InputOTPSlot index={4} />
-                              <InputOTPSlot index={5} />
-                            </InputOTPGroup>
-                          </InputOTP>
-                        </div>
-                        <AlertDialogFooter className="flex justify-center gap-2 items-center w-full">
-                          {optCheck?.length != 6 ? (
-                            <div className="w-full">
-                              {retry ? (
-                                <button
-                                  onClick={handlePayment}
-                                  className="w-full bg-primary text-white py-2 rounded-md hover:opacity-90"
-                                >
-                                  {paymentText("otp_again")}
-                                </button>
-                              ) : (
-                                <button
-                                  disabled
-                                  className="w-full bg-gray-300 text-gray-600 py-2 rounded-md"
-                                >
-                                  {countdown} {paymentText("secound")}
-                                </button>
-                              )}
-                            </div>
-                          ) : (
-                            <button
-                              onClick={handleCheck}
-                              className="w-full bg-primary text-white py-2 rounded-md hover:opacity-90"
-                            >
-                              {all("confirm")}
-                            </button>
-                          )}
-                        </AlertDialogFooter>
-                        <button
-                          onClick={() => {
-                            setPaymentData(null);
-                          }}
-                          className="w-full bg-red-500 text-white py-2 rounded-md hover:opacity-90"
-                        >
-                          {all("cancel")}
-                        </button>
-                      </AlertDialogContent>
-                    </AlertDialog>
-                  </div>
-                )}
-                {paymentData && (
-                  <button
-                    onClick={() => {
-                      setPaymentData(null);
-                    }}
-                    className="w-full bg-red-500 text-white py-2 px-3 rounded-md hover:opacity-90"
-                  >
-                    {all("cancel")}
-                  </button>
-                )}
-              </div>
-            )}
+                            {all("cancel")}
+                          </button>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </div>
+                  )}
+                  {paymentData && (
+                    <button
+                      onClick={() => {
+                        setPaymentData(null);
+                        setRetry(true)
+                      }}
+                      className="w-full bg-red-500 text-white py-2 px-3 rounded-md hover:opacity-90"
+                    >
+                      {all("cancel")}
+                    </button>
+                  )}
+                </div>
+              )}
           </div>
         </>
       )}

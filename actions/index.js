@@ -97,7 +97,6 @@ export async function getClient(id) {
   const cookieStore = await cookies();
   const myHeaders = new Headers();
 
-  console.log(id);
   const requestOptions = {
     method: "GET",
     headers: myHeaders,
@@ -131,7 +130,6 @@ export async function getClientData(id) {
   const cookieStore = await cookies();
   const myHeaders = new Headers();
 
-  console.log(id);
   const requestOptions = {
     method: "GET",
     headers: myHeaders,

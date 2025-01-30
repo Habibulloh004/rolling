@@ -49,7 +49,6 @@ const EditAddress = () => {
   const allT = useTranslations("All");
   const pathname = usePathname();
   const router = useRouter();
-  console.log(pathname.split("/"));
 
   const SmoothTransition = ({ lng, lat, zoom = 14 }) => {
     const map = useMap();
@@ -140,16 +139,16 @@ const EditAddress = () => {
     setAddressData({ ...addressData, [name]: value });
   };
 
-  // const MapClickHandler = () => {
-  //   useMapEvents({
-  //     click(e) {
-  //       const { lat, lng } = e?.latlng;
-  //       setLocation({ lat, lng });
-  //       localStorage.setItem("yourLocation", JSON.stringify({ lat, lng }));
-  //     },
-  //   });
-  //   return null;
-  // };
+  const MapClickHandler = () => {
+    useMapEvents({
+      click(e) {
+        const { lat, lng } = e?.latlng;
+        setLocation({ lat, lng });
+        localStorage.setItem("yourLocation", JSON.stringify({ lat, lng }));
+      },
+    });
+    return null;
+  };
 
   useEffect(() => {
     const savedLocation = localStorage.getItem("yourLocation")
@@ -187,7 +186,6 @@ const EditAddress = () => {
           }`
         );
         const addressRes = await res.json();
-        console.log(addressRes?.display_name);
         setAddressData({
           ...addressData,
           lat: location.lat,
@@ -298,7 +296,7 @@ const EditAddress = () => {
             >
               {/* <Popup>{addressT("you_here")}</Popup> */}
             </Marker>
-            {/* <MapClickHandler /> */}
+            <MapClickHandler />
           </MapContainer>
           <Button
             onClick={handleFoundLocation}

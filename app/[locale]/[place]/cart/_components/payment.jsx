@@ -1,9 +1,10 @@
 "use client";
 import { decryptData } from "@/lib/hashing";
 import { hashSecretKey } from "@/lib/utils";
-import { useOrderStore } from "@/store";
+import { useOrderStore, useStore } from "@/store";
 import {
   BadgeCheck,
+  CircleAlert,
   CircleCheckBig,
   HandCoins,
   Plus,
@@ -52,6 +53,7 @@ const Payment = ({ locale, place, auth }) => {
   const tableNum = searchParams.get("table_num");
   const service = searchParams.get("service");
   const paymentText = useTranslations("Cart.Payment");
+  const paymentText1 = useTranslations("Cart.Total");
   const cardT = useTranslations("Profile.MyCard");
   const all = useTranslations("All");
   const {
@@ -63,13 +65,14 @@ const Payment = ({ locale, place, auth }) => {
     setSelectCard,
     selectCard,
   } = useOrderStore();
+  const { isDisabled } = useStore();
 
   const [api, setApi] = useState();
   const [current, setCurrent] = useState(0);
   const [count, setCount] = useState(0);
   const [isPaymentLoading, setIsPaymentLoading] = useState(false);
   const [isCheckLoading, setIsCheckLoading] = useState(false);
-  const initialCountdown = 60; // Boshlang'ich vaqt
+  const initialCountdown = 60;
   const [countdown, setCountdown] = useState(
     () => Number(localStorage.getItem("countdown")) || initialCountdown
   );
@@ -77,82 +80,6 @@ const Payment = ({ locale, place, auth }) => {
   const [optCheck, setOptCheck] = useState(0);
   const [existingCards, setExistingCards] = useState([]);
   const [decryptedCards, setDecryptedCards] = useState([]);
-
-  useEffect(() => {
-    // Sahifa refresh bo'lganda qayta hisoblashni tiklash
-    const savedTime = Number(localStorage.getItem("countdown"));
-    const savedTimestamp = Number(localStorage.getItem("countdownTimestamp"));
-    const currentTime = Date.now();
-
-    if (savedTime > 0 && savedTimestamp) {
-      const elapsedSeconds = Math.floor((currentTime - savedTimestamp) / 1000);
-      const remainingTime = Math.max(savedTime - elapsedSeconds, 0);
-
-      setCountdown(remainingTime);
-      if (remainingTime === 0) setRetry(true);
-    }
-  }, []);
-
-  useEffect(() => {
-    // Countdown davomida holatni saqlash
-    if (countdown > 0 && !retry) {
-      localStorage.setItem("countdown", countdown);
-      localStorage.setItem("countdownTimestamp", Date.now());
-
-      const timer = setInterval(() => {
-        setCountdown((prev) => {
-          if (prev === 1) {
-            setRetry(true);
-            clearInterval(timer);
-          }
-          return prev - 1;
-        });
-      }, 1000);
-
-      return () => clearInterval(timer);
-    }
-
-    if (countdown === 0) {
-      setRetry(true);
-    }
-  }, [countdown, retry]);
-
-  const handleRetry = () => {
-    // Retry logic can go here
-  };
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      try {
-        // Get hashed cards from localStorage
-        const cards = JSON.parse(localStorage.getItem("hashedCards")) || [];
-        setExistingCards(cards);
-
-        // Decrypt cards
-        const decrypted = cards
-          .map((card) => {
-            try {
-              const decryptedString = decryptData(card, hashSecretKey);
-              return JSON.parse(decryptedString); // Parse the decrypted string
-            } catch (error) {
-              console.error("Failed to decrypt or parse card:", error);
-              return null; // Return null for invalid cards
-            }
-          })
-          .filter(Boolean); // Filter out null values
-        setDecryptedCards(decrypted);
-      } catch (error) {
-        console.error("Error reading cards from localStorage:", error);
-      }
-    }
-  }, [decryptData, hashSecretKey]);
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const cards = JSON.parse(localStorage.getItem("hashedCards")) || [];
-      setExistingCards(cards);
-    }
-  }, []);
 
   const pay = [
     {
@@ -172,23 +99,18 @@ const Payment = ({ locale, place, auth }) => {
     // { id: 5, icon: `/assets/uzum.webp`, text: "Uzum", type: "uzum" },
   ];
 
-  console.log(paymentData, "payment data");
-
   const handleSelectPayment = (item) => {
     if (!auth?.client_id && !spot && item?.type == "cash") {
       toast.error(
-        <div className="w-full h-full flex justify-end flex-col items-end">
-          {all("no_auth")}{" "}
+        <div className="w-full h-full flex justify-start items-center">
+          <h1 className="w-full">{all("no_auth")} </h1>
           <Link
             href={`/${locale}/${place}/login`}
-            className="bg-black text-white rounded-md px-4 py-2 text-center"
+            className="min-w-[80px] flex justify-center items-center h-full bg-black text-white rounded-md px-3 py-2"
           >
             {all("sign_in")}
           </Link>
-        </div>,
-        {
-          duration: 5000, // 3 soniya
-        }
+        </div>
       );
     } else {
       setOrderData({
@@ -225,6 +147,10 @@ const Payment = ({ locale, place, auth }) => {
   }
 
   const handlePayment = async () => {
+    if(isDisabled){
+      toast.error(paymentText1("note"));
+      return;
+    }
     if (
       paymentData &&
       paymentData.payment_id &&
@@ -533,6 +459,78 @@ const Payment = ({ locale, place, auth }) => {
     }
   }, [auth, orderData?.payment_method]);
 
+  useEffect(() => {
+    // Sahifa refresh bo'lganda qayta hisoblashni tiklash
+    const savedTime = Number(localStorage.getItem("countdown"));
+    const savedTimestamp = Number(localStorage.getItem("countdownTimestamp"));
+    const currentTime = Date.now();
+
+    if (savedTime > 0 && savedTimestamp) {
+      const elapsedSeconds = Math.floor((currentTime - savedTimestamp) / 1000);
+      const remainingTime = Math.max(savedTime - elapsedSeconds, 0);
+
+      setCountdown(remainingTime);
+      if (remainingTime === 0) setRetry(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    // Countdown davomida holatni saqlash
+    if (countdown > 0 && !retry) {
+      localStorage.setItem("countdown", countdown);
+      localStorage.setItem("countdownTimestamp", Date.now());
+
+      const timer = setInterval(() => {
+        setCountdown((prev) => {
+          if (prev === 1) {
+            setRetry(true);
+            clearInterval(timer);
+          }
+          return prev - 1;
+        });
+      }, 1000);
+
+      return () => clearInterval(timer);
+    }
+
+    if (countdown === 0) {
+      setRetry(true);
+    }
+  }, [countdown, retry]);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      try {
+        // Get hashed cards from localStorage
+        const cards = JSON.parse(localStorage.getItem("hashedCards")) || [];
+        setExistingCards(cards);
+
+        // Decrypt cards
+        const decrypted = cards
+          .map((card) => {
+            try {
+              const decryptedString = decryptData(card, hashSecretKey);
+              return JSON.parse(decryptedString); // Parse the decrypted string
+            } catch (error) {
+              console.error("Failed to decrypt or parse card:", error);
+              return null; // Return null for invalid cards
+            }
+          })
+          .filter(Boolean); // Filter out null values
+        setDecryptedCards(decrypted);
+      } catch (error) {
+        console.error("Error reading cards from localStorage:", error);
+      }
+    }
+  }, [decryptData, hashSecretKey]);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const cards = JSON.parse(localStorage.getItem("hashedCards")) || [];
+      setExistingCards(cards);
+    }
+  }, []);
+
   return (
     <div className="w-full flex flex-col items-start md:px-12 pt-6 gap-5">
       <h2 className="hidden textNormal4 font-bold leading-9">
@@ -549,11 +547,12 @@ const Payment = ({ locale, place, auth }) => {
         <>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {pay.map((item) => (
-              <button
-                disabled={paymentData && paymentData?.payment_id}
-                onClick={() => handleSelectPayment(item)}
-                key={item.id}
-                className={`w-[118px] min-h-[70px] rounded-[7px] border-[#004032] border-b-2 p-3 flex flex-col justify-start gap-1
+              <div key={item.id} className="relative w-full h-full">
+                <button
+                  disabled={paymentData && paymentData?.payment_id}
+                  onClick={() => handleSelectPayment(item)}
+                  key={item.id}
+                  className={`relative w-[118px] min-h-[70px] rounded-[7px] border-[#004032] border-b-2 p-3 flex flex-col justify-start gap-1
                   ${
                     !auth?.client_id && item?.type == "cash" && !spot
                       ? "opacity-[0.5]"
@@ -565,18 +564,47 @@ const Payment = ({ locale, place, auth }) => {
                       ? "border-2 font-semibold"
                       : ""
                   }`}
-              >
-                <Image
-                  src={item.icon}
-                  alt="card"
-                  width={100}
-                  height={100}
-                  className={`${item.id === 1 ? "w-10" : "w-16"}`}
-                />
-                <p className="text-sm text-[#00000099] group-focus:text-[#004032]">
-                  {item.text}
-                </p>
-              </button>
+                >
+                  <Image
+                    src={item.icon}
+                    alt="card"
+                    width={100}
+                    height={100}
+                    className={`${item.id === 1 ? "w-10" : "w-16"}`}
+                  />
+                  <p className="text-sm text-[#00000099] group-focus:text-[#004032]">
+                    {item.text}
+                  </p>
+                </button>
+                {!auth?.client_id && item?.type == "cash" && !spot && (
+                  <div
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }}
+                    className="absolute top-0 right-0"
+                  >
+                    <div className="relative group">
+                      <CircleAlert />
+                      {/* Hover content that will be shown when parent (group) is hovered */}
+                      <div className="hidden w-[400px] bg-primary text-white z-20 textSmall1 group-hover:block absolute bottom-5 left-5 mt-2 p-4 shadow-lg space-y-2 rounded-md">
+                        <h1 className="font-semibold">
+                          {paymentText("auth_title")}
+                        </h1>
+                        <p>{paymentText("auth_desc1")}</p>
+                        <p>{paymentText("auth_desc2")}</p>
+                        <div className="flex justify-end items-end w-full">
+                          <Link
+                            href={`/${locale}/${place}/login`}
+                            className="border flex justify-end font-semibold items-center h-full text-white rounded-md px-2 py-1"
+                          >
+                            {all("sign_in")}
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
             ))}
           </div>
           <div className="w-full">

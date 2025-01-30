@@ -44,7 +44,8 @@
     "self_desc": "The customer serves himself",
     "selected": "Selected",
     "no_active": "Currently inactive",
-    "no_auth": "Only registered users participate in our bonus system and receive up to 30% bonuses from each order. You can use them 100% when paying for any dish!!",
+    "no_auth": "For registered users only",
+    "no_auth1": "For registered users only",
     "products_empty": "You have not selected a product!",
     "phone_empty": "Phone number does not exist!",
     "order_empty": "No orders available.",
@@ -54,7 +55,14 @@
     "discount": "Discount",
     "promotion": "Promotions",
     "news": "News",
-    "cart_ingredient": "Take more!"
+    "cart_ingredient": "Take more!",
+    "Errors": {
+      "404_title": "Page not found",
+      "404_desc": "Sorry, the page you are looking for does not exist. Please try again!",
+      "500_title": "No connection with the server",
+      "500_desc": "An internal server error occurred. Please try again later!",
+      "redirect": "Main menu"
+    }
   },
   "Bonus": {
     "bonus": "Bonus",
@@ -320,7 +328,10 @@
       "pay_error": "Check your card, payment was not confirmed!!!",
       "pay_success": "Payment was successfully completed!",
       "you_not_pay": "You did not make the payment!!!",
-      "you_not_check": "You did not confirm the payment!!!"
+      "you_not_check": "You did not confirm the payment!!!",
+      "auth_title": "Sign up and enjoy even more pleasure from Rolling Sushi!",
+      "auth_desc1": "Only registered users participate in our bonus system and receive up to 30% bonuses on every order. You can use them 100% when paying for any dish!",
+      "auth_desc2": "Additionally, you will gain access to exclusive discounts and promotions. Ordering will become faster and more convenient. Don't miss the opportunity to become part of our loyalty program!"
     },
     "Total": {
       "total": "Total Amount",

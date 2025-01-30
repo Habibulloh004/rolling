@@ -44,7 +44,8 @@
     "self_desc": "Xaridor o'ziga xizmat qiladi",
     "selected": "Tanlangan",
     "no_active": "Hozirda faol emas",
-    "no_auth": "Faqat ro‘yxatdan o‘tgan foydalanuvchilar bizning bonus tizimimizda ishtirok etib, har bir buyurtmadan 30% gacha bonus olishadi. Siz ularni istalgan taomni to‘lashda 100% ishlatishingiz mumkin!!",
+    "no_auth": "Faqat ro'yxatdan o'tgan foydalanuvchilar uchun",
+    "no_auth1": "Faqat ro'yxatdan o'tgan foydalanuvchilar uchun",
     "products_empty": "Siz mahsulot tanlamadingiz!",
     "phone_empty": "Telefon raqam mavjud emas!",
     "order_empty": "Buyurtmalar mavjud emas.",
@@ -54,7 +55,14 @@
     "discount": "Chegirma",
     "promotion": "Aksiyalar",
     "news": "Yangiliklar",
-    "cart_ingredient": "Yana birini qo'shing!"
+    "cart_ingredient": "Yana birini qo'shing!",
+    "Errors": {
+      "404_title": "Sahifa mavjud emas",
+      "404_desc": "Afsus, siz izlayotgan sahifa mavjud emas. Iltimos boshqatdan urunib ko'ring!",
+      "500_title": "Server bilan aloqa yo'q",
+      "500_desc": "Ichki server xatosi yuz berdi. Iltimos keyinroq urunib ko'ring!",
+      "rederect": "Bosh sahifa"
+    }
   },
   "Bonus": {
     "bonus": "Bonus",
@@ -320,7 +328,10 @@
       "pay_error": "Kartangizni tekshiring, to'lov tasdiqlanmadi!!!",
       "pay_success": "To'lov muvaffaqiyatli amalga oshirildi!",
       "you_not_pay": "Siz to'lovni amalga oshirmadingiz!!!",
-      "you_not_check": "Siz to'lovni tasdiqlamadingiz!!!"
+      "you_not_check": "Siz to'lovni tasdiqlamadingiz!!!",
+      "auth_title": "Ro'yxatdan o'ting va Rolling Sushi’dan yanada ko'proq zavq oling!",
+      "auth_desc1": "Faqat ro'yxatdan o'tgan foydalanuvchilar bizning bonus tizimimizda ishtirok etib, har bir buyurtmadan 30% gacha bonus olishadi. Ularni har qanday taomni to'lashda 100% ishlatishingiz mumkin!",
+      "auth_desc2": "Bundan tashqari, sizga eksklyuziv chegirmalar va aksiyalarga kirish huquqi beriladi. Buyurtmalarni berish tezroq va qulayroq bo'ladi. Bizning sodiqlik dasturimizning bir qismi bo'lish imkoniyatini qo'ldan boy bermang!"
     },
     "Total": {
       "total": "Umumiy summa",

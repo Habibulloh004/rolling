@@ -9,6 +9,7 @@ import Footer from "@/components/shared/footer";
 import { ApiService } from "@/service/api.services";
 import NextTopLoader from "nextjs-toploader";
 import { Toaster } from "sonner";
+import Script from "next/script";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -103,7 +104,6 @@ export default async function Layout({ children, params }) {
           />
           <Footer params={param} />
         </NextIntlClientProvider>
-
         <noscript>
           <iframe
             src="https://www.googletagmanager.com/ns.html?id=GTM-M3LDW3FG"
@@ -121,7 +121,6 @@ export default async function Layout({ children, params }) {
             />
           </div>
         </noscript>
-
         {/* Google Analytics Script */}
         <Script
           strategy="afterInteractive"

@@ -10,6 +10,7 @@ import { ApiService } from "@/service/api.services";
 import NextTopLoader from "nextjs-toploader";
 import { Toaster } from "sonner";
 import Script from "next/script";
+import LoaderWrapper from "@/components/shared/loader-wrapper";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -90,7 +91,9 @@ export default async function Layout({ children, params }) {
             locale={param.locale}
             spotData={spotData}
           />
-          <main className="grow">{children}</main>
+          <main className="grow">
+            <LoaderWrapper>{children}</LoaderWrapper>
+          </main>
           <Toaster
             position="bottom-right"
             toastOptions={{

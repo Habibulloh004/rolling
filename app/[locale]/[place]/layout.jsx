@@ -104,7 +104,7 @@ export default async function Layout({ children, params }) {
           <Footer params={param} />
         </NextIntlClientProvider>
 
-        {/* <noscript>
+        <noscript>
           <iframe
             src="https://www.googletagmanager.com/ns.html?id=GTM-M3LDW3FG"
             height="0"
@@ -120,10 +120,10 @@ export default async function Layout({ children, params }) {
               alt=""
             />
           </div>
-        </noscript> */}
+        </noscript>
 
         {/* Google Analytics Script */}
-        {/* <Script
+        <Script
           strategy="afterInteractive"
           src="https://www.googletagmanager.com/gtag/js?id=G-PN4ZZXXGHP"
         />
@@ -137,7 +137,7 @@ export default async function Layout({ children, params }) {
               page_path: window.location.pathname,
             });
           `}
-        </Script> */}
+        </Script>
 
         {/* Google Tag Manager Script */}
         {/* <Script id="gtm-init" strategy="afterInteractive">

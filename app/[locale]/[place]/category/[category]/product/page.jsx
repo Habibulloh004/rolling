@@ -4,7 +4,7 @@ import React from "react";
 export default function ProductPage() {
   return (
     <div>
-      <ErrorPage code={404}  />
+      <ErrorPage code={404} />
     </div>
   );
 }

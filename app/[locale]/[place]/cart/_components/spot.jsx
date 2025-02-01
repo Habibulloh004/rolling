@@ -40,7 +40,9 @@ const Spot = ({ place, locale, spotData, searchParamsData }) => {
               height={100}
               className="w-6 h-6 md:w-8 md:h-8"
             />
-            {translateTextSpot(spotData?.response?.name, locale)?.split("-")[1]}{" "}
+            {translateTextSpot(spotData?.response?.name, locale)?.split(
+              "Rolling Sushi -"
+            )}  
             {allT("spot")}
           </p>
         </div>
@@ -66,7 +68,7 @@ const Spot = ({ place, locale, spotData, searchParamsData }) => {
           <PhoneInput
             country="UZ"
             defaultCountry="UZ"
-             placeholder=""
+            placeholder=""
             international
             withCountryCallingCode
             value={orderData?.phone || ""}

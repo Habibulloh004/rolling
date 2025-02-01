@@ -123,6 +123,7 @@ export default function ReviewForm({id}) {
             {allT("send")}
           </SubmitButton>
           <Button
+          aria-label={`review cancel`}
             variant="outline"
             type={"button"}
             onClick={() => {

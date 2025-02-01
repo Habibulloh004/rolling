@@ -46,6 +46,7 @@ export default function OrderDataComponent({ locale, path }) {
             return (
               <CarouselItem key={i} className="basis-auto">
                 <button
+                aria-label={`dataCom title`}
                 onClick={()=>setOrderId(item?.order_id)}
                 type="button"
                   className={`bg-white rounded-2xl p-5 flex flex-col justify-between w-[300px] duration-300 ${orderId == item?.order_id ? "bg-slate-200" : ""}`}

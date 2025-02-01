@@ -32,6 +32,7 @@ const PasswordInput = React.forwardRef(({ className, ...props }, ref) => {
         onChange={handleChange} // Custom onChange ishlatish
       />
       <Button
+        aria-label={`password input`}
         type="button"
         variant="ghost"
         size="sm"
@@ -51,8 +52,9 @@ const PasswordInput = React.forwardRef(({ className, ...props }, ref) => {
           />
         )}
         <h1
-          className={`textSmall2 ${showPassword ? "text-white" : "text-white/50"
-            }`}
+          className={`textSmall2 ${
+            showPassword ? "text-white" : "text-white/50"
+          }`}
         >
           {t("password")}
         </h1>

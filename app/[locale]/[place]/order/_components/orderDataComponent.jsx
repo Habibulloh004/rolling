@@ -64,6 +64,7 @@ export default function OrderDataComponent({ locale, path }) {
                     </p>
                   </div>
                   <Button
+                  aria-label={`ordata show`}
                     className={"w-full hover:bg-primary text-[13px] text-white"}
                   >
                     {orderText("show_order")}
@@ -124,6 +125,7 @@ export default function OrderDataComponent({ locale, path }) {
                     </p>
                   </div>
                   <Button
+                  aria-label={`ordata show2`}
                     className={
                       "w-full h-8 hover:bg-primary text-[13px] text-white mt-2"
                     }

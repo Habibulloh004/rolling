@@ -256,6 +256,7 @@ const EditAddress = () => {
           </div>
           <div className="w-full hidden lg:grid grid-cols-1 gap-y-4 lg:grid-cols-3 gap-x-2 mt-5">
             <Button
+            aria-label={`edit add`}
               onClick={handleSubmit}
               className={"hover:bg-primary h-10 rounded-sm"}
             >
@@ -266,7 +267,7 @@ const EditAddress = () => {
         <div className="lg:w-full h-48 lg:h-80 rounded-xl overflow-hidden relative z-0 ">
           {open && (
             <div className="md:hidden absolute top-0 left-0 w-full h-full z-30 backdrop-blur-[1px] bg-black/10 flex justify-center items-center">
-              <Button onClick={() => setOpen(false)}>
+              <Button aria-label={`edit map`} onClick={() => setOpen(false)}>
                 {addressT("select_map")}
               </Button>
             </div>
@@ -299,6 +300,7 @@ const EditAddress = () => {
             <MapClickHandler />
           </MapContainer>
           <Button
+          aria-label={`edit navigation`}
             onClick={handleFoundLocation}
             className={
               "flex bg-primary hover:bg-opacity-70 text-base gap-3 items-center text-white px-3 py-2 h-10 absolute bottom-3 left-3 z-50"
@@ -310,6 +312,7 @@ const EditAddress = () => {
       </div>
       <div className="lg:hidden w-full flex justify-between">
         <Button
+        aria-label={`edit add2`}
           onClick={handleSubmit}
           className={"hover:bg-primary h-10 rounded-sm"}
         >

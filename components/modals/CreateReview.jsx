@@ -21,7 +21,7 @@ export async function CreateReview() {
   return (
     <Dialog className="w-full">
       <DialogTrigger asChild>
-        <Button>{aboutUsT("btnReview")}</Button>
+        <Button aria-label={`create review`}>{aboutUsT("btnReview")}</Button>
       </DialogTrigger>
       <DialogContent
         className="max-w-lg w-11/12 no-scrollbar overflow-y-scroll p-7 focus:outline-none border-0 rounded-sm sm:rounded-md"

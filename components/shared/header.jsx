@@ -75,12 +75,6 @@ export default function Header({
   const [openSearch, setOpenSearch] = useState(false);
   const router = useRouter();
 
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
   useEffect(() => {
     if (searchTerm.trim() === "") {
       setFilteredCategories([]);
@@ -166,10 +160,6 @@ export default function Header({
     ["Зарегистрируйтесь", "Register", "Hozir ro'yxatdan o'ting"],
     param.locale
   );
-
-  if (!isMounted) {
-    return null;
-  }
 
   return (
     <>
@@ -621,6 +611,7 @@ export default function Header({
                     <p className="textSmall1">{allT("waiter_desc")}</p>
                   </div>
                   <Button
+                  aria-label={`header choose`}
                     onClick={() => {
                       history.pushState(
                         null,
@@ -642,6 +633,7 @@ export default function Header({
                     <p className="textSmall1">{allT("self_desc")}</p>
                   </div>
                   <Button
+                  aria-label={`header choose2`}
                     onClick={() => {
                       history.pushState(
                         null,

@@ -21,6 +21,7 @@ export default function FavoriteModal({ categories, locale }) {
     <Dialog>
       <DialogTrigger asChild>
         <Button
+        aria-label={`prdetail plus`}
           variant="ghost"
           className=" flex justify-center items-center gap-1 text-white hover:text-primary text-sm font-medium bg-primary"
         >
@@ -64,6 +65,7 @@ export default function FavoriteModal({ categories, locale }) {
           </section>
           <section className="flex justify-end items-center gap-5 col-span-2">
             <Button
+            aria-label={`prdetail plus2`}
               variant="ghost"
               className="border border-input bg-black/5 hover:bg-black/10 space-x-2"
             >
@@ -71,7 +73,7 @@ export default function FavoriteModal({ categories, locale }) {
               <span className="font-medium">1</span>
               <Minus />
             </Button>
-            <Button className="w-40 hover:bg-primary-modal">
+            <Button aria-label={`prdetail add`} className="w-40 hover:bg-primary-modal">
               {all("add")}
             </Button>
           </section>

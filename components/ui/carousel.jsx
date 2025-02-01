@@ -156,6 +156,7 @@ const CarouselPrevious = React.forwardRef(({ className, variant = "outline", siz
       ref={ref}
       variant={variant}
       size={size}
+      aria-label={`carousel btn`}
       className={cn("absolute h-8 w-8 rounded-full", orientation === "horizontal"
         ? "-left-12 top-1/2 -translate-y-1/2"
         : "-top-12 left-1/2 -translate-x-1/2 rotate-90", className)}
@@ -174,6 +175,7 @@ const CarouselNext = React.forwardRef(({ className, variant = "outline", size = 
 
   return (
     (<Button
+      aria-label={`carousel btn2`}
       ref={ref}
       variant={variant}
       size={size}

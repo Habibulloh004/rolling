@@ -15,7 +15,7 @@ export function RegisterModal() {
   return (
     <Dialog open className="w-full">
       <DialogTrigger asChild>
-        <Button>Register modal</Button>
+        <Button aria-label={`register modal`}>Register modal</Button>
       </DialogTrigger>
       <DialogContent
         className="w-11/12 px-3 sm:max-w-2xl bg-primary-modal sm:w-10/12 xl:max-w-3xl sm:px-10 py-5 focus:outline-none border-0 rounded-sm sm:rounded-md"

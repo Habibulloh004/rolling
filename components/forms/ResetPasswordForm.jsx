@@ -154,14 +154,16 @@ export default function ResetPasswordForm() {
                 <AlertDialogTrigger asChild>
                   <div>
                     <Button
-                      type="button"
-                      disabled={!phone || phone.length != 13}
-                      onClick={sendSms}
-                      className="max-sm:hidden h-10 px-[10px] bg-white hover:bg-white/90 text-black"
+                    aria-label={`reset sms`}
+                    type="button"
+                    disabled={!phone || phone.length != 13}
+                    onClick={sendSms}
+                    className="max-sm:hidden h-10 px-[10px] bg-white hover:bg-white/90 text-black"
                     >
                       {registerT("send_sms")}
                     </Button>
                     <Button
+                      aria-label={`reset sms2`}
                       type="button"
                       disabled={!phone || phone.length != 13}
                       onClick={sendSms}

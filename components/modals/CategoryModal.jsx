@@ -33,7 +33,7 @@ export function CategoryModal({ categories, locale }) {
   return (
     <Dialog className="w-full">
       <DialogTrigger asChild>
-        <Button>Category modal</Button>
+        <Button aria-label={`category modal`}>Category modal</Button>
       </DialogTrigger>
       <DialogContent
         className="relative mx-auto max-sm:max-w-[calc(100vh-80px)] max-sm:w-11/12 max-sm:rounded-md px-3 bg-background-primary py-5 focus:outline-none"
@@ -84,6 +84,7 @@ export function CategoryModal({ categories, locale }) {
             <Dialog>
               <DialogTrigger asChild>
                 <Button
+                aria-label={`category more`}
                   variant="ghost"
                   className="p-0 flex justify-end items-center gap-1 text-primary hover:text-primary text-sm font-medium"
                 >
@@ -159,10 +160,10 @@ const Card = ({ item, localizedName }) => {
         <p className="textSmall2 font-bold">100 000 сум</p>
       </div>
       <div className="flex justify-end items-center gap-2">
-        <Button className="w-8 h-8 hover:bg-primary-modal">
+        <Button aria-label={`category plus`} className="w-8 h-8 hover:bg-primary-modal">
           <Plus />
         </Button>
-        <Button className="px-1 h-8 hover:bg-primary-modal">
+        <Button aria-label={`category minus`} className="px-1 h-8 hover:bg-primary-modal">
           <Plus />
           <span className="font-medium">1</span>
           <Minus />

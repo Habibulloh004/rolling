@@ -19,6 +19,7 @@ export function ProductDialog({ product }) {
           className="rounded-lg"
         />
         <button
+        aria-label={`prmodal heart`}
           onClick={(e) => {
             e.stopPropagation();
             setIsFavorite(!isFavorite);
@@ -48,7 +49,7 @@ export function ProductDialog({ product }) {
       <p className="mt-2 text-[#6B6B6B]">{product.description}</p>
       <div className="mt-6 flex items-center justify-between">
         <span className="text-lg font-semibold">{product.price}</span>
-        <Button className="bg-[#43674E] hover:bg-[#43674E]/90">
+        <Button aria-label={`prmodal add`} className="bg-[#43674E] hover:bg-[#43674E]/90">
           Add to Cart
         </Button>
       </div>

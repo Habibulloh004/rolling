@@ -79,6 +79,7 @@ export default function ProfileComponent({ client }) {
                   }
                 />
                 <button
+                aria-label={`prof cookie`}
                   onClick={async () => {
                     if (
                       `${client?.firstname && client?.firstname} ${
@@ -151,6 +152,7 @@ export default function ProfileComponent({ client }) {
             ))}
             <Link href={`${getUrl(pathName)}/login`} className="w-full">
               <Button
+              aria-label={`prof client`}
                 onClick={() => {
                   Cookies.remove("client");
                   setClient(null);
@@ -213,6 +215,7 @@ export default function ProfileComponent({ client }) {
           ))}
           <Link href={`${getUrl(pathName)}/login`} className="w-full">
             <Button
+            aria-label={`prof logout`}
               onClick={() => {
                 Cookies.remove("client");
                 setClient(null);

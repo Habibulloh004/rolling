@@ -61,7 +61,7 @@
       "404_desc": "Afsus, siz izlayotgan sahifa mavjud emas. Iltimos boshqatdan urunib ko'ring!",
       "500_title": "Server bilan aloqa yo'q",
       "500_desc": "Ichki server xatosi yuz berdi. Iltimos keyinroq urunib ko'ring!",
-      "rederect": "Bosh sahifa"
+      "redirect": "Bosh sahifa"
     },
     "additional_info": "Yana buyurtma berishni xoxlaysizmi? Asosiy menyu ga o'ting."
   },

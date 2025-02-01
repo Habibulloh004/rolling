@@ -8,7 +8,8 @@ import { Input } from "@/components/ui/input";
 import { useTranslations } from "use-intl";
 import { getUrl, hashSecretKey, truncateText } from "@/lib/utils";
 import { decryptData, encryptData, hashWithSecret } from "@/lib/hashing";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 
 const MyCard = () => {
   const [color, setColor] = useState("#B18CFE");
@@ -19,7 +20,12 @@ const MyCard = () => {
   const cardT = useTranslations("Profile.MyCard");
   const router = useRouter();
   const pathname = usePathname();
-
+  const searchParams = useSearchParams();
+  const spot = searchParams.get("spot");
+  const tableId = searchParams.get("table_id");
+  const tableNum = searchParams.get("table_num");
+  const service = searchParams.get("service");
+  const place = pathname.split("/")[2];
   const numberChange = (e) => {
     let value = e.target.value;
 
@@ -65,7 +71,13 @@ const MyCard = () => {
       console.error("Secret key is not defined!");
       return;
     }
-    router.push(`${getUrl(pathname)}/cart`);
+    router.push(
+      place == "branch"
+        ? `${getUrl(
+            pathname
+          )}/cart?spot=${spot}&table_id=${tableId}&table_num=${tableNum}&service=${service}`
+        : `${getUrl(pathname)}/cart`
+    );
     const cardData = JSON.stringify({
       cardName: cardName,
       cardNumber: cardNumber,
@@ -85,7 +97,6 @@ const MyCard = () => {
     const decryptedCards = existingCards.map((card) =>
       decryptData(card, hashSecretKey)
     );
-
 
     // Formani tozalash
     setCardNumber("");
@@ -152,11 +163,11 @@ const MyCard = () => {
             style={{ backgroundColor: color }}
           >
             <Image
-              src={`/assets/uzcard.webp`}
-              alt="uzcard"
-              width={100}
-              height={100}
-              className="h-11 w-[83px] absolute z-20 top-[18px] right-[22px]"
+              src={`/assets/secondaryIcon.webp`}
+              alt="Rolling Sushi"
+              width={120}
+              height={70}
+              className="absolute z-20 top-[18px] right-[22px]"
             />
             <p className="absolute font-semibold text-base leading-6 left-5 top-5 text-white">
               {cardName ? truncateText(cardName, 15) : cardT("card_name")}
@@ -214,7 +225,12 @@ const MyCard = () => {
             >
               {allT("confirm")}
             </Button>
-            <Button variant={"ghost"} className={"border-2 h-11 rounded-xl"}>
+
+            <Button
+              onClick={() => router.back()}
+              variant={"ghost"}
+              className={"w-full border-2 h-11 rounded-xl"}
+            >
               {allT("cancel")}
             </Button>
           </div>

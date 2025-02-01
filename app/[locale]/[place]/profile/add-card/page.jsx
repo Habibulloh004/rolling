@@ -181,36 +181,42 @@ const MyCard = () => {
           </div>
           <div className="flex justify-between w-11/12 md:w-full max-w-72">
             <Button
+            aria-label={`card color`}
               onClick={() => setColor("#B18CFE")}
               className={`rounded-full w-[30px] p-0 h-[30px] bg-[#B18CFE] hover:bg-[#B18CFE] border-[#004032] ${
                 color == "#B18CFE" ? "border-[3px]" : ""
               }`}
             ></Button>
             <Button
+            aria-label={`card color2`}
               onClick={() => setColor("#EE719E")}
               className={`rounded-full w-[30px] p-0 h-[30px] bg-[#EE719E] hover:bg-[#EE719E] border-[#004032] ${
                 color == "#EE719E" ? "border-[3px]" : ""
               }`}
             ></Button>
             <Button
+            aria-label={`card color3`}
               onClick={() => setColor("#4D22B2")}
               className={`rounded-full w-[30px] p-0 h-[30px] bg-[#4D22B2] hover:bg-[#4D22B2] border-[#004032] ${
                 color == "#4D22B2" ? "border-[3px]" : ""
               }`}
             ></Button>
             <Button
+            aria-label={`card color4`}
               onClick={() => setColor("#D8C9FE")}
               className={`rounded-full w-[30px] p-0 h-[30px] bg-[#D8C9FE] hover:bg-[#D8C9FE] border-[#004032] ${
                 color == "#D8C9FE" ? "border-[3px]" : ""
               }`}
             ></Button>
             <Button
+            aria-label={`card color5`}
               onClick={() => setColor("#FFAB01")}
               className={`rounded-full w-[30px] p-0 h-[30px] bg-[#FFAB01] hover:bg-[#FFAB01] border-[#004032] ${
                 color == "#FFAB01" ? "border-[3px]" : ""
               }`}
             ></Button>
             <Button
+            aria-label={`card color6`}
               onClick={() => setColor("#FF8C82")}
               className={`rounded-full w-[30px] p-0 h-[30px] bg-[#FF8C82] hover:bg-[#FF8C82] border-[#004032] ${
                 color == "#FF8C82" ? "border-[3px]" : ""
@@ -220,6 +226,7 @@ const MyCard = () => {
 
           <div className="w-full max-w-md grid grid-cols-1 gap-y-4 lg:grid-cols-2 gap-x-2 mt-10 mx-7">
             <Button
+            aria-label={`card confirm`}
               onClick={getHash}
               className={"hover:bg-primary h-11 rounded-xl"}
             >
@@ -227,6 +234,7 @@ const MyCard = () => {
             </Button>
 
             <Button
+            aria-label={`card cancel`}
               onClick={() => router.back()}
               variant={"ghost"}
               className={"w-full border-2 h-11 rounded-xl"}

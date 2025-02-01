@@ -3,7 +3,6 @@ import {
   MapContainer,
   TileLayer,
   Marker,
-  Popup,
   useMap,
   useMapEvents,
 } from "react-leaflet";
@@ -49,6 +48,7 @@ const EditAddress = () => {
   const allT = useTranslations("All");
   const pathname = usePathname();
   const router = useRouter();
+  console.log(pathname.split("/"));
 
   const SmoothTransition = ({ lng, lat, zoom = 14 }) => {
     const map = useMap();
@@ -59,7 +59,7 @@ const EditAddress = () => {
   };
 
   const handleFoundLocation = () => {
-    if (!navigator.geolocation) {
+    if (typeof navigator === "undefined" || !navigator.geolocation) {
       toast.warning(addressT("geolocation"));
       return;
     }
@@ -69,23 +69,25 @@ const EditAddress = () => {
         const { latitude, longitude } = position.coords;
         const newLocation = { lat: latitude, lng: longitude };
         setLocation(newLocation);
-        localStorage.setItem("yourLocation", JSON.stringify(newLocation));
+        if (typeof window !== "undefined") {
+          localStorage.setItem("yourLocation", JSON.stringify(newLocation));
+        }
       },
       (error) => {
-        if (!navigator.geolocation) {
-          toast.warning(addressT("geolocation"));
-          return;
-        }
+        toast.warning(addressT("geolocation"));
       },
       { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
     );
   };
 
   const handleSubmit = () => {
-    const myAddresses = localStorage.getItem("myAddresses")
-      ? JSON.parse(localStorage.getItem("myAddresses"))
-      : [];
-    // Validation
+    let myAddresses = [];
+    if (typeof window !== "undefined") {
+      myAddresses = localStorage.getItem("myAddresses")
+        ? JSON.parse(localStorage.getItem("myAddresses"))
+        : [];
+    }
+
     if (!addressData.address) {
       toast.error(addressT("address_error"));
       return;
@@ -96,35 +98,35 @@ const EditAddress = () => {
     }
 
     const id = myAddresses.length + 1;
-    let commentAddress;
-    if (addressData.house) {
-      commentAddress = addressData.house + ". ";
-    }
+    let commentAddress = addressData.house ? addressData.house + ". " : "";
     if (addressData?.comment) {
       commentAddress += addressData?.comment + ". ";
     }
+
     const newAddress = {
       id,
       address: addressData.address,
       lat: addressData.lat,
       lng: addressData.lng,
-      comment: commentAddress ? commentAddress : "",
+      comment: commentAddress || "",
     };
 
     myAddresses.push(newAddress);
-    localStorage.setItem("myAddresses", JSON.stringify(myAddresses));
+    if (typeof window !== "undefined") {
+      localStorage.setItem("myAddresses", JSON.stringify(myAddresses));
+    }
     toast.success(addressT("address_saved"));
-    router.push(  `${getUrl(pathname)}/cart`);
+    router.push(`${getUrl(pathname)}/cart`);
+
     setOrderData({
       ...orderData,
       address: addressData.address,
       client_addresses_id: id,
       lat: addressData.lat,
       lng: addressData.lng,
-      address_comment: commentAddress ? commentAddress : "",
+      address_comment: commentAddress || "",
     });
 
-    // Reset form
     setAddressData({
       id: 0,
       address: "",
@@ -144,62 +146,42 @@ const EditAddress = () => {
       click(e) {
         const { lat, lng } = e?.latlng;
         setLocation({ lat, lng });
-        localStorage.setItem("yourLocation", JSON.stringify({ lat, lng }));
+        if (typeof window !== "undefined") {
+          localStorage.setItem("yourLocation", JSON.stringify({ lat, lng }));
+        }
       },
     });
     return null;
   };
 
   useEffect(() => {
-    const savedLocation = localStorage.getItem("yourLocation")
-      ? JSON.parse(localStorage.getItem("yourLocation"))
-      : null;
+    if (typeof window !== "undefined") {
+      const savedLocation = localStorage.getItem("yourLocation")
+        ? JSON.parse(localStorage.getItem("yourLocation"))
+        : null;
 
-    if (savedLocation) {
-      setLocation(savedLocation);
-    } else if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          const newLocation = { lat: latitude, lng: longitude };
-          setLocation(newLocation);
-          localStorage.setItem("yourLocation", JSON.stringify(newLocation));
-        },
-        (error) => {
-          toast.warning(
-            "Joylashuvni aniqlashda xatolik yuz berdi. Iltimos, ruxsat bering."
-          );
-        },
-        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-      );
+      if (savedLocation) {
+        setLocation(savedLocation);
+      } else if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const { latitude, longitude } = position.coords;
+            const newLocation = { lat: latitude, lng: longitude };
+            setLocation(newLocation);
+            localStorage.setItem("yourLocation", JSON.stringify(newLocation));
+          },
+          (error) => {
+            toast.warning(
+              "Joylashuvni aniqlashda xatolik yuz berdi. Iltimos, ruxsat bering."
+            );
+          },
+          { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+        );
+      }
     }
   }, []);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await fetch(
-          `https://nominatim.openstreetmap.org/reverse?lat=${String(
-            location?.lat
-          )}&lon=${String(location?.lng)}&format=json&accept-language=${
-            pathname.split("/")[1]
-          }`
-        );
-        const addressRes = await res.json();
-        setAddressData({
-          ...addressData,
-          lat: location.lat,
-          lng: location.lng,
-          address: addressRes?.display_name,
-        });
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchData();
-  }, [location]);
-
-  return (
+ return (
     <Container className={"w-11/12 flex flex-col pt-3 md:pt-8"}>
       <h1 className="font-semibold textNormal4 text-primary w-full text-start">
         {addressT("title")}
@@ -256,7 +238,6 @@ const EditAddress = () => {
           </div>
           <div className="w-full hidden lg:grid grid-cols-1 gap-y-4 lg:grid-cols-3 gap-x-2 mt-5">
             <Button
-            aria-label={`edit add`}
               onClick={handleSubmit}
               className={"hover:bg-primary h-10 rounded-sm"}
             >
@@ -267,7 +248,7 @@ const EditAddress = () => {
         <div className="lg:w-full h-48 lg:h-80 rounded-xl overflow-hidden relative z-0 ">
           {open && (
             <div className="md:hidden absolute top-0 left-0 w-full h-full z-30 backdrop-blur-[1px] bg-black/10 flex justify-center items-center">
-              <Button aria-label={`edit map`} onClick={() => setOpen(false)}>
+              <Button onClick={() => setOpen(false)}>
                 {addressT("select_map")}
               </Button>
             </div>
@@ -300,7 +281,6 @@ const EditAddress = () => {
             <MapClickHandler />
           </MapContainer>
           <Button
-          aria-label={`edit navigation`}
             onClick={handleFoundLocation}
             className={
               "flex bg-primary hover:bg-opacity-70 text-base gap-3 items-center text-white px-3 py-2 h-10 absolute bottom-3 left-3 z-50"
@@ -312,7 +292,6 @@ const EditAddress = () => {
       </div>
       <div className="lg:hidden w-full flex justify-between">
         <Button
-        aria-label={`edit add2`}
           onClick={handleSubmit}
           className={"hover:bg-primary h-10 rounded-sm"}
         >

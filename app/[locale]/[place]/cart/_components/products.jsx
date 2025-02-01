@@ -89,6 +89,7 @@ const Products = ({ locale, place }) => {
                         {localizedName}
                       </p>
                       <Button
+                      aria-label={`product image`}
                         disabled={paymentData && paymentData?.payment_id}
                         onClick={() => deleteProduct(item.product_id)}
                         className={
@@ -113,6 +114,7 @@ const Products = ({ locale, place }) => {
                       </p>
                       <div className="grid grid-cols-3 w-full sm:w-[100px] h-[34px] bg-white border-2 rounded-md">
                         <button
+                        aria-label={`product minus`}
                           disabled={paymentData && paymentData?.payment_id}
                           onClick={() => handleDecrementCount(item)}
                           className={
@@ -125,6 +127,7 @@ const Products = ({ locale, place }) => {
                           {item.count > 9 ? item.count : `0${item.count}`}
                         </p>
                         <button
+                        aria-label={`product plus`}
                           disabled={paymentData && paymentData?.payment_id}
                           onClick={() => handleIncrementCount(item)}
                           className={
@@ -152,7 +155,7 @@ const Products = ({ locale, place }) => {
                   )}?spot=${spot}&table_id=${table_id}&table_num=${table_num}&service=${service}`
             }
           >
-            <Button className="w-full p-3 text-white text-center font-bold">
+            <Button aria-label={`product menu`} className="w-full p-3 text-white text-center font-bold">
               {orderT("menu_btn")}
             </Button>
           </Link>

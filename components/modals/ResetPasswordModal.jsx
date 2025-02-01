@@ -9,7 +9,7 @@ export function ResetPasswordModal() {
   return (
     <Dialog className="w-full">
       <DialogTrigger asChild>
-        <Button>Reset Password modal</Button>
+        <Button aria-label={`reset modal`}>Reset Password modal</Button>
       </DialogTrigger>
       <DialogContent
         className="max-w-lg w-11/12 no-scrollbar bg-primary-modal overflow-y-scroll py-5 focus:outline-none border-0 rounded-sm sm:rounded-md"

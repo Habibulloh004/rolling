@@ -5,6 +5,7 @@ const SubmitButton = ({ isLoading, className, children, disabled }) => {
   const allT = useTranslations("All")
   return (
     <Button
+    aria-label={`submit btn`}
       variant="ghost"
       type="submit"
       disabled={isLoading || disabled}

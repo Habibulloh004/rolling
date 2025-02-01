@@ -101,6 +101,7 @@ export default function VacansyForm() {
             {allT("send")}
           </SubmitButton>
           <Button
+          aria-label={`vacancy cancel`}
             variant="outline"
             type={"button"}
             onClick={() => {

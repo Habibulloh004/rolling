@@ -181,6 +181,7 @@ export default function OrderItemComponent({
                         }`}
                       >
                         <Button
+                        aria-label={`oritem spot`}
                           className={
                             "h-8 text-[12px] md:text-sm mt-[10px] hover:bg-primary "
                           }

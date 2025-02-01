@@ -77,6 +77,7 @@ export function DatePicker({ startYear, endYear, value, onChange }) {
     <Popover>
       <PopoverTrigger asChild>
         <Button
+        aria-label={`date picker`}
           variant={"outline"}
           className={cn(
             "h-11 w-full justify-start text-left font-normal bg-transparent hover:bg-transparent text-white hover:text-white",

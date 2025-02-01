@@ -99,6 +99,7 @@ const Delivery = ({ locale, auth, clientData, place }) => {
           <Dialog open={modalAdd}>
             <DialogTrigger asChild>
               <Button
+              aria-label={`edit`}
                 onClick={handleSelectModal}
                 className={
                   "h-8 max-sm:text-[12px] md:h-10 px-4 md:px-5 bg-transparent text-[#004032] shadow-none border-[1px] rounded-[8px] border-[#004032]"
@@ -134,6 +135,7 @@ const Delivery = ({ locale, auth, clientData, place }) => {
                             {address.address}
                           </p>
                           <Button
+                          aria-label={`choose`}
                             onClick={() => handleSelectAddress(address)}
                             className="hover:bg-primary-modal"
                           >
@@ -150,6 +152,7 @@ const Delivery = ({ locale, auth, clientData, place }) => {
                   <div className="flex justify-end items-center w-full">
                     <Link href={`/${locale}/${place}/profile/address/add`}>
                       <Button
+                      aria-label={`add`}
                         className={
                           "h-8 max-sm:w-full max-sm:text-[12px] md:h-10 px-4 md:px-5 bg-transparent text-[#004032] shadow-none border-[1px] rounded-[8px] border-[#004032]"
                         }

@@ -15,7 +15,7 @@ export function LoginModal() {
   return (
     <Dialog className="w-full">
       <DialogTrigger asChild>
-        <Button>Login modal</Button>
+        <Button aria-label={`login modal`}>Login modal</Button>
       </DialogTrigger>
       <DialogContent
         className="max-w-lg w-11/12 no-scrollbar bg-primary-modal overflow-y-scroll py-5 focus:outline-none border-0 rounded-sm sm:rounded-md"

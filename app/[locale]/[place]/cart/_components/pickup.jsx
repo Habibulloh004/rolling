@@ -123,6 +123,7 @@ const Pickup = ({
                         </p>
                       </div>
                       <Button
+                      aria-label={`picup choose`}
                         onClick={() => handleSelectAddress(spot)}
                         className={`${
                           orderData?.spot_id == spot?.spot_id

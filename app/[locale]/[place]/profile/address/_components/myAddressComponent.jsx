@@ -65,6 +65,7 @@ export default function MyAddressComponent() {
                   className={"grid grid-cols-1 gap-y-4  w-full gap-x-2"}
                 >
                   <Button
+                  aria-label={`address delete`}
                     onClick={() => handleDeleteAddress(item?.id)}
                     className={"hover:bg-primary"}
                   >
@@ -113,6 +114,7 @@ export default function MyAddressComponent() {
                         }
                       >
                         <Button
+                        aria-label={`address delete2`}
                           onClick={() => handleDeleteAddress(item?.id)}
                           className={"hover:bg-primary"}
                         >

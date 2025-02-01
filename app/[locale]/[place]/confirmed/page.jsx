@@ -275,6 +275,7 @@ const Confirmed = () => {
 
           <div className="lg:mx-7">
             <Button
+            aria-label={`confirm back`}
               className={
                 "w-full h-14 rounded-2xl text-center bg-[#43674E] hover:bg-[#43674E] font-medium text-lg"
               }
@@ -282,6 +283,7 @@ const Confirmed = () => {
               Вернуться к меню
             </Button>
             <Button
+            aria-label={`confirm otslej`}
               className={
                 "w-full h-14 rounded-2xl text-center bg-[#F5F5F5] hover:bg-[#F5F5F5] font-medium text-lg text-[#004032] mt-[11px]"
               }
@@ -289,6 +291,7 @@ const Confirmed = () => {
               Отслеживать заказ
             </Button>
             <Button
+            aria-label={`confirm feedback`}
               className={
                 "w-full h-14 rounded-2xl text-center bg-[#F5F5F5] hover:bg-[#F5F5F5] font-medium text-lg text-[#004032] mt-[11px]"
               }

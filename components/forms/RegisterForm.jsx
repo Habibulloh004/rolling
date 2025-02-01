@@ -237,6 +237,7 @@ export default function RegisterForm() {
                 <AlertDialogTrigger asChild>
                   <div>
                     <Button
+                    aria-label={`register sms`}
                       type="button"
                       disabled={!phone || phone.length != 13}
                       onClick={sendSms}
@@ -245,6 +246,7 @@ export default function RegisterForm() {
                       {t("send_sms")}
                     </Button>
                     <Button
+                    aria-label={`register sms2`}
                       type="button"
                       disabled={!phone || phone.length != 13}
                       onClick={sendSms}

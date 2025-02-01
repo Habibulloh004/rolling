@@ -99,8 +99,9 @@ const ClientContact = ({ spotData, locale }) => {
               <Mail size={24} color="#004032" />
               rollingsushi@gmail.com
             </p>
-            {spotData.map((spot) => (
+            {spotData.map((spot, idx) => (
               <button
+                aria-label={`spot btns${idx}`}
                 key={spot.spot_id}
                 onClick={() => addPhoto(spot)}
                 className={`flex gap-6 text-start underline-offset-8 py-3 px-5 rounded-xl border-2 border-[#004032] ${address?.spot_id === spot.spot_id
@@ -156,6 +157,7 @@ const ClientContact = ({ spotData, locale }) => {
             )}
           </div>
           <Button
+          aria-label={`contact share`}
             className="w-full max-w-96 h-11 hover:bg-primary"
             onClick={() =>  handleShare(Number(address.lng), Number(address.lat))}
           >

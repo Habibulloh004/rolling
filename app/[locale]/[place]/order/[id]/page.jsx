@@ -28,6 +28,7 @@ export default async function OrderList({ params }) {
         </div>
         <Link href={`/${locale}/${path.place}/create-review`}>
           <Button
+          aria-label={`orderid comment`}
             className={
               "md:h-12 md:textNormal2 md:px-4 hidden lg:block hover:bg-primary textSmall4"
             }

@@ -83,6 +83,7 @@ const Card = ({
       {/* Favorite Button */}
       {!defaultHref?.startsWith(`/${locale}/branch`) && (
         <button
+        aria-label={`shcard heart`}
           onClick={(e) => {
             e.stopPropagation(); // Prevent Link navigation when clicking the button
             handleAddFavorite(item);
@@ -100,6 +101,7 @@ const Card = ({
       {!findProduct ? (
         <div className="flex justify-end items-center gap-2">
           <button
+          aria-label={`shcard plus`}
             disabled={paymentData && paymentData.payment_id}
             onClick={handleAddProduct}
             className="rounded-md p-2 bg-primary active:bg-primary-modal"
@@ -114,6 +116,7 @@ const Card = ({
         <div className="flex justify-end items-center gap-2">
           <div className="max-sm:w-full flex justify-around sm:justify-center items-center gap-1 bg-primary rounded-md">
             <button
+            aria-label={`shcard plus2`}
               disabled={paymentData && paymentData.payment_id}
               onClick={handleIncrementCount}
               className="max-sm:w-full rounded-l-md p-2 bg-primary active:bg-gradient-to-r active:from-white/20 active:to-primary"
@@ -129,6 +132,7 @@ const Card = ({
                 : `0${findProduct.count}`}
             </span>
             <button
+            aria-label={`shcard minus`}
               disabled={paymentData && paymentData.payment_id}
               onClick={handleDecrementCount}
               className="max-sm:flex justify-center items-center max-sm:w-full rounded-r-md p-2 bg-primary active:bg-gradient-to-l active:from-white/20 active:to-primary"

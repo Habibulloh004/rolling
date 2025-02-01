@@ -1,0 +1,10 @@
+
+const EditAddress = () => {
+  return (
+      <h1 className="font-semibold textNormal4 text-primary w-full text-start">
+        title
+      </h1>
+  );
+};
+
+export default EditAddress;

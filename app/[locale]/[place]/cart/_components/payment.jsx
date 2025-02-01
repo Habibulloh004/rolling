@@ -572,9 +572,10 @@ const Payment = ({ locale, place, auth }) => {
       ) : (
         <>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {pay.map((item) => (
+            {pay.map((item, idx) => (
               <div key={item.id} className="relative w-full h-full">
                 <button
+                aria-label={`payment ${idx}`}
                   disabled={paymentData && paymentData?.payment_id}
                   onClick={() => handleSelectPayment(item)}
                   key={item.id}
@@ -640,6 +641,7 @@ const Payment = ({ locale, place, auth }) => {
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
                       <Button
+                      aria-label={`payment loading`}
                         disabled={
                           isPaymentLoading ||
                           (paymentData && !paymentData?.success)
@@ -694,7 +696,7 @@ const Payment = ({ locale, place, auth }) => {
                       <AlertDialogFooter>
                         <AlertDialogCancel>{all("cancel")}</AlertDialogCancel>
                         <AlertDialogAction asChild>
-                          <Button onClick={handlePayment}>
+                          <Button aria-label={`hand`} onClick={handlePayment}>
                             <HandCoins size={48} />
                             {paymentText("pay")}
                           </Button>
@@ -705,6 +707,7 @@ const Payment = ({ locale, place, auth }) => {
                   {orderData?.payment_method &&
                   orderData?.payment_method != "card" ? (
                     <Button
+                    aria-label={`check`}
                       onClick={handleCheck}
                       className={`${
                         isCheckLoading ||
@@ -795,6 +798,7 @@ const Payment = ({ locale, place, auth }) => {
                               <div className="w-full">
                                 {retry ? (
                                   <button
+                                  aria-label={`otp`}
                                     onClick={handlePayment}
                                     className="w-full bg-primary text-white py-2 rounded-md hover:opacity-90"
                                   >
@@ -802,6 +806,7 @@ const Payment = ({ locale, place, auth }) => {
                                   </button>
                                 ) : (
                                   <button
+                                  aria-label={`secound`}
                                     disabled
                                     className="w-full bg-gray-300 text-gray-600 py-2 rounded-md"
                                   >
@@ -811,6 +816,7 @@ const Payment = ({ locale, place, auth }) => {
                               </div>
                             ) : (
                               <button
+                              aria-label={`confirmpay`}
                                 onClick={handleCheck}
                                 className="w-full bg-primary text-white py-2 rounded-md hover:opacity-90"
                               >
@@ -819,6 +825,7 @@ const Payment = ({ locale, place, auth }) => {
                             )}
                           </AlertDialogFooter>
                           <button
+                          aria-label={`cancelpay`}
                             onClick={() => {
                               setPaymentData(null);
                               setRetry(true);
@@ -835,6 +842,7 @@ const Payment = ({ locale, place, auth }) => {
                   )}
                   {paymentData && (
                     <button
+                    aria-label={`cancel payment`}
                       onClick={() => {
                         setPaymentData(null);
                         setRetry(true);

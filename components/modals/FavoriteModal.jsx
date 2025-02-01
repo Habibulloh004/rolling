@@ -22,6 +22,7 @@ export default function FavoriteModal({ categories, locale }) {
     <Dialog>
       <DialogTrigger asChild>
         <Button
+        aria-label={`favorite`}
           variant="ghost"
           className=" flex justify-center items-center gap-1 text-white hover:text-primary text-sm font-medium bg-primary"
         >
@@ -74,7 +75,7 @@ const Card = ({ item, localizedName }) => {
         <p className="textSmall2 font-bold">100 000 сум</p>
       </div>
       <div className="flex justify-end items-center gap-2">
-        <Button className="w-8 h-8 hover:bg-primary-modal">
+        <Button aria-label={`faborite plus`} className="w-8 h-8 hover:bg-primary-modal">
           <Plus />
         </Button>
         {/* <Button className="px-1 h-8 hover:bg-primary-modal">

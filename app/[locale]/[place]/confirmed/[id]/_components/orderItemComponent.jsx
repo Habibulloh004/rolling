@@ -286,17 +286,17 @@ export default function OrderItemComponent({
         <div className="w-full">
           <>
             <Link href={`/${locale}/${param?.place}`}>
-              <Button className="w-full lg:h-12 rounded-xl bg-[#43674E] hover:bg-[#43674E]">
+              <Button aria-label={`order menu`} className="w-full lg:h-12 rounded-xl bg-[#43674E] hover:bg-[#43674E]">
                 {orderText("menu_btn")}
               </Button>
             </Link>
             <Link href={`/${locale}/${param?.place}/order/${param?.id}`}>
-              <Button className="w-full lg:h-12 rounded-xl bg-[#F5F5F5] hover:bg-[#F5F5F5] text-[#004032] mt-[11px]">
+              <Button aria-label={`order open`} className="w-full lg:h-12 rounded-xl bg-[#F5F5F5] hover:bg-[#F5F5F5] text-[#004032] mt-[11px]">
                 {orderText("open_btn")}
               </Button>
             </Link>
             <Link href={`/${locale}/${param?.place}/create-review`}>
-              <Button className="w-full lg:h-12 rounded-xl bg-[#F5F5F5] hover:bg-[#F5F5F5] text-[#004032] mt-[11px]">
+              <Button aria-label={`order add`} className="w-full lg:h-12 rounded-xl bg-[#F5F5F5] hover:bg-[#F5F5F5] text-[#004032] mt-[11px]">
                 {orderText("add_comment")}
               </Button>
             </Link>

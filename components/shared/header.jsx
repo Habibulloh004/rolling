@@ -74,6 +74,7 @@ export default function Header({
   const [filteredCategories, setFilteredCategories] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [openSearch, setOpenSearch] = useState(false);
+  const defaultTime = { closed_time: "23:00", opened_time: "10:00" };
 
   useEffect(() => {
     if (searchTerm.trim() === "") {
@@ -173,7 +174,7 @@ export default function Header({
     ["Зарегистрируйтесь", "Register", "Hozir ro'yxatdan o'ting"],
     param.locale
   );
-
+  
   return (
     <>
       <header className="sticky top-0 md:bg-custom-gradient z-50 bg-white text-white h-16 sm:h-24 items-center">
@@ -624,7 +625,6 @@ export default function Header({
                     <p className="textSmall1">{allT("waiter_desc")}</p>
                   </div>
                   <Button
-                  aria-label={`header choose`}
                     onClick={() => {
                       history.pushState(
                         null,
@@ -646,7 +646,6 @@ export default function Header({
                     <p className="textSmall1">{allT("self_desc")}</p>
                   </div>
                   <Button
-                  aria-label={`header choose2`}
                     onClick={() => {
                       history.pushState(
                         null,

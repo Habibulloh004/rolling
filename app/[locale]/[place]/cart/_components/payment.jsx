@@ -145,10 +145,10 @@ const Payment = ({ locale, place, auth }) => {
   }
 
   const handlePayment = async () => {
-    // if (isDisabled) {
-    //   toast.error(paymentText1("note"));
-    //   return;
-    // }
+    if (isDisabled) {
+      toast.error(paymentText1("note"));
+      return;
+    }
     if (
       paymentData &&
       paymentData.payment_id &&

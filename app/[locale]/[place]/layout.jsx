@@ -11,6 +11,7 @@ import NextTopLoader from "nextjs-toploader";
 import { Toaster } from "sonner";
 import Script from "next/script";
 import LoaderWrapper from "@/components/shared/loader-wrapper";
+import { getData } from "@/service";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -31,16 +32,18 @@ export const metadata = {
 };
 
 export default async function Layout({ children, params }) {
-  const [param, categoriesData, productsData] = await Promise.all([
+  const [param, categoriesData, productsData, timeData] = await Promise.all([
     params,
     ApiService.getPosterData("menu.getCategories", "", 86400),
     ApiService.getPosterData("menu.getProducts", "", 7200),
+    getData("/get_time"),
   ]);
 
   // Validate the locale
   if (!routing.locales.includes(param.locale)) {
     notFound();
   }
+  console.log(timeData);
 
   let spotData = [];
   if (param.place === "branch") {
@@ -90,6 +93,7 @@ export default async function Layout({ children, params }) {
             param={param}
             locale={param.locale}
             spotData={spotData}
+            apiTime={timeData}
           />
           <main className="grow">
             <LoaderWrapper>{children}</LoaderWrapper>

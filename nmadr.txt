@@ -1,0 +1,227 @@
+"use client";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  useMap,
+  useMapEvents,
+} from "react-leaflet";
+import Container from "@/components/shared/container";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useTranslations } from "next-intl";
+import React, { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Icon } from "leaflet";
+import "leaflet/dist/leaflet.css";
+import { Navigation } from "lucide-react";
+import { toast } from "sonner";
+import { usePathname, useRouter } from "next/navigation";
+import { getUrl } from "@/lib/utils";
+import { useOrderStore } from "@/store";
+import { Textarea } from "@/components/ui/textarea";
+
+// Custom user marker
+const userMarker = new Icon({
+  iconUrl:
+    "https://fkkpuaszmvpxjoqqmlzx.supabase.co/storage/v1/object/sign/rolling-sushi/user.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  iconSize: [60, 60],
+});
+
+const EditAddress = () => {
+  const [open, setOpen] = useState(true);
+  const { orderData, setOrderData } = useOrderStore();
+  const [addressData, setAddressData] = useState({
+    id: 0,
+    address: "",
+    lat: null,
+    lng: null,
+    house: "",
+    comment: "",
+  });
+
+  const [location, setLocation] = useState({
+    lat: 41.311081,
+    lng: 69.240562,
+  });
+
+  const addressT = useTranslations("Profile.Address");
+  const allT = useTranslations("All");
+  const pathname = usePathname();
+  const router = useRouter();
+
+  const SmoothTransition = ({ lng, lat, zoom = 14 }) => {
+    const map = useMap();
+    if (lat && lng) {
+      map.flyTo([lat, lng], zoom, { duration: 1.5 });
+    }
+    return null;
+  };
+
+  const handleFoundLocation = () => {
+    if (typeof window === "undefined" || !navigator.geolocation) {
+      toast.warning(addressT("geolocation"));
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        const newLocation = { lat: latitude, lng: longitude };
+        setLocation(newLocation);
+        if (typeof window !== "undefined") {
+          localStorage.setItem("yourLocation", JSON.stringify(newLocation));
+        }
+      },
+      () => {
+        toast.warning(addressT("geolocation"));
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+    );
+  };
+
+  const handleSubmit = () => {
+    if (typeof window === "undefined") return;
+
+    let myAddresses = localStorage.getItem("myAddresses")
+      ? JSON.parse(localStorage.getItem("myAddresses"))
+      : [];
+
+    if (!addressData.address) {
+      toast.error(addressT("address_error"));
+      return;
+    }
+    if (!addressData.lat || !addressData.lng) {
+      toast.error(addressT("location_error"));
+      return;
+    }
+
+    const id = myAddresses.length + 1;
+    let commentAddress = addressData.house ? addressData.house + ". " : "";
+    if (addressData?.comment) {
+      commentAddress += addressData?.comment + ". ";
+    }
+
+    const newAddress = {
+      id,
+      address: addressData.address,
+      lat: addressData.lat,
+      lng: addressData.lng,
+      comment: commentAddress || "",
+    };
+
+    myAddresses.push(newAddress);
+    localStorage.setItem("myAddresses", JSON.stringify(myAddresses));
+    toast.success(addressT("address_saved"));
+
+    router.push(`${getUrl(pathname)}/cart`);
+
+    setOrderData({
+      ...orderData,
+      address: addressData.address,
+      client_addresses_id: id,
+      lat: addressData.lat,
+      lng: addressData.lng,
+      address_comment: commentAddress || "",
+    });
+
+    setAddressData({
+      id: 0,
+      address: "",
+      lat: null,
+      lng: null,
+      house: "",
+      comment: "",
+    });
+  };
+
+  const handleChangeInput = (e) => {
+    const { name, value } = e.target;
+    setAddressData({ ...addressData, [name]: value });
+  };
+
+  const MapClickHandler = () => {
+    useMapEvents({
+      click(e) {
+        if (typeof window !== "undefined") {
+          const { lat, lng } = e?.latlng;
+          setLocation({ lat, lng });
+          localStorage.setItem("yourLocation", JSON.stringify({ lat, lng }));
+        }
+      },
+    });
+    return null;
+  };
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const savedLocation = localStorage.getItem("yourLocation")
+      ? JSON.parse(localStorage.getItem("yourLocation"))
+      : null;
+
+    if (savedLocation) {
+      setLocation(savedLocation);
+    } else if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          const newLocation = { lat: latitude, lng: longitude };
+          setLocation(newLocation);
+          localStorage.setItem("yourLocation", JSON.stringify(newLocation));
+        },
+        () => {
+          toast.warning(
+            "Joylashuvni aniqlashda xatolik yuz berdi. Iltimos, ruxsat bering."
+          );
+        },
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+      );
+    }
+  }, []);
+
+  return (
+    <Container className={"w-11/12 flex flex-col pt-3 md:pt-8"}>
+      <h1 className="font-semibold textNormal4 text-primary w-full text-start">
+        {addressT("title")}
+      </h1>
+      <div className="w-full flex flex-col lg:flex-row my-6 justify-around gap-5 md:gap-16">
+        <div className="w-full flex flex-col gap-2">
+          <Label htmlFor="address">{addressT("address")}</Label>
+          <Textarea
+            id="address"
+            name="address"
+            value={addressData.address}
+            onChange={handleChangeInput}
+            placeholder={addressT("pls")}
+          />
+          <Label htmlFor="house">{addressT("house")}</Label>
+          <Input
+            id="house"
+            name="house"
+            value={addressData.house}
+            onChange={handleChangeInput}
+            placeholder={addressT("house_pls")}
+          />
+          <Label htmlFor="comment">{addressT("comment")}</Label>
+          <Textarea
+            id="comment"
+            name="comment"
+            value={addressData.comment}
+            onChange={handleChangeInput}
+            placeholder=""
+          />
+          <Button onClick={handleSubmit}>{allT("add")}</Button>
+        </div>
+        <MapContainer center={[41.2995, 69.2401]} zoom={16} scrollWheelZoom>
+          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+          <SmoothTransition lng={location.lng} lat={location.lat} zoom={14} />
+          <Marker icon={userMarker} position={[location.lat, location.lng]} />
+          <MapClickHandler />
+        </MapContainer>
+      </div>
+    </Container>
+  );
+};
+
+export default EditAddress; 

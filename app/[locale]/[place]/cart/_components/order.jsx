@@ -103,7 +103,6 @@ const Order = ({ spotDataFilial, auth, searchParamsData, locale, place }) => {
   const { products, setProductsData } = useProductStore();
   const { spot: spotIdSpot, table_id, table_num, service } = searchParamsData;
   const router = useRouter();
-  const pathname = usePathname();
   const paymentText = useTranslations("Cart.Payment");
   const [isSuccess, setIsSuccess] = useState(false);
 
@@ -129,7 +128,6 @@ const Order = ({ spotDataFilial, auth, searchParamsData, locale, place }) => {
       return null;
     }
 
-    return null;
     if (paymentData && paymentData?.payment_id && !paymentData?.success) {
       toast.error(paymentText("you_not_check"));
       return null;

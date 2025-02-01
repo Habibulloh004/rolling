@@ -124,6 +124,12 @@ const Order = ({ spotDataFilial, auth, searchParamsData, locale, place }) => {
       toast.error(paymentText("you_not_pay"));
       return null;
     }
+    if (!orderData?.payment_method || orderData?.payment_method == "") {
+      toast.error(paymentText("you_not_pay"));
+      return null;
+    }
+
+    return null;
     if (paymentData && paymentData?.payment_id && !paymentData?.success) {
       toast.error(paymentText("you_not_check"));
       return null;

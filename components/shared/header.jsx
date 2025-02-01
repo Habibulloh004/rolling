@@ -74,7 +74,7 @@ export default function Header({
   const [filteredCategories, setFilteredCategories] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [openSearch, setOpenSearch] = useState(false);
-  const defaultTime = { closed_time: "10:00", opened_time: "23:00" };
+  const defaultTime = { closed_time: "23:00", opened_time: "10:00" };
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {

@@ -1,6 +1,6 @@
 "use client";
 import { decryptData } from "@/lib/hashing";
-import { hashSecretKey } from "@/lib/utils";
+import { hashSecretKey, truncateText } from "@/lib/utils";
 import { useOrderStore, useStore } from "@/store";
 import {
   BadgeCheck,
@@ -823,7 +823,7 @@ const Payment = ({ locale, place, auth }) => {
                               setPaymentData(null);
                               setRetry(true);
                               setCountdown(60);
-                              localStorage.setItem("countdown",60)
+                              localStorage.setItem("countdown", 60);
                             }}
                             className="w-full bg-red-500 text-white py-2 rounded-md hover:opacity-90"
                           >
@@ -854,7 +854,11 @@ const Payment = ({ locale, place, auth }) => {
           <>
             {!decryptedCards.length ? (
               <Link
-                href={`/${locale}/${place}/profile/add-card`}
+                href={
+                  place == "branch"
+                    ? `/${locale}/${place}/profile/add-card?spot=${spot}&table_id=${tableId}&table_num=${tableNum}&service=${service}`
+                    : `/${locale}/${place}/profile/add-card`
+                }
                 className="w-full sm:w-2/3 md:w-8/12 lg:w-full 2xl:w-9/12 h-40 md:h-48 flex justify-center items-center"
               >
                 <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-white absolute z-50 flex justify-center items-center">
@@ -862,11 +866,11 @@ const Payment = ({ locale, place, auth }) => {
                 </div>
                 <div className="w-full h-full relative bg-[#428B7B] rounded-[17px] overflow-hidden my-9 blur-[1px] mx-auto">
                   <Image
-                    src={`/assets/uzcard.webp`}
-                    alt="uzcard"
-                    width={100}
-                    height={100}
-                    className="absolute z-40 top-[18px] right-[5%]"
+                    src={`/assets/secondaryIcon.webp`}
+                    alt="Rolling Sushi"
+                    width={120}
+                    height={70}
+                    className="absolute z-20 top-[18px] right-[22px]"
                   />
                   <div className="bg-[#EB5757] absolute w-60 h-60 rounded-full -left-[120px] -top-10 opacity-50"></div>
                   <div className="bg-[#A6C44A] absolute w-60 h-60 rounded-full left-0 -bottom-32 opacity-50 z-10"></div>
@@ -893,11 +897,11 @@ const Payment = ({ locale, place, auth }) => {
                         style={{ backgroundColor: item.color }}
                       >
                         <Image
-                          src={`/assets/uzcard.webp`}
-                          alt="uzcard"
-                          width={100}
-                          height={100}
-                          className="h-11 w-[83px] absolute z-20 top-[18px] right-[22px]"
+                          src={`/assets/secondaryIcon.webp`}
+                          alt="Rolling Sushi"
+                          width={120}
+                          height={70}
+                          className="absolute z-20 top-[18px] right-[22px]"
                         />
                         <div
                           onClick={() => deleteCard(i)}
@@ -906,7 +910,9 @@ const Payment = ({ locale, place, auth }) => {
                           <Trash2 size={16} />
                         </div>
                         <p className="absolute font-semibold text-base leading-6 left-5 top-5 text-white">
-                          {item.cardName ? item.cardName : cardT("card_name")}
+                          {item.cardName
+                            ? truncateText(item.cardName, 16)
+                            : cardT("card_name")}
                         </p>
                         <p className="absolute font-semibold text-sm leading-6 right-11 top-[88px] text-white">
                           {item.expiryDate ? item.expiryDate : "00/00"}
@@ -926,6 +932,40 @@ const Payment = ({ locale, place, auth }) => {
                       </div>
                     </CarouselItem>
                   ))}
+                  <CarouselItem className="flex justify-center items-center">
+                    <Link
+                      href={
+                        place == "branch"
+                          ? `/${locale}/${place}/profile/add-card?spot=${spot}&table_id=${tableId}&table_num=${tableNum}&service=${service}`
+                          : `/${locale}/${place}/profile/add-card`
+                      }
+                      className="w-full sm:w-2/3 md:w-8/12 lg:w-full 2xl:w-9/12 h-44 md:h-48 overflow-hidden my-4 flex justify-center items-center"
+                    >
+                      <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-white absolute z-50 flex justify-center items-center">
+                        <Plus />
+                      </div>
+                      <div className="w-full h-full relative bg-[#428B7B] rounded-[17px] overflow-hidden my-9 blur-[1px] mx-auto">
+                        <Image
+                          src={`/assets/secondaryIcon.webp`}
+                          alt="Rolling Sushi"
+                          width={120}
+                          height={70}
+                          className="absolute z-20 top-[18px] right-[22px]"
+                        />
+                        <div className="bg-[#EB5757] absolute w-60 h-60 rounded-full -left-[120px] -top-10 opacity-50"></div>
+                        <div className="bg-[#A6C44A] absolute w-60 h-60 rounded-full left-0 -bottom-32 opacity-50 z-10"></div>
+                        <p className="absolute font-semibold textSmall4 leading-6 left-[5%] top-5 text-white">
+                          {paymentText("card_name")}
+                        </p>
+                        <p className="absolute font-semibold textSmall4 leading-6 right-[5%] top-[88px] text-white">
+                          01/01
+                        </p>
+                        <p className="font-semibold textSmall4 leading-6 absolute text-center w-full bottom-[10px] text-white z-50">
+                          000 000 0000 0000
+                        </p>
+                      </div>
+                    </Link>
+                  </CarouselItem>
                 </CarouselContent>
                 <div className="py-1 flex gap-2 justify-center">
                   {Array.from({ length: count }).map((_, index) => (

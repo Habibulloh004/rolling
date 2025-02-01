@@ -114,7 +114,7 @@ const EditAddress = () => {
     myAddresses.push(newAddress);
     localStorage.setItem("myAddresses", JSON.stringify(myAddresses));
     toast.success(addressT("address_saved"));
-    router.push(`${getUrl(pathname)}/cart`);
+    router.push(  `${getUrl(pathname)}/cart`);
     setOrderData({
       ...orderData,
       address: addressData.address,

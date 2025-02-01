@@ -590,13 +590,10 @@ export default function Header({
             <DialogContent className="bg-transparent border-none shadow-none md:max-w-2xl w-11/12 sm:w-full focus:ring-0 focus:outline-none">
               <DialogHeader>
                 <DialogTitle className="hidden bg-white px-4 py-3 rounded-md text-center leading-9">
-                  {
-                    translateTextSpot(
-                      spotData?.response?.find((sp) => sp.spot_id == spot)
-                        ?.name,
-                      locale
-                    )?.split("-")[1]
-                  }{" "}
+                  {translateTextSpot(
+                    spotData?.response?.find((sp) => sp.spot_id == spot)?.name,
+                    locale
+                  )?.split("Rolling Sushi -")}
                   {allT("spot")} {allT("table")} № {table_num}
                 </DialogTitle>
                 <DialogDescription className="hidden">
@@ -606,13 +603,10 @@ export default function Header({
               </DialogHeader>
               <div className="bg-white flex justify-between items-center gap-1 px-2">
                 <h1 className=" px-4 py-3 rounded-md md:text-center leading-9 font-bold textNormal3 text-thin">
-                  {
-                    translateTextSpot(
-                      spotData?.response?.find((sp) => sp.spot_id == spot)
-                        ?.name,
-                      locale
-                    )?.split("-")[1]
-                  }{" "}
+                  {translateTextSpot(
+                    spotData?.response?.find((sp) => sp.spot_id == spot)?.name,
+                    locale
+                  ).split("Rolling Sushi -")}
                   {allT("spot")} <br className="sm:hidden" />
                   {allT("table")} № {table_num}
                 </h1>

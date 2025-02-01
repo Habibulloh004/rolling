@@ -49,6 +49,7 @@ export default function Header({
   spotData,
   products: productsData,
   categories,
+  apiTime,
 }) {
   const { client } = useClientStore();
   const searchParams = useSearchParams();
@@ -73,8 +74,7 @@ export default function Header({
   const [filteredCategories, setFilteredCategories] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [openSearch, setOpenSearch] = useState(false);
-  const router = useRouter();
-
+  const defaultTime = { closed_time: "10:00", opened_time: "23:00" };
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -112,15 +112,28 @@ export default function Header({
   }, []);
 
   useEffect(() => {
+    // Agar API'dan kelgan vaqtlar null bo‘lsa, default vaqtni ishlatamiz
+    const closedTime = apiTime?.closed_time ?? defaultTime.closed_time;
+    const openedTime = apiTime?.opened_time ?? defaultTime.opened_time;
+
+    const [closedHour, closedMinute] = closedTime.split(":").map(Number);
+    const [openedHour, openedMinute] = openedTime.split(":").map(Number);
+
     const currentTime = new Date();
     const hours = currentTime.getHours();
     const minutes = currentTime.getMinutes();
-    if (hours < 10 || (hours === 10 && minutes < 0) || hours >= 23) {
+
+    if (
+      hours < openedHour ||
+      (hours === openedHour && minutes < openedMinute) ||
+      hours > closedHour ||
+      (hours === closedHour && minutes >= closedMinute)
+    ) {
       setIsDisabled(true);
     } else {
       setIsDisabled(false);
     }
-  }, []);
+  }, [apiTime]);
 
   useEffect(() => {
     setCl(client);

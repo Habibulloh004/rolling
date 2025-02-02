@@ -107,9 +107,23 @@ export default function Header({
   }, []);
 
   useEffect(() => {
+    console.log(apiTime);
+
     // Agar API'dan kelgan vaqtlar null bo‘lsa, default vaqtni ishlatamiz
-    const closedTime = apiTime?.closed_time ?? defaultTime.closed_time;
-    const openedTime = apiTime?.opened_time ?? defaultTime.opened_time;
+    let closedTime = defaultTime.closed_time;
+    let openedTime = defaultTime.opened_time;
+
+    if (
+      apiTime?.open_time &&
+      apiTime?.open_time != null &&
+      apiTime?.open_time != "" &&
+      apiTime?.closed_time &&
+      apiTime?.closedTime != "" &&
+      apiTime?.closed_time != null
+    ) {
+      closedTime = apiTime?.closed_time;
+      openedTime = apiTime?.open_time;
+    }
 
     const [closedHour, closedMinute] = closedTime.split(":").map(Number);
     const [openedHour, openedMinute] = openedTime.split(":").map(Number);
@@ -174,7 +188,7 @@ export default function Header({
     ["Зарегистрируйтесь", "Register", "Hozir ro'yxatdan o'ting"],
     param.locale
   );
-  
+
   return (
     <>
       <header className="sticky top-0 md:bg-custom-gradient z-50 bg-white text-white h-16 sm:h-24 items-center">

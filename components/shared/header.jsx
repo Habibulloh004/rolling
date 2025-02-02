@@ -114,15 +114,15 @@ export default function Header({
     let openedTime = defaultTime.opened_time;
 
     if (
-      apiTime?.open_time &&
-      apiTime?.open_time != null &&
-      apiTime?.open_time != "" &&
+      apiTime?.opened_time &&
+      apiTime?.opened_time !== null &&
+      apiTime?.opened_time !== "" &&
       apiTime?.closed_time &&
-      apiTime?.closedTime != "" &&
-      apiTime?.closed_time != null
+      apiTime?.closed_time !== null &&
+      apiTime?.closed_time !== ""
     ) {
       closedTime = apiTime?.closed_time;
-      openedTime = apiTime?.open_time;
+      openedTime = apiTime?.opened_time;
     }
 
     const [closedHour, closedMinute] = closedTime.split(":").map(Number);
@@ -132,16 +132,24 @@ export default function Header({
     const hours = currentTime.getHours();
     const minutes = currentTime.getMinutes();
 
-    if (
-      hours < openedHour ||
-      (hours === openedHour && minutes < openedMinute) ||
-      hours > closedHour ||
-      (hours === closedHour && minutes >= closedMinute)
-    ) {
-      setIsDisabled(true);
+    // Joriy vaqtni daqiqalar bo‘yicha hisoblash
+    const currentMinutes = hours * 60 + minutes;
+    const openedMinutes = openedHour * 60 + openedMinute;
+    const closedMinutes = closedHour * 60 + closedMinute;
+
+    let isDisabled;
+
+    if (openedMinutes <= closedMinutes) {
+      // Oddiy holat: ochilish va yopilish bir kunda
+      isDisabled =
+        currentMinutes < openedMinutes || currentMinutes >= closedMinutes;
     } else {
-      setIsDisabled(false);
+      // Teskari holat: yopilish vaqti ertasi kuni (masalan, 10:00 - 01:00)
+      isDisabled =
+        currentMinutes < openedMinutes && currentMinutes >= closedMinutes;
     }
+
+    setIsDisabled(isDisabled);
   }, [apiTime]);
 
   useEffect(() => {

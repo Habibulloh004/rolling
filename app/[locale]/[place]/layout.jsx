@@ -36,14 +36,17 @@ export default async function Layout({ children, params }) {
     params,
     ApiService.getPosterData("menu.getCategories", "", 86400),
     ApiService.getPosterData("menu.getProducts", "", 7200),
-    getData("/get_time"),
+    fetch(`${process.env.NEXT_PUBLIC_URL_RENDER}/get_time`),
   ]);
 
   // Validate the locale
   if (!routing.locales.includes(param.locale)) {
     notFound();
   }
-  console.log(timeData);
+
+  const timeDataRes = await timeData?.json();
+
+  console.log(timeDataRes);
 
   let spotData = [];
   if (param.place === "branch") {
@@ -93,7 +96,7 @@ export default async function Layout({ children, params }) {
             param={param}
             locale={param.locale}
             spotData={spotData}
-            apiTime={timeData}
+            apiTime={timeDataRes}
           />
           <main className="grow">
             <LoaderWrapper>{children}</LoaderWrapper>

@@ -513,6 +513,13 @@ const Order = ({ spotDataFilial, auth, searchParamsData, locale, place }) => {
     );
   };
 
+  useEffect(() => {
+    console.log(paymentData);
+    if (paymentData && paymentData?.success) {
+      handleSubmit();
+    }
+  }, [paymentData?.success]);
+
   return (
     <div className="w-full flex flex-col pt-6 gap-5">
       <div className="flex flex-col gap-y-4">
@@ -585,7 +592,7 @@ const Order = ({ spotDataFilial, auth, searchParamsData, locale, place }) => {
         {activeTab !== "spot" && (
           <>
             <Button
-            aria-label={`sign in`}
+              aria-label={`sign in`}
               disabled={paymentData && paymentData?.payment_id}
               onClick={() => {
                 if (auth?.client_id) {
@@ -656,14 +663,14 @@ const Order = ({ spotDataFilial, auth, searchParamsData, locale, place }) => {
                 </div>
                 <div className="w-full flex justify-around items-center pt-7 gap-2 textSmall2">
                   <Button
-                  aria-label={`confirm`}
+                    aria-label={`confirm`}
                     onClick={handleSetBonus}
                     className="w-full hover:bg-primary md:py-2 md:h-12"
                   >
                     {all("confirm")}
                   </Button>
                   <Button
-                  aria-label={`cancel`}
+                    aria-label={`cancel`}
                     onClick={() => setActiveBonus(false)}
                     className="w-full border text-[#004032] shadow-none bg-transparent hover:bg-transparent md:py-2 md:h-12"
                   >
@@ -675,7 +682,7 @@ const Order = ({ spotDataFilial, auth, searchParamsData, locale, place }) => {
           </>
         )}
         <Button
-        aria-label={`loading`}
+          aria-label={`loading`}
           disabled={isLoading || isDisabled}
           onClick={handleSubmit}
           className="mb-3 w-full h-10 md:h-12 flex justify-center items-center gap-1 border-[1px] rounded-xl hover:bg-primary md:mt-5 font-medium text-sm md:text-md"

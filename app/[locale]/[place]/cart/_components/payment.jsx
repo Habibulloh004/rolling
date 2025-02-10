@@ -175,7 +175,7 @@ const Payment = ({ locale, place, auth }) => {
           const paymeData = {
             id: getRandomDatePlusNumber(),
             order_id: getRandomDatePlusNumber(),
-            amount: 100,
+            amount: totalAmount,
           };
           const paymeResult = await paymeCreate(paymeData);
           if (

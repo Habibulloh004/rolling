@@ -11,7 +11,6 @@ import NextTopLoader from "nextjs-toploader";
 import { Toaster } from "sonner";
 import Script from "next/script";
 import LoaderWrapper from "@/components/shared/loader-wrapper";
-import { getData } from "@/service";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -45,8 +44,6 @@ export default async function Layout({ children, params }) {
   }
 
   const timeDataRes = await timeData?.json();
-
-  console.log(timeDataRes);
 
   let spotData = [];
   if (param.place === "branch") {
@@ -99,7 +96,9 @@ export default async function Layout({ children, params }) {
             apiTime={timeDataRes}
           />
           <main className="grow">
-            <LoaderWrapper>{children}</LoaderWrapper>
+            {/* <LoaderWrapper> */}
+            {children}
+            {/* </LoaderWrapper> */}
           </main>
           <Toaster
             position="bottom-right"

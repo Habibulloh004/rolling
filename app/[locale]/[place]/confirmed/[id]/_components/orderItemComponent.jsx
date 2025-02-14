@@ -117,7 +117,7 @@ export default function OrderItemComponent({
       <div className="w-full lg:max-w-md space-y-3">
         <h1 className="font-bold textNormal3 text-black text-start">
           {isLoading ? (
-            <Skeleton className="bg-primary-modal w-1/2 h-6" />
+            <Skeleton className="w-1/2 h-6" />
           ) : (
             orderText("my_order")
           )}
@@ -126,10 +126,10 @@ export default function OrderItemComponent({
           {isLoading
             ? Array.from({ length: 2 }).map((_, i) => (
                 <div key={i} className="flex gap-2 md:gap-4">
-                  <Skeleton className="aspect-square bg-primary-modal w-20 h-20 rounded-md" />
+                  <Skeleton className="aspect-square w-20 h-20 rounded-md" />
                   <div className="flex flex-col justify-between w-full">
-                    <Skeleton className="bg-primary-modal w-full h-4" />
-                    <Skeleton className="bg-primary-modal w-3/4 h-4" />
+                    <Skeleton className="w-full h-4" />
+                    <Skeleton className="w-3/4 h-4" />
                   </div>
                 </div>
               ))
@@ -177,7 +177,7 @@ export default function OrderItemComponent({
       <div className="w-full relative space-y-3">
         <h1 className="font-bold textNormal2 text-black text-start">
           {isLoading ? (
-            <Skeleton className="bg-primary-modal w-1/2 h-6" />
+            <Skeleton className="w-1/2 h-6" />
           ) : orderData?.type?.includes("delivery") ? (
             orderText("status_delivery")
           ) : orderData?.type?.includes("take_away") ? (
@@ -193,10 +193,10 @@ export default function OrderItemComponent({
                 className={`w-full flex flex-col justify-start items-start gap-2 max-sm:p-1 max-sm:rounded-md max-sm:border-2`}
               >
                 <div className="w-full flex items-start gap-2">
-                  <Skeleton className="bg-primary-modal w-[20] sm:w-[24] h-[20px] sm:h-[24px] rounded-md" />
-                  <Skeleton className="bg-primary-modal w-10/12 h-[20] sm:h-[20] rounded-md" />
+                  <Skeleton className="w-[20] sm:w-[24] h-[20px] sm:h-[24px] rounded-md" />
+                  <Skeleton className="w-10/12 h-[20] sm:h-[20] rounded-md" />
                 </div>
-                <Skeleton className="bg-primary-modal w-10/12 h-[20] sm:h-[20] rounded-md" />
+                <Skeleton className="w-10/12 h-[20] sm:h-[20] rounded-md" />
               </div>
             </div>
           ) : (
@@ -247,8 +247,8 @@ export default function OrderItemComponent({
         <div className="flex flex-col gap-y-4">
           {isLoading ? (
             <div className="space-y-2">
-              <Skeleton className="bg-primary-modal w-full h-6" />
-              <Skeleton className="bg-primary-modal w-full h-6" />
+              <Skeleton className="w-full h-6" />
+              <Skeleton className="w-full h-6" />
             </div>
           ) : (
             <>

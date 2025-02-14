@@ -40,7 +40,7 @@
     "leaflet": "^1.9.4",
     "lottie-react": "^2.4.1",
     "lucide-react": "^0.468.0",
-    "next": "15.1.1",
+    "next": "^15.2.0-canary.54",
     "next-intl": "^3.26.2",
     "next-themes": "^0.4.4",
     "nextjs-toploader": "^3.7.15",

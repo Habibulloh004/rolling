@@ -319,6 +319,7 @@
       "thanks_payment": "Thank you for the payment",
       "pay": "Payment",
       "check": "Check payment",
+      "check_wait": "Payment is being verified, please wait.",
       "otp_desc": "SMS has been sent to the following number",
       "otp_error": "",
       "otp_again": "Try again",

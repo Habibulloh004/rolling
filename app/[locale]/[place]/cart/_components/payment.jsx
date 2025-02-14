@@ -1,7 +1,12 @@
 "use client";
 import { decryptData } from "@/lib/hashing";
 import { hashSecretKey, truncateText } from "@/lib/utils";
-import { useClientStore, useOrderStore, useStore } from "@/store";
+import {
+  useClientStore,
+  useOrderStore,
+  useProductStore,
+  useStore,
+} from "@/store";
 import {
   BadgeCheck,
   CircleAlert,
@@ -12,7 +17,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { useTranslations } from "use-intl";
 import {
@@ -65,8 +70,8 @@ const Payment = ({ locale, place, auth }) => {
     setSelectCard,
     selectCard,
   } = useOrderStore();
-  const { isDisabled } = useStore();
-
+  const { isDisabled, activeTab } = useStore();
+  const { products } = useProductStore();
   const [api, setApi] = useState();
   const [current, setCurrent] = useState(0);
   const [count, setCount] = useState(0);
@@ -74,12 +79,15 @@ const Payment = ({ locale, place, auth }) => {
   const [isCheckLoading, setIsCheckLoading] = useState(false);
   const initialCountdown = 60;
   const [countdown, setCountdown] = useState(initialCountdown);
-  const [retry, setRetry] = useState(true);
+  const [retry, setRetry] = useState(false);
   const [optCheck, setOptCheck] = useState(0);
   const [existingCards, setExistingCards] = useState([]);
   const [decryptedCards, setDecryptedCards] = useState([]);
+  const [attemptsCount, setAttempts] = useState(0);
+  const isFirstCheckDone = useRef(false);
   const router = useRouter();
   const { client } = useClientStore();
+
   const pay = [
     {
       id: 1,
@@ -161,6 +169,37 @@ const Payment = ({ locale, place, auth }) => {
       toast.error(all("products_empty"));
       return;
     }
+    if (products.length == 0) {
+      toast.error(all("products_empty"));
+      return;
+    }
+    if (!orderData?.phone && !auth?.client_id) {
+      toast.error(all("phone_empty"));
+      return;
+    }
+    if (orderData?.phone && orderData?.phone?.length != 13) {
+      toast.error(all("phone_empty"));
+      return;
+    }
+    if (!orderData?.phone && spot) {
+      toast.error(all("phone_empty"));
+      return;
+    }
+
+    if (activeTab == "pickup" && orderData?.spot_id == 0) {
+      toast.error(all("spot_empty"));
+      return;
+    }
+
+    if (
+      activeTab == "delivery" &&
+      (!orderData?.lat || orderData?.lat == 0) &&
+      (!orderData?.lng || orderData?.lng == 0)
+    ) {
+      toast.error(all("location_empty"));
+      return;
+    }
+
     try {
       setIsPaymentLoading(true);
       let totalAmount =
@@ -175,7 +214,7 @@ const Payment = ({ locale, place, auth }) => {
           const paymeData = {
             id: getRandomDatePlusNumber(),
             order_id: getRandomDatePlusNumber(),
-            amount: totalAmount,
+            amount: 100,
           };
           const paymeResult = await paymeCreate(paymeData);
           if (
@@ -241,7 +280,7 @@ const Payment = ({ locale, place, auth }) => {
           const clickData = {
             id: getRandomDatePlusNumber(),
             date: getTodayDate(),
-            amount: totalAmount,
+            amount: 1000,
           };
           let paymentDataC = {
             amount: clickData?.amount,
@@ -258,9 +297,12 @@ const Payment = ({ locale, place, auth }) => {
           }
           setPaymentData(paymentDataC);
           localStorage.setItem("paymentData", JSON.stringify(paymentDataC));
-          window.open(
-            `https://my.click.uz/services/pay?service_id=65845&merchant_id=27157&amount=${clickData?.amount}&transaction_param=${clickData?.id}`,
-            "_blank"
+          // window.open(
+          //   `https://my.click.uz/services/pay?service_id=65845&merchant_id=27157&amount=${clickData?.amount}&transaction_param=${clickData?.id}`,
+          //   "_blank"
+          // );
+          router.push(
+            `https://my.click.uz/services/pay?service_id=65845&merchant_id=27157&amount=${clickData?.amount}&transaction_param=${clickData?.id}`
           );
           break;
         case "card":
@@ -322,6 +364,8 @@ const Payment = ({ locale, place, auth }) => {
     if ((paymentData && paymentData?.success) || !paymentData?.payment_id) {
       return null;
     }
+    console.log("check payment", paymentData);
+
     setIsCheckLoading(true);
     try {
       switch (orderData?.payment_method) {
@@ -345,8 +389,6 @@ const Payment = ({ locale, place, auth }) => {
                 ...paymentData,
                 success: true,
               });
-            } else {
-              toast.error(paymentText("pay_error"));
             }
           }
           break;
@@ -358,7 +400,6 @@ const Payment = ({ locale, place, auth }) => {
             };
             const result = await clickCheck(paymeData);
             if (result[1]?.error_code) {
-              toast.error(paymentText("pay_error"));
             } else {
               toast.success(paymentText("pay_success"));
               localStorage.setItem(
@@ -559,6 +600,36 @@ const Payment = ({ locale, place, auth }) => {
       setExistingCards(cards);
     }
   }, []);
+
+  useEffect(() => {
+    let attempts = 1;
+    if (
+      paymentData &&
+      !paymentData?.success &&
+      orderData?.payment_method != "card"
+    ) {
+      if (!isFirstCheckDone.current) {
+        handleCheck(); // Saytga qaytib kirganda bitta tekshirish
+        isFirstCheckDone.current = true;
+      }
+
+      const interval = setInterval(() => {
+        attempts += 1;
+        setAttempts(attempts);
+        if (attempts >= 3) {
+          toast.error(paymentText("pay_error"));
+          clearInterval(interval);
+          return;
+        }
+
+        handleCheck();
+      }, 6000);
+
+      return () => clearInterval(interval);
+    }
+  }, [paymentData?.success]);
+
+  console.log(attemptsCount);
 
   return (
     <div className="w-full flex flex-col items-start md:px-12 pt-6 gap-5">
@@ -858,6 +929,72 @@ const Payment = ({ locale, place, auth }) => {
                 </div>
               )}
           </div>
+          <AlertDialog
+            open={
+              paymentData &&
+              !paymentData?.success &&
+              orderData?.payment_method != "card"
+            }
+          >
+            <AlertDialogTrigger asChild></AlertDialogTrigger>
+            <AlertDialogContent className="rounded-md w-11/12 max-w-[365px] ">
+              <AlertDialogHeader>
+                <AlertDialogTitle className="text-xl text-center relative">
+                  {paymentText("check")}
+                </AlertDialogTitle>
+                <AlertDialogDescription className="text-black/60 text-center text-sm">
+                  {paymentText("check_wait")} <br />
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <div className="w-full flex justify-center items-center">
+                {attemptsCount == 3 ? (
+                  /* From Uiverse.io by ilkhoeri */
+                  <div className="relative w-full max-w-64 flex gap-2 items-center justify-center py-3 pl-4 pr-14 rounded-lg text-base font-medium [transition:all_0.5s_ease] border-solid border border-[#f85149] text-[#b22b2b] [&amp;_svg]:text-[#b22b2b] group bg-[linear-gradient(#f851491a,#f851491a)]">
+                    <p className="flex flex-row items-center mr-auto gap-x-2">
+                      <svg
+                        stroke="currentColor"
+                        fill="none"
+                        strokeWidth="2"
+                        viewBox="0 0 24 24"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        height="28"
+                        width="28"
+                        className="h-7 w-7"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
+                        <path d="M12 9v4"></path>
+                        <path d="M12 17h.01"></path>
+                      </svg>
+                    </p>
+                    {paymentText("pay_error")}
+                  </div>
+                ) : (
+                  <div className="loader-payment">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  </div>
+                )}
+              </div>
+              <AlertDialogFooter className="flex flex-col justify-center gap-2 items-center w-full">
+                <button
+                  aria-label={`cancelpay`}
+                  onClick={() => {
+                    setPaymentData(null);
+                    setAttempts(1);
+                  }}
+                  className="w-full bg-red-500 text-white py-2 rounded-md hover:opacity-90"
+                >
+                  {all("cancel")}
+                </button>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </>
       )}
       <div className="w-full relative">

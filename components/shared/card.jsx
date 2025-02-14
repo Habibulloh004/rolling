@@ -63,7 +63,7 @@ const Card = ({
     <div className="relative w-full bg-white rounded-md p-2 space-y-2 h-full flex flex-col justify-between">
       {/* Wrap the clickable area with Link */}
       <Link locale={locale} href={defaultHref} className="block space-y-2">
-        <div className="relative border-border border w-full aspect-square overflow-hidden bg-secondary rounded-sm">
+        <div className="relative border-border border w-full aspect-square overflow-hidden rounded-sm">
           <CustomImage
             src={`${posterUrl}${photo}`}
             className="w-full h-full"

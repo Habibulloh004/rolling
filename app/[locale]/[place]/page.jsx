@@ -14,6 +14,7 @@ import {
 import Cards from "./reviews/_components/cards";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
+import { Suspense } from "react";
 
 export const metadata = {
   title: "Rolling Sushi - Свежие суши и роллы в Ташкенте",
@@ -26,7 +27,12 @@ export const metadata = {
   },
 };
 
+export function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 export default async function HomePage({ params, searchParams }) {
+  // await sleep(10000);
   const [
     allT,
     bannersData,

@@ -214,7 +214,7 @@ const Payment = ({ locale, place, auth }) => {
           const paymeData = {
             id: getRandomDatePlusNumber(),
             order_id: getRandomDatePlusNumber(),
-            amount: 100,
+            amount: totalAmount,
           };
           const paymeResult = await paymeCreate(paymeData);
           if (
@@ -280,7 +280,7 @@ const Payment = ({ locale, place, auth }) => {
           const clickData = {
             id: getRandomDatePlusNumber(),
             date: getTodayDate(),
-            amount: 1000,
+            amount: totalAmount,
           };
           let paymentDataC = {
             amount: clickData?.amount,

@@ -319,6 +319,7 @@
       "thanks_payment": "To'lov uchun raxmat",
       "pay": "To'lov",
       "check": "To'lovni tekshirish",
+      "check_wait": "To'lov tekshirilmoqda iltimos kuting.",
       "otp_desc": "SMS quyidagi raqamga yuborildi",
       "otp_error": "",
       "otp_again": "Qayta urinib ko'ring",

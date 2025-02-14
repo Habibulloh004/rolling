@@ -19,10 +19,10 @@ const Products = ({ isLoading, products, locale }) => {
           <>
             {Array.from({ length: 2 }).map((_, i) => (
               <div key={i} className="flex gap-2 md:gap-4">
-                <Skeleton className="aspect-square bg-primary-modal w-20 h-20 rounded-md" />
+                <Skeleton className="aspect-square w-20 h-20 rounded-md" />
                 <div className="flex flex-col justify-between w-full">
-                  <Skeleton className="bg-primary-modal w-full h-4" />
-                  <Skeleton className="bg-primary-modal w-3/4 h-4" />
+                  <Skeleton className="w-full h-4" />
+                  <Skeleton className="w-3/4 h-4" />
                 </div>
               </div>
             ))}

@@ -50,7 +50,7 @@ const Pickup = ({
         <p className="text-[#A098AE] font-normal textSmall3">
           {pickupText("address")}
         </p>
-        <section className="flex flex-col gap-2 rounded-md sm:border border-primary sm:p-3">
+        <section className="flex flex-col gap-2 rounded-md sm:border sm:p-3">
           {isLoading ? (
             // Skeleton loading view
             <>
@@ -63,10 +63,10 @@ const Pickup = ({
                     className={`w-full flex justify-between items-center gap-2 max-sm:p-1 max-sm:rounded-md max-sm:border-2`}
                   >
                     <div className="w-full flex flex-col items-start">
-                      <Skeleton className="bg-primary-modal w-1/2 h-[20px] sm:h-[24px] rounded-full mb-2" />
-                      <Skeleton className="bg-primary-modal w-10/12 h-[16px] sm:h-[16px] rounded-md" />
+                      <Skeleton className="w-1/2 h-[20px] sm:h-[24px] rounded-full mb-2" />
+                      <Skeleton className="w-10/12 h-[16px] sm:h-[16px] rounded-md" />
                     </div>
-                    <Skeleton className="max-sm:hidden bg-primary-modal h-8 md:h-10 max-w-[100px] w-full rounded-md" />
+                    <Skeleton className="max-sm:hidden h-8 md:h-10 max-w-[100px] w-full rounded-md" />
                   </div>
                 </div>
               ))}

@@ -136,11 +136,11 @@ export default function OrderItemComponent({
             <div className="w-full lg:w-10/12 mx-auto mt-5">
               <div className="flex flex-col gap-3">
                 <div className="">
-                  <Skeleton className="bg-primary h-10 w-full" />
+                  <Skeleton className="h-10 w-full" />
                 </div>
                 <div className="flex justify-between gap-2">
-                  <Skeleton className="bg-primary h-64 w-full" />
-                  <Skeleton className="bg-primary h-64 w-full" />
+                  <Skeleton className="h-64 w-full" />
+                  <Skeleton className="h-64 w-full" />
                 </div>
               </div>
             </div>
@@ -210,8 +210,8 @@ export default function OrderItemComponent({
           <div className="h-[0.5px] w-full bg-[#DBDBDB]" />
           {isLoading ? (
             <div className="space-y-2">
-              <Skeleton className="bg-primary-modal w-full h-6" />
-              <Skeleton className="bg-primary-modal w-full h-6" />
+              <Skeleton className="w-full h-6" />
+              <Skeleton className="w-full h-6" />
             </div>
           ) : (
             <div className="flex flex-col gap-y-4">

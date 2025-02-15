@@ -14,19 +14,20 @@ import {
 import Cards from "./reviews/_components/cards";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
-import { Suspense } from "react";
 
 export const metadata = {
-  title: "Rolling Sushi - Свежие суши и роллы в Ташкенте",
+  title:
+    "Rolling Sushi – Доставка суши и роллов в Ташкенте | Бесплатная доставка | Бонусы до 30%",
   description:
-    "Rolling Sushi предлагает свежие суши, роллы и японскую кухню с доставкой и в ресторане. Узнайте о наших акциях и популярном меню!",
+    "🚀 Rolling Sushi – это не просто доставка, а вкус, который запоминается! 🍣 Бесплатная доставка по акции, доставка за 40 минут или ролл в подарок, всегда свежие роллы. 🎁 Бонусная система с кешбэком до 30% – копите и оплачивайте любимые блюда! Закажите прямо сейчас – rolling.uz!",
   keywords:
     "суши, роллы, доставка суши, японская кухня, Rolling Sushi, Ташкент, акции суши",
   alternates: {
-    canonical: "https://rollingsushi.uz/",
+    canonical: "https://rollingsushi.uz/uz/web",
+    ru: "https://rollingsushi.uz/ru/web",
+    en: "https://rollingsushi.uz/en/web",
   },
 };
-
 export function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -94,9 +95,12 @@ export default async function HomePage({ params, searchParams }) {
       <Popular products={products} locale={locale} path={path} />
       <div className="w-full flex flex-col items-start md:px-12 pt-6 gap-5">
         <div className="max-md:w-11/12 mx-auto flex items-center justify-between w-full">
-          <h1 className="text-xl md:text-2xl text-muted font-semibold">
+          <Link
+            className="text-xl md:text-2xl text-muted font-semibold"
+            href={`/${path.locale}/${path.place}/reviews`}
+          >
             {allT("reviews")}
-          </h1>
+          </Link>
           <Link
             className="flex justify-end items-center gap-1 text-primary textSmall3 font-medium"
             href={`/${path.locale}/${path.place}/reviews`}
@@ -106,7 +110,7 @@ export default async function HomePage({ params, searchParams }) {
           </Link>
         </div>
         <Carousel
-          className="relative w-full text-foreground mt-5 md:mt-10 "
+          className="relative w-full text-foreground mt-5 "
           paginate={"false"}
           opts={{
             align: "center",

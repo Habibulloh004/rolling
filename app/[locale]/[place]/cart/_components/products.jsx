@@ -77,7 +77,7 @@ const Products = ({ locale, place }) => {
               return (
                 <div key={item.product_id} className="flex gap-2 md:gap-4 mr-4">
                   <Image
-                    src={`${posterUrl}${item.photo_origin}`}
+                    src={item?.photo_origin?`${posterUrl}${item.photo_origin}`:"/empty.jpg"}
                     alt="product"
                     width={100}
                     height={100}

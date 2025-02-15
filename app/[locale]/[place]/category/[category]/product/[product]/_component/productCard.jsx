@@ -71,7 +71,7 @@ export default function ProductCard({
     <main className="w-full h-full relative py-5 flex max-md:flex-col gap-5">
       {place != "branch" && (
         <button
-        aria-label={`prcard heart`}
+          aria-label={`prcard heart`}
           onClick={handleAddFavorite}
           className="z-10 absolute right-1 top-1 md:right-2 md:top-2 rounded-full bg-white p-1 shadow-sm transition-colors hover:bg-gray-100"
         >
@@ -86,7 +86,11 @@ export default function ProductCard({
       <section className="w-full md:w-[400px] h-full xl:w-[450px] 2xl:w-[500px] flex flex-col gap-3">
         <div className="aspect-square relative rounded-md overflow-hidden bg-secondary">
           <CustomImage
-            src={`${posterUrl}${productData.photo_origin}`}
+            src={
+              productData?.photo_origin
+                ? `${posterUrl}${productData.photo_origin}`
+                : "/empty.jpg"
+            }
             alt="text"
             className="w-full h-full object-cover md:object-contain"
           />
@@ -113,7 +117,7 @@ export default function ProductCard({
             <div className="max-md:w-full flex justify-end items-center gap-2">
               <div className="max-sm:w-full w-[250px] flex justify-around items-center gap-1 bg-white rounded-md">
                 <button
-                aria-label={`prcard plus`}
+                  aria-label={`prcard plus`}
                   onClick={handleIncrementCount}
                   className="flex justify-center items-center w-full rounded-l-md p-2 bg-white active:bg-gradient-to-r active:from-foreground/10 active:to-white/10"
                 >
@@ -128,7 +132,7 @@ export default function ProductCard({
                     : `0${findProduct?.count}`}
                 </span>
                 <button
-                aria-label={`prcard minus`}
+                  aria-label={`prcard minus`}
                   onClick={handleDecrementCount}
                   className="flex justify-center items-center w-full rounded-r-md p-2 bg-white active:bg-gradient-to-l active:from-foreground/10 active:to-white/20"
                 >
@@ -140,7 +144,7 @@ export default function ProductCard({
             <div className="max-md:w-full"></div>
           )}
           <Button
-          aria-label={`prcard add`}
+            aria-label={`prcard add`}
             onClick={handleAddProduct}
             className="w-full md:w-40 hover:bg-primary-modal"
           >

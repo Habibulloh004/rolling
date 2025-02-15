@@ -85,6 +85,7 @@ const Payment = ({ locale, place, auth }) => {
   const [decryptedCards, setDecryptedCards] = useState([]);
   const [attemptsCount, setAttempts] = useState(0);
   const isFirstCheckDone = useRef(false);
+  const intervalRef = useRef(null);
   const router = useRouter();
   const { client } = useClientStore();
 
@@ -235,8 +236,9 @@ const Payment = ({ locale, place, auth }) => {
             }
             localStorage.setItem("paymentData", JSON.stringify(paymentDataP));
             setPaymentData(paymentDataP);
-            router.push(
-              `https://payme.uz/checkout/${paymeResult[1]?.result?.receipt?._id}?back=null&timeout=15000&lang=${locale}`
+            window.open(
+              `https://payme.uz/checkout/${paymeResult[1]?.result?.receipt?._id}?back=null&timeout=15000&lang=${locale}`,
+              "_self"
             );
             // const params = `m=${
             //   paymeResult[1]?.result?.receipt?.merchant?._id
@@ -364,8 +366,6 @@ const Payment = ({ locale, place, auth }) => {
     if ((paymentData && paymentData?.success) || !paymentData?.payment_id) {
       return null;
     }
-    console.log("check payment", paymentData);
-
     setIsCheckLoading(true);
     try {
       switch (orderData?.payment_method) {
@@ -376,6 +376,7 @@ const Payment = ({ locale, place, auth }) => {
               check_id: paymentData?.payment_id,
             };
             const result = await paymeCheck(paymeData);
+            console.log(result);
             if (result[1]?.result?.state == 4) {
               toast.success(paymentText("pay_success"));
               localStorage.setItem(
@@ -383,11 +384,13 @@ const Payment = ({ locale, place, auth }) => {
                 JSON.stringify({
                   ...paymentData,
                   success: true,
+                  transactionId: paymentData?.payment_id,
                 })
               );
               setPaymentData({
                 ...paymentData,
                 success: true,
+                transactionId: paymentData?.payment_id,
               });
             }
           }
@@ -399,19 +402,21 @@ const Payment = ({ locale, place, auth }) => {
               date: paymentData?.date,
             };
             const result = await clickCheck(paymeData);
-            if (result[1]?.error_code) {
-            } else {
+            console.log(result);
+            if (result[1]?.payment_status == 2) {
               toast.success(paymentText("pay_success"));
               localStorage.setItem(
                 "paymentData",
                 JSON.stringify({
                   ...paymentData,
                   success: true,
+                  transactionId: result[1]?.payment_id,
                 })
               );
               setPaymentData({
                 ...paymentData,
                 success: true,
+                transactionId: result[1]?.payment_id,
               });
             }
           }
@@ -423,7 +428,8 @@ const Payment = ({ locale, place, auth }) => {
               otp: Number(optCheck),
             };
             const result = await checkCard(cardData);
-            if (result?.error == null) {
+            console.log(result);
+            if (result?.error == null && result?.result?.status == 1) {
               toast.success(paymentText("pay_success"));
               localStorage.setItem(
                 "paymentData",
@@ -489,12 +495,42 @@ const Payment = ({ locale, place, auth }) => {
       setDecryptedCards(updatedDecryptedCards);
     }
   };
+  let attempts = 0;
+
+  const startInterval = () => {
+    if (
+      paymentData &&
+      !paymentData?.success &&
+      orderData?.payment_method !== "card"
+    ) {
+      if (!intervalRef.current) {
+        intervalRef.current = setInterval(() => {
+          attempts += 1;
+          console.log(attempts + " attempts");
+          setAttempts(attempts);
+          if (attempts >= 5) {
+            toast.error(paymentText("pay_error"));
+            clearInterval(intervalRef.current);
+            intervalRef.current = null;
+            return;
+          }
+          handleCheck();
+        }, 3000);
+      }
+    }
+  };
+
+  const stopInterval = () => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+  };
 
   useEffect(() => {
     if (!api) {
       return;
     }
-
     setCount(api.scrollSnapList().length);
     setCurrent(api.selectedScrollSnap());
 
@@ -602,34 +638,35 @@ const Payment = ({ locale, place, auth }) => {
   }, []);
 
   useEffect(() => {
-    let attempts = 1;
+    console.log(paymentData);
+
     if (
       paymentData &&
       !paymentData?.success &&
-      orderData?.payment_method != "card"
+      orderData?.payment_method !== "card"
     ) {
       if (!isFirstCheckDone.current) {
-        handleCheck(); // Saytga qaytib kirganda bitta tekshirish
+        handleCheck();
         isFirstCheckDone.current = true;
       }
-
-      const interval = setInterval(() => {
-        attempts += 1;
-        setAttempts(attempts);
-        if (attempts >= 3) {
-          toast.error(paymentText("pay_error"));
-          clearInterval(interval);
-          return;
-        }
-
-        handleCheck();
-      }, 6000);
-
-      return () => clearInterval(interval);
+      startInterval();
     }
-  }, [paymentData?.success]);
 
-  console.log(attemptsCount);
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "hidden") {
+        stopInterval();
+      } else if (document.visibilityState === "visible") {
+        startInterval();
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      stopInterval();
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, [paymentData?.success]);
 
   return (
     <div className="w-full flex flex-col items-start md:px-12 pt-6 gap-5">
@@ -947,10 +984,10 @@ const Payment = ({ locale, place, auth }) => {
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <div className="w-full flex justify-center items-center">
-                {attemptsCount == 3 ? (
+                {attemptsCount == 5 ? (
                   /* From Uiverse.io by ilkhoeri */
                   <div className="relative w-full max-w-64 flex gap-2 items-center justify-center py-3 pl-4 pr-14 rounded-lg text-base font-medium [transition:all_0.5s_ease] border-solid border border-[#f85149] text-[#b22b2b] [&amp;_svg]:text-[#b22b2b] group bg-[linear-gradient(#f851491a,#f851491a)]">
-                    <p className="flex flex-row items-center mr-auto gap-x-2">
+                    <div className="flex flex-row items-center mr-auto gap-x-2">
                       <svg
                         stroke="currentColor"
                         fill="none"
@@ -967,7 +1004,7 @@ const Payment = ({ locale, place, auth }) => {
                         <path d="M12 9v4"></path>
                         <path d="M12 17h.01"></path>
                       </svg>
-                    </p>
+                    </div>
                     {paymentText("pay_error")}
                   </div>
                 ) : (

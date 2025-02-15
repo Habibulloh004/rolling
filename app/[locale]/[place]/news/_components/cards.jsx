@@ -67,7 +67,9 @@ const PromotionCards = ({ param, item }) => {
         <CardHeader className="p-0">
           <div className="relative aspect-[15/5]">
             <CustomImage
-              src={`${url}/banner/get_banner/${item.id}`}
+              src={
+                item?.id ? `${url}/banner/get_banner/${item.id}` : "/empty.jpg"
+              }
               alt="news-img"
               className="w-full h-full object-cover"
             />

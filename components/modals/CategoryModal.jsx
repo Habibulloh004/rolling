@@ -11,7 +11,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {  getLocalizedCategoryName, posterUrl } from "@/lib/utils";
+import { getLocalizedCategoryName, posterUrl } from "@/lib/utils";
 import Link from "next/link";
 import {
   Select,
@@ -62,7 +62,11 @@ export function CategoryModal({ categories, locale }) {
               >
                 <div className="w-32 h-32 relative rounded-[40px] overflow-hidden">
                   <CustomImage
-                    src={`${posterUrl}${item.category_photo}`}
+                    src={
+                      item?.category_photo_origin
+                        ? `${posterUrl}${item.category_photo_origin}`
+                        : "/empty.jpg"
+                    }
                     className="w-full h-full object-cover"
                     alt={`${localizedName}`}
                   />
@@ -84,7 +88,7 @@ export function CategoryModal({ categories, locale }) {
             <Dialog>
               <DialogTrigger asChild>
                 <Button
-                aria-label={`category more`}
+                  aria-label={`category more`}
                   variant="ghost"
                   className="p-0 flex justify-end items-center gap-1 text-primary hover:text-primary text-sm font-medium"
                 >
@@ -142,7 +146,11 @@ const Card = ({ item, localizedName }) => {
     <div className="relative w-full bg-white rounded-md p-2 space-y-2">
       <div className="relative w-full aspect-square overflow-hidden bg-secondary rounded-sm">
         <CustomImage
-          src={`${posterUrl}${item.category_photo}`}
+          src={
+            item?.category_photo_origin
+              ? `${posterUrl}${item.category_photo_origin}`
+              : "/empty.jpg"
+          }
           className="w-full h-full"
           alt={`${localizedName}`}
         />
@@ -160,10 +168,16 @@ const Card = ({ item, localizedName }) => {
         <p className="textSmall2 font-bold">100 000 сум</p>
       </div>
       <div className="flex justify-end items-center gap-2">
-        <Button aria-label={`category plus`} className="w-8 h-8 hover:bg-primary-modal">
+        <Button
+          aria-label={`category plus`}
+          className="w-8 h-8 hover:bg-primary-modal"
+        >
           <Plus />
         </Button>
-        <Button aria-label={`category minus`} className="px-1 h-8 hover:bg-primary-modal">
+        <Button
+          aria-label={`category minus`}
+          className="px-1 h-8 hover:bg-primary-modal"
+        >
           <Plus />
           <span className="font-medium">1</span>
           <Minus />

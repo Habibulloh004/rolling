@@ -7,8 +7,7 @@ import CustomImage from "./customImage";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 
-const Banner = ({path, banners }) => {
-
+const Banner = ({ path, banners }) => {
   const pathname = usePathname();
   return (
     <main className={"mx-auto w-full py-3 md:py-5"}>
@@ -35,10 +34,17 @@ const Banner = ({path, banners }) => {
                 }
                 return (
                   <CarouselItem key={i} className="">
-                    <Link className="mt-1" href={`${getUrl(pathname)}${item.path}`}>
+                    <Link
+                      className="mt-1"
+                      href={`${getUrl(pathname)}${item.path}`}
+                    >
                       <div className="relative max-w-[1440px] mx-auto aspect-[15/5] rounded-[10px] sm:rounded-[20px] md:rounded-[30px] lg:rounded-[40px] xl:rounded-[50px] overflow-hidden">
                         <CustomImage
-                          src={`${url}/banner/get_banner/${item.id}`}
+                          src={
+                            item?.id
+                              ? `${url}/banner/get_banner/${item.id}`
+                              : "/empty.jpg"
+                          }
                           alt={`banner-img`}
                           fill
                           className="w-full mx-auto aspect-video mb-5"

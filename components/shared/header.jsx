@@ -84,18 +84,24 @@ export default function Header({
     }
 
     setFilteredCategories(
-      categories?.filter((category) =>
-        String(category?.category_name)
-          ?.toLowerCase()
-          ?.includes(String(searchTerm?.toLowerCase()))
+      categories?.filter(
+        (category) =>
+          String(category?.category_name)
+            ?.toLowerCase()
+            ?.includes(String(searchTerm?.toLowerCase())) &&
+          category?.category_hidden == 0 &&
+          category?.category_id != 0
       )
     );
 
     setFilteredProducts(
-      productsData?.filter((product) =>
-        String(product?.product_production_description)
-          ?.toLowerCase()
-          ?.includes(String(searchTerm?.toLowerCase()))
+      productsData?.filter(
+        (product) =>
+          String(product?.product_production_description)
+            ?.toLowerCase()
+            ?.includes(String(searchTerm?.toLowerCase())) &&
+          product?.hidden == 0 &&
+          product?.menu_category_id != 0
       )
     );
   }, [searchTerm, categories, productsData]);

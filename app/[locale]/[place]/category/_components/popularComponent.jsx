@@ -26,7 +26,12 @@ export default async function PopularComponent({ searchParamsData, path }) {
     const findIngr = item?.ingredients?.find(
       (ingr) => ingr?.ingredient_id == 211
     );
-    if (item.photo_origin != null && item?.menu_category_id != 0 && findIngr) {
+    if (
+      item.photo_origin != null &&
+      item?.menu_category_id != 0 &&
+      findIngr &&
+      item?.hidden == 0
+    ) {
       return true;
     } else {
       return false;

@@ -46,7 +46,11 @@ export default async function CategoryComponent({ searchParamsData, path }) {
             >
               <div className="w-full max-sm:max-h-32 aspect-square relative rounded-[20px] md:rounded-[40px] overflow-hidden">
                 <CustomImage
-                  src={`${posterUrl}${item?.category_photo_origin}`}
+                  src={
+                    item?.category_photo_origin
+                      ? `${posterUrl}${item?.category_photo_origin}`
+                      : "/empty.jpg"
+                  }
                   className="w-full h-full object-cover aspect-square"
                   alt={`${localizedName}`}
                 />

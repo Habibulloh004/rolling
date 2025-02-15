@@ -18,9 +18,10 @@ const poppins = Poppins({
 });
 
 export const metadata = {
-  title: "Rolling Sushi - Свежие суши и роллы в Ташкенте",
+  title:
+    "Rolling Sushi – Доставка суши и роллов в Ташкенте | Бесплатная доставка | Бонусы до 30%",
   description:
-    "Rolling Sushi предлагает свежие суши, роллы и японскую кухню с доставкой и в ресторане. Узнайте о наших акциях и популярном меню!",
+    "🚀 Rolling Sushi – это не просто доставка, а вкус, который запоминается! 🍣 Бесплатная доставка по акции, доставка за 40 минут или ролл в подарок, всегда свежие роллы. 🎁 Бонусная система с кешбэком до 30% – копите и оплачивайте любимые блюда! Закажите прямо сейчас – rolling.uz!",
   keywords:
     "суши, роллы, доставка суши, японская кухня, Rolling Sushi, Ташкент, акции суши",
   alternates: {
@@ -53,7 +54,7 @@ export default async function Layout({ children, params }) {
   // Retrieve messages for the specified locale
   const messages = await getMessages(param.locale);
   return (
-    <html lang={param.locale}>
+    <html lang={param.locale} suppressHydrationWarning>
       <head>
         <meta name="yandex-verification" content="2eb6c0631cdd4d80" />
         <meta httpEquiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -184,6 +185,34 @@ export default async function Layout({ children, params }) {
         </Script> */}
 
         {/* <GoogleAnalytics /> */}
+        <Script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              url: `https://rollingsushi.uz/${param.locale}/web/`,
+              name: "Rolling Sushi",
+              mainEntity: [
+                {
+                  "@type": "SiteNavigationElement",
+                  name: "Категории",
+                  url: `https://rollingsushi.uz/${param.locale}/web/category`,
+                },
+                {
+                  "@type": "SiteNavigationElement",
+                  name: "Популярные и Новинки",
+                  url: `https://rollingsushi.uz/${param.locale}/web/new-popular`,
+                },
+                {
+                  "@type": "SiteNavigationElement",
+                  name: "О нас",
+                  url: `https://rollingsushi.uz/${param.locale}/web/about-us`,
+                },
+              ],
+            }),
+          }}
+        />
       </body>
     </html>
   );

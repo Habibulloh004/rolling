@@ -28,7 +28,17 @@ const Popular = ({ products = [], locale, path }) => {
   return (
     <Container className="mt-5 w-full flex-col gap-3 pb-4">
       <div className="w-11/12 flex justify-between items-center gap-3">
-        <h1 className="font-bold text-thin textNormal4">{allT("popular")}</h1>
+        <Link
+          locale={locale}
+          href={
+            path?.place !== "branch"
+              ? `/${locale}/${path?.place}/new-popular`
+              : `/${locale}/${path?.place}/new-popular?spot=${spot}&table_id=${table_id}&table_num=${table_num}&service=${service}`
+          }
+          className="font-bold text-thin textNormal4"
+        >
+          {allT("popular")}
+        </Link>
         <Link
           locale={locale}
           href={
@@ -43,7 +53,7 @@ const Popular = ({ products = [], locale, path }) => {
         </Link>
       </div>
 
-      <Carousel className="relative w-full text-foreground mt-5 md:mt-10">
+      <Carousel className="relative w-full text-foreground mt-5">
         <CarouselContent className="relative">
           {products.map((item, i) => {
             const localizedName = getLocalizedProduct(

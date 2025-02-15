@@ -10,6 +10,12 @@ import {
 } from "@/components/ui/carousel";
 import { getData } from "@/service";
 
+export const metadata = {
+  title: "Отзывы о Rolling Sushi – Мнение клиентов",
+  description:
+    "Реальные отзывы наших клиентов! ⭐️ Узнайте, что говорят о вкусе, качестве и скорости доставки Rolling Sushi. Делитесь своим мнением и помогайте нам становиться лучше.",
+};
+
 const Reviews = async ({ params }) => {
   const [allT, param, reviewData] = await Promise.all([
     getTranslations("All"),

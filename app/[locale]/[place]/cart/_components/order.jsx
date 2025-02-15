@@ -215,6 +215,9 @@ const Order = ({ spotDataFilial, auth, searchParamsData, locale, place }) => {
         default:
           commentSpot = `${commentSpot ?? ""}Тип оплаты : наличными`;
       }
+      if (paymentData && paymentData?.transactionId) {
+        commentSpot = `${commentSpot}\nТранзакцияID: ${paymentData?.transactionId}`;
+      }
 
       if (spotIdSpot) {
         commentSpot = `${
@@ -515,7 +518,7 @@ const Order = ({ spotDataFilial, auth, searchParamsData, locale, place }) => {
 
   useEffect(() => {
     console.log(paymentData);
-    if (paymentData && paymentData?.success) {
+    if (paymentData && paymentData?.success && paymentData?.transactionId) {
       handleSubmit();
     }
   }, [paymentData?.success]);

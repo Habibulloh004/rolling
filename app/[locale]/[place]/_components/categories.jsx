@@ -23,9 +23,13 @@ const Categories = ({ categories, locale, path }) => {
   return (
     <Container className={`mt-3 md:mt-5 w-full flex-col gap-3 pb-4`}>
       <div className="w-11/12 flex justify-between items-center gap-3">
-        <h1 className="font-bold text-thin textNormal4">
+        <Link
+          locale={locale}
+          href={`/${locale}/${path?.place}/category`}
+          className="font-bold text-thin textNormal4"
+        >
           {allT("categories")}
-        </h1>
+        </Link>
         {path.place !== "branch" && (
           <Link
             locale={locale}
@@ -58,12 +62,16 @@ const Categories = ({ categories, locale, path }) => {
                   className="space-y-2 relative w-full h-full"
                 >
                   <div className="w-full max-sm:max-h-32 aspect-square relative rounded-[20px] md:rounded-[40px] overflow-hidden">
-                  <CustomImage
-                    src={`${posterUrl}${item?.category_photo_origin}`}
-                    className="w-full h-full object-cover aspect-square"
-                    alt={`${localizedName}`}
-                  />
-                </div>
+                    <CustomImage
+                      src={
+                        item?.category_photo_origin
+                          ? `${posterUrl}${item?.category_photo_origin}`
+                          : "/empty.jpg"
+                      }
+                      className="w-full h-full object-cover aspect-square"
+                      alt={`${localizedName}`}
+                    />
+                  </div>
                   <h1 className="text-center textSmall3 font-bold">
                     {localizedName}
                   </h1>
@@ -100,7 +108,11 @@ const Categories = ({ categories, locale, path }) => {
                   >
                     <div className="relative rounded-[20px] sm:rounded-[40px] w-full aspect-square overflow-hidden">
                       <CustomImage
-                        src={`${posterUrl}${item.category_photo_origin}`}
+                        src={
+                          item?.category_photo_origin
+                            ? `${posterUrl}${item.category_photo_origin}`
+                            : "/empty.jpg"
+                        }
                         className="w-full h-full"
                         alt={`${localizedName}`}
                         photo={item.category_photo}

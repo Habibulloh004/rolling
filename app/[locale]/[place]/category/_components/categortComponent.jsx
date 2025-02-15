@@ -13,7 +13,10 @@ export default async function CategoryComponent({ searchParamsData, path }) {
   ]);
   const { spot, table_id, table_num, service } = searchParamsData;
   const categories = categoriesData.response.filter(
-    (c) => c.category_photo != null && c.category_hidden != "1"
+    (c) =>
+      c.category_photo != null &&
+      c.category_hidden != "1" &&
+      c?.category_id != 0
   );
 
   return (

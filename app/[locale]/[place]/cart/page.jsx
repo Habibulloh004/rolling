@@ -62,7 +62,12 @@ const Basket = async ({ params, searchParams }) => {
     const findIngr = item?.ingredients?.find(
       (ingr) => ingr?.ingredient_id == 213
     );
-    if (item.photo_origin != null && item?.menu_category_id != 0 && findIngr) {
+    if (
+      item.photo_origin != null &&
+      item?.menu_category_id != 0 &&
+      findIngr &&
+      item?.hidden == 0
+    ) {
       return true;
     } else {
       return false;
@@ -106,6 +111,55 @@ const Basket = async ({ params, searchParams }) => {
             searchParamsData={searchParamsData}
           />
           <Products locale={locale} auth={auth} place={path.place} />
+          <section className="lg:hidden w-full mt-5 space-y-3 pb-4">
+            <div className="w-11/12 sm:w-full mx-auto flex justify-between items-center gap-3">
+              <h1 className="font-bold text-primary textNormal4 w-full">
+                {all("cart_ingredient")}
+              </h1>
+            </div>
+            <Carousel
+              className="relative w-full text-foreground mt-5 md:mt-10 "
+              paginate={"false"}
+            >
+              {/* <div className="absolute -right-1 -top-4 w-2 h-48 bg-[#F5F5F5] z-50 shadow-custom" /> */}
+              <CarouselContent className="relative">
+                {productsIng?.map((item, i) => {
+                  const localizedName = getLocalizedProduct(
+                    item.product_production_description,
+                    locale,
+                    "name"
+                  );
+                  const linkNameCategory = formatText(
+                    getLocalizedCategoryName(item.category_name, "en")
+                  );
+                  const linkNameProduct = formatText(
+                    getLocalizedProduct(
+                      item.product_production_description,
+                      "en",
+                      "name"
+                    )
+                  );
+                  return (
+                    <CarouselItem
+                      key={i}
+                      className={`basis-[40%] sm:basis-[30%] md:basis-[20%] lg:basis-[15%] p-0 mx-2 ${
+                        i == 0 && "max-sm:ml-8 max-md:ml-16 ml-8"
+                      }`}
+                    >
+                      <Card
+                        locale={locale}
+                        item={item}
+                        defaultHref={`/${locale}/${path.place}/category/${item?.menu_category_id}-${linkNameCategory}/product/${item?.product_id}-${linkNameProduct}`}
+                        localizedName={localizedName}
+                        photo={item.photo_origin}
+                        price={item?.price["1"] / 100}
+                      />
+                    </CarouselItem>
+                  );
+                })}
+              </CarouselContent>
+            </Carousel>
+          </section>
           <Payment locale={locale} place={path.place} auth={auth} />
           <Order
             auth={auth}
@@ -116,7 +170,7 @@ const Basket = async ({ params, searchParams }) => {
           />
         </div>
         {/* Carousel for popular categories */}
-        <section className="w-full mt-5 space-y-3 pb-4">
+        <section className="max-lg:hidden w-full mt-5 space-y-3 pb-4">
           <div className="w-11/12 sm:w-full mx-auto flex justify-between items-center gap-3">
             <h1 className="font-bold text-primary textNormal4 w-full">
               {all("cart_ingredient")}

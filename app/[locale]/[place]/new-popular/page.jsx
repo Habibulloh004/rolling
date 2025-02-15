@@ -10,7 +10,8 @@ import {
 } from "@/lib/utils";
 
 export const metadata = {
-  title: "Популярные хиты и новинки Rolling Sushi – Лучшие роллы и суши | Доставка 40 мин",
+  title:
+    "Популярные хиты и новинки Rolling Sushi – Лучшие роллы и суши | Доставка 40 мин",
   description:
     "🔥 Популярные хиты и свежие новинки Rolling Sushi! 🍣 Лучшие классические, запечённые и горячие роллы, WOK и эксклюзивные блюда от наших шеф-поваров. 🚀 Доставка за 40 минут или ролл в подарок! 🎁 Бонусная система до 30% кешбэка – пробуйте новинки и получайте выгоду! Закажите прямо сейчас – rolling.uz!",
   keywords:
@@ -34,7 +35,12 @@ const ColdRolls = async ({ params, searchParams }) => {
     const findIngr = item?.ingredients?.find(
       (ingr) => ingr?.ingredient_id == 211
     );
-    if (item.photo_origin != null && item?.menu_category_id != 0 && findIngr) {
+    if (
+      item.photo_origin != null &&
+      item?.menu_category_id != 0 &&
+      findIngr &&
+      item?.hidden == 0
+    ) {
       return true;
     } else {
       return false;
@@ -84,7 +90,7 @@ const ColdRolls = async ({ params, searchParams }) => {
             );
           })}
         </div>
-      </section>  
+      </section>
     </Container>
   );
 };

@@ -110,7 +110,9 @@ export default async function CategoryItems({ params, searchParams }) {
     `&category_id=${path.category}`,
     86400
   );
-  const products = categoryItems.filter((c) => c.photo != null);
+  const products = categoryItems.filter(
+    (c) => c.photo != null && c?.hidden == 0
+  );
   const categoryName = getLocalizedCategoryName(category.category_name, locale);
 
   return (

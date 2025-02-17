@@ -287,8 +287,6 @@ const Order = ({ spotDataFilial, auth, searchParamsData, locale, place }) => {
       console.log({ pickupData });
       console.log({ spotData });
       console.log(orderData);
-      console.log({ auth });
-      console.log({ activeTab });
 
       // return null;
       let commentClient;

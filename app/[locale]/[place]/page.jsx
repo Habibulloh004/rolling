@@ -1,11 +1,8 @@
-import Banner from "@/components/shared/banner";
+import dynamic from "next/dynamic";
 import { getData } from "@/service";
 import { getLocale, getTranslations } from "next-intl/server";
-import Categories from "./_components/categories";
 import Container from "@/components/shared/container";
-import Popular from "./_components/popular";
 import { ApiService } from "@/service/api.services";
-import TitleComponent from "./_components/titleComponent";
 import {
   Carousel,
   CarouselContent,
@@ -14,6 +11,18 @@ import {
 import Cards from "./reviews/_components/cards";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
+const TitleComponent = dynamic(() => import("./_components/titleComponent"), {
+  ssr: true,
+});
+const Banner = dynamic(() => import("@/components/shared/banner"), {
+  ssr: true,
+});
+const Categories = dynamic(() => import("./_components/categories"), {
+  ssr: true,
+});
+const Popular = dynamic(() => import("./_components/popular"), {
+  ssr: true,
+});
 
 export const metadata = {
   title:
@@ -28,10 +37,6 @@ export const metadata = {
     en: "https://rollingsushi.uz/en/web",
   },
 };
-export function sleep(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
 export default async function HomePage({ params, searchParams }) {
   // await sleep(10000);
   const [

@@ -72,7 +72,7 @@ const Card = ({
         </div>
         <div>
           <h1 className="textSmall1 font-bold">
-            {truncateText(localizedName, 40)}{" "}
+            {truncateText(localizedName, 60)}{" "}
             <span className="font-[400]"></span>
           </h1>
           <p className="textSmall2 font-bold">

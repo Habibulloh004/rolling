@@ -9,7 +9,7 @@ import { cookies } from "next/headers";
 export const metadata = {
   title: "Бонусная система - Rolling Sushi",
   description:
-    "Наша бонусная система позволяет вам экономить до 30% на каждом заказе. Узнайте, как накопить бонусы и использовать их для оплаты.",
+    "Наша бонусная система позволяет вам экономить до 10% на каждом заказе. Узнайте, как накопить бонусы и использовать их для оплаты.",
   keywords: "бонусная система, Rolling Sushi, накопить бонусы, скидки, Ташкент",
 };
 
@@ -34,11 +34,13 @@ export default async function Bonus() {
           <div className="bg-primary rounded-xl w-full max-w-md h-[240px] flex flex-col justify-between items-center relative py-[5px] ">
             <div className="flex flex-col items-center justify-center pt-5">
               <p className="font-bold text-white text-[32px] ">
-                {client.client_groups_discount == "30"
+                {client.client_groups_discount == "10"
                   ? "GOLD"
-                  : client.client_groups_discount == "20"
+                  : client.client_groups_discount == "5"
                   ? "SILVER"
-                  : "BRONZE"}
+                  : client.client_groups_discount == "3"
+                  ? "BRONZE"
+                  : "GOLD"}
               </p>
               <p className="font-bold text-white text-center text-2xl ">
                 {client.client_groups_discount}%
@@ -52,11 +54,13 @@ export default async function Bonus() {
             </div>
             <Image
               src={`${
-                client.client_groups_discount == "30"
+                client.client_groups_discount == "10"
                   ? "/assets/Gold.png"
-                  : client.client_groups_discount == "20"
+                  : client.client_groups_discount == "5"
                   ? "/assets/Silver.png"
-                  : "/assets/Bronze.png"
+                  : client.client_groups_discount == "3"
+                  ? "/assets/Bronze.png"
+                  : "/assets/Gold.png"
               }`}
               alt="gold"
               width={400}

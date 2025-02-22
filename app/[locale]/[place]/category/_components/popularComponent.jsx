@@ -66,6 +66,13 @@ export default async function PopularComponent({ searchParamsData, path }) {
             const linkNameCategory = formatText(
               getLocalizedCategoryName(item.category_name, "en")
             );
+            const localizedDesc = formatText(
+              getLocalizedProduct(
+                item.product_production_description,
+                locale,
+                "desc"
+              )
+            );
             const linkNameProduct = formatText(
               getLocalizedProduct(
                 item.product_production_description,
@@ -85,6 +92,7 @@ export default async function PopularComponent({ searchParamsData, path }) {
                   item={item}
                   defaultHref={`/${locale}/${path.place}/category/${item?.menu_category_id}-${linkNameCategory}/product/${item?.product_id}-${linkNameProduct}`}
                   localizedName={localizedName}
+                  localizedDesc={localizedDesc}
                   photo={item.photo_origin}
                   price={item?.price["1"] / 100}
                 />

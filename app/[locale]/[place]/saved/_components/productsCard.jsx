@@ -23,6 +23,11 @@ export default function ProductsCard({ locale, path }) {
               locale,
               "name"
             );
+            const localizedDesc = getLocalizedProduct(
+              item.product_production_description,
+              locale,
+              "desc"
+            );
             const linkNameProduct = formatText(
               getLocalizedProduct(
                 item.product_production_description,
@@ -40,6 +45,7 @@ export default function ProductsCard({ locale, path }) {
                   locale={locale}
                   item={item}
                   localizedName={localizedName}
+                  localizedDesc={localizedDesc}
                   photo={item.photo_origin}
                   price={item.price["1"] / 100}
                 />

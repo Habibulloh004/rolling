@@ -61,6 +61,11 @@ const Popular = ({ products = [], locale, path }) => {
               locale,
               "name"
             );
+            const localizedDesc = getLocalizedProduct(
+              item.product_production_description,
+              locale,
+              "desc"
+            );
 
             const linkNameCategory = formatText(
               getLocalizedCategoryName(item.category_name, "en")
@@ -87,6 +92,7 @@ const Popular = ({ products = [], locale, path }) => {
                       ? `/${locale}/${path?.place}/category/${item?.menu_category_id}-${linkNameCategory}/product/${item?.product_id}-${linkNameProducts}`
                       : `/${locale}/${path?.place}/category/${item?.menu_category_id}-${linkNameCategory}/product/${item?.product_id}-${linkNameProducts}?spot=${spot}&table_id=${table_id}&table_num=${table_num}&service=${service}`
                   }
+                  localizedDesc={localizedDesc}
                   locale={locale}
                   item={item}
                   photo={item.photo}

@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 const Card = ({
   item,
   localizedName,
+  localizedDesc,
   locale,
   defaultHref = "/web/category",
   ...props
@@ -72,7 +73,11 @@ const Card = ({
         </div>
         <div>
           <h1 className="textSmall1 font-bold">
-            {truncateText(localizedName, 60)}{" "}
+            {truncateText(localizedName, 40)}{" "}
+            <span className="font-[400]"></span>
+          </h1>
+          <h1 className="text-[12px] font-[400">
+            {truncateText(localizedDesc, 50)}{" "}
             <span className="font-[400]"></span>
           </h1>
           <p className="textSmall2 font-bold">

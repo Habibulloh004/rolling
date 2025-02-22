@@ -145,6 +145,11 @@ export default async function CategoryItems({ params, searchParams }) {
             locale,
             "name"
           );
+          const localizedDesc = getLocalizedProduct(
+            item.product_production_description,
+            locale,
+            "desc"
+          );
           const linkNameProduct = formatText(
             getLocalizedProduct(
               item.product_production_description,
@@ -165,6 +170,7 @@ export default async function CategoryItems({ params, searchParams }) {
                 }
                 locale={locale}
                 item={item}
+                localizedDesc={localizedDesc}
                 localizedName={localizedName}
                 photo={item.photo_origin}
                 price={item.price["1"] / 100}

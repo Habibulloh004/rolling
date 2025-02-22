@@ -98,6 +98,11 @@ const Confirmed = async ({ params }) => {
                 locale,
                 "name"
               );
+              const localizedDesc = getLocalizedProduct(
+                item.product_production_description,
+                locale,
+                "desc"
+              );
               const linkNameCategory = formatText(
                 getLocalizedCategoryName(item.category_name, "en")
               );

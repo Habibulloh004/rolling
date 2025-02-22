@@ -129,6 +129,11 @@ const Basket = async ({ params, searchParams }) => {
                     locale,
                     "name"
                   );
+                  const localizedDesc = getLocalizedProduct(
+                    item.product_production_description,
+                    locale,
+                    "desc"
+                  );
                   const linkNameCategory = formatText(
                     getLocalizedCategoryName(item.category_name, "en")
                   );
@@ -150,6 +155,7 @@ const Basket = async ({ params, searchParams }) => {
                         locale={locale}
                         item={item}
                         defaultHref={`/${locale}/${path.place}/category/${item?.menu_category_id}-${linkNameCategory}/product/${item?.product_id}-${linkNameProduct}`}
+                        localizedDesc={localizedDesc}
                         localizedName={localizedName}
                         photo={item.photo_origin}
                         price={item?.price["1"] / 100}
@@ -188,6 +194,11 @@ const Basket = async ({ params, searchParams }) => {
                   locale,
                   "name"
                 );
+                const localizedDesc = getLocalizedProduct(
+                  item.product_production_description,
+                  locale,
+                  "desc"
+                );
                 const linkNameCategory = formatText(
                   getLocalizedCategoryName(item.category_name, "en")
                 );
@@ -210,6 +221,7 @@ const Basket = async ({ params, searchParams }) => {
                       item={item}
                       defaultHref={`/${locale}/${path.place}/category/${item?.menu_category_id}-${linkNameCategory}/product/${item?.product_id}-${linkNameProduct}`}
                       localizedName={localizedName}
+                      localizedDesc={localizedDesc}
                       photo={item.photo_origin}
                       price={item?.price["1"] / 100}
                     />

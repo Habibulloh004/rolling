@@ -15,12 +15,20 @@ import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Icon } from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { Navigation } from "lucide-react";
+import { Navigation, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { usePathname, useRouter } from "next/navigation";
 import { getUrl } from "@/lib/utils";
 import { useOrderStore } from "@/store";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 // Custom user marker
 const userMarker = new Icon({
@@ -30,7 +38,7 @@ const userMarker = new Icon({
 });
 
 const EditAddress = () => {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const { orderData, setOrderData } = useOrderStore();
   const [addressData, setAddressData] = useState({
     id: 0,
@@ -41,8 +49,8 @@ const EditAddress = () => {
   });
 
   const [location, setLocation] = useState({
-    lat: 41.311081,
-    lng: 69.240562,
+    lat: null,
+    lng: null,
   });
 
   const addressT = useTranslations("Profile.Address");
@@ -114,7 +122,7 @@ const EditAddress = () => {
     myAddresses.push(newAddress);
     localStorage.setItem("myAddresses", JSON.stringify(myAddresses));
     toast.success(addressT("address_saved"));
-    router.push(  `${getUrl(pathname)}/cart`);
+    router.push(`${getUrl(pathname)}/cart`);
     setOrderData({
       ...orderData,
       address: addressData.address,
@@ -150,48 +158,51 @@ const EditAddress = () => {
     return null;
   };
 
-  useEffect(() => {
-    const savedLocation = localStorage.getItem("yourLocation")
-      ? JSON.parse(localStorage.getItem("yourLocation"))
-      : null;
+  // useEffect(() => {
+  //   const savedLocation = localStorage.getItem("yourLocation")
+  //     ? JSON.parse(localStorage.getItem("yourLocation"))
+  //     : null;
 
-    if (savedLocation) {
-      setLocation(savedLocation);
-    } else if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          const newLocation = { lat: latitude, lng: longitude };
-          setLocation(newLocation);
-          localStorage.setItem("yourLocation", JSON.stringify(newLocation));
-        },
-        (error) => {
-          toast.warning(
-            "Joylashuvni aniqlashda xatolik yuz berdi. Iltimos, ruxsat bering."
-          );
-        },
-        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-      );
-    }
-  }, []);
+  //   if (savedLocation) {
+  //     setLocation(savedLocation);
+  //   } else if (navigator.geolocation) {
+  //     navigator.geolocation.getCurrentPosition(
+  //       (position) => {
+  //         const { latitude, longitude } = position.coords;
+  //         const newLocation = { lat: latitude, lng: longitude };
+  //         setLocation(newLocation);
+  //         localStorage.setItem("yourLocation", JSON.stringify(newLocation));
+  //       },
+  //       (error) => {
+  //         toast.warning(
+  //           "Joylashuvni aniqlashda xatolik yuz berdi. Iltimos, ruxsat bering."
+  //         );
+  //       },
+  //       { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+  //     );
+  //   }
+  // }, []);
+  console.log(addressData);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch(
-          `https://nominatim.openstreetmap.org/reverse?lat=${String(
-            location?.lat
-          )}&lon=${String(location?.lng)}&format=json&accept-language=${
-            pathname.split("/")[1]
-          }`
-        );
-        const addressRes = await res.json();
-        setAddressData({
-          ...addressData,
-          lat: location.lat,
-          lng: location.lng,
-          address: addressRes?.display_name,
-        });
+        if (location.lat && location.lng) {
+          const res = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?lat=${String(
+              location?.lat
+            )}&lon=${String(location?.lng)}&format=json&accept-language=${
+              pathname.split("/")[1]
+            }`
+          );
+          const addressRes = await res.json();
+          setAddressData({
+            ...addressData,
+            lat: location.lat,
+            lng: location.lng,
+            address: addressRes?.display_name,
+          });
+        }
       } catch (error) {
         console.log(error);
       }
@@ -211,6 +222,7 @@ const EditAddress = () => {
           </Label>
           <div className="max-w-xl w-full flex items-center bg-[#F5F5F5] border-[0.5px] border-[#B9B9BB] rounded-[10px] px-2 py-1 mt-2">
             <Textarea
+              disabled={true}
               id="address"
               name="address"
               type="text"
@@ -256,7 +268,7 @@ const EditAddress = () => {
           </div>
           <div className="w-full hidden lg:grid grid-cols-1 gap-y-4 lg:grid-cols-3 gap-x-2 mt-5">
             <Button
-            aria-label={`edit add`}
+              aria-label={`edit add`}
               onClick={handleSubmit}
               className={"hover:bg-primary h-10 rounded-sm"}
             >
@@ -265,13 +277,78 @@ const EditAddress = () => {
           </div>
         </div>
         <div className="lg:w-full h-48 lg:h-80 rounded-xl overflow-hidden relative z-0 ">
-          {open && (
-            <div className="md:hidden absolute top-0 left-0 w-full h-full z-30 backdrop-blur-[1px] bg-black/10 flex justify-center items-center">
-              <Button aria-label={`edit map`} onClick={() => setOpen(false)}>
-                {addressT("select_map")}
-              </Button>
-            </div>
-          )}
+          <div className="md:hidden absolute top-0 left-0 w-full h-full z-30 backdrop-blur-[1px] bg-black/10 flex justify-center items-center">
+            <Dialog onOpenChange={setOpen} open={open} className="">
+              <DialogTrigger asChild>
+                <Button aria-label={`edit map`}>
+                  {addressT("select_map")}
+                </Button>
+              </DialogTrigger>
+              <DialogContent
+                classnameOverlay="max-md:p-0 rounded-none pt-0"
+                mark="false"
+                className="sm:rounded-none h-screen w-screen p-0"
+              >
+                <DialogHeader className={""}>
+                  <DialogTitle className="text-start pl-10 pt-0">
+                    {" "}
+                    {addressT("select_map")}
+                  </DialogTitle>
+                  <DialogDescription className="hidden">
+                    This action cannot be undone. This will permanently delete
+                    your account and remove your data from our servers.
+                  </DialogDescription>
+                  <div className="w-full h-full relative">
+                    <MapContainer
+                      center={[41.2995, 69.2401]}
+                      zoom={16}
+                      scrollWheelZoom
+                      style={{ height: "100%", width: "100%", zIndex: 10 }}
+                    >
+                      <TileLayer
+                        attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                      />
+                      <SmoothTransition
+                        lng={location?.lng}
+                        lat={location?.lat}
+                        zoom={14}
+                      />
+                      <Marker
+                        icon={userMarker}
+                        position={
+                          location?.lat && location?.lng
+                            ? [location.lat, location.lng]
+                            : [41.2995, 69.2401]
+                        }
+                      >
+                        {/* <Popup>{addressT("you_here")}</Popup> */}
+                      </Marker>
+                      <MapClickHandler />
+                    </MapContainer>
+                    <Button
+                      aria-label={`edit navigation`}
+                      onClick={handleFoundLocation}
+                      className={
+                        "flex bg-primary hover:bg-opacity-70 text-base gap-3 items-center text-white h-12 w-12 absolute top-[50%] rounded-full right-4 z-50"
+                      }
+                    >
+                      <Navigation size={32} />
+                    </Button>
+                    <Button
+                      aria-label={`edit navigation`}
+                      onClick={() => setOpen(false)}
+                      className={
+                        "p-0 flex bg-primary hover:bg-opacity-70 text-base gap-3 items-center text-white h-12 w-12 absolute top-[60%] rounded-full right-4 z-50"
+                      }
+                    >
+                      <Plus size={32} />
+                    </Button>
+                  </div>
+                </DialogHeader>
+              </DialogContent>
+            </Dialog>
+          </div>
           <MapContainer
             center={[41.2995, 69.2401]}
             zoom={16}
@@ -300,10 +377,10 @@ const EditAddress = () => {
             <MapClickHandler />
           </MapContainer>
           <Button
-          aria-label={`edit navigation`}
+            aria-label={`edit navigation`}
             onClick={handleFoundLocation}
             className={
-              "flex bg-primary hover:bg-opacity-70 text-base gap-3 items-center text-white px-3 py-2 h-10 absolute bottom-3 left-3 z-50"
+              "max-md:hidden flex bg-primary hover:bg-opacity-70 text-base gap-3 items-center text-white px-3 py-2 h-10 absolute bottom-3 left-3 z-50"
             }
           >
             <Navigation size={16} />
@@ -312,7 +389,7 @@ const EditAddress = () => {
       </div>
       <div className="lg:hidden w-full flex justify-between">
         <Button
-        aria-label={`edit add2`}
+          aria-label={`edit add2`}
           onClick={handleSubmit}
           className={"hover:bg-primary h-10 rounded-sm"}
         >

@@ -31,25 +31,32 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-// DiscountBadge Component
 const DiscountBadge = ({ auth }) => {
   const discountColor = {
-    10: "#ED7403",
-    20: "#E2E2E2",
-    30: "#F3D67E",
+    3: "#ED7403",
+    5: "#E2E2E2",
+    10: "#F3D67E",
   };
   const discountLabel = {
-    10: "BRONZA",
-    20: "SILVER",
-    30: "GOLD",
+    3: "BRONZA",
+    5: "SILVER",
+    10: "GOLD",
   };
   const discountImage = {
-    10: "/assets/Bronze.png",
-    20: "/assets/Silver.png",
-    30: "/assets/Gold.png",
+    3: "/assets/Bronze.png",
+    5: "/assets/Silver.png",
+    10: "/assets/Gold.png",
   };
 
-  const discount = auth?.client_groups_discount || 0;
+  let discount;
+
+  if (auth?.client_groups_discount >= 10) {
+    discount = 10; // 10 yoki undan katta bo‘lsa GOLD
+  } else if (auth?.client_groups_discount === 5) {
+    discount = 5; // SILVER
+  } else if (auth?.client_groups_discount === 3) {
+    discount = 3; // BRONZA
+  }
 
   return (
     <div className="bg-primary rounded-xl w-[150px] h-[100px] flex flex-col justify-between items-center relative py-[5px]">
@@ -62,23 +69,27 @@ const DiscountBadge = ({ auth }) => {
             className="font-bold text-center"
             style={{ color: discountColor[discount] }}
           >
-            {discount}%
+            {auth?.client_groups_discount}%
           </p>
         </div>
       )}
-      <Image
-        src={discountImage[discount]}
-        alt={discountLabel[discount] || "gold"}
-        width={150}
-        height={100}
-        className="absolute top-0"
-      />
-      <p
-        className="font-bold text-center text-[6px]"
-        style={{ color: discountColor[discount] }}
-      >
-        ROLLINGSUSHI
-      </p>
+      {discount && (
+        <Image
+          src={discountImage[discount]}
+          alt={discountLabel[discount]}
+          width={150}
+          height={100}
+          className="absolute top-0"
+        />
+      )}
+      {discount && (
+        <p
+          className="font-bold text-center text-[6px]"
+          style={{ color: discountColor[discount] }}
+        >
+          ROLLINGSUSHI
+        </p>
+      )}
     </div>
   );
 };
@@ -455,8 +466,6 @@ const Order = ({ spotDataFilial, auth, searchParamsData, locale, place }) => {
           }
         } else if (activeTab == "delivery") {
           const res = await createOrder(deliveryData);
-          console.log(res);
-
           if (res?.order_id) {
             setOrderData({
               spot_id: 0,
@@ -515,7 +524,6 @@ const Order = ({ spotDataFilial, auth, searchParamsData, locale, place }) => {
   };
 
   useEffect(() => {
-    console.log(paymentData);
     if (paymentData && paymentData?.success && paymentData?.transactionId) {
       handleSubmit();
     }
@@ -721,7 +729,10 @@ const Order = ({ spotDataFilial, auth, searchParamsData, locale, place }) => {
         )}
         {isDisabled && (
           <div className="w-full p-5 border-[1px] border-[#979797] rounded-xl mt-3">
-            <p className="font-medium">{total("note")}</p>
+            <p
+              className="font-medium"
+              dangerouslySetInnerHTML={{ __html: total("note") }}
+            />
           </div>
         )}
       </div>

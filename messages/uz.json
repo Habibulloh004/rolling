@@ -73,7 +73,7 @@
     "title": "Profil",
     "userName": "Foydalanuvchi nomi",
     "phone": "Telefon raqami",
-    "offer": "Biz sizga har bir buyurtma bilan ko'proq tejash imkonini beruvchi noyob bonus dasturini taklif etamiz: <br/> 1. Bronza (10%): 1-dan 4-buyurtmagacha beriladi. <br/> 2. Kumush (20%): 5-dan 9-buyurtmagacha beriladi. <br/> 3. Oltin (30%): 10-buyurtmadan boshlab beriladi.",
+    "offer": "Biz sizga har bir buyurtma bilan ko'proq tejash imkonini beruvchi noyob bonus dasturini taklif etamiz: <br/> 1. Bronza (3%): 1-dan 4-buyurtmagacha beriladi. <br/> 2. Kumush (5%): 5-dan 9-buyurtmagacha beriladi. <br/> 3. Oltin (10%): 10-buyurtmadan boshlab beriladi.",
     "how_it_work": "Bu qanday ishlaydi? <br/> • Har bir buyurtmadan so'ng, darajangizga qarab (Bronza, Kumush yoki Oltin) bonuslar yig'iladi. <br /> • Menyumizdagi istalgan taom uchun to'lovda yig'ilgan bonuslarning 100% gacha bo'lgan qismini ishlatishingiz mumkin.",
     "my_cards": "Mening kartalarim",
     "my_address": "Mening manzillarim",
@@ -91,9 +91,9 @@
     },
     "Bonus": {
       "title": "Biz sizga har bir buyurtmangiz bilan ko‘proq tejash imkonini beruvchi noyob bonus dasturini taklif qilamiz:",
-      "bonus_1": "1. Bronza (10%): 1-dan 4-buyurtmagacha hisoblanadi.",
-      "bonus_2": "2. Kumush (20%): 5-dan 9-buyurtmagacha hisoblanadi.",
-      "bonus_3": "3. Oltin (30%): 10-buyurtmadan boshlab hisoblanadi.",
+      "bonus_1": "1. Bronza (3%): 1-dan 4-buyurtmagacha hisoblanadi.",
+      "bonus_2": "2. Kumush (5%): 5-dan 9-buyurtmagacha hisoblanadi.",
+      "bonus_3": "3. Oltin (10%): 10-buyurtmadan boshlab hisoblanadi.",
       "how_it_work": "Bu qanday ishlaydi?",
       "work_1": "• Har bir buyurtmadan so‘ng sizning darajangizga qarab bonuslar hisoblanadi: Bronza, Kumush yoki Oltin.",
       "work_2": "• Menyumizdagi istalgan taomni to‘lash uchun yig‘ilgan bonuslarning 100% gacha bo‘lgan qismini ishlatishingiz mumkin."
@@ -163,7 +163,7 @@
     "vacansies": "Bo'sh ish o'rinlari"
   },
   "HomePage": {
-    "intro": "Bizning bonus dasturimizda ishtirok etishni xohlaysizmi? Hozir ro'yxatdan o'ting va har bir buyurtma uchun 30% gacha bonuslarni yig'ishni boshlang!",
+    "intro": "Bizning bonus dasturimizda ishtirok etishni xohlaysizmi? Hozir ro'yxatdan o'ting va har bir buyurtma uchun 10% gacha bonuslarni yig'ishni boshlang!",
     "title": "Salom dunyo!",
     "about": "About sahifasiga kirish"
   },
@@ -204,7 +204,7 @@
   "Register": {
     "title": "Ro‘yxatdan o‘ting va Rolling Sushi’dan yanada ko‘proq zavqlaning!",
     "registeration": "Ro‘yxatdan o‘tish",
-    "description": "Faqat ro‘yxatdan o‘tgan foydalanuvchilar bizning bonus tizimimizda ishtirok etadi va har bir buyurtmadan 30% gacha bonus olishadi. Siz ularni istalgan taomni to‘lashda 100% ishlatishingiz mumkin! Bundan tashqari, siz maxsus chegirmalar va aksiyalarga ega bo‘lasiz. Buyurtma berish yanada tez va qulay bo‘ladi. Bizning sodiqlik dasturimizning bir qismiga aylanib qolish imkoniyatini qo‘ldan boy bermang!",
+    "description": "Faqat ro‘yxatdan o‘tgan foydalanuvchilar bizning bonus tizimimizda ishtirok etadi va har bir buyurtmadan 10% gacha bonus olishadi. Siz ularni istalgan taomni to‘lashda 100% ishlatishingiz mumkin! Bundan tashqari, siz maxsus chegirmalar va aksiyalarga ega bo‘lasiz. Buyurtma berish yanada tez va qulay bo‘ladi. Bizning sodiqlik dasturimizning bir qismiga aylanib qolish imkoniyatini qo‘ldan boy bermang!",
     "Form": {
       "first_name": "Ism",
       "last_name": "Familiya",
@@ -332,7 +332,7 @@
       "you_not_pay": "Siz to'lovni amalga oshirmadingiz!!!",
       "you_not_check": "Siz to'lovni tasdiqlamadingiz!!!",
       "auth_title": "Ro'yxatdan o'ting va Rolling Sushi’dan yanada ko'proq zavq oling!",
-      "auth_desc1": "Faqat ro'yxatdan o'tgan foydalanuvchilar bizning bonus tizimimizda ishtirok etib, har bir buyurtmadan 30% gacha bonus olishadi. Ularni har qanday taomni to'lashda 100% ishlatishingiz mumkin!",
+      "auth_desc1": "Faqat ro'yxatdan o'tgan foydalanuvchilar bizning bonus tizimimizda ishtirok etib, har bir buyurtmadan 10% gacha bonus olishadi. Ularni har qanday taomni to'lashda 100% ishlatishingiz mumkin!",
       "auth_desc2": "Bundan tashqari, sizga eksklyuziv chegirmalar va aksiyalarga kirish huquqi beriladi. Buyurtmalarni berish tezroq va qulayroq bo'ladi. Bizning sodiqlik dasturimizning bir qismi bo'lish imkoniyatini qo'ldan boy bermang!"
     },
     "Total": {
@@ -344,7 +344,7 @@
       "bonus": "Bonus",
       "bonus_pay": "Mening bonuslarimni qo'llash",
       "submit": "Buyurtmani tasdiqlash",
-      "note": "Restoran hozir yopiq. Biz har kuni soat 10:00 dan buyurtmalarni qabul qilamiz. Rolling Sushi-ni tanlaganingiz uchun rahmat!",
+      "note": "🔒 Restoran hozir yopiq, lekin biz tez orada ochilamiz!<br/>📅 Ish vaqti: har kuni 10:00 – 23:00<br/>⏳ Oldindan buyurtma berishingiz mumkin – u ochilgan zahoti qabul qilinadi!",
       "have_bonus": "Mavjud bonuslar"
     },
     "pay_success": "To'lov turi",
@@ -403,7 +403,7 @@
       "q1_question": "Qaysi to‘lov usullarini qabul qilasiz?",
       "q1_answer": "Biz quyidagilarni qabul qilamiz:\n• To‘lov tizimlari orqali onlayn to‘lov (Click, Payme, Uzum).\n• Yetkazib berishda naqd yoki karta orqali to‘lov.\n• Bonuslardan naqd pul bilan birgalikda foydalanish orqali to‘lash.",
       "q2_question": "Bonus tizimi qanday ishlaydi?",
-      "q2_answer": "• Har bir buyurtma uchun mijoz darajasiga qarab bonuslar beriladi:\n• Bronza (10%) 1-dan 4-buyurtmagacha.\n• Kumush (20%) 5-dan 9-buyurtmagacha.\n• Oltin (30%) 10-buyurtma va undan keyin.\n• To‘plangan bonuslardan to‘liq yoki qisman to‘lov uchun foydalanishingiz mumkin.",
+      "q2_answer": "• Har bir buyurtma uchun mijoz darajasiga qarab bonuslar beriladi:\n• Bronza (3%) 1-dan 4-buyurtmagacha.\n• Kumush (5%) 5-dan 9-buyurtmagacha.\n• Oltin (10%) 10-buyurtma va undan keyin.\n• To‘plangan bonuslardan to‘liq yoki qisman to‘lov uchun foydalanishingiz mumkin.",
       "q3_question": "Yetkazib berish qancha vaqt oladi?",
       "q3_answer": "O‘rtacha yetkazib berish vaqti 40 daqiqani tashkil etadi. Vaqt joylashuvingiz va ish hajmiga qarab o‘zgarishi mumkin.",
       "q4_question": "Buyurtma holatini qanday kuzataman?",

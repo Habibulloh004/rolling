@@ -18,7 +18,7 @@ const Banner = ({ path, banners }) => {
             paginate={"false"}
             plugins={[
               emblaCarouselAutoplay({
-                delay: 3000,
+                delay: 10000,
               }),
             ]}
             opts={{

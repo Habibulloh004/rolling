@@ -36,6 +36,7 @@ export default withNextIntl({
       },
     ],
   },
+  
 });
 
 // import path from "path";

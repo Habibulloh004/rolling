@@ -73,7 +73,7 @@
     "title": "Profile",
     "userName": "Username",
     "phone": "Phone number",
-    "offer": "We offer a unique bonus program that allows you to save more with every order: <br/> 1. Bronze (10%): earned from the 1st to the 4th order. <br/> 2. Silver (20%): earned from the 5th to the 9th order. <br/> 3. Gold (30%): earned starting from the 10th order.",
+    "offer": "We offer a unique bonus program that allows you to save more with every order: <br/> 1. Bronze (3%): earned from the 1st to the 4th order. <br/> 2. Silver (5%): earned from the 5th to the 9th order. <br/> 3. Gold (10%): earned starting from the 10th order.",
     "how_it_work": "How does it work? <br/> • After each order, you earn bonuses depending on your level: Bronze, Silver, or Gold. <br /> • You can use up to 100% of the accumulated bonuses to pay for any dish from our menu.",
     "my_cards": "My cards",
     "my_address": "My addresses",
@@ -91,9 +91,9 @@
     },
     "Bonus": {
       "title": "We offer a unique bonus program that allows you to save more with every order:",
-      "bonus_1": "1. Bronze (10%): awarded for orders from the 1st to the 4th.",
-      "bonus_2": "2. Silver (20%): awarded for orders from the 5th to the 9th.",
-      "bonus_3": "3. Gold (30%): awarded starting from the 10th order.",
+      "bonus_1": "1. Bronze (3%): awarded for orders from the 1st to the 4th.",
+      "bonus_2": "2. Silver (5%): awarded for orders from the 5th to the 9th.",
+      "bonus_3": "3. Gold (10%): awarded starting from the 10th order.",
       "how_it_work": "How does it work?",
       "work_1": "• After each order, bonuses are credited based on your level: Bronze, Silver, or Gold.",
       "work_2": "• You can use up to 100% of the accumulated bonuses to pay for any dish from our menu."
@@ -163,7 +163,7 @@
     "vacansies": "Vacancies"
   },
   "HomePage": {
-    "intro": "Do you want to participate in our bonus program? Register now and start earning up to 30% bonuses on every order!",
+    "intro": "Do you want to participate in our bonus program? Register now and start earning up to 10% bonuses on every order!",
     "title": "Hello world!",
     "about": "Go to the about page"
   },
@@ -204,7 +204,7 @@
   "Register": {
     "title": "Register and enjoy Rolling Sushi even more!",
     "registeration": "Registration",
-    "description": "Only registered users participate in our bonus system and receive up to 30% bonuses from each order. You will be able to use them 100% when paying for any dish! In addition, you will have access to exclusive discounts and promotions. Placing orders will become faster and more convenient. Do not miss the opportunity to become part of our loyalty program!",
+    "description": "Only registered users participate in our bonus system and receive up to 10% bonuses from each order. You will be able to use them 100% when paying for any dish! In addition, you will have access to exclusive discounts and promotions. Placing orders will become faster and more convenient. Do not miss the opportunity to become part of our loyalty program!",
     "Form": {
       "first_name": "First Name",
       "last_name": "Last Name",
@@ -332,7 +332,7 @@
       "you_not_pay": "You did not make the payment!!!",
       "you_not_check": "You did not confirm the payment!!!",
       "auth_title": "Sign up and enjoy even more pleasure from Rolling Sushi!",
-      "auth_desc1": "Only registered users participate in our bonus system and receive up to 30% bonuses on every order. You can use them 100% when paying for any dish!",
+      "auth_desc1": "Only registered users participate in our bonus system and receive up to 10% bonuses on every order. You can use them 100% when paying for any dish!",
       "auth_desc2": "Additionally, you will gain access to exclusive discounts and promotions. Ordering will become faster and more convenient. Don't miss the opportunity to become part of our loyalty program!"
     },
     "Total": {
@@ -344,7 +344,7 @@
       "bonus": "Bonus",
       "bonus_pay": "Apply My Bonuses",
       "submit": "Confirm Order",
-      "note": "The restaurant is currently closed. We accept orders daily from 10:00. Thank you for choosing Rolling Sushi!",
+      "note": "🔒 The restaurant is currently closed, but we’ll be open soon!<br/>📅 Opening hours: daily 10:00 AM – 11:00 PM<br/>⏳ You can place an order in advance – it will be processed as soon as we open!",
       "have_bonus": "Available bonuses"
     },
     "pay_success": "Payment Method",
@@ -403,7 +403,7 @@
       "q1_question": "What payment methods do you accept?",
       "q1_answer": "We accept:\n• Online payment via payment systems (Click, Payme, Uzum).\n• Cash or card payment upon delivery.\n• Using bonuses in combination with cash for payment.",
       "q2_question": "How does the bonus system work?",
-      "q2_answer": "• Bonuses are awarded for each order based on the customer’s level:\n• Bronze (10%) from the 1st to the 4th order.\n• Silver (20%) from the 5th to the 9th order.\n• Gold (30%) from the 10th order onwards.\n• Accumulated bonuses can be used for full or partial payment of dishes.",
+      "q2_answer": "• Bonuses are awarded for each order based on the customer’s level:\n• Bronze (3%) from the 1st to the 4th order.\n• Silver (5%) from the 5th to the 9th order.\n• Gold (10%) from the 10th order onwards.\n• Accumulated bonuses can be used for full or partial payment of dishes.",
       "q3_question": "How long will the delivery take?",
       "q3_answer": "The average delivery time is 40 minutes. The time may vary depending on your location and the workload.",
       "q4_question": "How can I track the status of my order?",

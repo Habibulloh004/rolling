@@ -197,6 +197,10 @@ body {
   animation-delay: 600ms;
 }
 
+button {
+  transform: translateZ(0); /* Safari va Firefox uchun yordam beradi */
+}
+
 @keyframes keyframes-blink {
   0% {
     opacity: 0.3;

@@ -507,7 +507,6 @@ const Payment = ({ locale, place, auth }) => {
       if (!intervalRef.current) {
         intervalRef.current = setInterval(() => {
           attempts += 1;
-          console.log(attempts + " attempts");
           setAttempts(attempts);
           if (attempts >= 5) {
             toast.error(paymentText("pay_error"));
@@ -642,7 +641,6 @@ const Payment = ({ locale, place, auth }) => {
   }, []);
 
   useEffect(() => {
-    console.log(paymentData);
 
     if (
       paymentData &&
@@ -689,12 +687,12 @@ const Payment = ({ locale, place, auth }) => {
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {pay.map((item, idx) => (
               <div key={item.id} className="relative w-full h-full">
-                <button
+                <Button
                   aria-label={`payment ${idx}`}
                   disabled={paymentData && paymentData?.payment_id}
                   onClick={() => handleSelectPayment(item)}
                   key={item.id}
-                  className={`relative w-[118px] min-h-[70px] rounded-[7px] border-[#004032] border-b-2 p-3 flex flex-col justify-start gap-1
+                  className={`relative w-[118px] h-full bg-transparent shadow-none rounded-[7px] border-[#004032] border-b-2 p-3 flex flex-col justify-start gap-1
                   ${
                     !auth?.client_id && item?.type == "cash" && !spot
                       ? "opacity-[0.5]"
@@ -717,7 +715,7 @@ const Payment = ({ locale, place, auth }) => {
                   <p className="text-sm text-[#00000099] group-focus:text-[#004032]">
                     {item.text}
                   </p>
-                </button>
+                </Button>
                 {!auth?.client_id && item?.type == "cash" && !spot && (
                   <div
                     onClick={(e) => {

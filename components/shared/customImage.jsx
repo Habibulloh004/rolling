@@ -4,7 +4,13 @@ import Image from "next/legacy/image";
 import React, { useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 
-const CustomImage = ({ src, alt, className }) => {
+const CustomImage = ({
+  src,
+  alt,
+  className,
+  loading: loadingImg,
+  property,
+}) => {
   const [loading, setLoading] = useState(true);
 
   return (
@@ -14,6 +20,7 @@ const CustomImage = ({ src, alt, className }) => {
         src={src}
         alt={alt}
         layout="fill"
+        loading={loadingImg ? loadingImg : "lazy"}
         quality={100}
         className={cn(
           className,
@@ -23,6 +30,7 @@ const CustomImage = ({ src, alt, className }) => {
             : "scale-100 blur-0 grayscale-0"
         )}
         onLoadingComplete={() => setLoading(false)}
+        property={property}
       />
     </div>
   );

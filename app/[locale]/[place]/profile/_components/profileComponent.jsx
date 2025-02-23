@@ -79,7 +79,7 @@ export default function ProfileComponent({ client }) {
                   }
                 />
                 <button
-                aria-label={`prof cookie`}
+                  aria-label={`prof cookie`}
                   onClick={async () => {
                     if (
                       `${client?.firstname && client?.firstname} ${
@@ -152,7 +152,7 @@ export default function ProfileComponent({ client }) {
             ))}
             <Link href={`${getUrl(pathName)}/login`} className="w-full">
               <Button
-              aria-label={`prof client`}
+                aria-label={`prof client`}
                 onClick={() => {
                   Cookies.remove("client");
                   setClient(null);
@@ -168,11 +168,13 @@ export default function ProfileComponent({ client }) {
         <div className="bg-primary rounded-xl w-full min-w-[250px] max-w-[331px] h-[180px] sm:h-[220px] flex flex-col justify-between items-center relative py-[5px] mt-5">
           <div className="flex flex-col gap-[2px] lg:gap-1 items-center justify-center pt-5">
             <p className="font-bold text-white text-xl sm:text-2xl lg:text-[32px] ">
-              {client.client_groups_discount == "30"
+              {client.client_groups_discount == "10"
                 ? "GOLD"
-                : client.client_groups_discount == "20"
+                : client.client_groups_discount == "5"
                 ? "SILVER"
-                : "BRONZE"}
+                : client.client_groups_discount == "3"
+                ? "BRONZE"
+                : "GOLD"}
             </p>
             <p className="font-bold text-white text-center lg:text-xl">
               {client.client_groups_discount}%
@@ -186,11 +188,13 @@ export default function ProfileComponent({ client }) {
           </div>
           <Image
             src={`${
-              client.client_groups_discount == "30"
+              client.client_groups_discount == "10"
                 ? "/assets/Gold.png"
-                : client.client_groups_discount == "20"
+                : client.client_groups_discount == "5"
                 ? "/assets/Silver.png"
-                : "/assets/Bronze.png"
+                : client.client_groups_discount == "3"
+                ? "/assets/Bronze.png"
+                : "/assets/Gold.png"
             }`}
             alt="gold"
             width={350}
@@ -215,7 +219,7 @@ export default function ProfileComponent({ client }) {
           ))}
           <Link href={`${getUrl(pathName)}/login`} className="w-full">
             <Button
-            aria-label={`prof logout`}
+              aria-label={`prof logout`}
               onClick={() => {
                 Cookies.remove("client");
                 setClient(null);

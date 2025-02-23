@@ -21,11 +21,12 @@ import { useEffect, useState } from "react";
 export default function MyAddressComponent() {
   const allT = useTranslations("All");
   const cartT = useTranslations("Cart");
+  const ProfileT = useTranslations("Profile.Address");
   const [addressData, setAddressData] = useState([]);
   const handleDeleteAddress = (id) => {
     let updatedAddresses = addressData.filter((address) => address.id !== id);
     localStorage.setItem("myAddresses", JSON.stringify(updatedAddresses));
-    toast.success("Address deleted successfully");
+    toast.success(ProfileT("delete_address"));
     setAddressData(updatedAddresses);
   };
 
@@ -65,7 +66,7 @@ export default function MyAddressComponent() {
                   className={"grid grid-cols-1 gap-y-4  w-full gap-x-2"}
                 >
                   <Button
-                  aria-label={`address delete`}
+                    aria-label={`address delete`}
                     onClick={() => handleDeleteAddress(item?.id)}
                     className={"hover:bg-primary"}
                   >
@@ -114,7 +115,7 @@ export default function MyAddressComponent() {
                         }
                       >
                         <Button
-                        aria-label={`address delete2`}
+                          aria-label={`address delete2`}
                           onClick={() => handleDeleteAddress(item?.id)}
                           className={"hover:bg-primary"}
                         >
@@ -129,7 +130,9 @@ export default function MyAddressComponent() {
           </Carousel>
         </>
       ) : (
-          <h1 className="text-thin font-medium text-start w-full">{cartT("empty_address")}</h1>
+        <h1 className="text-thin font-medium text-start w-full">
+          {cartT("empty_address")}
+        </h1>
       )}
     </div>
   );

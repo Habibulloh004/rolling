@@ -47,7 +47,9 @@ const Banner = ({ path, banners }) => {
                           }
                           alt={`banner-img`}
                           fill
+                          loading="eager"
                           className="w-full mx-auto aspect-video mb-5"
+                          property={"true"}
                         />
                       </div>
                     </Link>

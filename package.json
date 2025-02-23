@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "postinstall": "npm rebuild sharp"
+    "postinstall": "npm rebuild sharp",
+    "prod": "npm run build && npm start"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",

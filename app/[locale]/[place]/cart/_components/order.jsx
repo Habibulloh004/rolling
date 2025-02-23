@@ -32,64 +32,41 @@ import {
 } from "@/components/ui/alert-dialog";
 
 const DiscountBadge = ({ auth }) => {
-  const discountColor = {
-    3: "#ED7403",
-    5: "#E2E2E2",
-    10: "#F3D67E",
-  };
-  const discountLabel = {
-    3: "BRONZA",
-    5: "SILVER",
-    10: "GOLD",
-  };
-  const discountImage = {
-    3: "/assets/Bronze.png",
-    5: "/assets/Silver.png",
-    10: "/assets/Gold.png",
-  };
-
-  let discount;
-
-  if (auth?.client_groups_discount >= 10) {
-    discount = 10; // 10 yoki undan katta bo‘lsa GOLD
-  } else if (auth?.client_groups_discount === 5) {
-    discount = 5; // SILVER
-  } else if (auth?.client_groups_discount === 3) {
-    discount = 3; // BRONZA
-  }
-
   return (
     <div className="bg-primary rounded-xl w-[150px] h-[100px] flex flex-col justify-between items-center relative py-[5px]">
-      {discount && (
-        <div>
-          <p className="font-bold" style={{ color: discountColor[discount] }}>
-            {discountLabel[discount]}
-          </p>
-          <p
-            className="font-bold text-center"
-            style={{ color: discountColor[discount] }}
-          >
-            {auth?.client_groups_discount}%
-          </p>
-        </div>
-      )}
-      {discount && (
-        <Image
-          src={discountImage[discount]}
-          alt={discountLabel[discount]}
-          width={150}
-          height={100}
-          className="absolute top-0"
-        />
-      )}
-      {discount && (
-        <p
-          className="font-bold text-center text-[6px]"
-          style={{ color: discountColor[discount] }}
-        >
-          ROLLINGSUSHI
+      <div>
+        <p className="font-bold text-white">
+          {auth?.client_groups_discount == "10"
+            ? "GOLD"
+            : auth?.client_groups_discount == "5"
+            ? "SILVER"
+            : auth?.client_groups_discount == "3"
+            ? "BRONZE"
+            : "GOLD"}
         </p>
-      )}
+        <p className="font-bold text-center text-white">
+          {auth?.client_groups_discount}%
+        </p>
+      </div>
+      <Image
+        src={`${
+          auth?.client_groups_discount == "10"
+            ? "/assets/Gold.png"
+            : auth?.client_groups_discount == "5"
+            ? "/assets/Silver.png"
+            : auth?.client_groups_discount == "3"
+            ? "/assets/Bronze.png"
+            : "/assets/Gold.png"
+        }`}
+        loading="eager"
+        alt="gold"
+        width={150}
+        height={100}
+        className="absolute top-0"
+      />
+      <p className="font-bold text-center text-[6px] text-white">
+        ROLLINGSUSHI
+      </p>
     </div>
   );
 };

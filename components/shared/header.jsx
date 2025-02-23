@@ -226,6 +226,7 @@ export default function Header({
             <Image
               src={`/assets/navLogo.webp`}
               alt="Rolling Sushi"
+              loading="eager"
               width={223}
               height={74}
               className=""
@@ -246,6 +247,7 @@ export default function Header({
                     alt={`${item.title}`}
                     width={item.id == 3 ? 25 : 29}
                     height={30}
+                    loading="eager"
                     className=""
                   />
                   <p
@@ -270,6 +272,7 @@ export default function Header({
               <Image
                 src={`/assets/accountIcon.webp`}
                 alt={`Account icon`}
+                loading="eager"
                 width={33}
                 height={33}
                 className=""
@@ -318,6 +321,7 @@ export default function Header({
               alt="Rolling Sushi"
               width={223}
               height={74}
+              loading="eager"
               className=""
             />
           </Link>
@@ -335,6 +339,7 @@ export default function Header({
                   width={25}
                   height={25}
                   className=""
+                  loading="eager"
                 />
               </span>
             )}
@@ -354,6 +359,7 @@ export default function Header({
                 width={146}
                 height={36}
                 className=""
+                loading="eager"
               />
             </Link>
           </div>
@@ -375,6 +381,7 @@ export default function Header({
                       width={item.id == 3 ? 25 : 29}
                       height={30}
                       className="lg:w-7 lg:h-7 w-[30px]"
+                      loading="eager"
                     />
                     <p
                       className={`${
@@ -404,6 +411,7 @@ export default function Header({
                   width={30}
                   height={30}
                   className=""
+                  loading="eager"
                 />
                 <p
                   className={`${
@@ -432,6 +440,7 @@ export default function Header({
                   width={25}
                   height={25}
                   className=""
+                  loading="eager"
                 />
               </span>
             )}

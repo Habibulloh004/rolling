@@ -71,14 +71,12 @@ const Card = ({
             alt={`${localizedName}`}
           />
         </div>
-        <div>
-          <h1 className="textSmall1 font-bold">
+        <div className="space-y-1">
+          <h1 className="textSmall2 font-bold">
             {truncateText(localizedName, 40)}{" "}
-            <span className="font-[400]"></span>
           </h1>
-          <h1 className="text-[12px] font-[400">
+          <h1 className="textSmall1 font-[400">
             {truncateText(localizedDesc, 50)}{" "}
-            <span className="font-[400]"></span>
           </h1>
           <p className="textSmall2 font-bold">
             {price ? formatNumber(price) : 0} сум

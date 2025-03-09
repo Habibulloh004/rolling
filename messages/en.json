@@ -1,5 +1,6 @@
 {
   "All": {
+    "goto": "Go to the page",
     "seeCategory": "View all dish categories",
     "seeNew": "View New Arrivals and Popular Dishes",
     "seeReview": "Read Reviews from Our Customers",
@@ -345,7 +346,7 @@
       "bonus": "Bonus",
       "bonus_pay": "Apply My Bonuses",
       "submit": "Confirm Order",
-      "note": "🔒 The restaurant is currently closed, but we’ll be open soon!<br/>📅 Opening hours: daily 10:00 AM – 11:00 PM<br/>⏳ You can place an order in advance – it will be processed as soon as we open!",
+      "note": "🔒 The restaurant is currently closed, but we’ll be open soon!<br/>📅 Opening hours: daily 10:00 AM – 11:00 PM",
       "have_bonus": "Available bonuses"
     },
     "pay_success": "Payment Method",

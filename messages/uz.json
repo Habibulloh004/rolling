@@ -1,5 +1,6 @@
 {
   "All": {
+    "goto": "Sahifaga o'tish",
     "seeCategory": "Barcha taom toifalarini ko'rish",
     "seeNew": "Yangi va Ommabop Taomlarni Ko‘rish",
     "seeReview": "Mijozlarimiz Fikrlarini O‘qish",
@@ -345,7 +346,7 @@
       "bonus": "Bonus",
       "bonus_pay": "Mening bonuslarimni qo'llash",
       "submit": "Buyurtmani tasdiqlash",
-      "note": "🔒 Restoran hozir yopiq, lekin biz tez orada ochilamiz!<br/>📅 Ish vaqti: har kuni 10:00 – 23:00<br/>⏳ Oldindan buyurtma berishingiz mumkin – u ochilgan zahoti qabul qilinadi!",
+      "note": "🔒 Restoran hozir yopiq, lekin biz tez orada ochilamiz!<br/>📅 Ish vaqti: har kuni 10:00 – 23:00",
       "have_bonus": "Mavjud bonuslar"
     },
     "pay_success": "To'lov turi",

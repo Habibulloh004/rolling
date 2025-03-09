@@ -4,6 +4,7 @@ import CustomImage from "@/components/shared/customImage";
 import { cn, formatNumber, posterUrl, truncateText } from "@/lib/utils";
 import { useOrderStore, useProductStore, useStore } from "@/store";
 import { Heart, Minus, Plus } from "lucide-react";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -17,6 +18,7 @@ const Card = ({
   ...props
 }) => {
   const pathname = usePathname();
+  const all = useTranslations("All");
   const [isFavorites, setIsFavorites] = useState([]);
   const { setFavorites } = useStore();
   const { photo, price } = props;
@@ -107,12 +109,9 @@ const Card = ({
             aria-label={`shcard plus`}
             disabled={paymentData && paymentData.payment_id}
             onClick={handleAddProduct}
-            className="rounded-md p-2 bg-primary active:bg-primary-modal"
+            className="rounded-md px-3 py-[10px] bg-primary active:bg-primary-modal text-white text-xs"
           >
-            <Plus
-              className="text-white max-md:w-4 max-md:h-4 w-5 h-5"
-              size={18}
-            />
+            {all("add")}
           </button>
         </div>
       ) : (

@@ -11,6 +11,7 @@ import NextTopLoader from "nextjs-toploader";
 import { Toaster } from "sonner";
 import Script from "next/script";
 import LoaderWrapper from "@/components/shared/loader-wrapper";
+import GoogleTagManager from "@/app/googleAnalytics";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -115,14 +116,6 @@ export default async function Layout({ children, params }) {
           <Footer params={param} />
         </NextIntlClientProvider>
         <noscript>
-          <iframe
-            src="https://www.googletagmanager.com/ns.html?id=GTM-M3LDW3FG"
-            height="0"
-            width="0"
-            style={{ display: "none", visibility: "hidden" }}
-          ></iframe>
-        </noscript>
-        <noscript>
           <div>
             <img
               src="https://mc.yandex.ru/watch/99650561"
@@ -132,11 +125,16 @@ export default async function Layout({ children, params }) {
           </div>
         </noscript>
         {/* Google Analytics Script */}
-        <Script
-          strategy="afterInteractive"
-          src="https://www.googletagmanager.com/gtag/js?id=G-PN4ZZXXGHP"
-        />
-        <Script id="gtag-init" strategy="afterInteractive">
+        <noscript>
+          <iframe
+            src="https://www.googletagmanager.com/ns.html?id=GTM-M3LDW3FG"
+            height="0"
+            width="0"
+            style={{ display: "none", visibility: "hidden" }}
+          ></iframe>
+        </noscript>
+
+        {/* <Script id="gtag-init" strategy="afterInteractive">
           {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
@@ -146,7 +144,7 @@ export default async function Layout({ children, params }) {
               page_path: window.location.pathname,
             });
           `}
-        </Script>
+        </Script> */}
 
         {/* Google Tag Manager Script */}
         {/* <Script id="gtm-init" strategy="afterInteractive">
@@ -184,7 +182,7 @@ export default async function Layout({ children, params }) {
   `}
         </Script> */}
 
-        {/* <GoogleAnalytics /> */}
+        <GoogleTagManager />
         <Script
           type="application/ld+json"
           dangerouslySetInnerHTML={{

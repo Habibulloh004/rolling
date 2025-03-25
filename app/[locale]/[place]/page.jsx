@@ -106,48 +106,50 @@ export default async function HomePage({ params, searchParams }) {
       {path.place != "branch" && <Banner path={path} banners={banners} />}
       <Categories categories={categories} locale={locale} path={path} />
       <Popular products={products} locale={locale} path={path} />
-      <div className="w-full flex flex-col items-start md:px-12 pt-6 gap-5">
-        <div className="max-md:w-11/12 mx-auto flex items-center justify-between w-full">
-          <Link
-            className="text-xl md:text-2xl text-muted font-semibold"
-            href={`/${path.locale}/${path.place}/reviews`}
+      {reviewsData?.result?.reviews?.length > 0 && (
+        <div className="w-full flex flex-col items-start md:px-12 pt-6 gap-5">
+          <div className="max-md:w-11/12 mx-auto flex items-center justify-between w-full">
+            <Link
+              className="text-xl md:text-2xl text-muted font-semibold"
+              href={`/${path.locale}/${path.place}/reviews`}
+            >
+              {allT("reviews")}
+            </Link>
+            <Link
+              className="flex justify-end items-center gap-1 text-primary textSmall3 font-medium"
+              href={`/${path.locale}/${path.place}/reviews`}
+            >
+              {allT("more")}
+              <ChevronRight size={18} />
+            </Link>
+          </div>
+          <Carousel
+            className="relative w-full text-foreground mt-5 "
+            paginate={"false"}
+            opts={{
+              align: "center",
+            }}
           >
-            {allT("reviews")}
-          </Link>
-          <Link
-            className="flex justify-end items-center gap-1 text-primary textSmall3 font-medium"
-            href={`/${path.locale}/${path.place}/reviews`}
-          >
-            {allT("more")}
-            <ChevronRight size={18} />
-          </Link>
+            <CarouselContent className="relative">
+              {reviewsData?.result?.reviews.map((item, i) => {
+                if (item.rating < 4) return;
+                return (
+                  <CarouselItem
+                    key={i}
+                    className={`basis-[80%] sm:basis-[45%] lg:basis-[45%] xl:basis-[30%] p-0 mx-2 ${
+                      i == 0 && "max-sm:ml-8 max-md:ml-16 ml-8"
+                    }`}
+                  >
+                    <a href="https://g.co/kgs/YJy7TYy" target="_blank">
+                      <Cards data={item} />
+                    </a>
+                  </CarouselItem>
+                );
+              })}
+            </CarouselContent>
+          </Carousel>
         </div>
-        <Carousel
-          className="relative w-full text-foreground mt-5 "
-          paginate={"false"}
-          opts={{
-            align: "center",
-          }}
-        >
-          <CarouselContent className="relative">
-            {reviewsData.result.reviews.map((item, i) => {
-              if (item.rating < 4) return;
-              return (
-                <CarouselItem
-                  key={i}
-                  className={`basis-[80%] sm:basis-[45%] lg:basis-[45%] xl:basis-[30%] p-0 mx-2 ${
-                    i == 0 && "max-sm:ml-8 max-md:ml-16 ml-8"
-                  }`}
-                >
-                  <a href="https://g.co/kgs/YJy7TYy" target="_blank">
-                    <Cards data={item} />
-                  </a>
-                </CarouselItem>
-              );
-            })}
-          </CarouselContent>
-        </Carousel>
-      </div>
+      )}
     </Container>
   );
 }

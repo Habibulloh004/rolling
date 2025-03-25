@@ -22,6 +22,7 @@ const Reviews = async ({ params }) => {
     params,
     getData("/poster/google", 86400),
   ]);
+  
   return (
     <Container
       className={`max-md:w-full w-11/12 flex-col items-start py-10 min-h-[400px] justify-center`}
@@ -45,7 +46,7 @@ const Reviews = async ({ params }) => {
         }}
       >
         <CarouselContent className="relative">
-          {reviewData.result.reviews?.map((item, i) => {
+          {reviewData?.result?.reviews?.map((item, i) => {
             if (item.rating < 4) return;
             return (
               <CarouselItem

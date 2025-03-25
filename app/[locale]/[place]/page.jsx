@@ -42,7 +42,7 @@ export default async function HomePage({ params, searchParams }) {
   const [
     allT,
     bannersData,
-    reviewsData,
+    // reviewsData,
     categoriesData,
     productsData,
     searchParamsData,
@@ -51,7 +51,7 @@ export default async function HomePage({ params, searchParams }) {
   ] = await Promise.all([
     getTranslations("All"),
     getData("/banner/get_banners", 86400),
-    getData("/poster/google", 86400),
+    // getData("/poster/google", 86400),
     ApiService.getPosterData("menu.getCategories", "", 86400),
     ApiService.getPosterData("menu.getProducts", "", 7200),
     searchParams,
@@ -59,6 +59,128 @@ export default async function HomePage({ params, searchParams }) {
     params,
   ]);
 
+  const reviewsData = [
+    {
+      id: 1,
+      author_name: "B B",
+      rating: 5,
+      profile_photo_url: "https://avatars.mds.yandex.net/get-yapic/43978/0g-3/orig",
+      text: `Пробовали очень вкусно`,
+      time: "30.11.2024",
+    },
+    {
+      id: 2,
+      author_name: "Мадина Бабаниязова",
+      rating: 5,
+      profile_photo_url: "https://avatars.mds.yandex.net/get-yapic/69015/0a-9/orig",
+      text: `Роллы вкусные но техника приготовления не очень понравилось роллы разваливаются !`,
+      time: "28.02.2025",
+    },
+    {
+      id: 3,
+      author_name: "Akrom Yuldashev",
+      rating: 5,
+      profile_photo_url: "https://icons.veryicon.com/png/o/internet--web/prejudice/user-128.png",
+      text: `Уютно и вкусно`,
+      time: "30.11.2024",
+    },
+    {
+      id: 4,
+      author_name: "Roxila Kamolova",
+      rating: 5,
+      profile_photo_url: "https://icons.veryicon.com/png/o/internet--web/prejudice/user-128.png",
+      text: `Очень вкусные и разные роллы 👍`,
+      time: "30.11.2024",
+    },
+    {
+      id: 5,
+      author_name: "Отабек С.",
+      rating: 5,
+      profile_photo_url: "https://avatars.mds.yandex.net/get-yapic/59871/0y-2/orig",
+      text: `Атмосферный ГАП йук, суши и роллов просто нет, свежий хаммаси и кузов на заказ, прозрачный ГАП йук но N_1 🔥 🔥 🔥`,
+      time: "30.11.2024",
+    },
+    {
+      id: 6,
+      author_name: "Firdavs Dadakhonov",
+      rating: 5,
+      profile_photo_url: "https://icons.veryicon.com/png/o/internet--web/prejudice/user-128.png",
+      text: `Суперзвезда`,
+      time: "30.11.2024",
+    },
+    {
+      id: 7,
+      author_name: "Makhammad Ali",
+      rating: 5,
+      profile_photo_url: "https://icons.veryicon.com/png/o/internet--web/prejudice/user-128.png",
+      text: `Отличное место покушать ролы,супы и салаты. Хороший сервис и очень вкусно.`,
+      time: "07.11.2024",
+    },
+    {
+      id: 8,
+      author_name: "Мухаммад Бойматов",
+      rating: 5,
+      profile_photo_url: "https://icons.veryicon.com/png/o/internet--web/prejudice/user-128.png",
+      text: `Роллинг суши бомба честно говоря`,
+      time: "30.11.2024",
+    },
+    {
+      id: 9,
+      author_name: "Мухаммадтурсун Назиров",
+      rating: 5,
+      profile_photo_url: "https://icons.veryicon.com/png/o/internet--web/prejudice/user-128.png",
+      text: `Очень вкусно`,
+      time: "12.03.2025",
+    },
+    {
+      id: 10,
+      author_name: "Soliha Maxsudaliyeva",
+      rating: 5,
+      profile_photo_url: "https://icons.veryicon.com/png/o/internet--web/prejudice/user-128.png",
+      text: `Классные 🍣. Быстрый сервис`,
+      time: "25.07.2024",
+    },
+    {
+      id: 11,
+      author_name: "Bekhruz Ibragimov",
+      rating: 5,
+      profile_photo_url: "https://icons.veryicon.com/png/o/internet--web/prejudice/user-128.png",
+      text: `Хорошие и качественные суши, моя семья довольна`,
+      time: "27.08.2024",
+    },
+    {
+      id: 12,
+      author_name: "Потомок повелителей",
+      rating: 5,
+      profile_photo_url: "https://icons.veryicon.com/png/o/internet--web/prejudice/user-128.png",
+      text: `Вкусно`,
+      time: "03.01.2025",
+    },
+    {
+      id: 13,
+      author_name: "Feruz Zayniyev",
+      rating: 5,
+      profile_photo_url: "https://icons.veryicon.com/png/o/internet--web/prejudice/user-128.png",
+      text: `Классно`,
+      time: "21.08.2024",
+    },
+    {
+      id: 14,
+      author_name: "Аза Юнусов",
+      rating: 5,
+      profile_photo_url: "https://icons.veryicon.com/png/o/internet--web/prejudice/user-128.png",
+      text: `вкусно`,
+      time: "23.08.2024",
+    },
+    {
+      id: 15,
+      author_name: "Tamila Dj",
+      rating: 5,
+      profile_photo_url: "https://icons.veryicon.com/png/o/internet--web/prejudice/user-128.png",
+      text: `Это было оооочень” вкусно`,
+      time: "19.01.2025",
+    },
+  ];
   let spotData;
   if (path.place === "branch") {
     spotData = await ApiService.getPosterData(
@@ -106,7 +228,7 @@ export default async function HomePage({ params, searchParams }) {
       {path.place != "branch" && <Banner path={path} banners={banners} />}
       <Categories categories={categories} locale={locale} path={path} />
       <Popular products={products} locale={locale} path={path} />
-      {reviewsData?.result?.reviews?.length > 0 && (
+      {reviewsData?.length > 0 && (
         <div className="w-full flex flex-col items-start md:px-12 pt-6 gap-5">
           <div className="max-md:w-11/12 mx-auto flex items-center justify-between w-full">
             <Link
@@ -131,7 +253,7 @@ export default async function HomePage({ params, searchParams }) {
             }}
           >
             <CarouselContent className="relative">
-              {reviewsData?.result?.reviews.map((item, i) => {
+              {reviewsData?.map((item, i) => {
                 if (item.rating < 4) return;
                 return (
                   <CarouselItem

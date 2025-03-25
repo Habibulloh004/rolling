@@ -54,7 +54,8 @@ const Cards = ({ data }) => {
               suppressHydrationWarning
               className="mt-2 block text-sm text-gray-500"
             >
-              {formatTimestampToDateWithDots(date)}
+              {/* {formatTimestampToDateWithDots(date)} */}
+              {date}
             </time>
           </div>
         </div>

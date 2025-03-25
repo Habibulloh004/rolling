@@ -216,6 +216,7 @@ const Order = ({ spotDataFilial, auth, searchParamsData, locale, place }) => {
       } else if (!auth?.client_id) {
         commentSpot = `${commentSpot}\nНомер телефона : ${phone}`;
       }
+      commentSpot = `${commentSpot}\nТип заказа: Через веб-сайт`;
 
       let deliveryData = {
         address_comment,

@@ -233,6 +233,7 @@ const Order = ({
       } else if (!auth?.client_id) {
         commentSpot = `${commentSpot}\nНомер телефона : ${phone}`;
       }
+      commentSpot = `${commentSpot}\nТип заказа: Через веб-сайт`;
 
       let filterPromocode = null;
       if (promocode) {

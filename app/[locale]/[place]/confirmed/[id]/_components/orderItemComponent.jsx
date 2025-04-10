@@ -260,16 +260,30 @@ export default function OrderItemComponent({
                   {total("products_sum")}
                 </p>
                 <p className="font-normal textNormal2 text-[#2E2E2E]">
-                  {formatNumber(orderData?.all_price / 100)} {all("sum")}
+                  {formatNumber(
+                    orderData?.all_price / 100 -
+                      (orderData?.type?.includes("delivery") ? 10000 : 0)
+                  )}{" "}
+                  {all("sum")}
                 </p>
               </div>
               {orderData?.payed_bonus != 0 && orderData?.payed_bonus && (
                 <div className="w-full flex justify-between">
                   <p className="font-medium textNormal2 leading-5 text-[#2E2E2E]">
-                    {total("bonus")} {all("sum")}
+                    {total("bonus")}
                   </p>
                   <p className="font-normal textNormal2 text-[#2E2E2E]">
                     {formatNumber(orderData?.payed_bonus / 100)} {all("sum")}
+                  </p>
+                </div>
+              )}
+              {orderData?.type?.includes("delivery") && (
+                <div className="w-full flex justify-between">
+                  <p className="font-medium textNormal2 leading-5 text-[#2E2E2E]">
+                    {total("delivery")}
+                  </p>
+                  <p className="font-normal textNormal2 text-[#2E2E2E]">
+                    {formatNumber(10000)} {all("sum")}
                   </p>
                 </div>
               )}

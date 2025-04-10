@@ -110,20 +110,28 @@
       "card_y": "Yil"
     },
     "Address": {
-      "title": "Manzillarim",
-      "house": "Uy, pod'yezd, xonadon",
-      "house_pls": "Uy 12, pod'yezd 3, xonadon 34",
+      "title": "Mening manzillarim",
+      "house": "Uy, podez, xonadon",
+      "house_pls": "12-uy, 3-podez, 34-xonadon",
       "address": "Manzil",
-      "address_error": "Manzilni kiritmadingiz",
+      "address_error": "Siz manzilni kiritmadingiz.",
+      "address_saved": "Manzil muvaffaqiyatli qo‘shildi.",
       "pls": "Yashnobod tumani, Botkin 1a",
-      "comment": "Manzilga izohlar",
-      "comment_pls": "1-qavat",
-      "comment_error": "Izohlar mavjud emas.",
-      "location_error": "Lokatsiyani belgilashingiz kerak",
-      "address_saved": "Manzil muvaffaqiyatli kiritildi.",
-      "geolocation": "Manzilingizni aniqlash uchun iltimos joylashuvga aniqlashga ruxsat bering!",
+      "comment": "Manzil bo‘yicha izoh",
+      "comment_pls": "1-podez",
+      "comment_error": "Siz izoh qo‘shmadingiz.",
+      "location_error": "Manzilni ko‘rsatishingiz kerak.",
+      "geolocation": "Manzilingizni aniqlash uchun joylashuvga ruxsat bering!",
       "select_map": "Xaritadan tanlash",
-      "delete_address": "Manzil muvaffaqiyatli o'chirildi!"
+      "delete_address": "Manzil muvaffaqiyatli o‘chirildi!",
+      "building_number": "Uy raqami",
+      "building_number_pls": "12",
+      "entrance_number": "Podez raqami",
+      "entrance_number_pls": "4",
+      "floor_number": "Qavat raqami",
+      "floor_number_pls": "7",
+      "apartment_number": "Xonadon raqami",
+      "apartment_number_pls": "67"
     }
   },
   "Form": {
@@ -367,18 +375,18 @@
       "in-deliver": "Yo'lda",
       "finished": "Yetkazib berildi"
     },
-    "Promocode":{
-      "title":"Menda promo-kod bor",
-      "input_pls":"Promo-kodni kiriting",
-      "error":"Promo-kod mavjud emas",
-      "already_use":"Promo-kod allaqachon qo'llangan",
-      "success_del":"Promo-kod o'chirildi",
-      "success":"Promo-kod muvaffaqiyatli qo'llanildi",
-      "titleDialog":"Promo-kod",
-      "submit_btn":"Qo'llash",
-      "error_min_sum":"minimal summa bo'lishi kerak",
-      "active_promo":"Promo-kod qo'llanilgan",
-      "cancel":"Bekor qilish"
+    "Promocode": {
+      "title": "Menda promo-kod bor",
+      "input_pls": "Promo-kodni kiriting",
+      "error": "Promo-kod mavjud emas",
+      "already_use": "Promo-kod allaqachon qo'llangan",
+      "success_del": "Promo-kod o'chirildi",
+      "success": "Promo-kod muvaffaqiyatli qo'llanildi",
+      "titleDialog": "Promo-kod",
+      "submit_btn": "Qo'llash",
+      "error_min_sum": "minimal summa bo'lishi kerak",
+      "active_promo": "Promo-kod qo'llanilgan",
+      "cancel": "Bekor qilish"
     },
     "Item": {
       "title": "Buyurtma tasdiqlandi",

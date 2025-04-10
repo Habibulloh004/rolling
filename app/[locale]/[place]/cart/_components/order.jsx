@@ -12,7 +12,7 @@ import { formatCreatedAt, formatNumber } from "@/lib/utils";
 import { ApiService } from "@/service/api.services";
 import { useOrderStore, useProductStore, useStore } from "@/store";
 import axios from "axios";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Ticket } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -30,6 +30,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import PromoCodeDialog from "./PromocodeComponent";
 
 const DiscountBadge = ({ auth }) => {
   return (
@@ -72,7 +73,15 @@ const DiscountBadge = ({ auth }) => {
 };
 
 // Main Order Component
-const Order = ({ spotDataFilial, auth, searchParamsData, locale, place }) => {
+const Order = ({
+  promotions,
+  spotDataFilial,
+  auth,
+  searchParamsData,
+  locale,
+  place,
+  productsData,
+}) => {
   const all = useTranslations("All");
   const total = useTranslations("Cart.Total");
   const { activeTab, isDisabled } = useStore();
@@ -168,6 +177,7 @@ const Order = ({ spotDataFilial, auth, searchParamsData, locale, place }) => {
         comment,
         address,
         address_comment,
+        promocode,
       } = orderData;
       setIsLoading(true);
       const filterProductsAbdugani = products?.map((p) => {
@@ -176,12 +186,14 @@ const Order = ({ spotDataFilial, auth, searchParamsData, locale, place }) => {
           amount: +p.count,
         };
       });
-      const filterProductsSpot = products?.map((p) => {
-        return {
-          product_id: +p.product_id,
-          count: +p.count,
-        };
-      });
+      const filterProductsSpot = products
+        ?.filter((pr) => !pr?.promocode)
+        ?.map((p) => {
+          return {
+            product_id: +p.product_id,
+            count: +p.count,
+          };
+        });
 
       let commentSpot;
       if (!spotIdSpot) {
@@ -206,6 +218,11 @@ const Order = ({ spotDataFilial, auth, searchParamsData, locale, place }) => {
       if (paymentData && paymentData?.transactionId) {
         commentSpot = `${commentSpot}\nТранзакцияID: ${paymentData?.transactionId}`;
       }
+      if (promocode) {
+        commentSpot = `${commentSpot}\nПромокод: ${
+          promocode?.name?.split("$")[1]
+        }`;
+      }
 
       if (spotIdSpot) {
         commentSpot = `${
@@ -216,6 +233,22 @@ const Order = ({ spotDataFilial, auth, searchParamsData, locale, place }) => {
       } else if (!auth?.client_id) {
         commentSpot = `${commentSpot}\nНомер телефона : ${phone}`;
       }
+
+      let filterPromocode = null;
+      if (promocode) {
+        filterPromocode = [
+          {
+            id: +promocode?.promotion_id,
+            involved_products: promocode?.params?.bonus_products?.map((prd) => {
+              return {
+                id: +prd?.id,
+                count: +promocode?.params?.bonus_products_pcs,
+              };
+            }),
+          },
+        ];
+      }
+      console.log(filterPromocode);
 
       let deliveryData = {
         address_comment,
@@ -235,6 +268,7 @@ const Order = ({ spotDataFilial, auth, searchParamsData, locale, place }) => {
         spot_id: 0,
         status: "",
         type: "delivery",
+        promocode: promocode ? JSON.stringify(filterPromocode) : "",
       };
 
       let pickupData = {
@@ -253,6 +287,7 @@ const Order = ({ spotDataFilial, auth, searchParamsData, locale, place }) => {
         spot_id: Number(spot_id),
         status: "",
         type: `take_away ${spot_name}`,
+        promocode: promocode ? JSON.stringify(filterPromocode) : "",
       };
 
       let spotData = {
@@ -265,6 +300,7 @@ const Order = ({ spotDataFilial, auth, searchParamsData, locale, place }) => {
         service_mode: spotIdSpot ? 1 : 2,
         spot_id: Number(spotIdSpot ? spotIdSpot : Number(spot_id)),
         comment: commentSpot,
+        promotion: promocode ? filterPromocode : null,
       };
 
       if (address && !spotIdSpot) {
@@ -275,8 +311,8 @@ const Order = ({ spotDataFilial, auth, searchParamsData, locale, place }) => {
       console.log({ pickupData });
       console.log({ spotData });
       console.log(orderData);
+      console.log("Spot data", JSON.stringify(spotData));
 
-      // return null;
       let commentClient;
       let clinetGroupId;
       if (auth?.client_id) {
@@ -302,6 +338,8 @@ const Order = ({ spotDataFilial, auth, searchParamsData, locale, place }) => {
       }
       if (spotIdSpot) {
         const res = await createIncomingOrder(spotData);
+        console.log(res);
+
         if (res?.response) {
           const { transaction_id } = res?.response;
 
@@ -310,21 +348,19 @@ const Order = ({ spotDataFilial, auth, searchParamsData, locale, place }) => {
             response: res,
           };
           const message = `
-📦 Новый заказ! №${transaction_id}
-🛒 Название филиал: ${spotDataFilial?.response?.name}
-📞 Телефон: +998771244444
-💵 Сумма заказа: ${formatNumber(
-            service == "waiter"
-              ? Number(totalSum + (totalSum * 10) / 100)
-              : Number(totalSum)
-          )} сум
-💳 Метод оплаты: ${
-            orderData?.payment_method == "cash"
-              ? "Наличные"
-              : "Карта (Оплачено)"
-          }
-🛍 Тип заказа: Заведения
-✏️ Комментарий: ${commentSpot}`.trim();
+      📦 Новый заказ! №${transaction_id}
+      🛒 Название филиал: ${spotDataFilial?.response?.name}
+      📞 Телефон: +998771244444
+      💵 Сумма заказа: ${formatNumber(
+        service == "waiter"
+          ? Number(totalSum + (totalSum * 10) / 100)
+          : Number(totalSum)
+      )} сум
+      💳 Метод оплаты: ${
+        orderData?.payment_method == "cash" ? "Наличные" : "Карта (Оплачено)"
+      }
+      🛍 Тип заказа: Заведения
+      ✏️ Комментарий: ${commentSpot}`.trim();
 
           await axios.get(
             `https://api.telegram.org/bot7051935328:AAFJxJAVsRTPxgj3rrHWty1pEUlMkBgg9_o/sendMessage?chat_id=-1002211902296&text=${encodeURIComponent(
@@ -351,6 +387,7 @@ const Order = ({ spotDataFilial, auth, searchParamsData, locale, place }) => {
             pay_payme: null,
             pay_uzum: null,
             pay_bonus: null,
+            promocode: null,
             comment: "",
             address: "",
             client_addresses_id: null,
@@ -426,6 +463,7 @@ const Order = ({ spotDataFilial, auth, searchParamsData, locale, place }) => {
               pay_bonus: null,
               comment: "",
               address: "",
+              promocode: null,
               client_addresses_id: null,
             });
             setSelectCard(null);
@@ -463,6 +501,7 @@ const Order = ({ spotDataFilial, auth, searchParamsData, locale, place }) => {
               pay_bonus: null,
               comment: "",
               address: "",
+              promocode: null,
               client_addresses_id: null,
             });
             const nowOrder = {
@@ -575,6 +614,10 @@ const Order = ({ spotDataFilial, auth, searchParamsData, locale, place }) => {
         )}
       </div>
       <div className="space-y-2 md:space-y-4">
+        <PromoCodeDialog
+          promotions={promotions?.response}
+          productsData={productsData}
+        />
         {activeTab !== "spot" && (
           <>
             <Button
@@ -672,7 +715,7 @@ const Order = ({ spotDataFilial, auth, searchParamsData, locale, place }) => {
             aria-label={`loading`}
             disabled={isLoading || isDisabled}
             onClick={handleSubmit}
-            className="mb-3 w-full h-10 md:h-12 flex justify-center items-center gap-1 border-[1px] rounded-xl hover:bg-primary md:mt-5 font-medium text-sm md:text-md"
+            className="mb-3 w-full h-12 flex justify-center items-center gap-1 border-[1px] rounded-xl hover:bg-primary md:mt-5 font-medium text-sm md:text-md"
           >
             {isLoading ? (
               <div>

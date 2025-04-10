@@ -367,6 +367,19 @@
       "in-deliver": "Yo'lda",
       "finished": "Yetkazib berildi"
     },
+    "Promocode":{
+      "title":"Menda promo-kod bor",
+      "input_pls":"Promo-kodni kiriting",
+      "error":"Promo-kod mavjud emas",
+      "already_use":"Promo-kod allaqachon qo'llangan",
+      "success_del":"Promo-kod o'chirildi",
+      "success":"Promo-kod muvaffaqiyatli qo'llanildi",
+      "titleDialog":"Promo-kod",
+      "submit_btn":"Qo'llash",
+      "error_min_sum":"minimal summa bo'lishi kerak",
+      "active_promo":"Promo-kod qo'llanilgan",
+      "cancel":"Bekor qilish"
+    },
     "Item": {
       "title": "Buyurtma tasdiqlandi",
       "desc": "Rolling Sushi-ni tanlaganingiz uchun rahmat! Taomlaringizni yangilik va mazali ta'm bilan tayyorlashga mehr bilan yondashamiz. Agar savollaringiz bo‘lsa, bizning jamoamiz har doim yordam berishga tayyor.",

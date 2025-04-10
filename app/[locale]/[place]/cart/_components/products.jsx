@@ -8,7 +8,7 @@ import {
   roundToTwoDecimals,
 } from "@/lib/utils";
 import { useOrderStore, useProductStore } from "@/store";
-import { Minus, Plus } from "lucide-react";
+import { BadgeCheck, Minus, Plus, Ticket } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
@@ -70,14 +70,18 @@ const Products = ({ locale, place }) => {
             ?.reverse()
             ?.map((item, i) => {
               const localizedName = getLocalizedProduct(
-                item.product_production_description,
+                item?.product_production_description,
                 locale,
                 "name"
               );
               return (
                 <div key={item.product_id} className="flex gap-2 md:gap-4 mr-4">
                   <Image
-                    src={item?.photo_origin?`${posterUrl}${item.photo_origin}`:"/empty.jpg"}
+                    src={
+                      item?.photo_origin
+                        ? `${posterUrl}${item.photo_origin}`
+                        : "/empty.jpg"
+                    }
                     alt="product"
                     width={100}
                     height={100}
@@ -88,21 +92,23 @@ const Products = ({ locale, place }) => {
                       <p className="font-semibold textSmall3">
                         {localizedName}
                       </p>
-                      <Button
-                      aria-label={`product image`}
-                        disabled={paymentData && paymentData?.payment_id}
-                        onClick={() => deleteProduct(item.product_id)}
-                        className={
-                          "bg-white active:bg-white/10 hover:bg-white p-0 h-8 w-8"
-                        }
-                      >
-                        <Image
-                          src={`/assets/bucket.svg`}
-                          alt="bucket"
-                          width={16}
-                          height={16}
-                        />
-                      </Button>
+                      {!item?.promocode && (
+                        <Button
+                          aria-label={`product image`}
+                          disabled={paymentData && paymentData?.payment_id}
+                          onClick={() => deleteProduct(item.product_id)}
+                          className={
+                            "bg-white active:bg-white/10 hover:bg-white p-0 h-8 w-8"
+                          }
+                        >
+                          <Image
+                            src={`/assets/bucket.svg`}
+                            alt="bucket"
+                            width={16}
+                            height={16}
+                          />
+                        </Button>
+                      )}
                     </div>
                     <div className="col-span-3 row-span-1 flex justify-between item-start sm:items-center">
                       <p className="font-semibold textSmall2 leading-5 w-full">
@@ -112,31 +118,46 @@ const Products = ({ locale, place }) => {
                             )}`
                           : "Price not available"}
                       </p>
-                      <div className="grid grid-cols-3 w-full sm:w-[100px] h-[34px] bg-white border-2 rounded-md">
-                        <button
-                        aria-label={`product minus`}
-                          disabled={paymentData && paymentData?.payment_id}
-                          onClick={() => handleDecrementCount(item)}
-                          className={
-                            "transition-all rounded-l-md ease-linear duration-75 bg-white h-full flex items-center justify-center font-bold text-[#646464] active:shadow-[-1px_0_2px_rgba(0,0,0,0.3)] active:opacity-75"
-                          }
-                        >
-                          <Minus size={16} />
-                        </button>
-                        <p className="w-full h-full text-center flex items-center justify-center bg-foreground/10 font-[600]">
-                          {item.count > 9 ? item.count : `0${item.count}`}
-                        </p>
-                        <button
-                        aria-label={`product plus`}
-                          disabled={paymentData && paymentData?.payment_id}
-                          onClick={() => handleIncrementCount(item)}
-                          className={
-                            "transition-all rounded-r-md ease-linear duration-75 bg-white h-full flex items-center justify-center font-bold text-[#646464] active:shadow-[1px_0_2px_rgba(0,0,0,0.3)] active:opacity-75"
-                          }
-                        >
-                          <Plus size={16} />
-                        </button>
-                      </div>
+
+                      {!item?.promocode?.promotion_id ? (
+                        <div className="grid grid-cols-3 w-full sm:w-[100px] h-[34px] bg-white border-2 rounded-md">
+                          <button
+                            aria-label={`product minus`}
+                            disabled={paymentData && paymentData?.payment_id}
+                            onClick={() => handleDecrementCount(item)}
+                            className={
+                              "transition-all rounded-l-md ease-linear duration-75 bg-white h-full flex items-center justify-center font-bold text-[#646464] active:shadow-[-1px_0_2px_rgba(0,0,0,0.3)] active:opacity-75"
+                            }
+                          >
+                            <Minus size={16} />
+                          </button>
+                          <p className="w-full h-full text-center flex items-center justify-center bg-foreground/10 font-[600]">
+                            {item.count > 9 ? item.count : `0${item.count}`}
+                          </p>
+                          <button
+                            aria-label={`product plus`}
+                            disabled={paymentData && paymentData?.payment_id}
+                            onClick={() => handleIncrementCount(item)}
+                            className={
+                              "transition-all rounded-r-md ease-linear duration-75 bg-white h-full flex items-center justify-center font-bold text-[#646464] active:shadow-[1px_0_2px_rgba(0,0,0,0.3)] active:opacity-75"
+                            }
+                          >
+                            <Plus size={16} />
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="flex justify-start items-center gap-2">
+                          <h1 className="text-green-700 font-medium">
+                            {item?.promocode?.name?.split("$")[1]}
+                          </h1>
+                          <div>
+                            <Ticket
+                              className="transform rotate-45 w-full text-green-500"
+                              size={32}
+                            />
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -155,7 +176,10 @@ const Products = ({ locale, place }) => {
                   )}?spot=${spot}&table_id=${table_id}&table_num=${table_num}&service=${service}`
             }
           >
-            <Button aria-label={`product menu`} className="w-full p-3 text-white text-center font-bold">
+            <Button
+              aria-label={`product menu`}
+              className="w-full p-3 text-white text-center font-bold"
+            >
               {orderT("menu_btn")}
             </Button>
           </Link>

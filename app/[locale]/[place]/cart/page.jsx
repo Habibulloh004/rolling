@@ -40,15 +40,17 @@ const Basket = async ({ params, searchParams }) => {
   const cookiesData = cookieStore.get("client");
   const auth = cookiesData ? JSON.parse(cookiesData.value) : {};
 
-  const [cart, products, locale, path, searchParamsData, all] =
+  const [cart, products, promotions, locale, path, searchParamsData, all] =
     await Promise.all([
       getTranslations("Cart"),
       ApiService.getPosterData("menu.getProducts", "", 7200),
+      ApiService.getPosterData("clients.getPromotions", "", 7200),
       getLocale(),
       params,
       searchParams,
       getTranslations("All"),
     ]);
+  console.log("🚀 ~ file: page.jsx:40 ~ Basket ~ promotions:", promotions);
 
   let spotData;
   if (path.place === "branch") {
@@ -91,6 +93,7 @@ const Basket = async ({ params, searchParams }) => {
             searchParamsData={searchParamsData}
           />
           <Right
+            promotions={promotions}
             auth={auth}
             products={products.response
               .filter((c) => c.menu_category_id != 0)
@@ -99,6 +102,7 @@ const Basket = async ({ params, searchParams }) => {
             place={path.place}
             spotData={spotData}
             searchParamsData={searchParamsData}
+            productsData={products.response}
           />
         </div>
         {/* Mobile version */}
@@ -168,9 +172,11 @@ const Basket = async ({ params, searchParams }) => {
           </section>
           <Payment locale={locale} place={path.place} auth={auth} />
           <Order
+            promotions={promotions}
             auth={auth}
             searchParamsData={searchParamsData}
             locale={locale}
+            productsData={products.response}
             place={path.place}
             spotDataFilial={spotData}
           />

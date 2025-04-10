@@ -123,7 +123,7 @@
       "location_error": "You need to specify the location.",
       "geolocation": "Please allow location access to determine your address!",
       "select_map": "Select from the map",
-      "delete_address":"Address deleted successfully!"
+      "delete_address": "Address deleted successfully!"
     }
   },
   "Form": {
@@ -366,6 +366,19 @@
       "cooking": "In preparation",
       "in-deliver": "On the Way",
       "finished": "Delivered"
+    },
+    "Promocode": {
+      "title": "I have a promo code",
+      "input_pls": "Enter the promo code",
+      "error": "Promo code is not valid",
+      "already_use": "Promo code has already been used",
+      "success_del": "Promo code has been removed",
+      "success": "Promo code applied successfully",
+      "titleDialog": "Promo Code",
+      "submit_btn": "Apply",
+      "error_min_sum": "a minimum amount is required",
+      "active_promo": "Promo code applied",
+      "cancel": "Cancel"
     },
     "delivered": "Delivered",
     "info": "What should we improve? We’re waiting for your feedback!",

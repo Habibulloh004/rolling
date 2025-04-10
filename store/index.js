@@ -207,7 +207,7 @@ export const useOrderStore = create((set) => ({
     products: [],
     payment_method: "",
     total: 0,
-    delivery_price: 0,
+    delivery_price: 10000,
     lng: 0,
     lat: 0,
     client: null,
@@ -220,6 +220,7 @@ export const useOrderStore = create((set) => ({
     comment: "",
     address: "",
     client_addresses_id: null,
+    promocode: null,
   },
   totalSum: 0,
   paymentData: null,
@@ -262,7 +263,7 @@ export const useOrderStore = create((set) => ({
           products: [],
           payment_method: "",
           total: 0,
-          delivery_price: 0,
+          delivery_price: 10000,
           lng: 0,
           lat: 0,
           client: null,
@@ -276,7 +277,7 @@ export const useOrderStore = create((set) => ({
           address: "",
           client_addresses_id: null,
         };
-    set({ orderData: { ...parsedOrderData, delivery_price: 0 } });
+    set({ orderData: { ...parsedOrderData, delivery_price: 10000 } });
     set({ totalSum: totalSum || 0 });
     set({ paymentData: paymentData ? JSON.parse(paymentData) : null });
     set({ selectCard: selectCard ? JSON.parse(selectCard) : null });
@@ -290,7 +291,7 @@ export const useOrderStore = create((set) => ({
         products: [],
         payment_method: "",
         total: 0,
-        delivery_price: 0,
+        delivery_price: 10000,
         lng: 0,
         lat: 0,
         client: null,

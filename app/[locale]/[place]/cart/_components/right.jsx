@@ -9,6 +9,8 @@ const Right = ({
   searchParamsData,
   place,
   spotData,
+  promotions,
+  productsData,
 }) => {
   return (
     <div className="w-10/12 flex flex-col">
@@ -20,6 +22,8 @@ const Right = ({
         auth={auth}
         locale={locale}
         place={place}
+        promotions={promotions}
+        productsData={productsData}
       />
     </div>
   );

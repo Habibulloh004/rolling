@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  cn,
   formatText,
   getLocalizedCategoryName,
   getLocalizedProduct,
@@ -700,7 +701,7 @@ export default function Header({
         )}
       </header>
       {/* Fixed Cart at Bottom */}
-      {isScrolled && !pathName?.includes("/cart") && (
+      {isScrolled && !pathName?.includes("/cart") && products?.length > 0 && (
         <div className="fixed bottom-4 right-4 z-50">
           <Link
             href={
@@ -734,7 +735,7 @@ export default function Header({
         </div>
       )}
       {param?.place !== "branch" && !cl && (
-        <div className="bg-secondary text-primary text-center">
+        <div className={cn(`bg-secondary text-primary text-center`)}>
           <div className="max-xl:block hidden max-sm:text-xs">
             <Marquee pauseOnHover className="[--duration:20s]">
               <p>{introText}</p>

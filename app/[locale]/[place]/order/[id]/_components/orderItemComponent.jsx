@@ -181,7 +181,7 @@ export default function OrderItemComponent({
                         }`}
                       >
                         <Button
-                        aria-label={`oritem spot`}
+                          aria-label={`oritem spot`}
                           className={
                             "h-8 text-[12px] md:text-sm mt-[10px] hover:bg-primary "
                           }
@@ -220,18 +220,23 @@ export default function OrderItemComponent({
                   {cartText("products_sum")}
                 </p>
                 <p className="font-normal textNormal2 leading-7 text-[#2E2E2E]">
-                  {formatNumber(Number(orderData?.all_price) / 100)}{" "}
+                  {formatNumber(
+                    Number(orderData?.all_price) / 100 -
+                      (orderData?.type.includes("delivery") ? 10000 : 0)
+                  )}{" "}
                   {all("sum")}
                 </p>
               </div>
-              <div className="w-full flex justify-between">
-                <p className="font-medium textSmall3  leading-5 text-[#2E2E2E] text-start md:text-end">
-                  {cartText("delivery")}
-                </p>
-                <p className="font-normal textNormal2 leading-7 text-[#2E2E2E]">
-                  0 {all("sum")}
-                </p>
-              </div>
+              {orderData?.type.includes("delivery") && (
+                <div className="w-full flex justify-between">
+                  <p className="font-medium textSmall3  leading-5 text-[#2E2E2E] text-start md:text-end">
+                    {cartText("delivery")}
+                  </p>
+                  <p className="font-normal textNormal2 leading-7 text-[#2E2E2E]">
+                    10 000 {all("sum")}
+                  </p>
+                </div>
+              )}
               {orderData?.payed_bonus && orderData?.payed_bonus != 0 ? (
                 <div className="w-full flex justify-between">
                   <p className="font-medium textSmall3 leading-5 text-[#2E2E2E] text-start md:text-end">

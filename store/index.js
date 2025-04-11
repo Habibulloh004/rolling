@@ -263,7 +263,6 @@ export const useOrderStore = create((set) => ({
           products: [],
           payment_method: "",
           total: 0,
-          delivery_price: 10000,
           lng: 0,
           lat: 0,
           client: null,

@@ -386,14 +386,6 @@ const Reviews = async ({ params }) => {
       text: `👍👍👍 Не волнуйтесь `,
       time: "05.01.2024",
     },
-    {
-      id: 40,
-      author_name: "",
-      rating: 5,
-      profile_photo_url: "",
-      text: ``,
-      time: "17.11.2024",
-    },
   ];
 
   return (

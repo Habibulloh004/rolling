@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -26,8 +26,7 @@ export default function PromoCodeDialog({ promotions, productsData }) {
   const [error, setError] = useState(null);
   const [hovered, setHovered] = useState(true);
 
-  const handleRemovePromo = (e) => {
-    e.stopPropagation();
+  const handleRemovePromo = () => {
     setOrderData({ ...orderData, promocode: null });
     setProductsData(products?.filter((product) => !product?.promocode));
     setPromoCode("");
@@ -37,6 +36,9 @@ export default function PromoCodeDialog({ promotions, productsData }) {
       type: "success",
       duration: 2000,
     });
+    if (totalSum < orderData?.promocode?.params?.conditions[0]?.sum / 100) {
+      toast.error("Summa promokodga mos kelmaydi");
+    }
   };
 
   const handleApply = () => {
@@ -110,6 +112,15 @@ export default function PromoCodeDialog({ promotions, productsData }) {
     setIsOpen(false);
     setError(null);
   };
+
+  useEffect(() => {
+    if (orderData?.promocode) {
+      if (totalSum < orderData?.promocode?.params?.conditions[0]?.sum / 100) {
+        handleRemovePromo();
+      }
+    }
+    
+  }, [totalSum]);
 
   return (
     <div className="space-y-2 md:space-y-4">

@@ -207,6 +207,9 @@ const Payment = ({ locale, place, auth }) => {
       let totalAmount =
         Number(totalSum) -
         (orderData?.pay_bonus ? Number(orderData?.pay_bonus) : 0);
+      if (activeTab == "delivery") {
+        totalAmount += Number(orderData?.delivery_price);
+      }
 
       if (service == "waiter") {
         totalAmount = Number(totalAmount + (totalAmount * 10) / 100);
@@ -641,7 +644,6 @@ const Payment = ({ locale, place, auth }) => {
   }, []);
 
   useEffect(() => {
-
     if (
       paymentData &&
       !paymentData?.success &&

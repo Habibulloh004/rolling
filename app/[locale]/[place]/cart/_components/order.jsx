@@ -108,6 +108,11 @@ const Order = ({
     setBonus(0);
     setActiveBonus(false);
   };
+  const handleRemoveBonus = () => {
+    setOrderData({ ...orderData, pay_bonus: Number(0) });
+    setBonus(0);
+    setActiveBonus(false);
+  };
 
   const handleSubmit = async () => {
     if (
@@ -380,6 +385,7 @@ const Order = ({
             total: 0,
             lng: 0,
             lat: 0,
+            delivery_price: 10000,
             client: null,
             pay_cash: null,
             pay_card: null,
@@ -447,6 +453,7 @@ const Order = ({
             setOrderData({
               spot_id: 0,
               spot_name: "",
+              delivery_price: 10000,
               phone: "",
               products: [],
               payment_method: "",
@@ -483,6 +490,7 @@ const Order = ({
           if (res?.order_id) {
             setOrderData({
               spot_id: 0,
+              delivery_price: 10000,
               spot_name: "",
               phone: "",
               products: [],
@@ -542,6 +550,12 @@ const Order = ({
       handleSubmit();
     }
   }, [paymentData?.success]);
+
+  useEffect(() => {
+    if (orderData?.pay_bonus > totalSum) {
+      handleRemoveBonus();
+    }
+  }, [totalSum]);
 
   return (
     <div className="w-full flex flex-col lg:pt-6 gap-5">

@@ -36,9 +36,6 @@ export default function PromoCodeDialog({ promotions, productsData }) {
       type: "success",
       duration: 2000,
     });
-    if (totalSum < orderData?.promocode?.params?.conditions[0]?.sum / 100) {
-      toast.error("Summa promokodga mos kelmaydi");
-    }
   };
 
   const handleApply = () => {

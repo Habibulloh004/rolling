@@ -421,15 +421,7 @@ export default async function HomePage({ params, searchParams }) {
         "https://lh3.googleusercontent.com/a-/ALV-UjVZZATAoaL4RCULIfeaIGRQi_GBzYmqI7M5hcv0gLZj4mstqlcI=w75-h75-p-rp-mo-br100",
       text: `👍👍👍 Не волнуйтесь `,
       time: "05.01.2024",
-    },
-    {
-      id: 40,
-      author_name: "",
-      rating: 5,
-      profile_photo_url: "",
-      text: ``,
-      time: "17.11.2024",
-    },
+    }
   ];
   let spotData;
   if (path.place === "branch") {

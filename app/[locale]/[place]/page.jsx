@@ -28,7 +28,7 @@ export const metadata = {
   title:
     "Rolling Sushi – Доставка суши и роллов в Ташкенте | Бесплатная доставка | Бонусы до 10%",
   description:
-    "🚀 Rolling Sushi – это не просто доставка, а вкус, который запоминается! 🍣 Бесплатная доставка по акции, доставка за 40 минут или ролл в подарок, всегда свежие роллы. 🎁 Бонусная система с кешбэком до 10% – копите и оплачивайте любимые блюда! Закажите прямо сейчас – rolling.uz!",
+    "🚀 Rolling Sushi – это не просто доставка, а вкус, который запоминается! 🍣 Платная доставка, но если опоздаем — она бесплатная! Гарантированная доставка за 45 минут, всегда свежие роллы. 🎁 Бонусная система с кешбэком до 10% – копите и оплачивайте любимые блюда! Закажите прямо сейчас – rolling.uz! (https://rolling.uz/)",
   keywords:
     "суши, роллы, доставка суши, японская кухня, Rolling Sushi, Ташкент, акции суши",
   alternates: {
@@ -421,7 +421,7 @@ export default async function HomePage({ params, searchParams }) {
         "https://lh3.googleusercontent.com/a-/ALV-UjVZZATAoaL4RCULIfeaIGRQi_GBzYmqI7M5hcv0gLZj4mstqlcI=w75-h75-p-rp-mo-br100",
       text: `👍👍👍 Не волнуйтесь `,
       time: "05.01.2024",
-    }
+    },
   ];
   let spotData;
   if (path.place === "branch") {

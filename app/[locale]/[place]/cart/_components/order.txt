@@ -1,11 +1,9 @@
 "use client";
 
 import {
-  ClickCheckout,
   createIncomingOrder,
   createOrder,
   createOrderPoster,
-  PaymeCheckout,
   updateClient,
 } from "@/actions/post";
 import { Button } from "@/components/ui/button";
@@ -100,13 +98,7 @@ const Order = ({
     setSelectCard,
   } = useOrderStore();
   const { products, setProductsData } = useProductStore();
-  const {
-    spot: spotIdSpot,
-    table_id,
-    table_num,
-    service,
-    confirm,
-  } = searchParamsData;
+  const { spot: spotIdSpot, table_id, table_num, service } = searchParamsData;
   const router = useRouter();
   const paymentText = useTranslations("Cart.Payment");
   const [isSuccess, setIsSuccess] = useState(false);
@@ -123,6 +115,25 @@ const Order = ({
   };
 
   const handleSubmit = async () => {
+    if (
+      (orderData?.payment_method == "click" ||
+        orderData?.payment_method == "payme" ||
+        orderData?.payment_method == "card") &&
+      !paymentData &&
+      !paymentData?.payment_id
+    ) {
+      toast.error(paymentText("you_not_pay"));
+      return null;
+    }
+    if (!orderData?.payment_method || orderData?.payment_method == "") {
+      toast.error(paymentText("you_not_pay"));
+      return null;
+    }
+
+    if (paymentData && paymentData?.payment_id && !paymentData?.success) {
+      toast.error(paymentText("you_not_check"));
+      return null;
+    }
     if (products.length == 0) {
       toast.error(all("products_empty"));
       return;
@@ -152,18 +163,6 @@ const Order = ({
     ) {
       toast.error(all("location_empty"));
       return;
-    }
-    if (
-      orderData?.payment_method == "card" &&
-      !paymentData &&
-      !paymentData?.payment_id
-    ) {
-      toast.error(paymentText("you_not_pay"));
-      return null;
-    }
-    if (!orderData?.payment_method || orderData?.payment_method == "") {
-      toast.error(paymentText("you_not_select"));
-      return null;
     }
 
     let orderList = localStorage.getItem("orderList")
@@ -257,15 +256,6 @@ const Order = ({
       }
       console.log(filterPromocode);
 
-      let totalAmount = Number(totalSum) - (pay_bonus ? Number(pay_bonus) : 0);
-      if (activeTab == "delivery") {
-        totalAmount += Number(delivery_price);
-      }
-
-      if (service == "waiter") {
-        totalAmount = Number(totalAmount + (totalAmount * 10) / 100);
-      }
-
       let deliveryData = {
         address_comment,
         all_price: Number((+totalSum + +delivery_price) * 100),
@@ -352,250 +342,124 @@ const Order = ({
           clinetGroupId = 4;
         }
       }
-      if (payment_method == "payme" || payment_method == "click") {
-        if (spotIdSpot) {
-          let dataPay = {
-            orderDetails: {
-              ...spotData,
-              service_mode: 1,
-              service,
-              spot_name: spotDataFilial?.response?.name,
-            },
-            amount: totalAmount,
-            status: payment_method == "payme" ? 0 : 1,
-            provider: payment_method,
-            url: `https://rolling.uz/${locale}/${place}/cart?spot=${spotIdSpot}&table_id=${table_id}&table_num=${table_num}&service=${service}&confirm=true`,
-          };
-          if (auth?.client_id) {
-            dataPay.userId = auth?.client_id;
-          }
-          let res;
-          switch (payment_method) {
-            case "payme":
-              res = await PaymeCheckout(dataPay);
-              break;
-            case "click":
-              res = await ClickCheckout(dataPay);
-              break;
-          }
-          console.log({ res });
-          if (res) {
-            router.push(res?.url);
-            // const nowOrder = {
-            //   ...deliveryData,
-            //   response: res,
-            // };
-            // orderList.push(nowOrder);
-            // localStorage.setItem("orderList", JSON.stringify(orderList));
-            setPaymentData(null);
-            setOrderData({
-              spot_id: 0,
-              spot_name: "",
-              phone: "",
-              products: [],
-              payment_method: "",
-              total: 0,
-              lng: 0,
-              lat: 0,
-              delivery_price: 10000,
-              client: null,
-              pay_cash: null,
-              pay_card: null,
-              pay_click: null,
-              pay_payme: null,
-              pay_uzum: null,
-              pay_bonus: null,
-              promocode: null,
-              comment: "",
-              address: "",
-              client_addresses_id: null,
-            });
-            setSelectCard(null);
-            setProductsData([]);
-          }
-        } else {
-          if (activeTab == "pickup") {
-            let dataPay = {
-              orderDetails: {
-                ...pickupData,
-                service_mode: 3,
-              },
-              amount: totalAmount,
-              status: payment_method == "payme" ? 0 : 1,
-              provider: payment_method,
-              url: `https://rolling.uz/${locale}/${place}/confirmedpay`,
-            };
-            if (auth?.client_id) {
-              dataPay.userId = auth?.client_id;
-            }
-            let res;
-            switch (payment_method) {
-              case "payme":
-                res = await PaymeCheckout(dataPay);
-                break;
-              case "click":
-                res = await ClickCheckout(dataPay);
-                break;
-            }
-            console.log({ res });
-            if (res) {
-              router.push(res?.url);
-              const nowOrder = {
-                ...pickupData,
-                order_id: res.order_id,
-                payment_type: payment_method,
-              };
-              orderList.push(nowOrder);
-              localStorage.setItem("orderList", JSON.stringify(orderList));
-              setOrderData({
-                spot_id: 0,
-                spot_name: "",
-                delivery_price: 10000,
-                phone: "",
-                products: [],
-                payment_method: "",
-                total: 0,
-                lng: 0,
-                lat: 0,
-                client: null,
-                pay_cash: null,
-                pay_card: null,
-                pay_click: null,
-                pay_payme: null,
-                pay_uzum: null,
-                pay_bonus: null,
-                comment: "",
-                address: "",
-                promocode: null,
-                client_addresses_id: null,
-              });
-              setSelectCard(null);
-              setPaymentData(null);
-              setProductsData([]);
-              if (auth?.client_id) {
-                await updateClient({
-                  client_id: auth?.client_id,
-                  comment: JSON.stringify(commentClient),
-                  client_groups_id_client: clinetGroupId,
-                });
-              }
-              toast.success(all("order_created"));
-            }
-          } else if (activeTab == "delivery") {
-            let dataPay = {
-              orderDetails: { ...deliveryData, service_mode: 2 },
-              amount: totalAmount,
-              status: payment_method == "payme" ? 0 : 1,
-              provider: payment_method,
-              url: `https://rolling.uz/${locale}/${place}/confirmedpay`,
-            };
-            if (auth?.client_id) {
-              dataPay.userId = auth?.client_id;
-            }
-            let res;
-            switch (payment_method) {
-              case "payme":
-                res = await PaymeCheckout(dataPay);
-                break;
-              case "click":
-                res = await ClickCheckout(dataPay);
-                break;
-            }
-            console.log({ res });
-            console.log("dataPay", JSON.stringify(dataPay));
+      if (spotIdSpot) {
+        const res = await createIncomingOrder(spotData);
+        console.log(res);
 
-            if (res) {
-              router.push(res?.url);
-              setOrderData({
-                spot_id: 0,
-                delivery_price: 10000,
-                spot_name: "",
-                phone: "",
-                products: [],
-                payment_method: "",
-                total: 0,
-                lng: 0,
-                lat: 0,
-                client: null,
-                pay_cash: null,
-                pay_card: null,
-                pay_click: null,
-                pay_payme: null,
-                pay_uzum: null,
-                pay_bonus: null,
-                comment: "",
-                address: "",
-                promocode: null,
-                client_addresses_id: null,
-              });
-              const nowOrder = {
-                ...deliveryData,
-                order_id: res?.order_id,
-                payment_type: payment_method,
-              };
-              setPaymentData(null);
-              orderList.push(nowOrder);
-              localStorage.setItem("orderList", JSON.stringify(orderList));
-              setProductsData([]);
-              setSelectCard(null);
-              toast.success(all("order_created"));
-              if (auth?.client_id) {
-                await updateClient({
-                  client_id: auth?.client_id,
-                  comment: JSON.stringify(commentClient),
-                  client_groups_id_client: clinetGroupId,
-                });
-              }
-            }
-          }
+        if (res?.response) {
+          const { transaction_id } = res?.response;
+
+          const nowOrder = {
+            ...deliveryData,
+            response: res,
+          };
+          const message = `
+      📦 Новый заказ! №${transaction_id}
+      🛒 Название филиал: ${spotDataFilial?.response?.name}
+      📞 Телефон: +998771244444
+      💵 Сумма заказа: ${formatNumber(
+        service == "waiter"
+          ? Number(totalSum + (totalSum * 10) / 100)
+          : Number(totalSum)
+      )} сум
+      💳 Метод оплаты: ${
+        orderData?.payment_method == "cash" ? "Наличные" : "Карта (Оплачено)"
+      }
+      🛍 Тип заказа: Заведения
+      ✏️ Комментарий: ${commentSpot}`.trim();
+
+          await axios.get(
+            `https://api.telegram.org/bot7051935328:AAFJxJAVsRTPxgj3rrHWty1pEUlMkBgg9_o/sendMessage?chat_id=-1002211902296&text=${encodeURIComponent(
+              message
+            )}`
+          );
+          orderList.push(nowOrder);
+          localStorage.setItem("orderList", JSON.stringify(orderList));
+          setPaymentData(null);
+          setOrderData({
+            spot_id: 0,
+            spot_name: "",
+            phone: "",
+            products: [],
+            payment_method: "",
+            total: 0,
+            lng: 0,
+            lat: 0,
+            delivery_price: 10000,
+            client: null,
+            pay_cash: null,
+            pay_card: null,
+            pay_click: null,
+            pay_payme: null,
+            pay_uzum: null,
+            pay_bonus: null,
+            promocode: null,
+            comment: "",
+            address: "",
+            client_addresses_id: null,
+          });
+          setSelectCard(null);
+          setProductsData([]);
+          toast.success(all("order_created"));
+          setIsSuccess(true);
         }
       } else {
-        if (spotIdSpot) {
-          const res = await createIncomingOrder(spotData);
-          console.log(res);
+        if (activeTab == "pickup") {
+          const res = await createOrder(pickupData);
+          console.log({ res });
+          if (res?.order_id) {
+            // const express = await createOrderPoster({
+            //   ...spotData,
+            //   comment: JSON.stringify({
+            //     order_id: res?.order_id,
+            //   }),
+            // });
 
-          if (res?.response) {
-            const { transaction_id } = res?.response;
-
+            //             if (express) {
+            //               const message = `
+            // 📦 Новый заказ! №${res?.order_id}
+            // 🛒 Название филиал: ${spot_name}
+            // 📞 Телефон: ${auth?.client_id ? `+${auth?.phone_number}` : "+998771052018"}
+            // 🏠 Адрес: Не указан
+            // 🔗 [Посмотреть на карте] Не указан"
+            // 🗺️ Расстояние:0 км
+            // 💵 Сумма заказа: ${formatNumber(totalSum)} сум
+            // 💳 Метод оплаты: ${
+            //                 orderData?.payment_method == "cash"
+            //                   ? "Наличные"
+            //                   : "Карта (Оплачено)"
+            //               }
+            // 🎁 Бонусы: ${Number(pay_bonus ?? 0)} сум
+            // 💵 К оплате: ${Number(totalSum) - pay_bonus ? Number(pay_bonus) : 0} сум
+            // 🛍 Тип заказа: На вынос ${spot_name}
+            // 🚚 Доставка: 0
+            // 📦 Количество заказов: ${auth?.client_id ? commentClient?.length : 1}
+            // ✏️ Комментарий:${commentSpot}
+            // ✏️ Комментарий к адресу:${address_comment}
+            // `.trim();
+            //               console.log(message);
+            //               await axios.get(
+            //                 `https://api.telegram.org/bot7051935328:AAFJxJAVsRTPxgj3rrHWty1pEUlMkBgg9_o/sendMessage?chat_id=-1002211902296&text=${encodeURIComponent(
+            //                   message
+            //                 )}`
+            //               );
+            //             }
             const nowOrder = {
-              ...deliveryData,
-              response: res,
+              ...pickupData,
+              order_id: res.order_id,
             };
-            const message = `
-📦 Новый заказ! №${transaction_id}
-🛒 Название филиал: ${spotDataFilial?.response?.name}
-📞 Телефон: +998771244444
-💵 Сумма заказа: ${formatNumber(
-              service == "waiter"
-                ? Number(totalSum + (totalSum * 10) / 100)
-                : Number(totalSum)
-            )} сум
-💳 Метод оплаты: ${
-              orderData?.payment_method == "cash"
-                ? "Наличные"
-                : "Карта (Оплачено)"
-            }
-🛍 Тип заказа: Заведения
-✏️ Комментарий: ${commentSpot}`.trim();
-
-            await axios.get(
-              `https://api.telegram.org/bot7051935328:AAFJxJAVsRTPxgj3rrHWty1pEUlMkBgg9_o/sendMessage?chat_id=-1002211902296&text=${encodeURIComponent(
-                message
-              )}`
-            );
             orderList.push(nowOrder);
             localStorage.setItem("orderList", JSON.stringify(orderList));
-            setPaymentData(null);
             setOrderData({
               spot_id: 0,
               spot_name: "",
+              delivery_price: 10000,
               phone: "",
               products: [],
               payment_method: "",
               total: 0,
               lng: 0,
               lat: 0,
-              delivery_price: 10000,
               client: null,
               pay_cash: null,
               pay_card: null,
@@ -603,107 +467,66 @@ const Order = ({
               pay_payme: null,
               pay_uzum: null,
               pay_bonus: null,
-              promocode: null,
               comment: "",
               address: "",
+              promocode: null,
               client_addresses_id: null,
             });
             setSelectCard(null);
+            setPaymentData(null);
             setProductsData([]);
-            toast.success(all("order_created"));
-            setIsSuccess(true);
-          }
-        } else {
-          if (activeTab == "pickup") {
-            const res = await createOrder(pickupData);
-            console.log({ res });
-            if (res?.order_id) {
-              const nowOrder = {
-                ...pickupData,
-                order_id: res.order_id,
-                payment_type: payment_method,
-              };
-              orderList.push(nowOrder);
-              localStorage.setItem("orderList", JSON.stringify(orderList));
-              setOrderData({
-                spot_id: 0,
-                spot_name: "",
-                delivery_price: 10000,
-                phone: "",
-                products: [],
-                payment_method: "",
-                total: 0,
-                lng: 0,
-                lat: 0,
-                client: null,
-                pay_cash: null,
-                pay_card: null,
-                pay_click: null,
-                pay_payme: null,
-                pay_uzum: null,
-                pay_bonus: null,
-                comment: "",
-                address: "",
-                promocode: null,
-                client_addresses_id: null,
+            if (auth?.client_id) {
+              await updateClient({
+                client_id: auth?.client_id,
+                comment: JSON.stringify(commentClient),
+                client_groups_id_client: clinetGroupId,
               });
-              setSelectCard(null);
-              setPaymentData(null);
-              setProductsData([]);
-              if (auth?.client_id) {
-                await updateClient({
-                  client_id: auth?.client_id,
-                  comment: JSON.stringify(commentClient),
-                  client_groups_id_client: clinetGroupId,
-                });
-              }
-              toast.success(all("order_created"));
-              router.push(`/${locale}/${place}/confirmed/${res?.order_id}`);
             }
-          } else if (activeTab == "delivery") {
-            const res = await createOrder(deliveryData);
-            if (res?.order_id) {
-              setOrderData({
-                spot_id: 0,
-                delivery_price: 10000,
-                spot_name: "",
-                phone: "",
-                products: [],
-                payment_method: "",
-                total: 0,
-                lng: 0,
-                lat: 0,
-                client: null,
-                pay_cash: null,
-                pay_card: null,
-                pay_click: null,
-                pay_payme: null,
-                pay_uzum: null,
-                pay_bonus: null,
-                comment: "",
-                address: "",
-                promocode: null,
-                client_addresses_id: null,
+            toast.success(all("order_created"));
+            router.push(`/${locale}/${place}/confirmed/${res?.order_id}`);
+          }
+        } else if (activeTab == "delivery") {
+          const res = await createOrder(deliveryData);
+          if (res?.order_id) {
+            setOrderData({
+              spot_id: 0,
+              delivery_price: 10000,
+              spot_name: "",
+              phone: "",
+              products: [],
+              payment_method: "",
+              total: 0,
+              lng: 0,
+              lat: 0,
+              client: null,
+              pay_cash: null,
+              pay_card: null,
+              pay_click: null,
+              pay_payme: null,
+              pay_uzum: null,
+              pay_bonus: null,
+              comment: "",
+              address: "",
+              promocode: null,
+              client_addresses_id: null,
+            });
+            const nowOrder = {
+              ...deliveryData,
+              order_id: res.order_id,
+            };
+            setPaymentData(null);
+            orderList.push(nowOrder);
+            localStorage.setItem("orderList", JSON.stringify(orderList));
+            setProductsData([]);
+            setSelectCard(null);
+            toast.success(all("order_created"));
+            router.push(`/${locale}/${place}/confirmed/${res?.order_id}`);
+            if (auth?.client_id) {
+              await updateClient({
+                client_id: auth?.client_id,
+                comment: JSON.stringify(commentClient),
+                client_groups_id_client: clinetGroupId,
               });
-              const nowOrder = {
-                ...deliveryData,
-                order_id: res.order_id,
-                payment_type: payment_method,
-              };
-              setPaymentData(null);
-              orderList.push(nowOrder);
-              localStorage.setItem("orderList", JSON.stringify(orderList));
-              setProductsData([]);
-              setSelectCard(null);
-              toast.success(all("order_created"));
-              router.push(`/${locale}/${place}/confirmed/${res?.order_id}`);
-              if (auth?.client_id) {
-                await updateClient({
-                  client_id: auth?.client_id,
-                  comment: JSON.stringify(commentClient),
-                  client_groups_id_client: clinetGroupId,
-                });
-              }
             }
           }
         }
@@ -733,13 +556,6 @@ const Order = ({
       handleRemoveBonus();
     }
   }, [totalSum]);
-
-  useEffect(() => {
-    if (confirm) {
-      toast.success(all("order_created"));
-      setIsSuccess(true);
-    }
-  }, []);
 
   return (
     <div className="w-full flex flex-col lg:pt-6 gap-5">
@@ -811,7 +627,6 @@ const Order = ({
       </div>
       <div className="space-y-2 md:space-y-4">
         <PromoCodeDialog
-          locale={locale}
           promotions={promotions?.response}
           productsData={productsData}
         />
@@ -907,11 +722,10 @@ const Order = ({
             )}
           </>
         )}
-        {orderData?.payment_method != "card" && (
+        {orderData?.payment_method == "cash" && (
           <Button
             aria-label={`loading`}
-            // disabled={isLoading || isDisabled}
-            disabled={isLoading}
+            disabled={isLoading || isDisabled}
             onClick={handleSubmit}
             className="mb-3 w-full h-12 flex justify-center items-center gap-1 border-[1px] rounded-xl hover:bg-primary md:mt-5 font-medium text-sm md:text-md"
           >

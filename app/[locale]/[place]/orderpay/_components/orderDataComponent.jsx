@@ -40,7 +40,8 @@ export default function OrderDataComponent({ locale, path }) {
                 return (
                   <Link
                     href={`/${locale}/${path.place}/${
-                      item?.payment_type == "payme" || item?.payment_type == "click"
+                      item?.payment_type == "payme" ||
+                      item?.payment_type == "click"
                         ? "orderpay"
                         : "order"
                     }/${item?.order_id}`}
@@ -103,7 +104,8 @@ export default function OrderDataComponent({ locale, path }) {
               <CarouselItem key={i} className="basis-auto">
                 <Link
                   href={`/${locale}/${path.place}/${
-                    item?.payment_type == "payme" || item?.payment_type == "click"
+                    item?.payment_type == "payme" ||
+                    item?.payment_type == "click"
                       ? "orderpay"
                       : "order"
                   }/${item?.order_id}`}

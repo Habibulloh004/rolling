@@ -2,6 +2,7 @@
 
 import {
   cn,
+  formatNumber,
   formatText,
   getLocalizedCategoryName,
   getLocalizedProduct,
@@ -207,6 +208,11 @@ export default function Header({
       )
     );
   };
+  const totalAmount = products?.reduce((sum, product) => {
+    const price = Number(product?.price?.["1"] / 100 || 0);
+    const count = Number(product?.count || 0);
+    return sum + price * count;
+  }, 0);
 
   const introText = wrapWithLink(
     t("intro"),
@@ -701,8 +707,8 @@ export default function Header({
         )}
       </header>
       {/* Fixed Cart at Bottom */}
-      {isScrolled && !pathName?.includes("/cart") && products?.length > 0 && (
-        <div className="fixed bottom-4 right-4 z-50">
+      {products?.length > 0 && !pathName?.includes("/cart") && (
+        <div className="bg-white sm:hidden fixed w-full bottom-0 z-50 p-2">
           <Link
             href={
               param?.place !== "branch"
@@ -711,28 +717,55 @@ export default function Header({
                     pathName
                   )}/cart?spot=${spot}&table_id=${table_id}&table_num=${table_num}&service=${service}`
             }
-            className="flex items-center relative"
+            className="block"
           >
-            <div className="relative group">
-              <div className="absolute -inset-1 bg-gradient-to-r from-blue-400 to-green-400 rounded-full opacity-75 animate-wave"></div>
-              <div className="relative bg-white p-2 rounded-full shadow-lg">
-                <span className="hidden md:block">
-                  <ResponsiveSVG size="35" color="hsla(167, 100%, 13%, 1)" />
-                </span>
-                <span className="block md:hidden">
-                  <ResponsiveSVG size="30" color="hsla(167, 100%, 13%, 1)" />
-                </span>
-                {products.length > 0 && (
-                  <div className="relative">
-                    <span className="textSmall3 absolute -top-12 -right-3 size-5 md:size-6 rounded-full bg-red-500 flex items-center justify-center text-white">
-                      {products?.length}
-                    </span>
-                  </div>
-                )}
-              </div>
+            <div className="bg-primary w-full flex items-center justify-between px-4 py-3 rounded-[999px] text-white font-semibold shadow-lg">
+              <span className="bg-white text-primary w-6 h-6 flex items-center justify-center rounded-full text-sm font-bold">
+                {products?.length}
+              </span>
+              <span>{allT("payment_sum")}</span>
+              <span>
+                {formatNumber(totalAmount)} {allT("sum")}
+              </span>
             </div>
           </Link>
         </div>
+      )}
+
+      {isScrolled && !pathName?.includes("/cart") && products?.length > 0 && (
+        <>
+          <div className="max-sm:hidden fixed bottom-4 right-4 z-50">
+            <Link
+              href={
+                param?.place !== "branch"
+                  ? `${getUrl(pathName)}/cart`
+                  : `${getUrl(
+                      pathName
+                    )}/cart?spot=${spot}&table_id=${table_id}&table_num=${table_num}&service=${service}`
+              }
+              className="flex items-center relative"
+            >
+              <div className="relative group">
+                <div className="absolute -inset-1 bg-gradient-to-r from-blue-400 to-green-400 rounded-full opacity-75 animate-wave"></div>
+                <div className="relative bg-white p-2 rounded-full shadow-lg">
+                  <span className="hidden md:block">
+                    <ResponsiveSVG size="35" color="hsla(167, 100%, 13%, 1)" />
+                  </span>
+                  <span className="block md:hidden">
+                    <ResponsiveSVG size="30" color="hsla(167, 100%, 13%, 1)" />
+                  </span>
+                  {products.length > 0 && (
+                    <div className="relative">
+                      <span className="textSmall3 absolute -top-12 -right-3 size-5 md:size-6 rounded-full bg-red-500 flex items-center justify-center text-white">
+                        {products?.length}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </Link>
+          </div>
+        </>
       )}
       {param?.place !== "branch" && !cl && (
         <div className={cn(`bg-secondary text-primary text-center`)}>

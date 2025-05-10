@@ -1,5 +1,11 @@
 "use server";
-import { url, posterToken, posterUrl, production } from "@/lib/utils";
+import {
+  url,
+  posterToken,
+  posterUrl,
+  production,
+  urlRender,
+} from "@/lib/utils";
 import { cookies } from "next/headers";
 
 export async function sendSmsToUser(code, phone) {
@@ -53,6 +59,21 @@ export async function getOrder(id) {
   };
 
   const res = fetch(`${url}/get_order/${id}`, requestOptions)
+    .then((response) => response.json())
+    .then((result) => result)
+    .catch((error) => console.error(error));
+  return res;
+}
+export async function getOrderRender(id) {
+  const myHeaders = new Headers();
+
+  const requestOptions = {
+    method: "GET",
+    headers: myHeaders,
+    redirect: "follow",
+  };
+
+  const res = fetch(`${urlRender}/api/transaction/${id}`, requestOptions)
     .then((response) => response.json())
     .then((result) => result)
     .catch((error) => console.error(error));

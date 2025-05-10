@@ -65,6 +65,9 @@ body {
   outline: none;
   border: 1px solid rgba(67, 103, 78);
 }
+.dads{
+  color:#93b59d;
+}
 .gray > * {
   background-color: transparent;
   border: 2px solid hsl(0 0% 89.8%) !important;

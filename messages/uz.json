@@ -1,5 +1,6 @@
 {
   "All": {
+    "payment_sum":"To'lov summasi",
     "goto": "Sahifaga o'tish",
     "seeCategory": "Barcha taom toifalarini ko'rish",
     "seeNew": "Yangi va Ommabop Taomlarni Ko‘rish",
@@ -340,6 +341,7 @@
       "pay_error": "Kartangizni tekshiring, to'lov tasdiqlanmadi!!!",
       "pay_success": "To'lov muvaffaqiyatli amalga oshirildi!",
       "you_not_pay": "Siz to'lovni amalga oshirmadingiz!!!",
+      "you_not_select": "Siz to'lov turini tanlamadingiz!!!",
       "you_not_check": "Siz to'lovni tasdiqlamadingiz!!!",
       "auth_title": "Ro'yxatdan o'ting va Rolling Sushi’dan yanada ko'proq zavq oling!",
       "auth_desc1": "Faqat ro'yxatdan o'tgan foydalanuvchilar bizning bonus tizimimizda ishtirok etib, har bir buyurtmadan 10% gacha bonus olishadi. Ularni har qanday taomni to'lashda 100% ishlatishingiz mumkin!",
@@ -383,6 +385,7 @@
       "success_del": "Promo-kod o'chirildi",
       "success": "Promo-kod muvaffaqiyatli qo'llanildi",
       "titleDialog": "Promo-kod",
+      "titleDialogAdd": "Qo'shilgan mahsulotlar",
       "submit_btn": "Qo'llash",
       "error_min_sum": "minimal summa bo'lishi kerak",
       "active_promo": "Promo-kod qo'llanilgan",
@@ -398,7 +401,10 @@
       "status_delivery": "Yetkazib berish",
       "status_pickup": "O'zingiz olib ketish",
       "status_spot": "Muassasalar",
-      "my_order": "Sizning buyurtmangiz"
+      "my_order": "Sizning buyurtmangiz",
+      "waiting":"To‘lov kutilmoqda",
+      "waiting_order": "Buyurtma uchun hali to‘lov amalga oshirilmagan. Iltimos, qayta urinib ko‘ring.",
+      "try_again": "Qayta urinish"
     },
     "delivered": "Yetkazildi",
     "info": "Nimani yaxshilashimiz kerak? Sizning fikringizni kutamiz!"

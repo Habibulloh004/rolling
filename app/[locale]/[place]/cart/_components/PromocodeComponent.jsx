@@ -16,15 +16,19 @@ import { useOrderStore, useProductStore } from "@/store";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
+import { formatNumber, getLocalizedProduct, posterUrl } from "@/lib/utils";
+import Image from "next/image";
 
-export default function PromoCodeDialog({ promotions, productsData }) {
+export default function PromoCodeDialog({ locale, promotions, productsData }) {
   const promocodeT = useTranslations("Order.Promocode");
+  const all = useTranslations("All");
   const [promoCode, setPromoCode] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const { orderData, setOrderData, totalSum } = useOrderStore();
   const { products, setProductsData } = useProductStore();
   const [error, setError] = useState(null);
   const [hovered, setHovered] = useState(true);
+  const [addingProducts, setAddingProducts] = useState([]);
 
   const handleRemovePromo = () => {
     setOrderData({ ...orderData, promocode: null });
@@ -77,7 +81,8 @@ export default function PromoCodeDialog({ promotions, productsData }) {
           promocode: findPromo,
           count: findPromo?.params?.bonus_products_pcs,
         }));
-
+      console.log(filterProducts);
+      setAddingProducts(filterProducts);
       if (totalSum >= findPromo?.params?.conditions[0]?.sum / 100) {
         setProductsData([...products, ...filterProducts]);
         setError(null);
@@ -87,7 +92,6 @@ export default function PromoCodeDialog({ promotions, productsData }) {
           duration: 2000,
         });
         setPromoCode("");
-        setIsOpen(false);
         setHovered(false);
       } else {
         setError({
@@ -116,7 +120,6 @@ export default function PromoCodeDialog({ promotions, productsData }) {
         handleRemovePromo();
       }
     }
-    
   }, [totalSum]);
 
   return (
@@ -186,44 +189,109 @@ export default function PromoCodeDialog({ promotions, productsData }) {
         >
           <DialogHeader>
             <DialogTitle className="text-2xl w-full text-start">
-              {promocodeT("titleDialog")}
+              {addingProducts?.length > 0 ? (
+                <h1>{promocodeT("titleDialogAdd")}</h1>
+              ) : (
+                <h1>{promocodeT("titleDialog")}</h1>
+              )}
             </DialogTitle>
             <DialogDescription />
           </DialogHeader>
+          {addingProducts?.length > 0 ? (
+            <>
+              <div className="overflow-y-scroll flex flex-col w-full simple-scrollbar gap-5">
+                {addingProducts
+                  ?.slice()
+                  ?.reverse()
+                  ?.map((item, i) => {
+                    const localizedName = getLocalizedProduct(
+                      item?.product_production_description,
+                      locale,
+                      "name"
+                    );
+                    return (
+                      <div
+                        key={item.product_id}
+                        className="flex gap-2 md:gap-4 mr-4"
+                      >
+                        <Image
+                          src={
+                            item?.photo_origin
+                              ? `${posterUrl}${item.photo_origin}`
+                              : "/empty.jpg"
+                          }
+                          alt="product"
+                          width={100}
+                          height={100}
+                          className="border max-sm:w-20 max-sm:h-20 object-cover aspect-square rounded-md col-span-2 row-span-2"
+                        />
+                        <div className="w-full flex flex-col justify-between min-h-16 md:min-h-20 gap-2 md:gap-4 relative">
+                          <div className="w-full row-span-1 h-full flex items-start justify-between gap-y-3 gap-1">
+                            <p className="font-semibold textSmall3">
+                              {localizedName}
+                            </p>
+                          </div>
+                          <div className="col-span-3 row-span-1 flex justify-between item-start sm:items-center">
+                            <p className="font-semibold textSmall2 leading-5 w-full">
+                              {item?.price["1"]
+                                ? `${formatNumber(item.price["1"] / 100)} ${all(
+                                    "sum"
+                                  )}`
+                                : "Price not available"}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+              </div>
+              <Button
+                onClick={() => {
+                  setAddingProducts([]);
+                  setIsOpen(false);
+                }}
+                className="w-full h-12"
+              >
+                OK
+              </Button>
+            </>
+          ) : (
+            <>
+              {/* Input */}
+              <div className="space-y-1">
+                <Input
+                  placeholder={promocodeT("input_pls")}
+                  value={promoCode}
+                  className={`h-12 ${
+                    error ? "border-red-500 focus-visible:ring-red-500" : ""
+                  }`}
+                  onChange={(e) => {
+                    setPromoCode(e.target.value);
+                    setError(null);
+                  }}
+                />
 
-          {/* Input */}
-          <div className="space-y-1">
-            <Input
-              placeholder={promocodeT("input_pls")}
-              value={promoCode}
-              className={`h-12 ${
-                error ? "border-red-500 focus-visible:ring-red-500" : ""
-              }`}
-              onChange={(e) => {
-                setPromoCode(e.target.value);
-                setError(null);
-              }}
-            />
+                {/* Error chiqishi */}
+                <AnimatePresence>
+                  {error && (
+                    <motion.p
+                      initial={{ opacity: 0, y: -5 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -5 }}
+                      transition={{ duration: 0.25 }}
+                      className="text-sm text-red-500 font-medium"
+                    >
+                      {error.title}
+                    </motion.p>
+                  )}
+                </AnimatePresence>
+              </div>
 
-            {/* Error chiqishi */}
-            <AnimatePresence>
-              {error && (
-                <motion.p
-                  initial={{ opacity: 0, y: -5 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -5 }}
-                  transition={{ duration: 0.25 }}
-                  className="text-sm text-red-500 font-medium"
-                >
-                  {error.title}
-                </motion.p>
-              )}
-            </AnimatePresence>
-          </div>
-
-          <Button onClick={handleApply} className="w-full h-12">
-            {promocodeT("submit_btn")}
-          </Button>
+              <Button onClick={handleApply} className="w-full h-12">
+                {promocodeT("submit_btn")}
+              </Button>
+            </>
+          )}
         </DialogContent>
       </Dialog>
     </div>

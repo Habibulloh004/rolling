@@ -1,5 +1,6 @@
 {
   "All": {
+    "payment_sum":"Payment amount",
     "goto": "Go to the page",
     "seeCategory": "View all dish categories",
     "seeNew": "View New Arrivals and Popular Dishes",
@@ -124,14 +125,14 @@
       "geolocation": "Please allow location access to determine your address!",
       "select_map": "Select from the map",
       "delete_address": "Address deleted successfully!",
-      "building_number":"Building number",
-      "building_number_pls":"12",
-      "entrance_number":"Entrance number",
-      "entrance_number_pls":"4",
-      "floor_number":"Floor number",
-      "floor_number_pls":"5",
-      "apartment_number":"Apartment number",
-      "apartment_number_pls":"34"
+      "building_number": "Building number",
+      "building_number_pls": "12",
+      "entrance_number": "Entrance number",
+      "entrance_number_pls": "4",
+      "floor_number": "Floor number",
+      "floor_number_pls": "5",
+      "apartment_number": "Apartment number",
+      "apartment_number_pls": "34"
     }
   },
   "Form": {
@@ -340,6 +341,7 @@
       "pay_error": "Check your card, payment was not confirmed!!!",
       "pay_success": "Payment was successfully completed!",
       "you_not_pay": "You did not make the payment!!!",
+      "you_not_select": "You have not selected a payment type!!!",
       "you_not_check": "You did not confirm the payment!!!",
       "auth_title": "Sign up and enjoy even more pleasure from Rolling Sushi!",
       "auth_desc1": "Only registered users participate in our bonus system and receive up to 10% bonuses on every order. You can use them 100% when paying for any dish!",
@@ -383,6 +385,7 @@
       "success_del": "Promo code has been removed",
       "success": "Promo code applied successfully",
       "titleDialog": "Promo Code",
+      "titleDialogAdd": "Added products",
       "submit_btn": "Apply",
       "error_min_sum": "a minimum amount is required",
       "active_promo": "Promo code applied",
@@ -400,7 +403,10 @@
       "status_delivery": "Delivery",
       "status_pickup": "Pickup",
       "status_spot": "Establishments",
-      "my_order": "Your order"
+      "my_order": "Your order",
+      "waiting": "Payment is pending",
+      "waiting_order": "The payment for the order has not been completed yet. Please try again.",
+      "try_again": "Try again"
     }
   },
   "Search": {

@@ -1,5 +1,11 @@
 "use server";
-import { posterToken, posterUrl, production, url } from "@/lib/utils";
+import {
+  posterToken,
+  posterUrl,
+  production,
+  url,
+  urlRender,
+} from "@/lib/utils";
 import { cookies } from "next/headers";
 
 export async function createClient(data) {
@@ -285,6 +291,51 @@ export async function checkCard(data) {
   };
 
   const res = fetch(`${url}/pay_confirm`, requestOptions)
+    .then((response) => response.json())
+    .then((result) => {
+      return result;
+    })
+    .catch((error) => console.error(error));
+  return res;
+}
+
+export async function PaymeCheckout(data) {
+  const myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+  myHeaders.append(
+    "Cookie",
+    "pos_session=V2YAPQJhB2pXfAghVTwGMw9tA2pQJwJxV25aIwdzVmkFYwdvAQxXN1NnAidXOgAkVjwKY1MyBDoAcFVlXWwMPVZrXmUBZVxrCTZTZldhBG5XZgAwAmcHYlcwCGtVMQZkD24DNVA3AmFXPVo1BzBWZgU5BzQBa1c%2FUzYCJ1c6ACRWPAphUzAEOgBwVW9deAxTVmteMAFiXHgJZVMmV3YEL1c8AHQCbgdhVzQIaFUkBjMPZANlUCsCM1c%2BWmgHLlYyBSIHMwFiV2hTIQI%2BV3IAbVY3CmBTOgQiACdVdV1tDH5WVV41AWFcbwluUyFXJwQ2V3QAPQJmB2FXPQhwVVYGbQ8uAyRQaAJjV2VaAgd1Vm4FeAdoAT5XO1MsAjJXLwBjVjUKflMwBCIAaVV1XTIMPVY5Xm4BJFxmCWFTJldxBFJXZgBkAiAHOVdxCDtVcgZ7D38Da1BsAjhXOlpnBzNWNgU5BzEBa1doUzsCMlc6ACRWPAppUzoEIgAnVXVdbQx%2BVlVeMAFnXH4JYVN3Vz4Eflc9ADcCbgdyVyUIaVV7"
+  );
+  const requestOptions = {
+    method: "POST",
+    headers: myHeaders,
+    body: JSON.stringify(data),
+    redirect: "follow",
+  };
+
+  const res = fetch(`${urlRender}/api/payme/checkout`, requestOptions)
+    .then((response) => response.json())
+    .then((result) => {
+      return result;
+    })
+    .catch((error) => console.error(error));
+  return res;
+}
+export async function ClickCheckout(data) {
+  const myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+  myHeaders.append(
+    "Cookie",
+    "pos_session=V2YAPQJhB2pXfAghVTwGMw9tA2pQJwJxV25aIwdzVmkFYwdvAQxXN1NnAidXOgAkVjwKY1MyBDoAcFVlXWwMPVZrXmUBZVxrCTZTZldhBG5XZgAwAmcHYlcwCGtVMQZkD24DNVA3AmFXPVo1BzBWZgU5BzQBa1c%2FUzYCJ1c6ACRWPAphUzAEOgBwVW9deAxTVmteMAFiXHgJZVMmV3YEL1c8AHQCbgdhVzQIaFUkBjMPZANlUCsCM1c%2BWmgHLlYyBSIHMwFiV2hTIQI%2BV3IAbVY3CmBTOgQiACdVdV1tDH5WVV41AWFcbwluUyFXJwQ2V3QAPQJmB2FXPQhwVVYGbQ8uAyRQaAJjV2VaAgd1Vm4FeAdoAT5XO1MsAjJXLwBjVjUKflMwBCIAaVV1XTIMPVY5Xm4BJFxmCWFTJldxBFJXZgBkAiAHOVdxCDtVcgZ7D38Da1BsAjhXOlpnBzNWNgU5BzEBa1doUzsCMlc6ACRWPAppUzoEIgAnVXVdbQx%2BVlVeMAFnXH4JYVN3Vz4Eflc9ADcCbgdyVyUIaVV7"
+  );
+  const requestOptions = {
+    method: "POST",
+    headers: myHeaders,
+    body: JSON.stringify(data),
+    redirect: "follow",
+  };
+
+  const res = fetch(`${urlRender}/api/click/checkout`, requestOptions)
     .then((response) => response.json())
     .then((result) => {
       return result;

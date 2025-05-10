@@ -910,8 +910,8 @@ const Order = ({
         {orderData?.payment_method != "card" && (
           <Button
             aria-label={`loading`}
-            // disabled={isLoading || isDisabled}
-            disabled={isLoading}
+            disabled={isLoading || isDisabled}
+            // disabled={isLoading}
             onClick={handleSubmit}
             className="mb-3 w-full h-12 flex justify-center items-center gap-1 border-[1px] rounded-xl hover:bg-primary md:mt-5 font-medium text-sm md:text-md"
           >

@@ -150,7 +150,7 @@ const Products = ({ locale, place }) => {
                           <h1 className="text-green-700 font-medium">
                             {item?.promocode?.name?.split("$")[1]}
                           </h1>
-                          <div>
+                          <div className="w-4 h-4 mb-4">
                             <Ticket
                               className="transform rotate-45 w-full text-green-500"
                               size={32}

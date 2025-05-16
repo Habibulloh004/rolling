@@ -82,8 +82,9 @@ export default function PromoCodeDialog({ locale, promotions, productsData }) {
           count: findPromo?.params?.bonus_products_pcs,
         }));
       console.log(filterProducts);
-      setAddingProducts(filterProducts);
       if (totalSum >= findPromo?.params?.conditions[0]?.sum / 100) {
+        setAddingProducts(filterProducts);
+
         setProductsData([...products, ...filterProducts]);
         setError(null);
         setOrderData({ ...orderData, promocode: findPromo });

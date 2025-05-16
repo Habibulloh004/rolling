@@ -423,7 +423,7 @@ const Order = ({
               amount: totalAmount,
               status: payment_method == "payme" ? 0 : 1,
               provider: payment_method,
-              url: `https://rolling.uz/${locale}/${place}/confirmedpay`,
+              url: `https://rolling-omega.vercel.app/${locale}/${place}/confirmedpay`,
             };
             if (auth?.client_id) {
               dataPay.userId = auth?.client_id;
@@ -487,7 +487,7 @@ const Order = ({
               amount: totalAmount,
               status: payment_method == "payme" ? 0 : 1,
               provider: payment_method,
-              url: `https://rolling.uz/${locale}/${place}/confirmedpay`,
+              url: `https://rolling-omega.vercel.app/${locale}/${place}/confirmedpay`,
             };
             if (auth?.client_id) {
               dataPay.userId = auth?.client_id;

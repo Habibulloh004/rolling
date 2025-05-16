@@ -714,7 +714,7 @@ export default function Header({
           pathName?.includes("/login") ||
           pathName?.includes("/sign-up")
         ) && (
-          <div className="bg-white sm:hidden fixed w-full bottom-0 z-50 p-2">
+          <div className="bg-white sm:hidden fixed w-full bottom-0 z-40 p-2">
             <Link
               href={
                 param?.place !== "branch"
@@ -746,7 +746,7 @@ export default function Header({
         ) &&
         products?.length > 0 && (
           <>
-            <div className="max-sm:hidden fixed bottom-4 right-4 z-50">
+            <div className="max-sm:hidden fixed bottom-4 right-4 z-40">
               <Link
                 href={
                   param?.place !== "branch"

@@ -439,8 +439,8 @@ const Order = ({
             }
             console.log({ res });
             if (res) {
-              window.open(res.url, "_blank");
-              router.push(`/${locale}/${place}/confirmedpay/${res?.order_id}`);
+              router.push(res.url);
+              // router.push(`/${locale}/${place}/confirmedpay/${res?.order_id}`);
               const nowOrder = {
                 ...pickupData,
                 order_id: res.order_id,
@@ -506,8 +506,8 @@ const Order = ({
             console.log("dataPay", JSON.stringify(dataPay));
 
             if (res) {
-              window.open(res.url, "_blank");
-              router.push(`/${locale}/${place}/confirmedpay/${res?.order_id}`);
+              router.push(res.url);
+              // router.push(`/${locale}/${place}/confirmedpay/${res?.order_id}`);
               setOrderData({
                 spot_id: 0,
                 delivery_price: 10000,

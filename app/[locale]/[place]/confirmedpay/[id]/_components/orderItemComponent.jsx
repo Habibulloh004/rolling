@@ -126,16 +126,22 @@ export default function OrderItemComponent({
       <div className="w-full lg:w-11/12 mx-auto flex flex-col items-center justify-center gap-4 mt-10">
         <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-5 rounded-lg shadow-sm w-full text-center">
           <h2 className="text-xl font-semibold">⚠️ {orderText("waiting")} </h2>
-          <p className="mt-2">
-            {orderText("waiting_order")}
-          </p>
+          <p className="mt-2">{orderText("waiting_order")}</p>
         </div>
         <Button
           onClick={() => window.location.reload()}
-          className="bg-yellow-500 hover:bg-yellow-600 text-white"
+          className="lg:h-12 rounded-xl bg-yellow-500 hover:bg-yellow-600 text-white"
         >
           {orderText("try_again")}
         </Button>
+        <Link href={`/${locale}/${param?.place}`}>
+          <Button
+            aria-label={`order menu`}
+            className="w-full lg:h-12 rounded-xl bg-[#43674E] hover:bg-[#43674E]"
+          >
+            {orderText("menu_btn")}
+          </Button>
+        </Link>
       </div>
     );
   }

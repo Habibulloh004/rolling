@@ -26,10 +26,7 @@ import {
 } from "@/components/ui/carousel";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import {
-  checkCard,
-  payCard,
-} from "@/actions/post";
+import { checkCard, payCard } from "@/actions/post";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -97,28 +94,28 @@ const Payment = ({ locale, place, auth }) => {
       type: "cash",
     },
     { id: 3, icon: `/assets/payme.webp`, text: "PayMe", type: "payme" },
-    { id: 4, icon: `/assets/click.webp`, text: "Click", type: "click" },
+    // { id: 4, icon: `/assets/click.webp`, text: "Click", type: "click" },
   ];
 
   const handleSelectPayment = (item) => {
-    if (!auth?.client_id && !spot && item?.type == "cash") {
-      toast.error(
-        <div className="w-full h-full flex justify-start items-center">
-          <h1 className="w-full">{all("no_auth")} </h1>
-          <Link
-            href={`/${locale}/${place}/login`}
-            className="min-w-[80px] flex justify-center items-center h-full bg-black text-white rounded-md px-3 py-2"
-          >
-            {all("sign_in")}
-          </Link>
-        </div>
-      );
-    } else {
-      setOrderData({
-        ...orderData,
-        payment_method: item.type,
-      });
-    }
+    // if (!auth?.client_id && !spot && item?.type == "cash") {
+    //   toast.error(
+    //     <div className="w-full h-full flex justify-start items-center">
+    //       <h1 className="w-full">{all("no_auth")} </h1>
+    //       <Link
+    //         href={`/${locale}/${place}/login`}
+    //         className="min-w-[80px] flex justify-center items-center h-full bg-black text-white rounded-md px-3 py-2"
+    //       >
+    //         {all("sign_in")}
+    //       </Link>
+    //     </div>
+    //   );
+    // } else {
+    setOrderData({
+      ...orderData,
+      payment_method: item.type,
+    });
+    // }
   };
 
   function getRandomDatePlusNumber() {
@@ -344,24 +341,24 @@ const Payment = ({ locale, place, auth }) => {
     }
   }, []);
 
-  useEffect(() => {
-    console.log(client);
+  // useEffect(() => {
+  //   console.log(client);
 
-    const orderDataLocal = localStorage.getItem("orderData")
-      ? JSON.parse(localStorage.getItem("orderData"))
-      : null;
-    if (
-      !client &&
-      orderDataLocal?.payment_method == "cash" &&
-      !spot &&
-      orderDataLocal
-    ) {
-      setOrderData({
-        ...orderDataLocal,
-        payment_method: "",
-      });
-    }
-  }, [auth, client, orderData?.payment_method]);
+  //   const orderDataLocal = localStorage.getItem("orderData")
+  //     ? JSON.parse(localStorage.getItem("orderData"))
+  //     : null;
+  //   if (
+  //     !client &&
+  //     orderDataLocal?.payment_method == "cash" &&
+  //     !spot &&
+  //     orderDataLocal
+  //   ) {
+  //     setOrderData({
+  //       ...orderDataLocal,
+  //       payment_method: "",
+  //     });
+  //   }
+  // }, [auth, client, orderData?.payment_method]);
 
   useEffect(() => {
     // Sahifa refresh bo'lganda qayta hisoblashni tiklash
@@ -458,11 +455,6 @@ const Payment = ({ locale, place, auth }) => {
                   onClick={() => handleSelectPayment(item)}
                   key={item.id}
                   className={`relative w-[118px] h-full bg-transparent shadow-none rounded-[7px] border-[#004032] border-b-2 p-3 flex flex-col justify-start gap-1
-                  ${
-                    !auth?.client_id && item?.type == "cash" && !spot
-                      ? "opacity-[0.5]"
-                      : ""
-                  }
                   ${paymentData && paymentData?.payment_id && "opacity-[0.5] "}
                   ${
                     orderData?.payment_method === item?.type
@@ -481,34 +473,6 @@ const Payment = ({ locale, place, auth }) => {
                     {item.text}
                   </p>
                 </Button>
-                {!auth?.client_id && item?.type == "cash" && !spot && (
-                  <div
-                    onClick={(e) => {
-                      e.stopPropagation();
-                    }}
-                    className="absolute top-0 right-0"
-                  >
-                    <div className="relative group">
-                      <CircleAlert />
-                      {/* Hover content that will be shown when parent (group) is hovered */}
-                      <div className="hidden max-sm:w-[280px] w-[400px] bg-primary text-white z-20 textSmall1 group-hover:block absolute bottom-6 lg:bottom-5 -left-[230px] sm:left-[-50px] md:left-5 mt-2 p-4 shadow-lg space-y-2 rounded-md">
-                        <h1 className="font-semibold">
-                          {paymentText("auth_title")}
-                        </h1>
-                        <p>{paymentText("auth_desc1")}</p>
-                        <p>{paymentText("auth_desc2")}</p>
-                        <div className="flex justify-end items-end w-full">
-                          <Link
-                            href={`/${locale}/${place}/login`}
-                            className="border flex justify-end font-semibold items-center h-full text-white rounded-md px-2 py-1"
-                          >
-                            {all("sign_in")}
-                          </Link>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
               </div>
             ))}
           </div>{" "}

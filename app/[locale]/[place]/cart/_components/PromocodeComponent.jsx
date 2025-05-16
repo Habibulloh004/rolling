@@ -246,15 +246,17 @@ export default function PromoCodeDialog({ locale, promotions, productsData }) {
                     );
                   })}
               </div>
-              <Button
-                onClick={() => {
-                  setAddingProducts([]);
-                  setIsOpen(false);
-                }}
-                className="w-full h-12"
-              >
-                OK
-              </Button>
+              <div className="flex justify-end items-end gap-2">
+                <Button
+                  onClick={() => {
+                    setAddingProducts([]);
+                    setIsOpen(false);
+                  }}
+                  className="h-10 w-16"
+                >
+                  OK
+                </Button>
+              </div>
             </>
           ) : (
             <>

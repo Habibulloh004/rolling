@@ -168,7 +168,7 @@ export default function Header({
         currentMinutes < openedMinutes && currentMinutes >= closedMinutes;
     }
 
-    setIsDisabled(false);
+    setIsDisabled(isDisabled);
   }, [apiTime]);
 
   useEffect(() => {

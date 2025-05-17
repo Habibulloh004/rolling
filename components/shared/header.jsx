@@ -714,7 +714,7 @@ export default function Header({
           pathName?.includes("/login") ||
           pathName?.includes("/sign-up")
         ) && (
-          <div className="bg-white sm:hidden fixed w-full bottom-0 z-40 p-2">
+          <div className="bg-white sm:hidden fixed justify-center items-center w-full bottom-0 z-40 p-2">
             <Link
               href={
                 param?.place !== "branch"
@@ -723,9 +723,9 @@ export default function Header({
                       pathName
                     )}/cart?spot=${spot}&table_id=${table_id}&table_num=${table_num}&service=${service}`
               }
-              className="block"
+              className="w-11/12  mx-auto block"
             >
-              <div className="bg-primary w-full flex items-center justify-between px-4 py-3 rounded-[999px] text-white font-semibold shadow-lg">
+              <div className="bg-primary w-full text-sm flex items-center justify-between px-4 py-4 rounded-[999px] text-white font-semibold shadow-lg">
                 <span className="bg-white text-primary w-6 h-6 flex items-center justify-center rounded-full text-sm font-bold">
                   {products?.length}
                 </span>

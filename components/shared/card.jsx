@@ -1,7 +1,13 @@
 "use client";
 
 import CustomImage from "@/components/shared/customImage";
-import { cn, formatNumber, posterUrl, truncateText } from "@/lib/utils";
+import {
+  cn,
+  formatNumber,
+  getLocalizedProduct,
+  posterUrl,
+  truncateText,
+} from "@/lib/utils";
 import { useOrderStore, useProductStore, useStore } from "@/store";
 import { Heart, Minus, Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -30,8 +36,8 @@ const Card = ({
     const favorites = JSON.parse(localStorage.getItem("isFavorites")) || [];
     setIsFavorites(favorites);
   }, []);
-
   const handleAddProduct = () => {
+    
     setProducts(item);
   };
   const handleIncrementCount = () => {

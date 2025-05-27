@@ -412,6 +412,15 @@ const Order = ({
             });
             setSelectCard(null);
             setProductsData([]);
+            window.dataLayer?.push({
+              event: "purchase",
+              ecommerce: {
+                transaction_id: Math.floor(100000 + Math.random() * 900000),
+                value: totalAmount, // umumiy narx
+                currency: "UZS", // valyuta
+                items: spotData?.products,
+              },
+            });
           }
         } else {
           if (activeTab == "pickup") {
@@ -473,6 +482,15 @@ const Order = ({
               setSelectCard(null);
               setPaymentData(null);
               setProductsData([]);
+              window.dataLayer?.push({
+                event: "purchase",
+                ecommerce: {
+                  transaction_id: Math.floor(100000 + Math.random() * 900000),
+                  value: totalAmount, // umumiy narx
+                  currency: "UZS", // valyuta
+                  items: spotData?.products,
+                },
+              });
               if (auth?.client_id) {
                 await updateClient({
                   client_id: auth?.client_id,
@@ -541,6 +559,15 @@ const Order = ({
               setProductsData([]);
               setSelectCard(null);
               toast.success(all("order_created"));
+              window.dataLayer?.push({
+                event: "purchase",
+                ecommerce: {
+                  transaction_id: Math.floor(100000 + Math.random() * 900000),
+                  value: totalAmount, // umumiy narx
+                  currency: "UZS", // valyuta
+                  items: spotData?.products,
+                },
+              });
               if (auth?.client_id) {
                 await updateClient({
                   client_id: auth?.client_id,
@@ -614,6 +641,15 @@ const Order = ({
             setProductsData([]);
             toast.success(all("order_created"));
             setIsSuccess(true);
+            window.dataLayer?.push({
+              event: "purchase",
+              ecommerce: {
+                transaction_id: transaction_id,
+                value: totalAmount, // umumiy narx
+                currency: "UZS", // valyuta
+                items: spotData?.products,
+              },
+            });
           }
         } else {
           if (activeTab == "pickup") {
@@ -659,6 +695,15 @@ const Order = ({
                   client_groups_id_client: clinetGroupId,
                 });
               }
+              window.dataLayer?.push({
+                event: "purchase",
+                ecommerce: {
+                  transaction_id: res?.order_id,
+                  value: totalAmount, // umumiy narx
+                  currency: "UZS", // valyuta
+                  items: spotData?.products,
+                },
+              });
               toast.success(all("order_created"));
               router.push(`/${locale}/${place}/confirmed/${res?.order_id}`);
             }
@@ -699,6 +744,15 @@ const Order = ({
               setSelectCard(null);
               toast.success(all("order_created"));
               router.push(`/${locale}/${place}/confirmed/${res?.order_id}`);
+              window.dataLayer?.push({
+                event: "purchase",
+                ecommerce: {
+                  transaction_id: res?.order_id,
+                  value: totalAmount, // umumiy narx
+                  currency: "UZS", // valyuta
+                  items: spotData?.products,
+                },
+              });
               if (auth?.client_id) {
                 await updateClient({
                   client_id: auth?.client_id,

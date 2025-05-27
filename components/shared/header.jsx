@@ -93,7 +93,6 @@ export default function Header({
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-
   useEffect(() => {
     if (searchTerm.trim() === "") {
       setFilteredCategories([]);
@@ -602,7 +601,27 @@ export default function Header({
                 <LngChange param={param} />
               </div>
               {/* Cart */}
-              <div>
+              <div
+                onClick={() => {
+                  window.dataLayer?.push({
+                    event: "add_to_cart",
+                    ecommerce: {
+                      items: products?.map((prd) => {
+                        const localizedName = getLocalizedProduct(
+                          prd.product_production_description,
+                          locale,
+                          "name"
+                        );
+                        return {
+                          item_name: localizedName,
+                          price: formatNumber(prd?.price["1"] / 100),
+                          quantity: prd?.count,
+                        };
+                      }),
+                    },
+                  });
+                }}
+              >
                 <Link
                   href={
                     param?.place !== "branch"
@@ -714,7 +733,28 @@ export default function Header({
           pathName?.includes("/login") ||
           pathName?.includes("/sign-up")
         ) && (
-          <div className="bg-white sm:hidden fixed justify-center items-center w-full bottom-0 z-40 p-2">
+          <div
+            onClick={() => {
+              window.dataLayer?.push({
+                event: "add_to_cart",
+                ecommerce: {
+                  items: products?.map((prd) => {
+                    const localizedName = getLocalizedProduct(
+                      prd.product_production_description,
+                      locale,
+                      "name"
+                    );
+                    return {
+                      item_name: localizedName,
+                      price: formatNumber(prd?.price["1"] / 100),
+                      quantity: prd?.count,
+                    };
+                  }),
+                },
+              });
+            }}
+            className="bg-white sm:hidden fixed justify-center items-center w-full bottom-0 z-40 p-2"
+          >
             <Link
               href={
                 param?.place !== "branch"
@@ -746,7 +786,28 @@ export default function Header({
         ) &&
         products?.length > 0 && (
           <>
-            <div className="max-sm:hidden fixed bottom-4 right-4 z-40">
+            <div
+              onClick={() => {
+                window.dataLayer?.push({
+                  event: "add_to_cart",
+                  ecommerce: {
+                    items: products?.map((prd) => {
+                      const localizedName = getLocalizedProduct(
+                        prd.product_production_description,
+                        locale,
+                        "name"
+                      );
+                      return {
+                        item_name: localizedName,
+                        price: formatNumber(prd?.price["1"] / 100),
+                        quantity: prd?.count,
+                      };
+                    }),
+                  },
+                });
+              }}
+              className="max-sm:hidden fixed bottom-4 right-4 z-40"
+            >
               <Link
                 href={
                   param?.place !== "branch"

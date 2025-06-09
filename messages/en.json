@@ -9,6 +9,7 @@
     "city": "Rolling Sushi Tashkent",
     "sign_in": "Sign in",
     "review_err": "Register to write a feedback",
+    "review_id_err": "You have not selected an order.",
     "client_err": "There is no such user! Please register.",
     "logErr": "There is an error in your number or password, please try again.",
     "sms_err": "There is an error in the code! Try again.",

@@ -9,6 +9,7 @@
     "city": "Rolling Sushi Toshkent",
     "sign_in": "Kirish",
     "review_err": "Izoh yozish uchun registratsiyadan o'ting",
+    "review_id_err": "Siz buyurtma tanlamadingiz.",
     "client_err": "Bunday foydalanuvchi mavjud emas! Iltimos ro'yxatdan o'ting.",
     "logErr": "Raqamingiz yoki parolda xatolik bor qaytadan urinib ko'ring.",
     "sms_err": "Kodda xatolik bor! Qaytadan urinib ko'ring.",

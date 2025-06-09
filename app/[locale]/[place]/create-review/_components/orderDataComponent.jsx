@@ -25,6 +25,8 @@ export default function OrderDataComponent({ locale, path }) {
       : [];
     setOrderData(order);
   }, []);
+  console.log(orderData);
+  console.log(orderId);
   return (
     <div className="w-full flex flex-col lg:flex-row gap-5">
       <ReviewForm id={orderId}/>
@@ -49,7 +51,7 @@ export default function OrderDataComponent({ locale, path }) {
                 aria-label={`dataCom title`}
                 onClick={()=>setOrderId(item?.order_id)}
                 type="button"
-                  className={`bg-white rounded-2xl p-5 flex flex-col justify-between w-[300px] duration-300 ${orderId == item?.order_id ? "bg-slate-200" : ""}`}
+                  className={`rounded-2xl p-5 flex flex-col justify-between w-[300px] duration-300 ${orderId == item?.order_id ? "bg-slate-200" : "bg-white"}`}
                 >
                   <div className="flex flex-col gap-2 w-full">
                     <div className="w-full flex justify-between">

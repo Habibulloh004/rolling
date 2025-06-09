@@ -14,10 +14,8 @@ import { Button } from "../ui/button";
 import { Rating } from "react-simple-star-rating";
 import axios from "axios";
 import Cookies from "js-cookie";
-import { useToast } from "@/hooks/use-toast";
 
 export default function ReviewForm({id}) {
-  const { toast } = useToast()
   const ReviewValidation = UpdateReviewValidation();
   const allT = useTranslations("All");
   const formT = useTranslations("Form");
@@ -45,11 +43,12 @@ export default function ReviewForm({id}) {
   }, []);
 
   const onSubmit = async (values) => {
+    if(!id){
+      toast.error(allT("review_id_err"));
+      return;
+    }
     if (!Cookies.get("client")) {
-      toast({
-        variant: "destructive",
-        title: allT("review_err"),
-      });
+      toast.error(allT("review_err"));
       return;
     }
     setIsLoading(true);

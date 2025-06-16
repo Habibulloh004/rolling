@@ -85,6 +85,7 @@ const Order = ({
   productsData,
 }) => {
   const all = useTranslations("All");
+  const promocodeT = useTranslations("Order.Promocode");
   const total = useTranslations("Cart.Total");
   const { activeTab, isDisabled } = useStore();
   const [isLoading, setIsLoading] = useState(false);
@@ -229,6 +230,9 @@ const Order = ({
           promocode?.name?.split("$")[1]
         }`;
       }
+      if (orderData?.promocodePrice > 0) {
+        commentSpot = `${commentSpot}\nПромокодSum: ${orderData?.promocodePrice}`;
+      }
 
       if (spotIdSpot) {
         commentSpot = `${
@@ -260,6 +264,10 @@ const Order = ({
       let totalAmount = Number(totalSum) - (pay_bonus ? Number(pay_bonus) : 0);
       if (activeTab == "delivery") {
         totalAmount += Number(delivery_price);
+      }
+
+      if (orderData?.promocodePrice > 0) {
+        totalAmount -= Number(orderData?.promocodePrice);
       }
 
       if (service == "waiter") {
@@ -797,6 +805,8 @@ const Order = ({
     }
   }, []);
 
+  console.log(orderData);
+
   return (
     <div className="w-full flex flex-col lg:pt-6 gap-5">
       <div className="max-lg:hidden flex flex-col gap-y-4">
@@ -808,6 +818,16 @@ const Order = ({
             {formatNumber(totalSum)} {all("sum")}
           </p>
         </div>
+        {orderData?.promocodePrice > 0 && (
+          <div className="w-full flex justify-between">
+            <p className="font-medium textSmall3 leading-5 text-[#2E2E2E] text-start md:text-end">
+              {promocodeT("titleDialog")}
+            </p>
+            <p className="font-normal textNormal2 leading-7 text-[#2E2E2E]">
+              +{formatNumber(orderData?.promocodePrice)} {all("sum")}
+            </p>
+          </div>
+        )}
         {activeTab === "delivery" && (
           <div className="w-full flex justify-between">
             <p className="font-medium textSmall3 leading-5 text-[#2E2E2E] text-start md:text-end">
@@ -837,7 +857,9 @@ const Order = ({
               {formatNumber(
                 Number(totalSum) -
                   Number(orderData?.pay_bonus) +
-                  (activeTab == "delivery" ? orderData?.delivery_price : 0)
+                  (activeTab == "delivery" ? orderData?.delivery_price : 0) -
+                  (orderData?.promocodePrice > 0 &&
+                    Number(orderData?.promocodePrice))
               )}{" "}
               {all("sum")}
             </p>

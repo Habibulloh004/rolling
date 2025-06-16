@@ -45,6 +45,7 @@ import {
 } from "@/components/ui/input-otp";
 
 const Payment = ({ locale, place, auth }) => {
+  const promocodeT = useTranslations("Order.Promocode");
   const searchParams = useSearchParams();
   const spot = searchParams.get("spot");
   const tableId = searchParams.get("table_id");
@@ -180,6 +181,9 @@ const Payment = ({ locale, place, auth }) => {
         (orderData?.pay_bonus ? Number(orderData?.pay_bonus) : 0);
       if (activeTab == "delivery") {
         totalAmount += Number(orderData?.delivery_price);
+      }
+      if (orderData?.promocodePrice > 0) {
+        totalAmount = Number(totalAmount - orderData?.promocodePrice);
       }
 
       if (service == "waiter") {
@@ -618,6 +622,16 @@ const Payment = ({ locale, place, auth }) => {
                 {formatNumber(totalSum)} {all("sum")}
               </p>
             </div>
+            {orderData?.promocodePrice > 0 && (
+              <div className="w-full flex justify-between">
+                <p className="font-medium textSmall3 leading-5 text-[#2E2E2E] text-start md:text-end">
+                  {promocodeT("titleDialog")}
+                </p>
+                <p className="font-normal textNormal2 leading-7 text-[#2E2E2E]">
+                  +{formatNumber(orderData?.promocodePrice)} {all("sum")}
+                </p>
+              </div>
+            )}
             {activeTab === "delivery" && (
               <div className="w-full flex justify-between">
                 <p className="font-medium textSmall3 leading-5 text-[#2E2E2E] text-start md:text-end">
@@ -647,7 +661,11 @@ const Payment = ({ locale, place, auth }) => {
                   {formatNumber(
                     Number(totalSum) -
                       Number(orderData?.pay_bonus) +
-                      (activeTab == "delivery" ? orderData?.delivery_price : 0)
+                      (activeTab == "delivery"
+                        ? orderData?.delivery_price
+                        : 0) -
+                      (orderData?.promocodePrice > 0 &&
+                        Number(orderData?.promocodePrice))
                   )}{" "}
                   {all("sum")}
                 </p>

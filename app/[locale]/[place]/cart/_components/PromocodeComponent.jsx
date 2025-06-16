@@ -29,9 +29,11 @@ export default function PromoCodeDialog({ locale, promotions, productsData }) {
   const [error, setError] = useState(null);
   const [hovered, setHovered] = useState(true);
   const [addingProducts, setAddingProducts] = useState([]);
+  const [promotionPrice, setPromotionPrice] = useState(0);
+  console.log({ promotions });
 
   const handleRemovePromo = () => {
-    setOrderData({ ...orderData, promocode: null });
+    setOrderData({ ...orderData, promocode: null,promocodePrice: 0 });
     setProductsData(products?.filter((product) => !product?.promocode));
     setPromoCode("");
     setIsOpen(false);
@@ -83,17 +85,32 @@ export default function PromoCodeDialog({ locale, promotions, productsData }) {
         }));
       console.log(filterProducts);
       if (totalSum >= findPromo?.params?.conditions[0]?.sum / 100) {
-        setAddingProducts(filterProducts);
-
-        setProductsData([...products, ...filterProducts]);
-        setError(null);
-        setOrderData({ ...orderData, promocode: findPromo });
-        toast(promocodeT("success"), {
-          type: "success",
-          duration: 2000,
-        });
-        setPromoCode("");
-        setHovered(false);
+        if (findPromo?.params?.discount_value > 0) {
+          setOrderData({
+            ...orderData,
+            promocode: findPromo,
+            promocodePrice: findPromo?.params?.discount_value / 100,
+          });
+          setPromoCode("");
+          setHovered(false);
+          setError(null);
+          toast(promocodeT("success"), {
+            type: "success",
+            duration: 2000,
+          });
+          setPromotionPrice(findPromo?.params?.discount_value / 100);
+        } else {
+          setAddingProducts(filterProducts);
+          setProductsData([...products, ...filterProducts]);
+          setError(null);
+          setOrderData({ ...orderData, promocode: findPromo });
+          toast(promocodeT("success"), {
+            type: "success",
+            duration: 2000,
+          });
+          setPromoCode("");
+          setHovered(false);
+        }
       } else {
         setError({
           title: `${(
@@ -190,7 +207,7 @@ export default function PromoCodeDialog({ locale, promotions, productsData }) {
         >
           <DialogHeader>
             <DialogTitle className="text-2xl w-full text-start">
-              {addingProducts?.length > 0 ? (
+              {addingProducts?.length > 0 || promotionPrice ? (
                 <h1>{promocodeT("titleDialogAdd")}</h1>
               ) : (
                 <h1>{promocodeT("titleDialog")}</h1>
@@ -251,6 +268,28 @@ export default function PromoCodeDialog({ locale, promotions, productsData }) {
                   onClick={() => {
                     setAddingProducts([]);
                     setIsOpen(false);
+                    setPromotionPrice(0);
+                  }}
+                  className="h-10 w-16"
+                >
+                  OK
+                </Button>
+              </div>
+            </>
+          ) : promotionPrice > 0 ? (
+            <>
+              <div className="flex flex-col w-full simple-scrollbar gap-1">
+                <h1 className="textNormal4 font-bold">
+                  {promotionPrice?.toLocaleString()} {all("sum")}{" "}
+                </h1>
+                <p>{all("bonus_price")}</p>
+              </div>
+              <div className="flex justify-end items-end gap-2">
+                <Button
+                  onClick={() => {
+                    setAddingProducts([]);
+                    setIsOpen(false);
+                    setPromotionPrice(0);
                   }}
                   className="h-10 w-16"
                 >

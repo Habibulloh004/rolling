@@ -15,19 +15,22 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { useTranslations } from "use-intl";
 import confetti from "canvas-confetti";
+import { set } from "date-fns";
 
 export default function OrderItemComponent({
   spotsData,
   productsData,
   locale,
   param,
+  promotions = [],
 }) {
   const orderText = useTranslations("Order.Item");
+  const promotionT = useTranslations("Order.Promocode");
   const all = useTranslations("All");
   const total = useTranslations("Cart.Total");
   const [orderData, setOrderData] = useState();
   const [isLoading, setIsLoading] = useState(true);
-
+  const [promotionData, setPromotionData] = useState();
   const handleSuccess = () => {
     const duration = 2 * 1000;
     const animationEnd = Date.now() + duration;
@@ -60,8 +63,18 @@ export default function OrderItemComponent({
     const fetchAddress = async () => {
       try {
         const order = await getOrder(param.id);
+        console.log({ order });
         if (order) {
           const products = JSON.parse(order?.products);
+          const match = order?.comment?.match(/Промокод:\s*(\S+)/);
+          if (match) {
+            const promoCode = match[1];
+            const promo = promotions?.response?.find((prm) => {
+              const promoFind = prm?.name?.split("$")[1].toLowerCase().trim();
+              return promoFind === promoCode.toLowerCase();
+            });
+            setPromotionData(promo);
+          }
 
           const orderedProducts = products
             .map((orderItem) => {
@@ -267,6 +280,25 @@ export default function OrderItemComponent({
                   {all("sum")}
                 </p>
               </div>
+              {promotionData && (
+                <div className="w-full flex justify-between">
+                  <p className="font-medium textNormal2 leading-5 text-[#2E2E2E]">
+                    {promotionT("titleDialog")}
+                  </p>
+                  {promotionData?.params?.result_type == 3 && (
+                    <p className="font-normal text-primary textNormal2 text-[#2E2E2E]">
+                      {formatNumber(promotionData?.params?.discount_value)}%{" "}
+                      {all("disc")}
+                    </p>
+                  )}
+                  {promotionData?.params?.result_type == 2 && (
+                    <p className="text-primary font-normal textNormal2 text-[#2E2E2E]">
+                      -{formatNumber(promotionData?.params?.discount_value/100)}{" "}
+                      {all("sum")}
+                    </p>
+                  )}
+                </div>
+              )}
               {orderData?.payed_bonus != 0 && orderData?.payed_bonus && (
                 <div className="w-full flex justify-between">
                   <p className="font-medium textNormal2 leading-5 text-[#2E2E2E]">
@@ -292,10 +324,30 @@ export default function OrderItemComponent({
                 <p className="font-medium textNormal3 text-[#2E2E2E]">
                   {total("total")}
                 </p>
-                <p className="font-medium textNormal3 text-[#2E2E2E]">
-                  {formatNumber(orderData?.payed_sum / 100)}
-                  {all("sum")}
-                </p>
+                {promotionData?.params?.result_type == 2 ? (
+                  <p className="font-medium textNormal3 text-[#2E2E2E]">
+                    {formatNumber(
+                      (Number(orderData?.payed_sum) -
+                        Number(promotionData?.params?.discount_value)) /
+                        100
+                    )}
+                    {all("sum")}
+                  </p>
+                ) : promotionData?.params?.result_type == 3 ? (
+                  <p className="font-medium textNormal3 text-[#2E2E2E]">
+                    {formatNumber(
+                      (orderData?.payed_sum *
+                        (100 - Number(promotionData?.params?.discount_value))) /
+                        10000
+                    )}
+                    {all("sum")}
+                  </p>
+                ) : (
+                  <p className="font-medium textNormal3 text-[#2E2E2E]">
+                    {formatNumber(orderData?.payed_sum / 100)}
+                    {all("sum")}
+                  </p>
+                )}
               </div>
             </>
           )}

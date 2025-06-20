@@ -1,7 +1,8 @@
 {
   "All": {
-    "bonus_price":"bonus sifatida qo'shildi",
-    "payment_sum":"To'lov summasi",
+    "bonus_price": "bonus sifatida qo'shildi",
+    "disc": "chegirma",
+    "payment_sum": "To'lov summasi",
     "goto": "Sahifaga o'tish",
     "seeCategory": "Barcha taom toifalarini ko'rish",
     "seeNew": "Yangi va Ommabop Taomlarni Ko‘rish",
@@ -391,7 +392,10 @@
       "submit_btn": "Qo'llash",
       "error_min_sum": "minimal summa bo'lishi kerak",
       "active_promo": "Promo-kod qo'llanilgan",
-      "cancel": "Bekor qilish"
+      "cancel": "Bekor qilish",
+      "error_first20": "Promo-kod faqat birinchi buyurtma uchun amal qiladi",
+      "error_bday": " Promo-kod faqat tug'ilgan kunida amal qiladi",
+      "error_auth": "Promo-kod faqat ro'yxatdan o'tganlar uchun ishlaydi!"
     },
     "Item": {
       "title": "Buyurtma tasdiqlandi",
@@ -404,7 +408,7 @@
       "status_pickup": "O'zingiz olib ketish",
       "status_spot": "Muassasalar",
       "my_order": "Sizning buyurtmangiz",
-      "waiting":"To‘lov kutilmoqda",
+      "waiting": "To‘lov kutilmoqda",
       "waiting_order": "Buyurtma uchun hali to‘lov amalga oshirilmagan. Iltimos, qayta urinib ko‘ring.",
       "try_again": "Qayta urinish"
     },

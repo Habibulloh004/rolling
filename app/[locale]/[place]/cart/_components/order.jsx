@@ -226,12 +226,15 @@ const Order = ({
         commentSpot = `${commentSpot}\nТранзакцияID: ${paymentData?.transactionId}`;
       }
       if (promocode) {
-        commentSpot = `${commentSpot}\nПромокод: ${
+        commentSpot = `${commentSpot}\nПромокод:${
           promocode?.name?.split("$")[1]
         }`;
       }
       if (orderData?.promocodePrice > 0) {
-        commentSpot = `${commentSpot}\nПромокодSum: ${orderData?.promocodePrice}`;
+        commentSpot = `${commentSpot}\nПромокодSum: ${orderData?.promocodePrice?.toLocaleString()}`;
+      }
+      if (orderData?.discountPromocode > 0) {
+        commentSpot = `${commentSpot}\nСкидка: ${orderData?.discountPromocode}%`;
       }
 
       if (spotIdSpot) {
@@ -273,6 +276,11 @@ const Order = ({
       if (service == "waiter") {
         totalAmount = Number(totalAmount + (totalAmount * 10) / 100);
       }
+      if (orderData?.discountPromocode > 0) {
+        totalAmount = Number(
+          totalAmount - (totalAmount * orderData?.discountPromocode) / 100
+        );
+      }
 
       let deliveryData = {
         address_comment,
@@ -282,9 +290,7 @@ const Order = ({
         comment: commentSpot,
         created_at: formatCreatedAt(),
         payed_bonus: pay_bonus ? Number(pay_bonus) * 100 : 0,
-        payed_sum:
-          Number(+totalSum + +delivery_price - (pay_bonus ? +pay_bonus : 0)) *
-          100,
+        payed_sum: Number(Math.round(totalAmount)) * 100,
         payment: payment_method == "cash" ? "cash" : "creditCard",
         phone: auth?.client_id ? `+${auth?.phone_number}` : "+998771052018",
         products: JSON.stringify(filterProductsAbdugani),
@@ -303,7 +309,7 @@ const Order = ({
         comment: commentSpot,
         created_at: formatCreatedAt(),
         payed_bonus: pay_bonus ? Number(pay_bonus) * 100 : 0,
-        payed_sum: Number(+totalSum - (pay_bonus ? +pay_bonus : 0)) * 100,
+        payed_sum: Number(Math.round(totalAmount)) * 100,
         payment: payment_method == "cash" ? "cash" : "creditCard",
         phone: auth?.client_id ? `+${auth?.phone_number}` : "+998771052018",
         products: JSON.stringify(filterProductsAbdugani),
@@ -369,7 +375,7 @@ const Order = ({
               service,
               spot_name: spotDataFilial?.response?.name,
             },
-            amount: totalAmount,
+            amount: Math?.round(totalAmount),
             status: payment_method == "payme" ? 0 : 1,
             provider: payment_method,
             url: `https://rolling.uz/${locale}/${place}/cart?spot=${spotIdSpot}&table_id=${table_id}&table_num=${table_num}&service=${service}&confirm=true`,
@@ -437,7 +443,7 @@ const Order = ({
                 ...pickupData,
                 service_mode: 3,
               },
-              amount: totalAmount,
+              amount: Math?.round(totalAmount),
               status: payment_method == "payme" ? 0 : 1,
               provider: payment_method,
               url: `https://rolling.uz/${locale}/${place}/confirmedpay`,
@@ -511,7 +517,7 @@ const Order = ({
           } else if (activeTab == "delivery") {
             let dataPay = {
               orderDetails: { ...deliveryData, service_mode: 2 },
-              amount: totalAmount,
+              amount: Math?.round(totalAmount),
               status: payment_method == "payme" ? 0 : 1,
               provider: payment_method,
               url: `https://rolling.uz/${locale}/${place}/confirmedpay`,
@@ -823,8 +829,18 @@ const Order = ({
             <p className="font-medium textSmall3 leading-5 text-[#2E2E2E] text-start md:text-end">
               {promocodeT("titleDialog")}
             </p>
-            <p className="font-normal textNormal2 leading-7 text-[#2E2E2E]">
-              +{formatNumber(orderData?.promocodePrice)} {all("sum")}
+            <p className="text-primary font-normal textNormal2 leading-7 text-[#2E2E2E]">
+              -{formatNumber(orderData?.promocodePrice)} {all("sum")}
+            </p>
+          </div>
+        )}
+        {orderData?.discountPromocode > 0 && (
+          <div className="w-full flex justify-between">
+            <p className="font-medium textSmall3 leading-5 text-[#2E2E2E] text-start md:text-end">
+              {promocodeT("titleDialog")}
+            </p>
+            <p className="text-primary font-normal textNormal2 leading-7 text-[#2E2E2E]">
+              {formatNumber(orderData?.discountPromocode)}% {all("disc")}
             </p>
           </div>
         )}
@@ -855,11 +871,14 @@ const Order = ({
             </p>
             <p className="font-normal textNormal3 leading-7 text-[#2E2E2E]">
               {formatNumber(
-                Number(totalSum) -
+                (Number(totalSum) -
                   Number(orderData?.pay_bonus) +
                   (activeTab == "delivery" ? orderData?.delivery_price : 0) -
                   (orderData?.promocodePrice > 0 &&
-                    Number(orderData?.promocodePrice))
+                    Number(orderData?.promocodePrice))) *
+                  (orderData?.discountPromocode > 0
+                    ? 1 - orderData?.discountPromocode / 100
+                    : 1)
               )}{" "}
               {all("sum")}
             </p>
@@ -890,6 +909,7 @@ const Order = ({
       <div className="space-y-2 md:space-y-4">
         <PromoCodeDialog
           locale={locale}
+          auth={auth}
           promotions={promotions?.response}
           productsData={productsData}
         />

@@ -189,6 +189,11 @@ const Payment = ({ locale, place, auth }) => {
       if (service == "waiter") {
         totalAmount = Number(totalAmount + (totalAmount * 10) / 100);
       }
+      if(orderData?.discountPromocode > 0) {
+        totalAmount = Number(
+          totalAmount - (totalAmount * orderData?.discountPromocode) / 100
+        );
+      }
       switch (orderData?.payment_method) {
         case "card":
           if (!selectCard && !selectCard?.cardNumber) {
@@ -627,8 +632,18 @@ const Payment = ({ locale, place, auth }) => {
                 <p className="font-medium textSmall3 leading-5 text-[#2E2E2E] text-start md:text-end">
                   {promocodeT("titleDialog")}
                 </p>
-                <p className="font-normal textNormal2 leading-7 text-[#2E2E2E]">
-                  +{formatNumber(orderData?.promocodePrice)} {all("sum")}
+                <p className="text-primary font-normal textNormal2 leading-7 text-[#2E2E2E]">
+                  -{formatNumber(orderData?.promocodePrice)} {all("sum")}
+                </p>
+              </div>
+            )}
+            {orderData?.discountPromocode > 0 && (
+              <div className="w-full flex justify-between">
+                <p className="font-medium textSmall3 leading-5 text-[#2E2E2E] text-start md:text-end">
+                  {promocodeT("titleDialog")}
+                </p>
+                <p className="text-primary font-normal textNormal2 leading-7 text-[#2E2E2E]">
+                  {formatNumber(orderData?.discountPromocode)}% {all("disc")}
                 </p>
               </div>
             )}
@@ -659,13 +674,16 @@ const Payment = ({ locale, place, auth }) => {
                 </p>
                 <p className="font-normal textNormal3 leading-7 text-[#2E2E2E]">
                   {formatNumber(
-                    Number(totalSum) -
+                    (Number(totalSum) -
                       Number(orderData?.pay_bonus) +
                       (activeTab == "delivery"
                         ? orderData?.delivery_price
                         : 0) -
                       (orderData?.promocodePrice > 0 &&
-                        Number(orderData?.promocodePrice))
+                        Number(orderData?.promocodePrice))) *
+                      (orderData?.discountPromocode > 0
+                        ? 1 - orderData?.discountPromocode / 100
+                        : 1)
                   )}{" "}
                   {all("sum")}
                 </p>

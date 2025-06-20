@@ -19,7 +19,12 @@ import { useTranslations } from "next-intl";
 import { formatNumber, getLocalizedProduct, posterUrl } from "@/lib/utils";
 import Image from "next/image";
 
-export default function PromoCodeDialog({ locale, promotions, productsData }) {
+export default function PromoCodeDialog({
+  auth,
+  locale,
+  promotions,
+  productsData,
+}) {
   const promocodeT = useTranslations("Order.Promocode");
   const all = useTranslations("All");
   const [promoCode, setPromoCode] = useState("");
@@ -30,14 +35,22 @@ export default function PromoCodeDialog({ locale, promotions, productsData }) {
   const [hovered, setHovered] = useState(true);
   const [addingProducts, setAddingProducts] = useState([]);
   const [promotionPrice, setPromotionPrice] = useState(0);
+  const [promotionDiscount, setPromotionDiscount] = useState(0);
   console.log({ promotions });
+  console.log({ auth });
 
   const handleRemovePromo = () => {
-    setOrderData({ ...orderData, promocode: null,promocodePrice: 0 });
+    setOrderData({
+      ...orderData,
+      promocode: null,
+      promocodePrice: 0,
+      discountPromocode: 0,
+    });
     setProductsData(products?.filter((product) => !product?.promocode));
     setPromoCode("");
     setIsOpen(false);
     setHovered(false);
+    setPromotionDiscount(0);
     toast(promocodeT("success_del"), {
       type: "success",
       duration: 2000,
@@ -83,9 +96,14 @@ export default function PromoCodeDialog({ locale, promotions, productsData }) {
           promocode: findPromo,
           count: findPromo?.params?.bonus_products_pcs,
         }));
+
       console.log(filterProducts);
+
       if (totalSum >= findPromo?.params?.conditions[0]?.sum / 100) {
-        if (findPromo?.params?.discount_value > 0) {
+        if (
+          findPromo?.params?.discount_value > 0 &&
+          findPromo?.params?.result_type == 2
+        ) {
           setOrderData({
             ...orderData,
             promocode: findPromo,
@@ -99,7 +117,98 @@ export default function PromoCodeDialog({ locale, promotions, productsData }) {
             duration: 2000,
           });
           setPromotionPrice(findPromo?.params?.discount_value / 100);
-        } else {
+        } else if (
+          findPromo?.params?.discount_value > 0 &&
+          findPromo?.params?.result_type == 3
+        ) {
+          if (!auth?.client_id) {
+            setError({
+              title: promocodeT("error_auth"),
+              type: "invalid_code",
+            });
+            return;
+          }
+          const today = new Date();
+          const birthday = new Date(auth?.birthday);
+          const commentC = auth?.comment ? JSON.parse(auth?.comment) : null;
+          const promocodeName = String(findPromo?.name?.split("$")[1])
+            .toLowerCase()
+            .trim();
+          console.log({ findPromo, promocodeName });
+
+          //Birthday
+          if (
+            today.getMonth() === birthday.getMonth() &&
+            today.getDate() === birthday.getDate() &&
+            promocodeName == "bday20"
+          ) {
+            console.log("birthday active");
+            setOrderData({
+              ...orderData,
+              promocode: findPromo,
+              discountPromocode: Number(findPromo?.params?.discount_value),
+            });
+            setPromotionDiscount(Number(findPromo?.params?.discount_value));
+            setPromoCode("");
+            setHovered(false);
+            setError(null);
+            toast(promocodeT("success"), {
+              type: "success",
+              duration: 2000,
+            });
+          } else if (
+            (today.getMonth() !== birthday.getMonth() ||
+              today.getDate() !== birthday.getDate()) &&
+            promocodeName == "bday20"
+          ) {
+            setError({
+              title: promocodeT("error_bday"),
+              type: "invalid_code",
+            });
+          }
+
+          //First Order
+          if (
+            (commentC?.length == 0 || !commentC?.length) &&
+            promocodeName == "first20"
+          ) {
+            setOrderData({
+              ...orderData,
+              promocode: findPromo,
+              discountPromocode: Number(findPromo?.params?.discount_value),
+            });
+            setPromotionDiscount(Number(findPromo?.params?.discount_value));
+            setPromoCode("");
+            setHovered(false);
+            setError(null);
+            toast(promocodeT("success"), {
+              type: "success",
+              duration: 2000,
+            });
+          } else if (commentC?.length > 0 && promocodeName == "first20") {
+            setError({
+              title: promocodeT("error_first20"),
+              type: "invalid_code",
+            });
+          }
+
+          //Default
+          if (promocodeName != "bday20" && promocodeName != "first20") {
+            setOrderData({
+              ...orderData,
+              promocode: findPromo,
+              discountPromocode: Number(findPromo?.params?.discount_value),
+            });
+            setPromotionDiscount(Number(findPromo?.params?.discount_value));
+            setPromoCode("");
+            setHovered(false);
+            setError(null);
+            toast(promocodeT("success"), {
+              type: "success",
+              duration: 2000,
+            });
+          }
+        } else if (findPromo?.params?.result_type == 1) {
           setAddingProducts(filterProducts);
           setProductsData([...products, ...filterProducts]);
           setError(null);
@@ -207,7 +316,9 @@ export default function PromoCodeDialog({ locale, promotions, productsData }) {
         >
           <DialogHeader>
             <DialogTitle className="text-2xl w-full text-start">
-              {addingProducts?.length > 0 || promotionPrice ? (
+              {addingProducts?.length > 0 ||
+              promotionPrice > 0 ||
+              promotionDiscount > 0 ? (
                 <h1>{promocodeT("titleDialogAdd")}</h1>
               ) : (
                 <h1>{promocodeT("titleDialog")}</h1>
@@ -283,6 +394,27 @@ export default function PromoCodeDialog({ locale, promotions, productsData }) {
                   {promotionPrice?.toLocaleString()} {all("sum")}{" "}
                 </h1>
                 <p>{all("bonus_price")}</p>
+              </div>
+              <div className="flex justify-end items-end gap-2">
+                <Button
+                  onClick={() => {
+                    setAddingProducts([]);
+                    setIsOpen(false);
+                    setPromotionPrice(0);
+                  }}
+                  className="h-10 w-16"
+                >
+                  OK
+                </Button>
+              </div>
+            </>
+          ) : promotionDiscount > 0 ? (
+            <>
+              <div className="flex w-full simple-scrollbar justify-start items-center gap-2">
+                <h1 className="textNormal4 font-bold">
+                  {promotionDiscount?.toLocaleString()}%
+                </h1>
+                <p>{all("disc")}</p>
               </div>
               <div className="flex justify-end items-end gap-2">
                 <Button

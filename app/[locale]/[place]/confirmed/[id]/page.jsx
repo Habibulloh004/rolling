@@ -18,7 +18,7 @@ import {
 import Card from "@/components/shared/card";
 
 const Confirmed = async ({ params }) => {
-  const [param, locale, orderText, productsData, spotsData, all] =
+  const [param, locale, orderText, productsData, spotsData, all, promotions] =
     await Promise.all([
       params,
       getLocale(),
@@ -26,6 +26,7 @@ const Confirmed = async ({ params }) => {
       ApiService.getPosterData("menu.getProducts", "", 7200),
       ApiService.getPosterData("access.getSpots", "", 604800),
       getTranslations("All"),
+      ApiService.getPosterData("clients.getPromotions", "", 600),
     ]);
   const products = productsData?.response?.filter((item) => {
     const findIngr = item?.ingredients?.find(
@@ -57,6 +58,7 @@ const Confirmed = async ({ params }) => {
         }}
       ></p>
       <OrderItemComponent
+        promotions={promotions}
         locale={locale}
         param={param}
         productsData={productsData?.response}

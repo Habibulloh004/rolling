@@ -44,7 +44,7 @@ const Basket = async ({ params, searchParams }) => {
     await Promise.all([
       getTranslations("Cart"),
       ApiService.getPosterData("menu.getProducts", "", 7200),
-      ApiService.getPosterData("clients.getPromotions", "", 7200),
+      ApiService.getPosterData("clients.getPromotions", "", 600),
       getLocale(),
       params,
       searchParams,

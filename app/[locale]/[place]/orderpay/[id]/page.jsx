@@ -7,13 +7,15 @@ import OrderItemComponent from "./_components/orderItemComponent";
 import { ApiService } from "@/service/api.services";
 
 export default async function OrderList({ params }) {
-  const [locale, path, orderText, productsData, spotsData] = await Promise.all([
-    getLocale(),
-    params,
-    getTranslations("Order"),
-    ApiService.getPosterData("menu.getProducts", "", 7200),
-    ApiService.getPosterData("access.getSpots", "", 604800),
-  ]);
+  const [locale, path, orderText, productsData, spotsData, promotions] =
+    await Promise.all([
+      getLocale(),
+      params,
+      getTranslations("Order"),
+      ApiService.getPosterData("menu.getProducts", "", 7200),
+      ApiService.getPosterData("access.getSpots", "", 604800),
+      ApiService.getPosterData("clients.getPromotions", "", 600),
+    ]);
   return (
     <Container className={"w-11/12 py-5 flex flex-col gap-5"}>
       <div className="w-full flex justify-between items-start ">
@@ -28,7 +30,7 @@ export default async function OrderList({ params }) {
         </div>
         <Link href={`/${locale}/${path.place}/create-review`}>
           <Button
-          aria-label={`orderid comment`}
+            aria-label={`orderid comment`}
             className={
               "md:h-12 md:textNormal2 md:px-4 hidden lg:block hover:bg-primary textSmall4"
             }
@@ -38,6 +40,7 @@ export default async function OrderList({ params }) {
         </Link>
       </div>
       <OrderItemComponent
+        promotions={promotions}
         productsData={productsData?.response}
         locale={locale}
         param={path}

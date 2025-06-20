@@ -293,7 +293,10 @@ export default function OrderItemComponent({
                   )}
                   {promotionData?.params?.result_type == 2 && (
                     <p className="text-primary font-normal textNormal2 text-[#2E2E2E]">
-                      -{formatNumber(promotionData?.params?.discount_value/100)}{" "}
+                      -
+                      {formatNumber(
+                        promotionData?.params?.discount_value / 100
+                      )}{" "}
                       {all("sum")}
                     </p>
                   )}
@@ -324,30 +327,10 @@ export default function OrderItemComponent({
                 <p className="font-medium textNormal3 text-[#2E2E2E]">
                   {total("total")}
                 </p>
-                {promotionData?.params?.result_type == 2 ? (
-                  <p className="font-medium textNormal3 text-[#2E2E2E]">
-                    {formatNumber(
-                      (Number(orderData?.payed_sum) -
-                        Number(promotionData?.params?.discount_value)) /
-                        100
-                    )}
-                    {all("sum")}
-                  </p>
-                ) : promotionData?.params?.result_type == 3 ? (
-                  <p className="font-medium textNormal3 text-[#2E2E2E]">
-                    {formatNumber(
-                      (orderData?.payed_sum *
-                        (100 - Number(promotionData?.params?.discount_value))) /
-                        10000
-                    )}
-                    {all("sum")}
-                  </p>
-                ) : (
-                  <p className="font-medium textNormal3 text-[#2E2E2E]">
-                    {formatNumber(orderData?.payed_sum / 100)}
-                    {all("sum")}
-                  </p>
-                )}
+                <p className="font-medium textNormal3 text-[#2E2E2E]">
+                  {formatNumber(orderData?.payed_sum / 100)}
+                  {all("sum")}
+                </p>
               </div>
             </>
           )}

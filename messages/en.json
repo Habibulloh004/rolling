@@ -1,8 +1,8 @@
 {
   "All": {
-    "bonus_price":"added as a bonus",
-    "disc":"discount",
-    "payment_sum":"Payment amount",
+    "bonus_price": "added as a bonus",
+    "disc": "discount",
+    "payment_sum": "Payment amount",
     "goto": "Go to the page",
     "seeCategory": "View all dish categories",
     "seeNew": "View New Arrivals and Popular Dishes",
@@ -392,7 +392,10 @@
       "submit_btn": "Apply",
       "error_min_sum": "a minimum amount is required",
       "active_promo": "Promo code applied",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "error_first20": "Promo code is only valid for the first order",
+      "error_bday": "Promo code is only valid on your birthday",
+      "error_auth": "Promo code is only available for registered users!"
     },
     "delivered": "Delivered",
     "info": "What should we improve? We’re waiting for your feedback!",

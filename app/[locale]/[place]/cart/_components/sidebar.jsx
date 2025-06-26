@@ -10,7 +10,14 @@ import { useOrderStore, useStore } from "@/store";
 import Cookies from "js-cookie";
 import { getClientData, getSpotsData } from "@/actions";
 
-const CartSidebar = ({ locale, place, spotData, searchParamsData, auth }) => {
+const CartSidebar = ({
+  apiTime,
+  locale,
+  place,
+  spotData,
+  searchParamsData,
+  auth,
+}) => {
   const deliveryText = useTranslations("Cart.Delivery");
   const pickupText = useTranslations("Cart.Pickup");
   const spot = useTranslations("Cart.Spot");
@@ -94,6 +101,7 @@ const CartSidebar = ({ locale, place, spotData, searchParamsData, auth }) => {
         </TabsList>
         <TabsContent className="md:px-10" value="delivery">
           <Delivery
+            apiTime={apiTime}
             locale={locale}
             clientData={clientData}
             spotData={spotData}
@@ -103,6 +111,7 @@ const CartSidebar = ({ locale, place, spotData, searchParamsData, auth }) => {
         </TabsContent>
         <TabsContent className="md:px-10" value="pickup">
           <Pickup
+            apiTime={apiTime}
             locale={locale}
             isLoading={isLoading}
             clientData={clientData}
@@ -112,6 +121,7 @@ const CartSidebar = ({ locale, place, spotData, searchParamsData, auth }) => {
         </TabsContent>
         <TabsContent className="md:px-10" value="spot">
           <Spot
+            apiTime={apiTime}
             locale={locale}
             place={place}
             spotData={spotData}

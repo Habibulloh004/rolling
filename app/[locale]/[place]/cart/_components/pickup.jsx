@@ -18,6 +18,7 @@ const Pickup = ({
   place,
   branchsData,
   isLoading,
+  apiTime,
 }) => {
   const pickupText = useTranslations("Cart.Pickup");
   const profileT = useTranslations("Profile");
@@ -123,7 +124,7 @@ const Pickup = ({
                         </p>
                       </div>
                       <Button
-                      aria-label={`picup choose`}
+                        aria-label={`picup choose`}
                         onClick={() => handleSelectAddress(spot)}
                         className={`${
                           orderData?.spot_id == spot?.spot_id
@@ -149,20 +150,20 @@ const Pickup = ({
             {profileT("phone")}
           </p>
           <div className="lg:w-2/3 flex w-full justify-between pt-2 md:gap-2">
-              <PhoneInput
-                country="UZ"
-                defaultCountry="UZ"
-                placeholder=""
-                international
-                withCountryCallingCode
-                value={orderData?.phone}
-                onChange={handleChangePhone}
-                className={cn("input-phone-cart rounded-md w-full")}
-                style={{ borderColor: "white" }}
-                countryCallingCodeEditable={false}
-                focusInputOnCountrySelection  
-              />
-            </div>
+            <PhoneInput
+              country="UZ"
+              defaultCountry="UZ"
+              placeholder=""
+              international
+              withCountryCallingCode
+              value={orderData?.phone}
+              onChange={handleChangePhone}
+              className={cn("input-phone-cart rounded-md w-full")}
+              style={{ borderColor: "white" }}
+              countryCallingCodeEditable={false}
+              focusInputOnCountrySelection
+            />
+          </div>
         </div>
       )}
       <div className="flex w-full items-center justify-between pt-2 md:gap-2">

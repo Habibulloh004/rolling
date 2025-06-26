@@ -83,11 +83,12 @@ const Order = ({
   locale,
   place,
   productsData,
+  apiTime,
 }) => {
   const all = useTranslations("All");
   const promocodeT = useTranslations("Order.Promocode");
   const total = useTranslations("Cart.Total");
-  const { activeTab, isDisabled } = useStore();
+  const { activeTab, isDisabled, setIsDisabled } = useStore();
   const [isLoading, setIsLoading] = useState(false);
   const [bonus, setBonus] = useState(0);
   const [activeBonus, setActiveBonus] = useState(false);
@@ -111,6 +112,7 @@ const Order = ({
   const router = useRouter();
   const paymentText = useTranslations("Cart.Payment");
   const [isSuccess, setIsSuccess] = useState(false);
+  const defaultTime = { closed_time: "23:00", opened_time: "10:00" };
 
   const handleSetBonus = () => {
     setOrderData({ ...orderData, pay_bonus: Number(bonus) });
@@ -123,7 +125,52 @@ const Order = ({
     setActiveBonus(false);
   };
 
+  const handleCheckTime = () => {
+    console.log({ apiTime });
+    let closedTime = defaultTime.closed_time;
+    let openedTime = defaultTime.opened_time;
+
+    if (
+      apiTime?.opened_time &&
+      apiTime?.opened_time !== null &&
+      apiTime?.opened_time !== "" &&
+      apiTime?.closed_time &&
+      apiTime?.closed_time !== null &&
+      apiTime?.closed_time !== ""
+    ) {
+      closedTime = apiTime?.closed_time;
+      openedTime = apiTime?.opened_time;
+    }
+
+    const [closedHour, closedMinute] = closedTime.split(":").map(Number);
+    const [openedHour, openedMinute] = openedTime.split(":").map(Number);
+
+    const currentTime = new Date();
+    const hours = currentTime.getHours();
+    const minutes = currentTime.getMinutes();
+    console.log({ hours, minutes });
+    const currentMinutes = hours * 60 + minutes;
+    const openedMinutes = openedHour * 60 + openedMinute;
+    const closedMinutes = closedHour * 60 + closedMinute;
+
+    let isDisabled;
+
+    if (openedMinutes <= closedMinutes) {
+      isDisabled =
+        currentMinutes < openedMinutes || currentMinutes >= closedMinutes;
+    } else {
+      isDisabled =
+        currentMinutes < openedMinutes && currentMinutes >= closedMinutes;
+    }
+
+    setIsDisabled(isDisabled);
+    return isDisabled;
+  };
+
   const handleSubmit = async () => {
+    if (handleCheckTime()) {
+      return;
+    }
     if (products.length == 0) {
       toast.error(all("products_empty"));
       return;

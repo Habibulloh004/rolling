@@ -11,12 +11,20 @@ const Right = ({
   spotData,
   promotions,
   productsData,
+  apiTime,
 }) => {
   return (
     <div className="w-10/12 flex flex-col">
-      <Products products={products} locale={locale} auth={auth} place={place} />
+      <Products
+        apiTime={apiTime}
+        products={products}
+        locale={locale}
+        auth={auth}
+        place={place}
+      />
       <div className="h-[1px] bg-foreground/10 w-full" />
       <Order
+        apiTime={apiTime}
         spotDataFilial={spotData}
         searchParamsData={searchParamsData}
         auth={auth}

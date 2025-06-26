@@ -44,7 +44,7 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 
-const Payment = ({ locale, place, auth }) => {
+const Payment = ({ apiTime, locale, place, auth }) => {
   const promocodeT = useTranslations("Order.Promocode");
   const searchParams = useSearchParams();
   const spot = searchParams.get("spot");
@@ -189,7 +189,7 @@ const Payment = ({ locale, place, auth }) => {
       if (service == "waiter") {
         totalAmount = Number(totalAmount + (totalAmount * 10) / 100);
       }
-      if(orderData?.discountPromocode > 0) {
+      if (orderData?.discountPromocode > 0) {
         totalAmount = Number(
           totalAmount - (totalAmount * orderData?.discountPromocode) / 100
         );

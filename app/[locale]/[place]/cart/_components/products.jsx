@@ -15,7 +15,7 @@ import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 
-const Products = ({ locale, place }) => {
+const Products = ({ apiTime, locale, place }) => {
   const searchParams = useSearchParams();
   const spot = searchParams.get("spot");
   const table_id = searchParams.get("table_id");

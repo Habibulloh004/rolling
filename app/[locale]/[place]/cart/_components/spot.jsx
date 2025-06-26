@@ -7,7 +7,7 @@ import React, { useEffect } from "react";
 import { useTranslations } from "use-intl";
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
-const Spot = ({ place, locale, spotData, searchParamsData }) => {
+const Spot = ({ apiTime, place, locale, spotData, searchParamsData }) => {
   const spotText = useTranslations("Cart.Spot");
   const allT = useTranslations("All");
   const profileT = useTranslations("Profile");
@@ -42,7 +42,7 @@ const Spot = ({ place, locale, spotData, searchParamsData }) => {
             />
             {translateTextSpot(spotData?.response?.name, locale)?.split(
               "Rolling Sushi -"
-            )}  
+            )}
             {allT("spot")}
           </p>
         </div>

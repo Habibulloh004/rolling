@@ -40,16 +40,26 @@ const Basket = async ({ params, searchParams }) => {
   const cookiesData = cookieStore.get("client");
   const auth = cookiesData ? JSON.parse(cookiesData.value) : {};
 
-  const [cart, products, promotions, locale, path, searchParamsData, all] =
-    await Promise.all([
-      getTranslations("Cart"),
-      ApiService.getPosterData("menu.getProducts", "", 7200),
-      ApiService.getPosterData("clients.getPromotions", "", 600),
-      getLocale(),
-      params,
-      searchParams,
-      getTranslations("All"),
-    ]);
+  const [
+    cart,
+    products,
+    promotions,
+    locale,
+    path,
+    searchParamsData,
+    all,
+    timeData,
+  ] = await Promise.all([
+    getTranslations("Cart"),
+    ApiService.getPosterData("menu.getProducts", "", 7200),
+    ApiService.getPosterData("clients.getPromotions", "", 600),
+    getLocale(),
+    params,
+    searchParams,
+    getTranslations("All"),
+    fetch(`${process.env.NEXT_PUBLIC_URL_RENDER}/get_time`),
+  ]);
+  const apiTime = await timeData?.json();
   console.log("🚀 ~ file: page.jsx:40 ~ Basket ~ promotions:", promotions);
 
   let spotData;
@@ -86,6 +96,7 @@ const Basket = async ({ params, searchParams }) => {
         {/* Desktop version */}
         <div className="hidden lg:grid lg:grid-cols-2 lg:gap-16 w-full">
           <Left
+            apiTime={apiTime}
             auth={auth}
             place={path.place}
             locale={locale}
@@ -93,6 +104,7 @@ const Basket = async ({ params, searchParams }) => {
             searchParamsData={searchParamsData}
           />
           <Right
+            apiTime={apiTime}
             promotions={promotions}
             auth={auth}
             products={products.response
@@ -108,13 +120,19 @@ const Basket = async ({ params, searchParams }) => {
         {/* Mobile version */}
         <div className="lg:hidden w-full space-y-2">
           <CartSidebar
+            apiTime={apiTime}
             auth={auth}
             locale={locale}
             place={path.place}
             spotData={spotData}
             searchParamsData={searchParamsData}
           />
-          <Products locale={locale} auth={auth} place={path.place} />
+          <Products
+            apiTime={apiTime}
+            locale={locale}
+            auth={auth}
+            place={path.place}
+          />
           <section className="lg:hidden w-full mt-5 space-y-3 pb-4">
             <div className="w-11/12 sm:w-full mx-auto flex justify-between items-center gap-3">
               <h1 className="font-bold text-primary textNormal4 w-full">
@@ -170,8 +188,14 @@ const Basket = async ({ params, searchParams }) => {
               </CarouselContent>
             </Carousel>
           </section>
-          <Payment locale={locale} place={path.place} auth={auth} />
+          <Payment
+            apiTime={apiTime}
+            locale={locale}
+            place={path.place}
+            auth={auth}
+          />
           <Order
+            apiTime={apiTime}
             promotions={promotions}
             auth={auth}
             searchParamsData={searchParamsData}

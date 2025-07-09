@@ -189,6 +189,49 @@ export default function OrderItemComponent({
                     locale,
                     "name"
                   );
+                  let activePromocode = false;
+                  let resultPromo = null;
+                  promotionData?.params?.conditions?.forEach((condition) => {
+                    if (condition?.type == 2) {
+                      const findProductsData = orderData?.products?.find(
+                        (prd) => prd?.product_id == condition.id
+                      );
+                      console.log({ findProductsData });
+
+                      const allSummaProducts =
+                        (findProductsData?.price["1"] / 100) *
+                        findProductsData?.count;
+                      console.log({
+                        condition: condition?.sum / 100,
+                        allSummaProducts,
+                      });
+                      if (
+                        promotionData?.params?.discount_value > 0 &&
+                        promotionData?.params?.result_type == 3 &&
+                        allSummaProducts >= condition?.sum / 100 &&
+                        findProductsData?.product_id == item?.product_id
+                      ) {
+                        activePromocode = true;
+                        resultPromo = {
+                          ...promotionData,
+                          params: {
+                            ...promotionData.params,
+                            conditions: promotionData?.params?.conditions?.map(
+                              (cond) => {
+                                if (cond?.id == condition?.id) {
+                                  return {
+                                    ...cond,
+                                    active: true,
+                                  };
+                                }
+                                return cond;
+                              }
+                            ),
+                          },
+                        };
+                      }
+                    }
+                  });
                   return (
                     <div
                       key={item.product_id}
@@ -211,13 +254,39 @@ export default function OrderItemComponent({
                         </p>
                         <div className="flex justify-between">
                           <p>{item?.count}x</p>
-                          <p className="font-semibold textSmall2 leading-5">
-                            {item?.price["1"]
-                              ? `${formatNumber(item.price["1"] / 100)} ${all(
-                                  "sum"
-                                )}`
-                              : "Price not available"}
-                          </p>
+                          {activePromocode && resultPromo ? (
+                            <div className="flex justify-end  flex-col font-semibold textSmall2 leading-5">
+                              <h1>
+                                {" "}
+                                {item?.price["1"]
+                                  ? `${formatNumber(
+                                      (item.price["1"] / 100) *
+                                        (1 -
+                                          Number(
+                                            resultPromo?.params?.discount_value
+                                          ) /
+                                            100)
+                                    )} ${all("sum")}`
+                                  : "Price not available"}
+                              </h1>
+                              <p className="text-xs text-gray-500 line-through">
+                                {" "}
+                                {item?.price["1"]
+                                  ? `${formatNumber(
+                                      item.price["1"] / 100
+                                    )} ${all("sum")}`
+                                  : "Price not available"}
+                              </p>
+                            </div>
+                          ) : (
+                            <p className="font-semibold textSmall2 leading-5">
+                              {item?.price["1"]
+                                ? `${formatNumber(item.price["1"] / 100)} ${all(
+                                    "sum"
+                                  )}`
+                                : "Price not available"}
+                            </p>
+                          )}
                         </div>
                       </div>
                     </div>

@@ -157,8 +157,10 @@ export default function PromoCodeDialog({
         }
       });
       let isCHeck = false;
+      let resultPromo = findPromo;
+
       conditionsProducts?.forEach((condition) => {
-        if (isCHeck) return; // If already checked, skip further checks
+        // if (isCHeck) return; // If already checked, skip further checks
         switch (condition.type) {
           case 0: // All products
             if (totalSum >= condition?.sum / 100) {
@@ -383,11 +385,11 @@ export default function PromoCodeDialog({
                 findPromo?.params?.discount_value > 0 &&
                 findPromo?.params?.result_type == 2
               ) {
-                const resultPromo = {
-                  ...findPromo,
+                resultPromo = {
+                  ...resultPromo,
                   params: {
-                    ...findPromo.params,
-                    conditions: findPromo?.params?.conditions?.map((cond) => {
+                    ...resultPromo.params,
+                    conditions: resultPromo?.params?.conditions?.map((cond) => {
                       if (cond?.id == condition?.id) {
                         return {
                           ...cond,
@@ -415,11 +417,11 @@ export default function PromoCodeDialog({
                 findPromo?.params?.discount_value > 0 &&
                 findPromo?.params?.result_type == 3
               ) {
-                const resultPromo = {
-                  ...findPromo,
+                resultPromo = {
+                  ...resultPromo,
                   params: {
-                    ...findPromo.params,
-                    conditions: findPromo?.params?.conditions?.map((cond) => {
+                    ...resultPromo.params,
+                    conditions: resultPromo?.params?.conditions?.map((cond) => {
                       if (cond?.id == condition?.id) {
                         return {
                           ...cond,
@@ -487,7 +489,7 @@ export default function PromoCodeDialog({
   useEffect(() => {
     if (orderData?.promocode) {
       orderData?.promocode?.params?.conditions?.forEach((condition) => {
-        if(!condition?.active) return; // Skip already active conditions
+        if (!condition?.active) return; // Skip already active conditions
         switch (condition?.type) {
           case 0: // All products
             if (totalSum < condition?.sum / 100) {

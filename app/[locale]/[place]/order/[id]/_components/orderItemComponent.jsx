@@ -214,6 +214,7 @@ export default function OrderItemComponent({
         </div>
         <div className="w-full lg:w-1/3 space-y-4">
           <Products
+          promotionData={promotionData}
             locale={locale}
             products={orderData?.products}
             isLoading={isLoading}

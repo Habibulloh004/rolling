@@ -222,6 +222,7 @@ export default function OrderItemComponent({
             locale={locale}
             products={orderData?.products}
             isLoading={isLoading}
+            promotionData={promotionData}
           />
           <div className="h-[0.5px] w-full bg-[#DBDBDB]" />
           {isLoading ? (

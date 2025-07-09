@@ -39,13 +39,32 @@ const Products = ({ apiTime, locale, place }) => {
     if (!product || !product.price || !product.count) {
       return 0;
     }
+    let productPrice = Number(product.price["1"]) / 100;
 
-    const productPrice = Number(product.price["1"]) / 100;
+    if (orderData?.promocode) {
+      const conditions = orderData?.promocode?.params?.conditions;
+      if (orderData?.promocode?.params?.result_type == 3) {
+        const findCond = conditions?.find((cd) => {
+          if (cd?.id == product?.product_id) {
+            return cd;
+          }
+        });
+
+        if (findCond && findCond?.active) {
+          console.log("findCond", findCond);
+          productPrice =
+            (1 - orderData?.promocode?.params?.discount_value / 100) *
+            productPrice;
+        }
+      }
+    }
+
     const count = product.count || 0;
     return roundToTwoDecimals(productPrice * count);
   };
 
   useEffect(() => {
+    console.log({ orderData });
     const calculateTotals = async () => {
       let totalSum = 0;
 
@@ -56,7 +75,7 @@ const Products = ({ apiTime, locale, place }) => {
       setTotalSum(roundToTwoDecimals(totalSum));
     };
     calculateTotals();
-  }, [products]);
+  }, [products, orderData?.promocode]);
 
   return (
     <div className="max-md:bg-white p-3 w-full rounded-md pb-4 space-y-2">
@@ -74,6 +93,12 @@ const Products = ({ apiTime, locale, place }) => {
                 locale,
                 "name"
               );
+              const conditions = orderData?.promocode?.params?.conditions;
+              const findCond = conditions?.find((cd) => {
+                if (cd?.id == item?.product_id) {
+                  return cd;
+                }
+              });
               return (
                 <div key={item.product_id} className="flex gap-2 md:gap-4 mr-4">
                   <Image
@@ -111,14 +136,40 @@ const Products = ({ apiTime, locale, place }) => {
                       )}
                     </div>
                     <div className="col-span-3 row-span-1 flex justify-between item-start sm:items-center">
-                      <p className="font-semibold textSmall2 leading-5 w-full">
-                        {item?.price["1"]
-                          ? `${formatNumber(item.price["1"] / 100)} ${all(
-                              "sum"
-                            )}`
-                          : "Price not available"}
-                      </p>
-
+                      {findCond && findCond?.active ? (
+                        <div className="font-semibold textSmall2 leading-5 w-full">
+                          <h1>
+                            {" "}
+                            {item?.price["1"]
+                              ? `${formatNumber(
+                                  (item.price["1"] / 100) *
+                                    (1 -
+                                      Number(
+                                        orderData?.promocode?.params
+                                          ?.discount_value
+                                      ) /
+                                        100)
+                                )} ${all("sum")}`
+                              : "Price not available"}
+                          </h1>
+                          <p className="text-xs text-gray-500 line-through">
+                            {" "}
+                            {item?.price["1"]
+                              ? `${formatNumber(item.price["1"] / 100)} ${all(
+                                  "sum"
+                                )}`
+                              : "Price not available"}
+                          </p>
+                        </div>
+                      ) : (
+                        <p className="font-semibold textSmall2 leading-5 w-full">
+                          {item?.price["1"]
+                            ? `${formatNumber(item.price["1"] / 100)} ${all(
+                                "sum"
+                              )}`
+                            : "Price not available"}
+                        </p>
+                      )}
                       {!item?.promocode?.promotion_id ? (
                         <div className="grid grid-cols-3 w-full sm:w-[100px] h-[34px] bg-white border-2 rounded-md">
                           <button

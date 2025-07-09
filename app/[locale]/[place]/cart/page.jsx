@@ -43,6 +43,7 @@ const Basket = async ({ params, searchParams }) => {
   const [
     cart,
     products,
+    categories,
     promotions,
     locale,
     path,
@@ -52,6 +53,7 @@ const Basket = async ({ params, searchParams }) => {
   ] = await Promise.all([
     getTranslations("Cart"),
     ApiService.getPosterData("menu.getProducts", "", 7200),
+    ApiService.getPosterData("menu.getCategories", "", 7200),
     ApiService.getPosterData("clients.getPromotions", "", 600),
     getLocale(),
     params,
@@ -115,6 +117,7 @@ const Basket = async ({ params, searchParams }) => {
             spotData={spotData}
             searchParamsData={searchParamsData}
             productsData={products.response}
+            categoriesData={categories.response}
           />
         </div>
         {/* Mobile version */}
@@ -195,6 +198,7 @@ const Basket = async ({ params, searchParams }) => {
             auth={auth}
           />
           <Order
+            categoriesData={categories.response}
             apiTime={apiTime}
             promotions={promotions}
             auth={auth}

@@ -11,6 +11,7 @@ const Right = ({
   spotData,
   promotions,
   productsData,
+  categoriesData,
   apiTime,
 }) => {
   return (
@@ -32,6 +33,7 @@ const Right = ({
         place={place}
         promotions={promotions}
         productsData={productsData}
+        categoriesData={categoriesData}
       />
     </div>
   );

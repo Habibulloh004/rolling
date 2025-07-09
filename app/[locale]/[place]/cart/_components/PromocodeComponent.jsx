@@ -16,7 +16,12 @@ import { useOrderStore, useProductStore } from "@/store";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
-import { formatNumber, getLocalizedProduct, posterUrl } from "@/lib/utils";
+import {
+  formatNumber,
+  getLocalizedCategoryName,
+  getLocalizedProduct,
+  posterUrl,
+} from "@/lib/utils";
 import Image from "next/image";
 
 export default function PromoCodeDialog({
@@ -24,6 +29,7 @@ export default function PromoCodeDialog({
   locale,
   promotions,
   productsData,
+  categoriesData,
 }) {
   const promocodeT = useTranslations("Order.Promocode");
   const all = useTranslations("All");
@@ -95,7 +101,7 @@ export default function PromoCodeDialog({
         count: findPromo?.params?.bonus_products_pcs,
       }));
 
-    console.log({filterProducts});
+    console.log({ filterProducts });
 
     if (findPromo) {
       //Only for auth users
@@ -106,7 +112,50 @@ export default function PromoCodeDialog({
         });
         return;
       }
+      let nameProducts = "";
       const conditionsProducts = findPromo?.params?.conditions;
+      console.log({ categoriesData, productsData });
+      conditionsProducts?.forEach((condition) => {
+        switch (condition?.type) {
+          case 1: // Category
+            const findP = categoriesData.find(
+              (pr) => pr.category_id == condition?.id
+            );
+            console.log({ findP });
+            if (findP) {
+              const localizedNameCategory = getLocalizedCategoryName(
+                findP?.category_name,
+                locale
+              );
+              nameProducts += `${(
+                condition?.sum / 100
+              )?.toLocaleString()} ${promocodeT(
+                "error_min_sum"
+              )} - ${localizedNameCategory} `;
+            }
+            break;
+          case 2: // Product
+            const findPr = productsData.find(
+              (pr) => pr.product_id == condition?.id
+            );
+
+            if (findPr) {
+              const localizedName = getLocalizedProduct(
+                findPr?.product_production_description,
+                locale,
+                "name"
+              );
+              nameProducts += `${(
+                condition?.sum / 100
+              )?.toLocaleString()} ${promocodeT(
+                "error_min_sum"
+              )} - ${localizedName} `;
+            }
+            break;
+          default:
+            nameProducts = "";
+        }
+      });
       let isCHeck = false;
       conditionsProducts?.forEach((condition) => {
         if (isCHeck) return; // If already checked, skip further checks
@@ -258,8 +307,9 @@ export default function PromoCodeDialog({
             const findCategoryData = products?.find(
               (prd) => prd?.menu_category_id == condition.id
             );
+
             const allSummaCategory =
-              findCategoryData?.price["1"] * findCategoryData?.count;
+              (findCategoryData?.price["1"] / 100) * findCategoryData?.count;
             if (findCategoryData && allSummaCategory >= condition?.sum / 100) {
               console.log("Category promotion active");
               isCHeck = true;
@@ -312,10 +362,9 @@ export default function PromoCodeDialog({
                 setHovered(false);
               }
             } else {
+              isCHeck = false;
               setError({
-                title: `${(
-                  condition?.sum / 100
-                )?.toLocaleString()} ${promocodeT("error_min_sum")}`,
+                title: `${nameProducts}`,
                 type: "invalid_code",
               });
             }
@@ -324,8 +373,9 @@ export default function PromoCodeDialog({
             const findProductsData = products?.find(
               (prd) => prd?.product_id == condition.id
             );
+
             const allSummaProducts =
-              findProductsData?.price["1"] * findProductsData?.count;
+              (findProductsData?.price["1"] / 100) * findProductsData?.count;
             if (findProductsData && allSummaProducts >= condition?.sum / 100) {
               isCHeck = true;
               console.log("Products promotion active");
@@ -333,9 +383,24 @@ export default function PromoCodeDialog({
                 findPromo?.params?.discount_value > 0 &&
                 findPromo?.params?.result_type == 2
               ) {
+                const resultPromo = {
+                  ...findPromo,
+                  params: {
+                    ...findPromo.params,
+                    conditions: findPromo?.params?.conditions?.map((cond) => {
+                      if (cond?.id == condition?.id) {
+                        return {
+                          ...cond,
+                          active: true,
+                        };
+                      }
+                      return cond;
+                    }),
+                  },
+                };
                 setOrderData({
                   ...orderData,
-                  promocode: findPromo,
+                  promocode: resultPromo,
                   promocodePrice: findPromo?.params?.discount_value / 100,
                 });
                 setPromoCode("");
@@ -350,11 +415,28 @@ export default function PromoCodeDialog({
                 findPromo?.params?.discount_value > 0 &&
                 findPromo?.params?.result_type == 3
               ) {
+                const resultPromo = {
+                  ...findPromo,
+                  params: {
+                    ...findPromo.params,
+                    conditions: findPromo?.params?.conditions?.map((cond) => {
+                      if (cond?.id == condition?.id) {
+                        return {
+                          ...cond,
+                          active: true,
+                        };
+                      }
+                      return cond;
+                    }),
+                  },
+                };
                 //Discount promotion
                 setOrderData({
                   ...orderData,
-                  promocode: findPromo,
-                  discountPromocode: Number(findPromo?.params?.discount_value),
+                  promocode: resultPromo,
+                  discountPromocodeProduct: Number(
+                    findPromo?.params?.discount_value
+                  ),
                 });
                 setPromotionDiscount(Number(findPromo?.params?.discount_value));
                 setPromoCode("");
@@ -378,10 +460,9 @@ export default function PromoCodeDialog({
                 setHovered(false);
               }
             } else {
+              isCHeck = false;
               setError({
-                title: `${(
-                  condition?.sum / 100
-                )?.toLocaleString()} ${promocodeT("error_min_sum")}`,
+                title: `${nameProducts}`,
                 type: "invalid_code",
               });
             }
@@ -405,9 +486,47 @@ export default function PromoCodeDialog({
 
   useEffect(() => {
     if (orderData?.promocode) {
-      if (totalSum < orderData?.promocode?.params?.conditions[0]?.sum / 100) {
-        handleRemovePromo();
-      }
+      orderData?.promocode?.params?.conditions?.forEach((condition) => {
+        if(!condition?.active) return; // Skip already active conditions
+        switch (condition?.type) {
+          case 0: // All products
+            if (totalSum < condition?.sum / 100) {
+              handleRemovePromo();
+            }
+            break;
+          // case 1: // Category
+          //   const findCategoryData = products?.find(
+          //     (prd) => prd?.menu_category_id == condition.id
+          //   );
+          //   let allSummaCategory =
+          //     (findCategoryData?.price["1"] / 100) * findCategoryData?.count;
+          //   if (!allSummaCategory) {
+          //     allSummaCategory = 0;
+          //   }
+          //   console.log({ findCategoryData, allSummaCategory });
+          //   if (allSummaCategory < condition?.sum / 100) {
+          //     handleRemovePromo();
+          //   }
+          //   break;
+          case 2: // Product
+            const findProductsData = products?.find(
+              (prd) => prd?.product_id == condition.id
+            );
+
+            let allSummaProducts =
+              (findProductsData?.price["1"] / 100) * findProductsData?.count;
+            if (!allSummaProducts) {
+              allSummaProducts = 0;
+            }
+            console.log({ allSummaProducts, findProductsData });
+            if (allSummaProducts < condition?.sum / 100) {
+              handleRemovePromo();
+            }
+            break;
+          default:
+            break;
+        }
+      });
     }
   }, [totalSum]);
 

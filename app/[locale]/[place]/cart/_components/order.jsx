@@ -83,6 +83,7 @@ const Order = ({
   locale,
   place,
   productsData,
+  categoriesData,
   apiTime,
 }) => {
   const all = useTranslations("All");
@@ -956,6 +957,7 @@ const Order = ({
       <div className="space-y-2 md:space-y-4">
         <PromoCodeDialog
           locale={locale}
+          categoriesData={categoriesData}
           auth={auth}
           promotions={promotions?.response}
           productsData={productsData}

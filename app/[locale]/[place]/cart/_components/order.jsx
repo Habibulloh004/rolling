@@ -297,14 +297,37 @@ const Order = ({
       commentSpot = `${commentSpot}\nТип заказа: Через веб-сайт`;
 
       let filterPromocode = null;
-      if (promocode) {
+      if (promocode && promocode?.params?.result_type == 1) {
         filterPromocode = [
           {
+            type: 1,
             id: +promocode?.promotion_id,
             involved_products: promocode?.params?.bonus_products?.map((prd) => {
               return {
                 id: +prd?.id,
                 count: +promocode?.params?.bonus_products_pcs,
+              };
+            }),
+          },
+        ];
+      } else {
+        console.log({products})
+        const findProductPromotion = products?.filter((pr) => {
+          const conditions = orderData?.promocode?.params?.conditions;
+          const findPrdCon = conditions?.find(
+            (cdp) => cdp?.type == 2 && cdp?.id == pr?.product_id && cdp?.active
+          );
+          return findPrdCon
+        });
+        console.log({ findProductPromotion });
+        filterPromocode = [
+          {
+            type: 2,
+            id: +promocode?.promotion_id,
+            involved_products: findProductPromotion?.map((prd) => {
+              return {
+                id: +prd?.product_id,
+                count: +prd?.count,
               };
             }),
           },

@@ -82,152 +82,314 @@ export default function PromoCodeDialog({
       }
       return false;
     });
+    const filterProducts = productsData
+      ?.filter((product) => {
+        const findProduct = findPromo?.params?.bonus_products?.find(
+          (pr) => pr?.id === product?.product_id
+        );
+        return !!findProduct;
+      })
+      ?.map((prd) => ({
+        ...prd,
+        promocode: findPromo,
+        count: findPromo?.params?.bonus_products_pcs,
+      }));
+
+    console.log({filterProducts});
 
     if (findPromo) {
-      const filterProducts = productsData
-        ?.filter((product) => {
-          const findProduct = findPromo?.params?.bonus_products?.find(
-            (pr) => pr?.id === product?.product_id
-          );
-          return !!findProduct;
-        })
-        ?.map((prd) => ({
-          ...prd,
-          promocode: findPromo,
-          count: findPromo?.params?.bonus_products_pcs,
-        }));
-
-      console.log(filterProducts);
-
-      if (totalSum >= findPromo?.params?.conditions[0]?.sum / 100) {
-        if (
-          findPromo?.params?.discount_value > 0 &&
-          findPromo?.params?.result_type == 2
-        ) {
-          setOrderData({
-            ...orderData,
-            promocode: findPromo,
-            promocodePrice: findPromo?.params?.discount_value / 100,
-          });
-          setPromoCode("");
-          setHovered(false);
-          setError(null);
-          toast(promocodeT("success"), {
-            type: "success",
-            duration: 2000,
-          });
-          setPromotionPrice(findPromo?.params?.discount_value / 100);
-        } else if (
-          findPromo?.params?.discount_value > 0 &&
-          findPromo?.params?.result_type == 3
-        ) {
-          if (!auth?.client_id) {
-            setError({
-              title: promocodeT("error_auth"),
-              type: "invalid_code",
-            });
-            return;
-          }
-          const today = new Date();
-          const birthday = new Date(auth?.birthday);
-          const commentC = auth?.comment ? JSON.parse(auth?.comment) : null;
-          const promocodeName = String(findPromo?.name?.split("$")[1])
-            .toLowerCase()
-            .trim();
-          console.log({ findPromo, promocodeName });
-
-          //Birthday
-          if (
-            today.getMonth() === birthday.getMonth() &&
-            today.getDate() === birthday.getDate() &&
-            promocodeName == "bday20"
-          ) {
-            console.log("birthday active");
-            setOrderData({
-              ...orderData,
-              promocode: findPromo,
-              discountPromocode: Number(findPromo?.params?.discount_value),
-            });
-            setPromotionDiscount(Number(findPromo?.params?.discount_value));
-            setPromoCode("");
-            setHovered(false);
-            setError(null);
-            toast(promocodeT("success"), {
-              type: "success",
-              duration: 2000,
-            });
-          } else if (
-            (today.getMonth() !== birthday.getMonth() ||
-              today.getDate() !== birthday.getDate()) &&
-            promocodeName == "bday20"
-          ) {
-            setError({
-              title: promocodeT("error_bday"),
-              type: "invalid_code",
-            });
-          }
-
-          //First Order
-          if (
-            (commentC?.length == 0 || !commentC?.length) &&
-            promocodeName == "first20"
-          ) {
-            setOrderData({
-              ...orderData,
-              promocode: findPromo,
-              discountPromocode: Number(findPromo?.params?.discount_value),
-            });
-            setPromotionDiscount(Number(findPromo?.params?.discount_value));
-            setPromoCode("");
-            setHovered(false);
-            setError(null);
-            toast(promocodeT("success"), {
-              type: "success",
-              duration: 2000,
-            });
-          } else if (commentC?.length > 0 && promocodeName == "first20") {
-            setError({
-              title: promocodeT("error_first20"),
-              type: "invalid_code",
-            });
-          }
-
-          //Default
-          if (promocodeName != "bday20" && promocodeName != "first20") {
-            setOrderData({
-              ...orderData,
-              promocode: findPromo,
-              discountPromocode: Number(findPromo?.params?.discount_value),
-            });
-            setPromotionDiscount(Number(findPromo?.params?.discount_value));
-            setPromoCode("");
-            setHovered(false);
-            setError(null);
-            toast(promocodeT("success"), {
-              type: "success",
-              duration: 2000,
-            });
-          }
-        } else if (findPromo?.params?.result_type == 1) {
-          setAddingProducts(filterProducts);
-          setProductsData([...products, ...filterProducts]);
-          setError(null);
-          setOrderData({ ...orderData, promocode: findPromo });
-          toast(promocodeT("success"), {
-            type: "success",
-            duration: 2000,
-          });
-          setPromoCode("");
-          setHovered(false);
-        }
-      } else {
+      //Only for auth users
+      if (!auth?.client_id && findPromo?.params?.clients_type == 3) {
         setError({
-          title: `${(
-            findPromo?.params?.conditions[0]?.sum / 100
-          )?.toLocaleString()} ${promocodeT("error_min_sum")}`,
-          type: "not_enough_price",
+          title: promocodeT("error_auth"),
+          type: "invalid_code",
         });
+        return;
       }
+      const conditionsProducts = findPromo?.params?.conditions;
+      let isCHeck = false;
+      conditionsProducts?.forEach((condition) => {
+        if (isCHeck) return; // If already checked, skip further checks
+        switch (condition.type) {
+          case 0: // All products
+            if (totalSum >= condition?.sum / 100) {
+              console.log("All products promotion active");
+              //Summa promotion
+              isCHeck = true;
+              if (
+                findPromo?.params?.discount_value > 0 &&
+                findPromo?.params?.result_type == 2
+              ) {
+                setOrderData({
+                  ...orderData,
+                  promocode: findPromo,
+                  promocodePrice: findPromo?.params?.discount_value / 100,
+                });
+                setPromoCode("");
+                setHovered(false);
+                setError(null);
+                toast(promocodeT("success"), {
+                  type: "success",
+                  duration: 2000,
+                });
+                setPromotionPrice(findPromo?.params?.discount_value / 100);
+              } else if (
+                findPromo?.params?.discount_value > 0 &&
+                findPromo?.params?.result_type == 3
+              ) {
+                //Discount promotion
+                const today = new Date();
+                const birthday = new Date(auth?.birthday);
+                const commentC = auth?.comment
+                  ? JSON.parse(auth?.comment)
+                  : null;
+                const promocodeName = String(findPromo?.name?.split("$")[1])
+                  .toLowerCase()
+                  .trim();
+                console.log({ findPromo, promocodeName });
+
+                //Birthday
+                if (
+                  today.getMonth() === birthday.getMonth() &&
+                  today.getDate() === birthday.getDate() &&
+                  promocodeName == "bday20"
+                ) {
+                  console.log("birthday active");
+                  setOrderData({
+                    ...orderData,
+                    promocode: findPromo,
+                    discountPromocode: Number(
+                      findPromo?.params?.discount_value
+                    ),
+                  });
+                  setPromotionDiscount(
+                    Number(findPromo?.params?.discount_value)
+                  );
+                  setPromoCode("");
+                  setHovered(false);
+                  setError(null);
+                  toast(promocodeT("success"), {
+                    type: "success",
+                    duration: 2000,
+                  });
+                } else if (
+                  (today.getMonth() !== birthday.getMonth() ||
+                    today.getDate() !== birthday.getDate()) &&
+                  promocodeName == "bday20"
+                ) {
+                  setError({
+                    title: promocodeT("error_bday"),
+                    type: "invalid_code",
+                  });
+                }
+
+                //First Order
+                if (
+                  (commentC?.length == 0 || !commentC?.length) &&
+                  promocodeName == "first20"
+                ) {
+                  setOrderData({
+                    ...orderData,
+                    promocode: findPromo,
+                    discountPromocode: Number(
+                      findPromo?.params?.discount_value
+                    ),
+                  });
+                  setPromotionDiscount(
+                    Number(findPromo?.params?.discount_value)
+                  );
+                  setPromoCode("");
+                  setHovered(false);
+                  setError(null);
+                  toast(promocodeT("success"), {
+                    type: "success",
+                    duration: 2000,
+                  });
+                } else if (commentC?.length > 0 && promocodeName == "first20") {
+                  setError({
+                    title: promocodeT("error_first20"),
+                    type: "invalid_code",
+                  });
+                }
+
+                //Default
+                if (promocodeName != "bday20" && promocodeName != "first20") {
+                  setOrderData({
+                    ...orderData,
+                    promocode: findPromo,
+                    discountPromocode: Number(
+                      findPromo?.params?.discount_value
+                    ),
+                  });
+                  setPromotionDiscount(
+                    Number(findPromo?.params?.discount_value)
+                  );
+                  setPromoCode("");
+                  setHovered(false);
+                  setError(null);
+                  toast(promocodeT("success"), {
+                    type: "success",
+                    duration: 2000,
+                  });
+                }
+              } else if (findPromo?.params?.result_type == 1) {
+                //Bonus product promotion
+                setAddingProducts(filterProducts);
+                setProductsData([...products, ...filterProducts]);
+                setError(null);
+                setOrderData({ ...orderData, promocode: findPromo });
+                toast(promocodeT("success"), {
+                  type: "success",
+                  duration: 2000,
+                });
+                setPromoCode("");
+                setHovered(false);
+              }
+            } else {
+              setError({
+                title: `${(
+                  condition?.sum / 100
+                )?.toLocaleString()} ${promocodeT("error_min_sum")}`,
+                type: "invalid_code",
+              });
+            }
+            break;
+          case 1: // Category
+            const findCategoryData = products?.find(
+              (prd) => prd?.menu_category_id == condition.id
+            );
+            const allSummaCategory =
+              findCategoryData?.price["1"] * findCategoryData?.count;
+            if (findCategoryData && allSummaCategory >= condition?.sum / 100) {
+              console.log("Category promotion active");
+              isCHeck = true;
+              if (
+                findPromo?.params?.discount_value > 0 &&
+                findPromo?.params?.result_type == 2
+              ) {
+                setOrderData({
+                  ...orderData,
+                  promocode: findPromo,
+                  promocodePrice: findPromo?.params?.discount_value / 100,
+                });
+                setPromoCode("");
+                setHovered(false);
+                setError(null);
+                toast(promocodeT("success"), {
+                  type: "success",
+                  duration: 2000,
+                });
+                setPromotionPrice(findPromo?.params?.discount_value / 100);
+              } else if (
+                findPromo?.params?.discount_value > 0 &&
+                findPromo?.params?.result_type == 3
+              ) {
+                //Discount promotion
+                setOrderData({
+                  ...orderData,
+                  promocode: findPromo,
+                  discountPromocode: Number(findPromo?.params?.discount_value),
+                });
+                setPromotionDiscount(Number(findPromo?.params?.discount_value));
+                setPromoCode("");
+                setHovered(false);
+                setError(null);
+                toast(promocodeT("success"), {
+                  type: "success",
+                  duration: 2000,
+                });
+              } else if (findPromo?.params?.result_type == 1) {
+                //Bonus product promotion
+                setAddingProducts(filterProducts);
+                setProductsData([...products, ...filterProducts]);
+                setError(null);
+                setOrderData({ ...orderData, promocode: findPromo });
+                toast(promocodeT("success"), {
+                  type: "success",
+                  duration: 2000,
+                });
+                setPromoCode("");
+                setHovered(false);
+              }
+            } else {
+              setError({
+                title: `${(
+                  condition?.sum / 100
+                )?.toLocaleString()} ${promocodeT("error_min_sum")}`,
+                type: "invalid_code",
+              });
+            }
+            break;
+          case 2: // Product
+            const findProductsData = products?.find(
+              (prd) => prd?.product_id == condition.id
+            );
+            const allSummaProducts =
+              findProductsData?.price["1"] * findProductsData?.count;
+            if (findProductsData && allSummaProducts >= condition?.sum / 100) {
+              isCHeck = true;
+              console.log("Products promotion active");
+              if (
+                findPromo?.params?.discount_value > 0 &&
+                findPromo?.params?.result_type == 2
+              ) {
+                setOrderData({
+                  ...orderData,
+                  promocode: findPromo,
+                  promocodePrice: findPromo?.params?.discount_value / 100,
+                });
+                setPromoCode("");
+                setHovered(false);
+                setError(null);
+                toast(promocodeT("success"), {
+                  type: "success",
+                  duration: 2000,
+                });
+                setPromotionPrice(findPromo?.params?.discount_value / 100);
+              } else if (
+                findPromo?.params?.discount_value > 0 &&
+                findPromo?.params?.result_type == 3
+              ) {
+                //Discount promotion
+                setOrderData({
+                  ...orderData,
+                  promocode: findPromo,
+                  discountPromocode: Number(findPromo?.params?.discount_value),
+                });
+                setPromotionDiscount(Number(findPromo?.params?.discount_value));
+                setPromoCode("");
+                setHovered(false);
+                setError(null);
+                toast(promocodeT("success"), {
+                  type: "success",
+                  duration: 2000,
+                });
+              } else if (findPromo?.params?.result_type == 1) {
+                //Bonus product promotion
+                setAddingProducts(filterProducts);
+                setProductsData([...products, ...filterProducts]);
+                setError(null);
+                setOrderData({ ...orderData, promocode: findPromo });
+                toast(promocodeT("success"), {
+                  type: "success",
+                  duration: 2000,
+                });
+                setPromoCode("");
+                setHovered(false);
+              }
+            } else {
+              setError({
+                title: `${(
+                  condition?.sum / 100
+                )?.toLocaleString()} ${promocodeT("error_min_sum")}`,
+                type: "invalid_code",
+              });
+            }
+            break;
+          default:
+            isCHeck = false;
+        }
+      });
     } else {
       setError({
         title: promocodeT("error"),

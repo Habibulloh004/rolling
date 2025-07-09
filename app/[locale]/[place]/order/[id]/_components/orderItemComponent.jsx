@@ -258,6 +258,11 @@ export default function OrderItemComponent({
                       {all("sum")}
                     </p>
                   )}
+                  {promotionData?.params?.result_type == 1 && (
+                    <p className="text-primary font-normal textNormal2 text-[#2E2E2E]">
+                      {promotionData?.name?.split("$")[1]}
+                    </p>
+                  )}
                 </div>
               )}
               {orderData?.type.includes("delivery") && (

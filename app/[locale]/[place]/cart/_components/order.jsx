@@ -164,8 +164,8 @@ const Order = ({
         currentMinutes < openedMinutes && currentMinutes >= closedMinutes;
     }
 
-    setIsDisabled(false);
-    return false;
+    setIsDisabled(isDisabled);
+    return isDisabled;
   };
 
   const handleSubmit = async () => {

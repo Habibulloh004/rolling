@@ -78,7 +78,7 @@ export default function PromoCodeDialog({
       });
       return;
     }
-    const findPromo = promotions.find((promo) => {
+    let findPromo = promotions.find((promo) => {
       const promoCodeFind = promo?.name?.split("$")[1];
       if (
         String(promoCodeFind).toLowerCase().trim() ===
@@ -166,14 +166,30 @@ export default function PromoCodeDialog({
             if (totalSum >= condition?.sum / 100) {
               console.log("All products promotion active");
               //Summa promotion
-              isCHeck = true;
+              isCHeck = true; 
               if (
                 findPromo?.params?.discount_value > 0 &&
                 findPromo?.params?.result_type == 2
               ) {
+                resultPromo = {
+                  ...resultPromo,
+                  params: {
+                    ...resultPromo.params,
+                    conditions: resultPromo?.params?.conditions?.map((cond) => {
+                      if (cond?.id == condition?.id) {
+                        return {
+                          ...cond,
+                          active: true,
+                        };
+                      }
+                      return cond;
+                    }),
+                  },
+                };
+
                 setOrderData({
                   ...orderData,
-                  promocode: findPromo,
+                  promocode: resultPromo,
                   promocodePrice: findPromo?.params?.discount_value / 100,
                 });
                 setPromoCode("");
@@ -205,10 +221,27 @@ export default function PromoCodeDialog({
                   today.getDate() === birthday.getDate() &&
                   promocodeName == "bday20"
                 ) {
+                  resultPromo = {
+                    ...resultPromo,
+                    params: {
+                      ...resultPromo.params,
+                      conditions: resultPromo?.params?.conditions?.map(
+                        (cond) => {
+                          if (cond?.id == condition?.id) {
+                            return {
+                              ...cond,
+                              active: true,
+                            };
+                          }
+                          return cond;
+                        }
+                      ),
+                    },
+                  };
                   console.log("birthday active");
                   setOrderData({
                     ...orderData,
-                    promocode: findPromo,
+                    promocode: resultPromo,
                     discountPromocode: Number(
                       findPromo?.params?.discount_value
                     ),
@@ -239,9 +272,26 @@ export default function PromoCodeDialog({
                   (commentC?.length == 0 || !commentC?.length) &&
                   promocodeName == "first20"
                 ) {
+                  resultPromo = {
+                    ...resultPromo,
+                    params: {
+                      ...resultPromo.params,
+                      conditions: resultPromo?.params?.conditions?.map(
+                        (cond) => {
+                          if (cond?.id == condition?.id) {
+                            return {
+                              ...cond,
+                              active: true,
+                            };
+                          }
+                          return cond;
+                        }
+                      ),
+                    },
+                  };
                   setOrderData({
                     ...orderData,
-                    promocode: findPromo,
+                    promocode: resultPromo,
                     discountPromocode: Number(
                       findPromo?.params?.discount_value
                     ),
@@ -265,9 +315,26 @@ export default function PromoCodeDialog({
 
                 //Default
                 if (promocodeName != "bday20" && promocodeName != "first20") {
+                  resultPromo = {
+                    ...resultPromo,
+                    params: {
+                      ...resultPromo.params,
+                      conditions: resultPromo?.params?.conditions?.map(
+                        (cond) => {
+                          if (cond?.id == condition?.id) {
+                            return {
+                              ...cond,
+                              active: true,
+                            };
+                          }
+                          return cond;
+                        }
+                      ),
+                    },
+                  };
                   setOrderData({
                     ...orderData,
-                    promocode: findPromo,
+                    promocode: resultPromo,
                     discountPromocode: Number(
                       findPromo?.params?.discount_value
                     ),
@@ -285,10 +352,25 @@ export default function PromoCodeDialog({
                 }
               } else if (findPromo?.params?.result_type == 1) {
                 //Bonus product promotion
+                resultPromo = {
+                  ...resultPromo,
+                  params: {
+                    ...resultPromo.params,
+                    conditions: resultPromo?.params?.conditions?.map((cond) => {
+                      if (cond?.id == condition?.id) {
+                        return {
+                          ...cond,
+                          active: true,
+                        };
+                      }
+                      return cond;
+                    }),
+                  },
+                };
                 setAddingProducts(filterProducts);
                 setProductsData([...products, ...filterProducts]);
                 setError(null);
-                setOrderData({ ...orderData, promocode: findPromo });
+                setOrderData({ ...orderData, promocode: resultPromo });
                 toast(promocodeT("success"), {
                   type: "success",
                   duration: 2000,

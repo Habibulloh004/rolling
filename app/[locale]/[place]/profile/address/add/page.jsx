@@ -23,13 +23,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-// Custom user marker
-const userMarker = new Icon({
-  iconUrl:
-    "https://fkkpuaszmvpxjoqqmlzx.supabase.co/storage/v1/object/sign/rolling-sushi/user.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJyb2xsaW5nLXN1c2hpL3VzZXIucG5nIiwiaWF0IjoxNzM3Mzc5NDQ2LCJleHAiOjE3Njg5MTU0NDZ9._ac5SnVZfXfhP78dd2wbfQsB-kAKvxlMQvI7GNQg-QI&t=2025-01-20T13%3A24%3A07.547Z",
-  iconSize: [60, 60],
-});
-
 // Center Marker component that stays fixed
 const CenterMarker = () => {
   const map = useMap();
@@ -67,9 +60,9 @@ const CenterMarker = () => {
       >
         <div
           style={{
-            width: "60px",
-            height: "60px",
-            backgroundImage: `url("https://fkkpuaszmvpxjoqqmlzx.supabase.co/storage/v1/object/sign/rolling-sushi/user.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJyb2xsaW5nLXN1c2hpL3VzZXIucG5nIiwiaWF0IjoxNzM3Mzc5NDQ2LCJleHAiOjE3Njg5MTU0NDZ9._ac5SnVZfXfhP78dd2wbfQsB-kAKvxlMQvI7GNQg-QI&t=2025-01-20T13%3A24%3A07.547Z")`,
+            width: "50px",
+            height: "70px",
+            backgroundImage: `url("https://rolling-omega.vercel.app/_next/image?url=%2Ficons%2F1.png&w=96&q=75")`,
             backgroundSize: "contain",
             backgroundRepeat: "no-repeat",
           }}

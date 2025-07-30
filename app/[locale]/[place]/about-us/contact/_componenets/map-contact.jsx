@@ -16,8 +16,8 @@ const SmoothTransition = ({ lng, lat, zoom = 14 }) => {
 const MapContact = ({ lng, lat, address, spotData, locale }) => {
     const addressMarker = new Icon({
         iconUrl:
-            "https://fkkpuaszmvpxjoqqmlzx.supabase.co/storage/v1/object/sign/rolling-sushi/locaation.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJyb2xsaW5nLXN1c2hpL2xvY2FhdGlvbi5wbmciLCJpYXQiOjE3MzczNzk0NTksImV4cCI6MTc2ODkxNTQ1OX0.gSnye5QeEB43lsmQBXxbXTVasrR4JFKoGCcWCeIYhhg&t=2025-01-20T13%3A24%3A20.162Z",
-        iconSize: [40, 40],
+            "https://rolling-omega.vercel.app/_next/image?url=%2Ficons%2F1.png&w=96&q=75",
+        iconSize: [50, 70],
     });
 
     return (

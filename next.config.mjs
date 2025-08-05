@@ -34,6 +34,10 @@ export default withNextIntl({
         protocol: "https",
         hostname: "joinposter.com",
       },
+      {
+        protocol: "https",
+        hostname: "rollingadmin.uz",
+      },
     ],
   },
   

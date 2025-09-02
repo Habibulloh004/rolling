@@ -10,7 +10,7 @@ import {
   navItems,
   translateTextSpot,
 } from "@/lib/utils";
-import { Search } from "lucide-react";
+import { ArrowUp, Search } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Image from "next/legacy/image";
 import {
@@ -78,6 +78,15 @@ export default function Header({
   const [openSearch, setOpenSearch] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const defaultTime = { closed_time: "23:00", opened_time: "10:00" };
+  const [showBackTop, setShowBackTop] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => {
+      setShowBackTop(window.scrollY > 350); // 350px dan keyin ko‘rsin
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   // Handle scroll effect for header
   useEffect(() => {
@@ -223,16 +232,14 @@ export default function Header({
   return (
     <>
       <header
-        className={`sticky top-0 w-full md:bg-custom-gradient z-50 bg-white text-white h-16 sm:h-24 items-center transition-transform duration-300 ${
-          isScrolled ? "-translate-y-full" : "translate-y-0"
-        }`}
+        className={`sticky top-0 w-full md:bg-custom-gradient z-50 bg-white text-white h-16 sm:h-24 items-center transition-transform duration-300 ${isScrolled ? "-translate-y-full" : "translate-y-0"
+          }`}
       >
         <div className="flex container fixed max-w-[1440px] z-10 top-0 px-3 left-1/2 -translate-x-1/2 m-auto items-center justify-between h-16 sm:h-24">
           {/* Mobile Navigation Menu */}
           <div
-            className={`absolute z-50 top-0 h-screen w-[70%] p-3 lg:hidden transition-transform duration-300 ${
-              open ? "-translate-x-5" : "-translate-x-[110%]"
-            } flex flex-col items-center bg-custom-gradient-top-bottom gap-5`}
+            className={`absolute z-50 top-0 h-screen w-[70%] p-3 lg:hidden transition-transform duration-300 ${open ? "-translate-x-5" : "-translate-x-[110%]"
+              } flex flex-col items-center bg-custom-gradient-top-bottom gap-5`}
           >
             {/* Logo */}
             <Link
@@ -240,8 +247,8 @@ export default function Header({
                 param?.place !== "branch"
                   ? `${getUrl(pathName)}`
                   : `${getUrl(
-                      pathName
-                    )}?spot=${spot}&table_id=${table_id}&table_num=${table_num}&service=${service}`
+                    pathName
+                  )}?spot=${spot}&table_id=${table_id}&table_num=${table_num}&service=${service}`
               }
               className="flex-shrink-0 mt-5"
             >
@@ -273,11 +280,10 @@ export default function Header({
                       className=""
                     />
                     <p
-                      className={`${
-                        `${getUrl(pathName)}${item.path}` == pathName
-                          ? "font-semibold"
-                          : ""
-                      }`}
+                      className={`${`${getUrl(pathName)}${item.path}` == pathName
+                        ? "font-semibold"
+                        : ""
+                        }`}
                     >
                       {navbar(`${item.title}`)}
                     </p>
@@ -285,11 +291,10 @@ export default function Header({
                 );
               })}
               <Link
-                href={`${
-                  cl
-                    ? `${getUrl(pathName)}/profile`
-                    : `${getUrl(pathName)}/login`
-                }`}
+                href={`${cl
+                  ? `${getUrl(pathName)}/profile`
+                  : `${getUrl(pathName)}/login`
+                  }`}
                 onClick={toggleOpen}
                 className="flex-shrink-0 flex items-center gap-2 w-full"
               >
@@ -302,9 +307,8 @@ export default function Header({
                   className=""
                 />
                 <p
-                  className={`${
-                    `${pathName}/profile` == pathName ? "font-semibold" : ""
-                  }`}
+                  className={`${`${pathName}/profile` == pathName ? "font-semibold" : ""
+                    }`}
                 >
                   {cl
                     ? cl.firstname && cl.firstname.length > 0
@@ -322,9 +326,8 @@ export default function Header({
           {/* Overlay for closing the menu */}
           <div
             onClick={toggleOpen}
-            className={`absolute right-0 top-0 z-40 bg-black/30 h-screen w-[100%] lg:hidden transition-opacity duration-300 ${
-              open ? "opacity-100" : "opacity-0 pointer-events-none"
-            }`}
+            className={`absolute right-0 top-0 z-40 bg-black/30 h-screen w-[100%] lg:hidden transition-opacity duration-300 ${open ? "opacity-100" : "opacity-0 pointer-events-none"
+              }`}
           ></div>
 
           <Link
@@ -332,8 +335,8 @@ export default function Header({
               param?.place !== "branch"
                 ? `${getUrl(pathName)}`
                 : `${getUrl(
-                    pathName
-                  )}?spot=${spot}&table_id=${table_id}&table_num=${table_num}&service=${service}`
+                  pathName
+                )}?spot=${spot}&table_id=${table_id}&table_num=${table_num}&service=${service}`
             }
             className="hidden md:flex flex-shrink-0"
           >
@@ -368,8 +371,8 @@ export default function Header({
                 param?.place !== "branch"
                   ? `${getUrl(pathName)}`
                   : `${getUrl(
-                      pathName
-                    )}?spot=${spot}&table_id=${table_id}&table_num=${table_num}&service=${service}`
+                    pathName
+                  )}?spot=${spot}&table_id=${table_id}&table_num=${table_num}&service=${service}`
               }
               className=" flex-shrink-0"
             >
@@ -402,22 +405,20 @@ export default function Header({
                     loading="eager"
                   />
                   <p
-                    className={`${
-                      `${getUrl(pathName)}${item.path}` == pathName
-                        ? "font-semibold"
-                        : "lg:text-sm xl:text-base"
-                    }`}
+                    className={`${`${getUrl(pathName)}${item.path}` == pathName
+                      ? "font-semibold"
+                      : "lg:text-sm xl:text-base"
+                      }`}
                   >
                     {navbar(`${item.title}`)}
                   </p>
                 </Link>
               ))}
               <Link
-                href={`${
-                  cl
-                    ? `${getUrl(pathName)}/profile`
-                    : `${getUrl(pathName)}/login`
-                }`}
+                href={`${cl
+                  ? `${getUrl(pathName)}/profile`
+                  : `${getUrl(pathName)}/login`
+                  }`}
                 onClick={toggleOpen}
                 className="flex-shrink-0 flex items-center gap-2"
               >
@@ -430,9 +431,8 @@ export default function Header({
                   loading="eager"
                 />
                 <p
-                  className={`${
-                    `${pathName}/profile` == pathName ? "font-semibold" : ""
-                  }`}
+                  className={`${`${pathName}/profile` == pathName ? "font-semibold" : ""
+                    }`}
                 >
                   {cl
                     ? cl.firstname && cl.firstname.length > 0
@@ -594,9 +594,8 @@ export default function Header({
               )}
 
               <div
-                className={`${
-                  param.place == "branch" ? "" : "hidden md:block"
-                }`}
+                className={`${param.place == "branch" ? "" : "hidden md:block"
+                  }`}
               >
                 <LngChange param={param} />
               </div>
@@ -627,8 +626,8 @@ export default function Header({
                     param?.place !== "branch"
                       ? `${getUrl(pathName)}/cart`
                       : `${getUrl(
-                          pathName
-                        )}/cart?spot=${spot}&table_id=${table_id}&table_num=${table_num}&service=${service}`
+                        pathName
+                      )}/cart?spot=${spot}&table_id=${table_id}&table_num=${table_num}&service=${service}`
                   }
                   className="flex items-center hover:text-gray-200"
                 >
@@ -760,8 +759,8 @@ export default function Header({
                 param?.place !== "branch"
                   ? `${getUrl(pathName)}/cart`
                   : `${getUrl(
-                      pathName
-                    )}/cart?spot=${spot}&table_id=${table_id}&table_num=${table_num}&service=${service}`
+                    pathName
+                  )}/cart?spot=${spot}&table_id=${table_id}&table_num=${table_num}&service=${service}`
               }
               className="w-11/12  mx-auto block"
             >
@@ -813,8 +812,8 @@ export default function Header({
                   param?.place !== "branch"
                     ? `${getUrl(pathName)}/cart`
                     : `${getUrl(
-                        pathName
-                      )}/cart?spot=${spot}&table_id=${table_id}&table_num=${table_num}&service=${service}`
+                      pathName
+                    )}/cart?spot=${spot}&table_id=${table_id}&table_num=${table_num}&service=${service}`
                 }
                 className="flex items-center relative"
               >
@@ -856,6 +855,26 @@ export default function Header({
           <p className="hidden xl:block py-2">{introText}</p>
         </div>
       )}
+      {/* Back-to-Top (floating) */}
+      {/* Back-to-Top — cartdagi wave bilan */}
+      {showBackTop && (
+        <button
+          aria-label="Back to top"
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          className="fixed z-40 right-5 bottom-20 md:bottom-[84px]"
+        >
+          <div className="relative group">
+            {/* <<<— CARTDAGI WAVE AYNAN SHU —>>> */}
+            <div className="absolute -inset-1 bg-gradient-to-r from-blue-400 to-green-400 rounded-full opacity-75 animate-wave"></div>
+
+            {/* Card tugma — oq, yumaloq, soyali */}
+            <div className="relative bg-white p-2 md:p-2.5 rounded-full shadow-lg border border-primary/10">
+              <ArrowUp className="size-5 md:size-6 text-primary transition-transform duration-200 group-hover:-translate-y-0.5" />
+            </div>
+          </div>
+        </button>
+      )}
+
 
       {/* CSS for wave animation */}
       <style jsx>{`
@@ -876,7 +895,15 @@ export default function Header({
         .animate-wave {
           animation: wave 2s infinite ease-in-out;
         }
+        @keyframes wave {
+           0%   { transform: scale(1);   opacity: 0.75; }
+           50%  { transform: scale(1.1); opacity: 0.5; }
+           100% { transform: scale(1);   opacity: 0.75; }
+        }
+      .animate-wave { animation: wave 2s infinite ease-in-out; }
+
       `}</style>
+
     </>
   );
 }

@@ -114,7 +114,7 @@ export default async function CategoryItems({ params, searchParams }) {
     (c) => c.photo != null && c?.hidden == 0
   );
   const categoryName = getLocalizedCategoryName(category.category_name, locale);
-
+  
   return (
     <Container className="flex-col w-11/12 justify-start items-start space-y-8 pt-4">
       <Breadcrumb>

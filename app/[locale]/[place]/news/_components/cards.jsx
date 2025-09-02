@@ -128,7 +128,7 @@ const PromotionCards = ({ param, item }) => {
   const fullContent = htmlToReact(item.description);
 
   return (
-    <main>
+    <main className="w-full flex justify-center items-center">
       <Card>
         <CardHeader className="p-0">
           <div className="relative aspect-[15/5]">

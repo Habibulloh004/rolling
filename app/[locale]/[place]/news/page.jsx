@@ -37,8 +37,9 @@ const News = async ({ params }) => {
       <Carousel
         opts={{
           align: "center",
+          loop:true
         }}
-        className="relative w-full text-foreground mt-5 md:mt-10 "
+        className="ml-4 relative w-full text-foreground mt-5 md:mt-10 "
         paginate={"false"}
       >
         {/* <div className="absolute -right-1 -top-4 w-2 h-48 bg-[#F5F5F5] z-50 shadow-custom" /> */}
@@ -50,8 +51,8 @@ const News = async ({ params }) => {
             return (
               <CarouselItem
                 key={i}
-                className={`basis-[100%] lg:basis-[45%] p-0 px-4 ${
-                  i == 0 && "max-sm:ml-8 max-md:ml-16 ml-8"
+                className={`basis-[90%] lg:basis-[45%] ${
+                  i == 0 && ""
                 }`}
               >
                 <PromotionCards param={param} item={item} />

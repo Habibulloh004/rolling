@@ -6,9 +6,8 @@ import { Label } from "@/components/ui/label";
 import { useTranslations } from "next-intl";
 import React, { useEffect, useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { Icon } from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { Navigation, Plus } from "lucide-react";
+import { Navigation } from "lucide-react";
 import { toast } from "sonner";
 import { usePathname, useRouter } from "next/navigation";
 import { getUrl } from "@/lib/utils";
@@ -23,7 +22,62 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-// Center Marker component that stays fixed
+/* ======================= Helpers (texts by locale) ======================= */
+function useLocaleTexts(pathname) {
+  const locale = (pathname?.split("/")[1] || "ru").toLowerCase();
+
+  const texts = {
+    ru: {
+      selectOnMap: "Выбрать на карте",
+      tapHint: "Нажмите, чтобы выбрать локацию на карте",
+      choose: "Выбрать",
+      geoWarn: "Геолокация недоступна",
+      add: "Добавить",
+      buildingPH: "Введите номер дома",
+      entrancePH: "Введите номер подъезда",
+      floorPH: "Введите этаж",
+      apartmentPH: "Введите номер квартиры",
+      commentPH: "Добавьте комментарий курьеру",
+      dialogTitle: "Выберите локацию на карте",
+      dialogHint: "Переместите карту так, чтобы маркер оказался в нужной точке, затем нажмите «Выбрать».",
+    },
+    uz: {
+      selectOnMap: "Xaritadan tanlash",
+      tapHint: "Xaritadan joy tanlash uchun bosing",
+      choose: "Tanlash",
+      geoWarn: "Geolokatsiya mavjud emas",
+      add: "Qo‘shish",
+      buildingPH: "Uy raqamini kiriting",
+      entrancePH: "Kirish raqamini kiriting",
+      floorPH: "Qavatni kiriting",
+      apartmentPH: "Xonadon raqamini kiriting",
+      commentPH: "Kuryer uchun izoh qoldiring",
+      dialogTitle: "Xaritadan joyni tanlang",
+      dialogHint: "Xaritani kerakli joyga suring, markerni markazga keltiring va «Tanlash» tugmasini bosing.",
+    },
+    en: {
+      selectOnMap: "Select on map",
+      tapHint: "Tap to choose location on the map",
+      choose: "Select",
+      geoWarn: "Geolocation is unavailable",
+      add: "Add",
+      buildingPH: "Enter building number",
+      entrancePH: "Enter entrance number",
+      floorPH: "Enter floor",
+      apartmentPH: "Enter apartment number",
+      commentPH: "Add delivery comment for courier",
+      dialogTitle: "Choose a location on the map",
+      dialogHint: "Move the map so the marker sits on your spot, then press “Select”.",
+    },
+  };
+
+  if (locale === "ru" || locale === "uz") return { locale, ...texts[locale] };
+  return { locale: "en", ...texts.en };
+}
+
+/* ======================= Map components ======================= */
+
+// Center Marker that stays fixed in the middle; triggers address updates on moveend
 const CenterMarker = () => {
   const map = useMap();
 
@@ -35,7 +89,6 @@ const CenterMarker = () => {
         const lng = center.lng;
 
         localStorage.setItem("yourLocation", JSON.stringify({ lat, lng }));
-
         if (window.updateAddressFromCoordinates) {
           window.updateAddressFromCoordinates(lat, lng);
         }
@@ -62,7 +115,8 @@ const CenterMarker = () => {
           style={{
             width: "50px",
             height: "70px",
-            backgroundImage: `url("https://rolling-omega.vercel.app/_next/image?url=%2Ficons%2F1.png&w=96&q=75")`,
+            backgroundImage:
+              'url("https://rolling-omega.vercel.app/_next/image?url=%2Ficons%2F1.png&w=96&q=75")',
             backgroundSize: "contain",
             backgroundRepeat: "no-repeat",
           }}
@@ -72,23 +126,45 @@ const CenterMarker = () => {
   );
 };
 
-// Add this new component to handle map view updates
+// Imperative controller to recenter when `location` changes
 const MapController = ({ location }) => {
   const map = useMap();
-
   useEffect(() => {
     if (location?.lat && location?.lng) {
       map.setView([location.lat, location.lng], 18);
     }
   }, [location]);
-
   return null;
 };
+
+/* ======================= Main Component ======================= */
 
 const EditAddress = () => {
   const [open, setOpen] = useState(false);
   const { orderData, setOrderData } = useOrderStore();
-  const mapRef = useRef(null); // Ref to store map instance
+  const mapRef = useRef(null);
+  const pathname = usePathname();
+  const router = useRouter();
+
+  const addressT = useTranslations("Profile.Address");
+  const allT = useTranslations("All");
+
+  const {
+    locale,
+    selectOnMap,
+    tapHint,
+    choose,
+    geoWarn,
+    add,
+    buildingPH,
+    entrancePH,
+    floorPH,
+    apartmentPH,
+    commentPH,
+    dialogTitle,
+    dialogHint,
+  } = useLocaleTexts(pathname);
+
   const [addressData, setAddressData] = useState({
     id: 0,
     address: "",
@@ -101,64 +177,72 @@ const EditAddress = () => {
     comment: "",
   });
 
-  const [location, setLocation] = useState({
-    lat: null,
-    lng: null,
-  });
+  const [location, setLocation] = useState({ lat: null, lng: null });
 
-  const addressT = useTranslations("Profile.Address");
-  const allT = useTranslations("All");
-  const pathname = usePathname();
-  const router = useRouter();
-
+  // Reverse geocode and update addressData
   const updateAddressFromCoordinates = async (lat, lng) => {
     try {
       const res = await fetch(
         `https://nominatim.openstreetmap.org/reverse?lat=${String(
           lat
-        )}&lon=${String(lng)}&format=json&accept-language=${
-          pathname.split("/")[1]
-        }`
+        )}&lon=${String(lng)}&format=json&accept-language=${locale}`
       );
       const addressRes = await res.json();
-      setAddressData({
-        ...addressData,
-        lat: lat,
-        lng: lng,
-        address: addressRes?.display_name,
-      });
+      setAddressData((prev) => ({
+        ...prev,
+        lat,
+        lng,
+        address: addressRes?.display_name || prev.address,
+      }));
     } catch (error) {
       console.log(error);
     }
   };
 
+  // Expose updater globally for CenterMarker
   useEffect(() => {
     window.updateAddressFromCoordinates = updateAddressFromCoordinates;
     return () => {
       delete window.updateAddressFromCoordinates;
     };
-  }, [addressData]);
+  }, [locale]);
 
+  // Geolocation → center map
   const handleFoundLocation = () => {
     if (!navigator.geolocation) {
-      toast.warning(addressT("geolocation"));
+      toast.warning(addressT("geolocation") || geoWarn);
       return;
     }
-
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const { latitude, longitude } = position.coords;
         const newLocation = { lat: latitude, lng: longitude };
-        setLocation(newLocation); // This will trigger MapController
+        setLocation(newLocation);
         localStorage.setItem("yourLocation", JSON.stringify(newLocation));
         updateAddressFromCoordinates(latitude, longitude);
       },
       (error) => {
-        toast.warning(addressT("geolocation"));
+        toast.warning(addressT("geolocation") || geoWarn);
         console.error("Geolocation error:", error);
       },
       { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
     );
+  };
+
+  // Confirm current map center as selected location (for dialog)
+  const handleConfirmLocation = () => {
+    try {
+      const center = mapRef.current?.getCenter?.();
+      if (center) {
+        const lat = center.lat;
+        const lng = center.lng;
+        setLocation({ lat, lng });
+        localStorage.setItem("yourLocation", JSON.stringify({ lat, lng }));
+        updateAddressFromCoordinates(lat, lng);
+      }
+    } finally {
+      setOpen(false);
+    }
   };
 
   const handleSubmit = () => {
@@ -168,7 +252,6 @@ const EditAddress = () => {
       return toast.error("Please select a location");
 
     const id = myAddresses.length + 1;
-    const locale = pathname.split("/")[1] || "ru";
 
     let buildingLabel, entranceLabel, floorLabel, apartmentLabel, commentLabel;
     switch (locale) {
@@ -223,7 +306,10 @@ const EditAddress = () => {
     myAddresses.push(newAddress);
     localStorage.setItem("myAddresses", JSON.stringify(myAddresses));
     toast.success("Address saved successfully");
-    router.push(`${getUrl(pathname)}/cart`);
+
+    // Update order store and redirect
+    const url = `${getUrl(pathname)}/cart`;
+    router.push(url);
     setOrderData({
       ...orderData,
       address: addressData.address,
@@ -232,6 +318,8 @@ const EditAddress = () => {
       lng: addressData.lng,
       address_comment: addressDetails,
     });
+
+    // Reset form
     setAddressData({
       id: 0,
       address: "",
@@ -250,10 +338,10 @@ const EditAddress = () => {
     setAddressData({ ...addressData, [name]: value });
   };
 
+  // Initial location: use saved location or geolocate
   useEffect(() => {
-    const savedLocation = localStorage.getItem("yourLocation")
-      ? JSON.parse(localStorage.getItem("yourLocation"))
-      : null;
+    const saved = localStorage.getItem("yourLocation");
+    const savedLocation = saved ? JSON.parse(saved) : null;
 
     if (savedLocation) {
       setLocation(savedLocation);
@@ -267,8 +355,8 @@ const EditAddress = () => {
           localStorage.setItem("yourLocation", JSON.stringify(newLocation));
           updateAddressFromCoordinates(latitude, longitude);
         },
-        (error) => {
-          toast.warning(addressT("geolocation"));
+        () => {
+          toast.warning(addressT("geolocation") || geoWarn);
         },
         { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
       );
@@ -276,172 +364,171 @@ const EditAddress = () => {
   }, []);
 
   return (
-    <Container className={"w-11/12 flex flex-col pt-3 md:pt-8"}>
+    <Container className="w-11/12 flex flex-col pt-3 md:pt-8">
       <h1 className="font-semibold textNormal4 text-primary w-full text-start">
         {addressT("title")}
       </h1>
+
       <div className="w-full flex flex-col lg:flex-row my-6 justify-around gap-5 md:gap-16">
+        {/* ======================= Left form ======================= */}
         <div className="w-full flex flex-col gap-2">
-          <Label htmlFor="address" className={"text-base leading-6"}>
+          {/* Address (read-only) — opens map on click */}
+          <Label htmlFor="address" className="text-base leading-6">
             {addressT("address")}
           </Label>
-          <div className="max-w-xl w-full flex items-center bg-[#F5F5F5] border-[0.5px] border-[#B9B9BB] rounded-[10px] px-2 py-1 mt-2">
+
+          <div
+            className="max-w-xl w-full bg-[#F5F5F5] border-[0.5px] border-[#B9B9BB] rounded-[10px] mt-2 px-2 py-1 cursor-pointer"
+            onClick={() => setOpen(true)}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => (e.key === "Enter" ? setOpen(true) : null)}
+            aria-label={selectOnMap}
+            title={selectOnMap}
+          >
             <Textarea
-              disabled={true}
               id="address"
               name="address"
-              type="text"
               value={addressData.address}
-              onChange={handleChangeInput}
-              placeholder={addressT("pls")}
-              className={
-                "text-base focus-visible:outline-none focus-visible:ring-0 border-none shadow-none"
-              }
+              readOnly
+              placeholder={tapHint}
+              className="text-base bg-transparent focus-visible:outline-none focus-visible:ring-0 border-none shadow-none cursor-pointer"
             />
           </div>
-          <div className="max-w-xl w-full grid grid-cols-2 gap-3">
+
+          {/* Hint under the address field */}
+          <p className="text-xs text-muted-foreground mt-1">{tapHint}</p>
+
+          {/* “Select on map” button placed under the address (Variant 1) */}
+          <div className="md:hidden mt-2">
+            <Button
+              type="button"
+              onClick={() => setOpen(true)}
+              className="h-10 rounded-sm"
+              aria-label="open map dialog"
+            >
+              {selectOnMap}
+            </Button>
+          </div>
+
+          {/* Address details */}
+          <div className="max-w-xl w-full grid grid-cols-2 gap-3 mt-4">
             <div>
-              <Label
-                htmlFor="buildingNumber"
-                className={"text-base leading-6 mt-3"}
-              >
+              <Label htmlFor="buildingNumber" className="text-base leading-6">
                 {addressT("building_number") || "Building Number"}
               </Label>
-              <div className="max-w-xl w-full flex items-center bg-[#F5F5F5] border-[0.5px] border-[#B9B9BB] rounded-[10px] mt-2 px-2 h-12">
+              <div className="w-full flex items-center bg-[#F5F5F5] border-[0.5px] border-[#B9B9BB] rounded-[10px] mt-2 px-2 h-12">
                 <Input
                   id="buildingNumber"
                   name="buildingNumber"
                   type="text"
                   value={addressData.buildingNumber}
                   onChange={handleChangeInput}
-                  placeholder={
-                    addressT("building_number_pls") || "Enter building number"
-                  }
-                  className={
-                    "w-full focus-visible:outline-none focus-visible:ring-0 border-none shadow-none"
-                  }
+                  placeholder={buildingPH}
+                  className="w-full bg-transparent focus-visible:outline-none focus-visible:ring-0 border-none shadow-none"
                 />
               </div>
             </div>
+
             <div>
-              <Label
-                htmlFor="entranceNumber"
-                className={"text-base leading-6 mt-3"}
-              >
+              <Label htmlFor="entranceNumber" className="text-base leading-6">
                 {addressT("entrance_number") || "Entrance Number"}
               </Label>
-              <div className="max-w-xl w-full flex items-center bg-[#F5F5F5] border-[0.5px] border-[#B9B9BB] rounded-[10px] mt-2 px-2 h-12">
+              <div className="w-full flex items-center bg-[#F5F5F5] border-[0.5px] border-[#B9B9BB] rounded-[10px] mt-2 px-2 h-12">
                 <Input
                   id="entranceNumber"
                   name="entranceNumber"
                   type="text"
                   value={addressData.entranceNumber}
                   onChange={handleChangeInput}
-                  placeholder={
-                    addressT("entrance_number_pls") || "Enter entrance number"
-                  }
-                  className={
-                    "w-full focus-visible:outline-none focus-visible:ring-0 border-none shadow-none"
-                  }
+                  placeholder={entrancePH}
+                  className="w-full bg-transparent focus-visible:outline-none focus-visible:ring-0 border-none shadow-none"
                 />
               </div>
             </div>
+
             <div>
-              <Label
-                htmlFor="floorNumber"
-                className={"text-base leading-6 mt-3"}
-              >
+              <Label htmlFor="floorNumber" className="text-base leading-6">
                 {addressT("floor_number") || "Floor Number"}
               </Label>
-              <div className="max-w-xl w-full flex items-center bg-[#F5F5F5] border-[0.5px] border-[#B9B9BB] rounded-[10px] mt-2 px-2 h-12">
+              <div className="w-full flex items-center bg-[#F5F5F5] border-[0.5px] border-[#B9B9BB] rounded-[10px] mt-2 px-2 h-12">
                 <Input
                   id="floorNumber"
                   name="floorNumber"
                   type="text"
                   value={addressData.floorNumber}
                   onChange={handleChangeInput}
-                  placeholder={
-                    addressT("floor_number_pls") || "Enter floor number"
-                  }
-                  className={
-                    "w-full focus-visible:outline-none focus-visible:ring-0 border-none shadow-none"
-                  }
+                  placeholder={floorPH}
+                  className="w-full bg-transparent focus-visible:outline-none focus-visible:ring-0 border-none shadow-none"
                 />
               </div>
             </div>
+
             <div>
-              <Label
-                htmlFor="apartmentNumber"
-                className={"text-base leading-6 mt-3"}
-              >
+              <Label htmlFor="apartmentNumber" className="text-base leading-6">
                 {addressT("apartment_number") || "Apartment Number"}
               </Label>
-              <div className="max-w-xl w-full flex items-center bg-[#F5F5F5] border-[0.5px] border-[#B9B9BB] rounded-[10px] mt-2 px-2 h-12">
+              <div className="w-full flex items-center bg-[#F5F5F5] border-[0.5px] border-[#B9B9BB] rounded-[10px] mt-2 px-2 h-12">
                 <Input
                   id="apartmentNumber"
                   name="apartmentNumber"
                   type="text"
                   value={addressData.apartmentNumber}
                   onChange={handleChangeInput}
-                  placeholder={
-                    addressT("apartment_number_pls") || "Enter apartment number"
-                  }
-                  className={
-                    "w-full focus-visible:outline-none focus-visible:ring-0 border-none shadow-none"
-                  }
+                  placeholder={apartmentPH}
+                  className="w-full bg-transparent focus-visible:outline-none focus-visible:ring-0 border-none shadow-none"
                 />
               </div>
             </div>
           </div>
-          <Label htmlFor="comment" className={"text-base leading-6 mt-3"}>
+
+          <Label htmlFor="comment" className="text-base leading-6 mt-3">
             {addressT("comment") || "Comment"}
           </Label>
           <div className="max-w-xl w-full flex items-center bg-[#F5F5F5] border-[0.5px] border-[#B9B9BB] rounded-[10px] mt-2 px-2 py-1">
             <Textarea
               id="comment"
-              type="text"
               value={addressData.comment}
               onChange={handleChangeInput}
               name="comment"
-              placeholder={
-                addressT("comment_pls") || "Add delivery instructions"
-              }
-              className={
-                "text-base focus-visible:outline-none focus-visible:ring-0 border-none shadow-none"
-              }
+              placeholder={commentPH}
+              className="text-base bg-transparent focus-visible:outline-none focus-visible:ring-0 border-none shadow-none"
             />
           </div>
+
+          {/* Desktop “Add” button */}
           <div className="w-full hidden lg:grid grid-cols-1 gap-y-4 lg:grid-cols-3 gap-x-2 mt-5">
             <Button
-              aria-label={`edit add`}
+              aria-label="submit address"
               onClick={handleSubmit}
-              className={"w-full hover:bg-primary h-10 rounded-sm"}
+              className="w-full hover:bg-primary h-10 rounded-sm"
             >
-              {allT("add")}
+              {allT("add") || add}
             </Button>
           </div>
         </div>
+
+        {/* ======================= Right Map (desktop) ======================= */}
         <div className="lg:w-full h-48 lg:h-80 rounded-xl overflow-hidden relative z-0">
+          {/* Mobile overlay that forces using dialog */}
           <div className="md:hidden absolute top-0 left-0 w-full h-full z-30 backdrop-blur-[1px] bg-black/10 flex justify-center items-center">
-            <Dialog onOpenChange={setOpen} open={open} className="">
+            <Dialog onOpenChange={setOpen} open={open}>
               <DialogTrigger asChild>
-                <Button aria-label={`edit map`}>
-                  {addressT("select_map")}
-                </Button>
+                <Button aria-label="open map dialog">{selectOnMap}</Button>
               </DialogTrigger>
               <DialogContent
                 classnameOverlay="max-md:p-0 rounded-none pt-0"
                 mark="false"
                 className="sm:rounded-none h-screen w-screen p-0"
               >
-                <DialogHeader className={""}>
-                  <DialogTitle className="text-start pl-10 pt-0 pb-4">
-                    {addressT("select_map")}
+                <DialogHeader>
+                  <DialogTitle className="text-start pl-10 pt-0 pb-2">
+                    {dialogTitle}
                   </DialogTitle>
-                  <DialogDescription className="hidden">
-                    This action cannot be undone. This will permanently delete
-                    your account and remove your data from our servers.
+                  <DialogDescription className="px-10 pb-2 text-sm text-muted-foreground">
+                    {dialogHint}
                   </DialogDescription>
+                  <h1 className="px-10 pb-2 text-sm text-muted-foreground">{addressData.address}</h1>
                   <div className="w-full h-full relative">
                     <MapContainer
                       center={
@@ -452,7 +539,7 @@ const EditAddress = () => {
                       zoom={17}
                       scrollWheelZoom
                       style={{ height: "100%", width: "100%", zIndex: 10 }}
-                      whenCreated={(map) => (mapRef.current = map)} // Store map instance
+                      whenCreated={(map) => (mapRef.current = map)}
                     >
                       <TileLayer
                         attribution='© <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
@@ -461,29 +548,32 @@ const EditAddress = () => {
                       <CenterMarker />
                       <MapController location={location} />
                     </MapContainer>
+
+                    {/* Geolocate */}
                     <Button
-                      aria-label={`edit navigation`}
+                      aria-label="use my location"
                       onClick={handleFoundLocation}
-                      className={
-                        "flex bg-primary hover:bg-opacity-70 text-base gap-3 items-center text-white h-12 w-12 absolute top-[50%] rounded-full right-4 z-50"
-                      }
+                      className="flex bg-primary hover:bg-opacity-70 text-base gap-3 items-center text-white h-12 w-12 absolute top-[70%] rounded-full right-4 z-50"
                     >
                       <Navigation size={32} />
                     </Button>
-                    <Button
-                      aria-label={`edit navigation`}
-                      onClick={() => setOpen(false)}
-                      className={
-                        "p-0 flex bg-primary hover:bg-opacity-70 text-base gap-3 items-center text-white h-12 w-12 absolute top-[60%] rounded-full right-4 z-50"
-                      }
-                    >
-                      <Plus size={32} />
-                    </Button>
+
+                    {/* Confirm: Replace “+” with clear “Choose” */}
+                    <div className="w-full px-6 pb-6 absolute bottom-0 left-0 z-50">
+                      <Button
+                        onClick={handleConfirmLocation}
+                        className="w-full h-12 text-base"
+                      >
+                        {choose}
+                      </Button>
+                    </div>
                   </div>
                 </DialogHeader>
               </DialogContent>
             </Dialog>
           </div>
+
+          {/* Desktop map (always visible) */}
           <MapContainer
             center={
               location?.lat && location?.lng
@@ -493,7 +583,7 @@ const EditAddress = () => {
             zoom={17}
             scrollWheelZoom
             style={{ height: "100%", width: "100%", zIndex: 10 }}
-            whenCreated={(map) => (mapRef.current = map)} // Store map instance
+            whenCreated={(map) => (mapRef.current = map)}
           >
             <TileLayer
               attribution='© <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
@@ -502,24 +592,26 @@ const EditAddress = () => {
             <CenterMarker />
             <MapController location={location} />
           </MapContainer>
+
+          {/* Geolocate (desktop) */}
           <Button
-            aria-label={`edit navigation`}
+            aria-label="use my location desktop"
             onClick={handleFoundLocation}
-            className={
-              "max-md:hidden flex bg-primary hover:bg-opacity-70 text-base gap-3 items-center text-white px-3 py-2 h-10 absolute bottom-3 left-3 z-50"
-            }
+            className="max-md:hidden flex bg-primary hover:bg-opacity-70 text-base gap-3 items-center text-white px-3 py-2 h-10 absolute bottom-3 left-3 z-50"
           >
             <Navigation size={16} />
           </Button>
         </div>
       </div>
+
+      {/* Mobile “Add” button */}
       <div className="lg:hidden w-full flex justify-between">
         <Button
-          aria-label={`edit add2`}
+          aria-label="submit address mobile"
           onClick={handleSubmit}
-          className={"w-full hover:bg-primary h-12 rounded-md"}
+          className="w-full hover:bg-primary h-12 rounded-md"
         >
-          {allT("add")}
+          {allT("add") || add}
         </Button>
       </div>
     </Container>

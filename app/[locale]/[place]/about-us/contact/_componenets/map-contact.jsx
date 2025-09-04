@@ -16,7 +16,7 @@ const SmoothTransition = ({ lng, lat, zoom = 14 }) => {
 const MapContact = ({ lng, lat, address, spotData, locale }) => {
     const addressMarker = new Icon({
         iconUrl:
-            "https://rolling-omega.vercel.app/_next/image?url=%2Ficons%2F1.png&w=96&q=75",
+            "https://rolling.uz/_next/image?url=%2Ficons%2F1.png&w=96&q=75",
         iconSize: [50, 70],
     });
 

@@ -21,6 +21,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { useSearchParams } from 'next/navigation'
 
 /* ======================= Helpers (texts by locale) ======================= */
 function useLocaleTexts(pathname) {
@@ -78,9 +79,8 @@ function useLocaleTexts(pathname) {
 /* ======================= Map components ======================= */
 
 // Center Marker that stays fixed in the middle; triggers address updates on moveend
-const CenterMarker = () => {
+const CenterMarker = ({ searchParams }) => {
   const map = useMap();
-
   const MapMoveMonitor = () => {
     useMapEvents({
       moveend: () => {
@@ -116,7 +116,7 @@ const CenterMarker = () => {
             width: "50px",
             height: "70px",
             backgroundImage:
-              'url("https://rolling-omega.vercel.app/_next/image?url=%2Ficons%2F1.png&w=96&q=75")',
+              'url("https://rolling.uz/_next/image?url=%2Ficons%2F1.png&w=96&q=75")',
             backgroundSize: "contain",
             backgroundRepeat: "no-repeat",
           }}
@@ -145,6 +145,7 @@ const EditAddress = () => {
   const mapRef = useRef(null);
   const pathname = usePathname();
   const router = useRouter();
+  const searchParams = useSearchParams()
 
   const addressT = useTranslations("Profile.Address");
   const allT = useTranslations("All");
@@ -308,7 +309,10 @@ const EditAddress = () => {
     toast.success("Address saved successfully");
 
     // Update order store and redirect
-    const url = `${getUrl(pathname)}/cart`;
+
+    const redirect = searchParams.get('redirect')
+    const url = `${getUrl(pathname)}/${redirect ? redirect : 'profile/address'}`;
+
     router.push(url);
     setOrderData({
       ...orderData,
@@ -379,18 +383,12 @@ const EditAddress = () => {
 
           <div
             className="max-w-xl w-full bg-[#F5F5F5] border-[0.5px] border-[#B9B9BB] rounded-[10px] mt-2 px-2 py-1 cursor-pointer"
-            onClick={() => setOpen(true)}
-            role="button"
-            tabIndex={0}
-            onKeyDown={(e) => (e.key === "Enter" ? setOpen(true) : null)}
-            aria-label={selectOnMap}
-            title={selectOnMap}
           >
             <Textarea
               id="address"
               name="address"
               value={addressData.address}
-              readOnly
+              onChange={handleChangeInput}
               placeholder={tapHint}
               className="text-base bg-transparent focus-visible:outline-none focus-visible:ring-0 border-none shadow-none cursor-pointer"
             />
@@ -509,11 +507,11 @@ const EditAddress = () => {
         </div>
 
         {/* ======================= Right Map (desktop) ======================= */}
-        <div className="lg:w-full h-48 lg:h-80 rounded-xl overflow-hidden relative z-0">
+        <div className="max-md:hidden lg:w-full h-48 lg:h-80 rounded-xl overflow-hidden relative z-0">
           {/* Mobile overlay that forces using dialog */}
           <div className="md:hidden absolute top-0 left-0 w-full h-full z-30 backdrop-blur-[1px] bg-black/10 flex justify-center items-center">
             <Dialog onOpenChange={setOpen} open={open}>
-              <DialogTrigger asChild>
+              <DialogTrigger className="hidden" asChild>
                 <Button aria-label="open map dialog">{selectOnMap}</Button>
               </DialogTrigger>
               <DialogContent

@@ -150,7 +150,7 @@ const Delivery = ({ locale, auth, clientData, place }) => {
                     </p>
                   )}
                   <div className="flex justify-end items-center w-full">
-                    <Link href={`/${locale}/${place}/profile/address/add`}>
+                    <Link href={`/${locale}/${place}/profile/address/add?redirect=cart`}>
                       <Button
                       aria-label={`add`}
                         className={

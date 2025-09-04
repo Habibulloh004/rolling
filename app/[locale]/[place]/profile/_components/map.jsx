@@ -7,7 +7,7 @@ import "leaflet/dist/leaflet.css";
 const Map = ({ longitude: lng, latitude: lat, address }) => {
   const userMarker = new Icon({
     iconUrl:
-      "https://rolling-omega.vercel.app/_next/image?url=%2Ficons%2F1.png&w=96&q=75",
+      "https://rolling.uz/_next/image?url=%2Ficons%2F1.png&w=96&q=75",
     iconSize: [50, 70],
   });
 

@@ -53,12 +53,18 @@ export default function CategoryBrowser({
   const [isStuck, setIsStuck] = useState(false);
   const stickySentinelRef = useRef(null);
 
-  // URL update (category_id ni aktiv bilan sync qilamiz)
+  // URL update (category_id ni aktiv bilan sync qilamiz) — ✅ faqat o'zgarganda yozamiz
   useEffect(() => {
+    const newId = String(categories[activeIdx]?.id ?? "");
+    if (!newId) return;
+
+    const current = new URLSearchParams(window.location.search).get("category_id");
+    if (current === newId) return; // bir xil bo'lsa, router.replace chaqirmaymiz
+
     const url = new URL(window.location.href);
-    url.searchParams.set("category_id", String(categories[activeIdx]?.id));
+    url.searchParams.set("category_id", newId);
     router.replace(url.toString(), { scroll: false });
-  }, [activeIdx, categories, router]);
+  }, [activeIdx, router]); // <- faqat activeIdx bilan bog'ladik
 
   // Foydalanuvchi haqiqatan scroll qilganini belgilash (auto-triggerning oldini olish)
   useEffect(() => {

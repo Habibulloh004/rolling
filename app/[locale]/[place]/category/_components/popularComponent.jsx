@@ -38,7 +38,7 @@ export default async function PopularComponent({ searchParamsData, path }) {
     }
   });
   return (
-    <section className="w-full mt-5 space-y-3 pb-4">
+    <section className="w-11/12 mt-5 space-y-3 pb-4">
       <div className="w-11/12 sm:w-full mx-auto flex justify-between items-center gap-3">
         <h1 className="font-bold text-primary textNormal4 w-full">
           {all("popular")}

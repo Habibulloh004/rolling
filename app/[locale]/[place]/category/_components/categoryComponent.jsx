@@ -57,7 +57,7 @@ export default async function CategoryComponent({ searchParamsData, path }) {
 
   return (
     <section className="w-full space-y-3">
-      <div className="flex justify-between items-center gap-3">
+      <div className="w-11/12 mx-auto flex justify-between items-center gap-3">
         <h1 className="font-bold text-primary textNormal4 w-full">
           {all("categories")}
         </h1>

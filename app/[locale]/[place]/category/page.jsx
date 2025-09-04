@@ -29,7 +29,7 @@ export default async function Page({ params, searchParams }) {
   const [path, searchParamsData] = await Promise.all([params, searchParams]);
 
   return (
-    <Container className="w-11/12 mx-auto flex flex-col pt-5 gap-5">
+    <Container className="w-full mx-auto flex flex-col pt-5 gap-5">
       <CategoryComponent searchParamsData={searchParamsData} path={path} />
       <PopularComponent searchParamsData={searchParamsData} path={path} />
     </Container>

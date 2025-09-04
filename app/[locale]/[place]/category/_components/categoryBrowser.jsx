@@ -121,18 +121,18 @@ export default function CategoryBrowser({
   return (
     <div className="space-y-6">
       {/* ----- Categories carousel ----- */}
-      <div className="relative">
+      <div className="md:w-11/12 mx-auto sticky top-0 bg-white md:rounded-md z-10 shadow-md w-full">
         <Carousel className="w-full">
           <CarouselContent className="-ml-2">
             {categories.map((c, idx) => (
               <CarouselItem
                 key={c.id}
-                className="basis-1/3 sm:basis-1/5 md:basis-[15%] pl-2"
+                className="basis-[22%] sm:basis-[15%] md:basis-[12%] xl:basis-[8%] pl-2"
               >
                 <button
                   onClick={() => onSelectCategory(idx)}
                   className={cn(
-                    "w-full flex flex-col items-center gap-2 p-2 rounded-2xl border transition",
+                    "w-full flex flex-col items-center gap-2 p-1 m-1 rounded-2xl border transition",
                     idx === activeIdx
                       ? "border-primary ring-2 ring-primary/40"
                       : "border-transparent hover:border-muted"
@@ -146,7 +146,7 @@ export default function CategoryBrowser({
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <div className="text-center text-sm font-semibold line-clamp-2">
+                  <div className="line-clamp-1 text-center text-xs md:text-sm font-semibold">
                     {c.name}
                   </div>
                 </button>
@@ -154,10 +154,16 @@ export default function CategoryBrowser({
             ))}
           </CarouselContent>
         </Carousel>
+
+        {/* Chap oq shadow */}
+        <div className="max-md:hidden pointer-events-none absolute left-0 top-0 h-full w-4 bg-gradient-to-r from-white to-transparent z-20" />
+        {/* O‘ng oq shadow */}
+        <div className="max-md:hidden pointer-events-none absolute right-0 top-0 h-full w-10 bg-gradient-to-l from-white to-transparent z-20" />
       </div>
 
+
       {/* ----- Stack: Category 1, keyin Category 2, ... ----- */}
-      <div className="space-y-10">
+      <div className="w-11/12 mx-auto space-y-10">
         {renderStack.map((catIdx) => {
           const cat = categories[catIdx];
           const items = productsByCategory[cat.id] || [];

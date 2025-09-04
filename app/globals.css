@@ -215,6 +215,11 @@ button {
     transform: scale(1);
   }
 }
+@layer utilities {
+  .glass-primary {
+    @apply bg-primary/25 backdrop-blur-md supports-[backdrop-filter]:bg-primary/20;
+  }
+}
 
 
 @layer base {

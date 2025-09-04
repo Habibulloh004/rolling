@@ -14,6 +14,7 @@ export default withNextIntl({
     },
   },
   images: {
+    unoptimized: true,
     domains: [
       "https://vm4983125.25ssd.had.wf:5000",
       "https://www.shutterstock.com",
@@ -40,7 +41,7 @@ export default withNextIntl({
       },
     ],
   },
-  
+
 });
 
 // import path from "path";

@@ -24,7 +24,7 @@ import {
 import ProductCard from "./_component/productCard";
 
 export async function generateMetadata({ params }) {
-  const [ path, allT ] = await Promise.all([params, getTranslations("All")]);
+  const [path, allT] = await Promise.all([params, getTranslations("All")]);
   const { response: productData } = await ApiService.getPosterData(
     `menu.getProduct`,
     `&product_id=${path.product.split("-")[0]}`,
@@ -127,7 +127,7 @@ export default async function ProductPage({ params, searchParams }) {
             </BreadcrumbItem>
             <BreadcrumbSeparator className={""} size={48} />
             <BreadcrumbItem>
-              <BreadcrumbLink
+              {/* <BreadcrumbLink
                 href={
                   path?.place !== "branch"
                     ? `/${locale}/${path?.place}/category/${
@@ -146,6 +146,15 @@ export default async function ProductPage({ params, searchParams }) {
                           "en"
                         )
                       )}?spot=${spot}&table_id=${table_id}&table_num=${table_num}&service=${service}`
+                }
+              > */}
+              <BreadcrumbLink
+                href={
+                  path?.place !== "branch"
+                    ? `/${locale}/${path?.place}/category?category_id=${productData?.menu_category_id
+                    }`
+                    : `/${locale}/${path?.place}/category?category_id=${productData?.menu_category_id
+                    }&spot=${spot}&table_id=${table_id}&table_num=${table_num}&service=${service}`
                 }
               >
                 <h1 className="font-bold textSmall3">

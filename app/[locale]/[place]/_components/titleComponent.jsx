@@ -173,8 +173,8 @@ export default function TitleComponent({
                             <Link
                               href={
                                 path?.place !== "branch"
-                                  ? `/${locale}/${path.place}/category/${category.category_id}-${linkNameCategory}`
-                                  : `/${locale}/${path.place}/category/${category.category_id}-${linkNameCategory}?spot=${spot}&table_id=${table_id}&table_num=${table_num}&service=${service}`
+                                  ? `/${locale}/${path.place}/category?category_id=${category.category_id}`
+                                  : `/${locale}/${path.place}/category?category_id=${category.category_id}&spot=${spot}&table_id=${table_id}&table_num=${table_num}&service=${service}`
                               }
                               key={index}
                               className="md:inline-block textSmall3 p-3 bg-gray-100 rounded-md shadow"

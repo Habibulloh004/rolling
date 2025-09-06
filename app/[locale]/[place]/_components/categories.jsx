@@ -56,8 +56,8 @@ const Categories = ({ categories, locale, path }) => {
                 <Link
                   href={
                     path?.place !== "branch"
-                      ? `/${locale}/${path?.place}/category/${item?.category_id}-${linkName}`
-                      : `/${locale}/${path?.place}/category/${item?.category_id}-${linkName}?spot=${spot}&table_id=${table_id}&table_num=${table_num}&service=${service}`
+                      ? `/${locale}/${path?.place}/category?category_id=${item?.category_id}`
+                      : `/${locale}/${path?.place}/category?category_id=${item?.category_id}&spot=${spot}&table_id=${table_id}&table_num=${table_num}&service=${service}`
                   }
                   className="space-y-2 relative w-full h-full"
                 >
@@ -95,8 +95,8 @@ const Categories = ({ categories, locale, path }) => {
                 <Link
                   href={
                     path?.place !== "branch"
-                      ? `/${locale}/${path?.place}/category/${item?.category_id}-${linkName}`
-                      : `/${locale}/${path?.place}/category/${item?.category_id}-${linkName}?spot=${spot}&table_id=${table_id}&table_num=${table_num}&service=${service}`
+                      ? `/${locale}/${path?.place}/category?category_id=${item?.category_id}`
+                      : `/${locale}/${path?.place}/category?category_id=${item?.category_id}&spot=${spot}&table_id=${table_id}&table_num=${table_num}&service=${service}`
                   }
                   className="space-y-2 relative w-full h-full"
                 >

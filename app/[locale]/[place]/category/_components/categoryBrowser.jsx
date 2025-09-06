@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState, useLayoutEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { cn, formatText, posterUrl } from "@/lib/utils";
 import CustomImage from "@/components/shared/customImage";
@@ -9,14 +9,12 @@ import {
   Carousel,
   CarouselContent,
   CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Loader2 } from "lucide-react";
-import { Skeleton } from "@/components/ui/skeleton";
 
-const TRIGGER_COOLDOWN_MS = 700; // sentinel anti-bounce
-const LOADING_DELAY_MS = 500;    // "loading..." ko'rsatish vaqti
+const TRIGGER_COOLDOWN_MS = 700;
+const LOADING_DELAY_MS = 400; // biroz qisqartirdim — kamroq lag
+const HEADER_EXTRA_GAP = 12;  // title yopilib qolmasin uchun offset
 
 export default function CategoryBrowser({
   categories,
@@ -28,7 +26,7 @@ export default function CategoryBrowser({
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  // 1) Initial active category id (searchParams → kategoriya mavjud bo'lsa, aks holda 1-kategoriya)
+  // --- initial active
   const initialCategoryId = useMemo(() => {
     const spCat = searchParams.get("category_id");
     if (spCat && categories.some((c) => c.id === Number(spCat))) {
@@ -41,32 +39,40 @@ export default function CategoryBrowser({
     Math.max(0, categories.findIndex((c) => c.id === initialCategoryId))
   );
 
-  // 2) Stack: pastga qo'shib boramiz (category indexlari)
+  // lazily pastga qo‘shib boramiz
   const [renderStack, setRenderStack] = useState([activeIdx]);
 
-  // 3) Loading va guardlar
+  // guards
   const [isLoadingNext, setIsLoadingNext] = useState(false);
   const [userScrolled, setUserScrolled] = useState(false);
   const lastTriggerRef = useRef(0);
 
-  // Sticky fonni boshqarish uchun sentinel
+  // sticky boshqaruv
   const [isStuck, setIsStuck] = useState(false);
   const stickySentinelRef = useRef(null);
+  const stickyWrapRef = useRef(null);
+  const [stickyH, setStickyH] = useState(0); // dynamic sticky balandlik
 
-  // URL update (category_id ni aktiv bilan sync qilamiz) — ✅ faqat o'zgarganda yozamiz
+  // carousel api
+  const carouselApiRef = useRef(null);
+
+  // section refs
+  const sectionRefs = useRef([]);
+  // sentinel
+  const sentinelRef = useRef(null);
+
+  // URL sync
   useEffect(() => {
     const newId = String(categories[activeIdx]?.id ?? "");
     if (!newId) return;
-
     const current = new URLSearchParams(window.location.search).get("category_id");
-    if (current === newId) return; // bir xil bo'lsa, router.replace chaqirmaymiz
-
+    if (current === newId) return;
     const url = new URL(window.location.href);
     url.searchParams.set("category_id", newId);
     router.replace(url.toString(), { scroll: false });
-  }, [activeIdx, router]); // <- faqat activeIdx bilan bog'ladik
+  }, [activeIdx, router, categories]);
 
-  // Foydalanuvchi haqiqatan scroll qilganini belgilash (auto-triggerning oldini olish)
+  // user scrolled flag
   useEffect(() => {
     const onScroll = () => {
       if (!userScrolled && window.scrollY > 40) setUserScrolled(true);
@@ -75,16 +81,7 @@ export default function CategoryBrowser({
     return () => window.removeEventListener("scroll", onScroll);
   }, [userScrolled]);
 
-  // Carousel'dan kategoriya tanlansa — stackni reset qilamiz
-  const onSelectCategory = (idx) => {
-    setActiveIdx(idx);
-    setRenderStack([idx]);
-    setIsLoadingNext(false);
-    // ixtiyoriy: yuqoriga qaytarish
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
-  // Sticky sentinel observer: sentinel ko‘rinmay qolsa → sticky boshlandi
+  // sticky sentinel
   useEffect(() => {
     const el = stickySentinelRef.current;
     if (!el) return;
@@ -96,11 +93,22 @@ export default function CategoryBrowser({
     return () => obs.disconnect();
   }, []);
 
-  // Infinite scroll sentinel
-  const sentinelRef = useRef(null);
+  // sticky height measure (offset’lar uchun)
+  useLayoutEffect(() => {
+    const measure = () => {
+      if (stickyWrapRef.current) {
+        setStickyH(stickyWrapRef.current.offsetHeight || 0);
+      }
+    };
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, []);
+
+  // infinite scroll
   useEffect(() => {
-    if (!sentinelRef.current) return;
     const el = sentinelRef.current;
+    if (!el) return;
 
     const onIntersect = (entries) => {
       entries.forEach((entry) => {
@@ -115,7 +123,6 @@ export default function CategoryBrowser({
           setIsLoadingNext(true);
           setTimeout(() => {
             setRenderStack((prev) => [...prev, lastIdx + 1]);
-            // setActiveIdx(lastIdx + 1); // agar highlight ham o‘tsin desangiz, shu qatordan kommentni oling
             setIsLoadingNext(false);
           }, LOADING_DELAY_MS);
         }
@@ -132,70 +139,161 @@ export default function CategoryBrowser({
     return () => obs.disconnect();
   }, [renderStack, categories.length, userScrolled, isLoadingNext]);
 
+  // scroll-spy (markazga yaqin section -> active)
+  // rootMargin yuqorisiga stickyH + extra gap qo‘shdik
+  useEffect(() => {
+    if (!renderStack.length) return;
+
+    let rAF = null;
+    const obs = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => Math.abs(a.boundingClientRect.top) - Math.abs(b.boundingClientRect.top));
+
+        if (visible[0]) {
+          const idxAttr = visible[0].target.getAttribute("data-idx");
+          const idx = idxAttr ? Number(idxAttr) : -1;
+          if (idx >= 0 && idx !== activeIdx) {
+            // scroll-spy update’ni rAF bilan “soft” qilamiz
+            if (rAF) cancelAnimationFrame(rAF);
+            rAF = requestAnimationFrame(() => setActiveIdx(idx));
+          }
+        }
+      },
+      {
+        root: null,
+        // title yopilmasligi uchun tepaga stickyH + HEADER_EXTRA_GAP offest
+        rootMargin: `-${stickyH + HEADER_EXTRA_GAP}px 0px -60% 0px`,
+        threshold: 0,
+      }
+    );
+
+    renderStack.forEach((idx) => {
+      const el = sectionRefs.current[idx];
+      if (el) obs.observe(el);
+    });
+
+    return () => {
+      if (rAF) cancelAnimationFrame(rAF);
+      obs.disconnect();
+    };
+  }, [renderStack, activeIdx, stickyH]);
+
+  // active o‘zgarsa — carouselni boshga olib kelamiz
+  useEffect(() => {
+    const api = carouselApiRef.current;
+    if (api && typeof api.scrollTo === "function") {
+      try {
+        api.scrollTo(activeIdx, true);
+      } catch {}
+    }
+  }, [activeIdx]);
+
+  // sectionga smooth scroll (header offset bilan)
+  const smoothScrollToIdx = (idx) => {
+    const target = sectionRefs.current[idx];
+    if (!target) return;
+
+    const top = Math.max(0, target.offsetTop - stickyH - HEADER_EXTRA_GAP);
+    window.scrollTo({ top, behavior: "smooth" });
+  };
+
+  // category bosilganda
+  const onSelectCategory = (idx) => {
+    // renderStackda yo‘q bo‘lsa — avval qo‘shamiz, keyin scroll
+    setRenderStack((prev) => {
+      if (!prev.includes(idx)) return [...prev, idx].sort((a, b) => a - b);
+      return prev;
+    });
+
+    // active qilib qo‘yamiz (carouselni boshga tortish uchun)
+    setActiveIdx(idx);
+
+    // keyingi paintda scrolling (yangi section mount bo‘lishini kutish)
+    requestAnimationFrame(() => {
+      // delay juda kichik — jankni kamaytiradi
+      setTimeout(() => smoothScrollToIdx(idx), 0);
+    });
+
+    setIsLoadingNext(false);
+  };
+
   const { spot, table_id, table_num, service } = searchParamsData || {};
 
   return (
     <div className="space-y-6">
-      {/* Sticky qachon boshlanishini tekshiruvchi sentinel */}
+      {/* Sticky boshlanish sentinel */}
       <div ref={stickySentinelRef} className="h-px" />
 
-      {/* ----- Categories carousel ----- */}
+      {/* === Sticky Category Bar (Yandex menu behavior) === */}
       <div
+        ref={stickyWrapRef}
         className={cn(
-          "md:w-11/12 mx-auto sticky top-0 md:rounded-md z-20 w-full backdrop-blur-sm transition-colors",
-          isStuck ? "bg-secondary shadow-sm" : "bg-transparent"
+          "md:w-11/12 mx-auto sticky top-0 z-30 w-full transition-colors",
+          "backdrop-blur-sm",
+          isStuck ? "bg-secondary/80 shadow-sm" : "bg-transparent",
+          "pt-2 pb-2" // tepaga ozroq margin/bo'shliq
         )}
       >
-        <div className="relative w-full">
-          <Carousel className="w-full">
-            <CarouselContent className="-ml-2">
-              {categories.map((c, idx) => (
-                <CarouselItem
-                  key={c.id}
-                  className="basis-[22%] sm:basis-[15%] md:basis-[12%] xl:basis-[8%] pl-2"
+        <Carousel
+          className="w-full"
+          opts={{ align: "start", dragFree: false, loop: false, containScroll: "trimSnaps" }}
+          setApi={(api) => {
+            carouselApiRef.current = api;
+          }}
+        >
+          <CarouselContent className="-ml-2">
+            {categories.map((c, idx) => (
+              <CarouselItem
+                key={c.id}
+                className="basis-[22%] sm:basis-[15%] md:basis-[12%] xl:basis-[8%] pl-2"
+              >
+                <button
+                  onClick={() => onSelectCategory(idx)}
+                  className={cn(
+                    "w-full flex flex-col items-center gap-2 p-1 m-1 rounded-2xl border transition",
+                    idx === activeIdx
+                      ? "border-primary ring-2 ring-primary/40"
+                      : "border-transparent hover:border-muted"
+                  )}
+                  aria-pressed={idx === activeIdx}
+                  aria-current={idx === activeIdx ? "true" : "false"}
                 >
-                  <button
-                    onClick={() => onSelectCategory(idx)}
-                    className={cn(
-                      "w-full flex flex-col items-center gap-2 p-1 m-1 rounded-2xl border transition",
-                      idx === activeIdx
-                        ? "border-primary ring-2 ring-primary/40"
-                        : "border-transparent hover:border-muted"
-                    )}
-                    aria-pressed={idx === activeIdx}
-                  >
-                    <div className="w-full aspect-square relative rounded-2xl md:rounded-3xl overflow-hidden">
-                      <CustomImage
-                        src={c.photo_origin ? `${posterUrl}${c.photo_origin}` : "/empty.jpg"}
-                        alt={c.name}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div className="line-clamp-1 text-center text-xs md:text-sm font-semibold">
-                      {c.name}
-                    </div>
-                  </button>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-          </Carousel>
-        </div>
+                  <div className="w-full aspect-square relative rounded-2xl md:rounded-3xl overflow-hidden">
+                    <CustomImage
+                      src={c.photo_origin ? `${posterUrl}${c.photo_origin}` : "/empty.jpg"}
+                      alt={c.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="line-clamp-1 text-center text-xs md:text-sm font-semibold">
+                    {c.name}
+                  </div>
+                </button>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+        </Carousel>
       </div>
 
-      {/* ----- Stack: Category 1, keyin Category 2, ... ----- */}
+      {/* === Content sections (stack) === */}
       <div className="w-11/12 mx-auto space-y-10">
         {renderStack.map((catIdx) => {
           const cat = categories[catIdx];
           const items = productsByCategory[cat.id] || [];
 
           return (
-            <section key={`section-${cat.id}`} className="space-y-4">
-              {/* bo'lim sarlavhasi */}
-              <h2 className="text-base sm:text-lg font-bold">
-                {cat.name}
-              </h2>
+            <section
+              key={`section-${cat.id}`}
+              data-idx={catIdx}
+              ref={(el) => { sectionRefs.current[catIdx] = el; }}
+              // dynamic scroll-margin-top — title yopilmasin
+              style={{ scrollMarginTop: (stickyH || 0) + HEADER_EXTRA_GAP + 4 }}
+              className="space-y-4"
+            >
+              <h2 className="text-base sm:text-lg font-bold">{cat.name}</h2>
 
-              {/* grid */}
               <div className="w-full grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 2xl:grid-cols-6 gap-5">
                 {items.map((item, i) => {
                   const linkNameProduct = formatText(item.linkNameProduct);
@@ -223,20 +321,15 @@ export default function CategoryBrowser({
         })}
       </div>
 
-      {/* ----- Loading va sentinel (faqat keyingi kategoriya bo'lsa) ----- */}
+      {/* Loading + infinite sentinel */}
       {renderStack[renderStack.length - 1] < categories.length - 1 && (
         <>
           {isLoadingNext && (
-            <div className="w-full flex flex-col items-center justify-center py-10 space-y-6">
-              {/* Spinner */}
-              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            <div className="w-full flex flex-col items-center justify-center py-10">
+              <Loader2 className="h-8 w-8 animate-spin" />
             </div>
           )}
-          <div
-            ref={sentinelRef}
-            className="w-full h-8"
-            aria-label="infinite-scroll-sentinel"
-          />
+          <div ref={sentinelRef} className="w-full h-8" aria-label="infinite-scroll-sentinel" />
         </>
       )}
     </div>

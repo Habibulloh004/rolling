@@ -232,7 +232,7 @@ export default function CategoryBrowser({
         className={cn(
           "md:w-11/12 mx-auto sticky top-0 z-30 w-full transition-colors",
           "backdrop-blur-sm",
-          isStuck ? "bg-secondary/80 shadow-sm" : "bg-transparent",
+          isStuck ? "bg-secondary shadow-sm" : "bg-transparent",
           "pt-2 pb-2" // tepaga ozroq margin/bo'shliq
         )}
       >

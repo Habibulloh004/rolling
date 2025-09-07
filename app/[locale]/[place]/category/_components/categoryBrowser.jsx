@@ -112,8 +112,7 @@ export default function CategoryBrowser({
 
     const onIntersect = (entries) => {
       entries.forEach((entry) => {
-        if (!entry.isIntersecting || entry.intersectionRatio < 1 || !userScrolled) return;
-
+        if (!entry.isIntersecting || !userScrolled) return;
         const now = Date.now();
         if (now - lastTriggerRef.current < TRIGGER_COOLDOWN_MS) return;
         lastTriggerRef.current = now;
@@ -131,8 +130,8 @@ export default function CategoryBrowser({
 
     const obs = new IntersectionObserver(onIntersect, {
       root: null,
-      rootMargin: "0px",
-      threshold: 1,
+      rootMargin: "400px", // user pastga yaqinlashganda oldindan yuklash
+      threshold: 0,        // sentinel qisman ko‘rinsa ham trigger bo‘lsin
     });
 
     obs.observe(el);
@@ -186,7 +185,7 @@ export default function CategoryBrowser({
     if (api && typeof api.scrollTo === "function") {
       try {
         api.scrollTo(activeIdx, true);
-      } catch {}
+      } catch { }
     }
   }, [activeIdx]);
 

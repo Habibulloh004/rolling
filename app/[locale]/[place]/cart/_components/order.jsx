@@ -697,6 +697,7 @@ const Order = ({
                 message
               )}`
             );
+            
             orderList.push(nowOrder);
             localStorage.setItem("orderList", JSON.stringify(orderList));
             setPaymentData(null);

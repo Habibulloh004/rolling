@@ -42,25 +42,24 @@ const DiscountBadge = ({ auth }) => {
           {auth?.client_groups_discount == "10"
             ? "GOLD"
             : auth?.client_groups_discount == "5"
-            ? "SILVER"
-            : auth?.client_groups_discount == "3"
-            ? "BRONZE"
-            : "GOLD"}
+              ? "SILVER"
+              : auth?.client_groups_discount == "3"
+                ? "BRONZE"
+                : "GOLD"}
         </p>
         <p className="font-bold text-center text-white">
           {auth?.client_groups_discount}%
         </p>
       </div>
       <Image
-        src={`${
-          auth?.client_groups_discount == "10"
-            ? "/assets/Gold.png"
-            : auth?.client_groups_discount == "5"
+        src={`${auth?.client_groups_discount == "10"
+          ? "/assets/Gold.png"
+          : auth?.client_groups_discount == "5"
             ? "/assets/Silver.png"
             : auth?.client_groups_discount == "3"
-            ? "/assets/Bronze.png"
-            : "/assets/Gold.png"
-        }`}
+              ? "/assets/Bronze.png"
+              : "/assets/Gold.png"
+          }`}
         loading="eager"
         alt="gold"
         width={150}
@@ -274,9 +273,8 @@ const Order = ({
         commentSpot = `${commentSpot}\nТранзакцияID: ${paymentData?.transactionId}`;
       }
       if (promocode) {
-        commentSpot = `${commentSpot}\nПромокод:${
-          promocode?.name?.split("$")[1]
-        }`;
+        commentSpot = `${commentSpot}\nПромокод:${promocode?.name?.split("$")[1]
+          }`;
       }
       if (orderData?.promocodePrice > 0) {
         commentSpot = `${commentSpot}\nПромокодSum: ${orderData?.promocodePrice?.toLocaleString()}`;
@@ -286,11 +284,9 @@ const Order = ({
       }
 
       if (spotIdSpot) {
-        commentSpot = `${
-          commentSpot ? commentSpot : ""
-        }\nНомер стола : ${table_num} \nТип услуги : ${
-          service == "self" ? "самообслуживание" : "официант"
-        }\nНомер телефона : ${phone}`;
+        commentSpot = `${commentSpot ? commentSpot : ""
+          }\nНомер стола : ${table_num} \nТип услуги : ${service == "self" ? "самообслуживание" : "официант"
+          }\nНомер телефона : ${phone}`;
       } else if (!auth?.client_id) {
         commentSpot = `${commentSpot}\nНомер телефона : ${phone}`;
       }
@@ -311,13 +307,17 @@ const Order = ({
           },
         ];
       } else {
-        console.log({products})
+        console.log({ products })
         const findProductPromotion = products?.filter((pr) => {
           const conditions = orderData?.promocode?.params?.conditions;
-          const findPrdCon = conditions?.find(
-            (cdp) => cdp?.type == 2 && cdp?.id == pr?.product_id && cdp?.active
-          );
-          return findPrdCon
+          if (conditions[0]?.type == 0 && conditions[0]?.active && promocode?.params?.result_type == 3) {
+            return true;
+          } else {
+            const findPrdCon = conditions?.find(
+              (cdp) => cdp?.type == 2 && cdp?.id == pr?.product_id && cdp?.active
+            );
+            return findPrdCon
+          }
         });
         console.log({ findProductPromotion });
         filterPromocode = [
@@ -335,7 +335,10 @@ const Order = ({
       }
       console.log(filterPromocode);
 
-      let totalAmount = Number(totalSum) - (pay_bonus ? Number(pay_bonus) : 0);
+      let totalAmount = Number(totalSum * (orderData?.discountPromocode > 0
+        ? 1 - orderData?.discountPromocode / 100
+        : 1)) - (pay_bonus ? Number(pay_bonus) : 0);
+
       if (activeTab == "delivery") {
         totalAmount += Number(delivery_price);
       }
@@ -346,11 +349,6 @@ const Order = ({
 
       if (service == "waiter") {
         totalAmount = Number(totalAmount + (totalAmount * 10) / 100);
-      }
-      if (orderData?.discountPromocode > 0) {
-        totalAmount = Number(
-          totalAmount - (totalAmount * orderData?.discountPromocode) / 100
-        );
       }
 
       let deliveryData = {
@@ -395,8 +393,8 @@ const Order = ({
         phone: spotIdSpot
           ? "+998771244444"
           : auth?.client_id
-          ? `+${auth?.phone_number}`
-          : "+998771052018",
+            ? `+${auth?.phone_number}`
+            : "+998771052018",
         products: filterProductsSpot,
         service_mode: spotIdSpot ? 1 : 2,
         spot_id: Number(spotIdSpot ? spotIdSpot : Number(spot_id)),
@@ -416,6 +414,7 @@ const Order = ({
 
       let commentClient;
       let clinetGroupId;
+
       if (auth?.client_id) {
         const commentC = auth?.comment ? JSON.parse(auth?.comment) : null;
         if (Number(commentC?.length) > 0) {
@@ -684,11 +683,10 @@ const Order = ({
                 ? Number(totalSum + (totalSum * 10) / 100)
                 : Number(totalSum)
             )} сум
-💳 Метод оплаты: ${
-              orderData?.payment_method == "cash"
+💳 Метод оплаты: ${orderData?.payment_method == "cash"
                 ? "Наличные"
                 : "Карта (Оплачено)"
-            }
+              }
 🛍 Тип заказа: Заведения
 ✏️ Комментарий: ${commentSpot}`.trim();
 
@@ -697,7 +695,7 @@ const Order = ({
                 message
               )}`
             );
-            
+
             orderList.push(nowOrder);
             localStorage.setItem("orderList", JSON.stringify(orderList));
             setPaymentData(null);
@@ -943,14 +941,14 @@ const Order = ({
             </p>
             <p className="font-normal textNormal3 leading-7 text-[#2E2E2E]">
               {formatNumber(
-                (Number(totalSum) -
+                (Number(totalSum *
+                  (orderData?.discountPromocode > 0
+                    ? 1 - orderData?.discountPromocode / 100
+                    : 1)) -
                   Number(orderData?.pay_bonus) +
                   (activeTab == "delivery" ? orderData?.delivery_price : 0) -
                   (orderData?.promocodePrice > 0 &&
-                    Number(orderData?.promocodePrice))) *
-                  (orderData?.discountPromocode > 0
-                    ? 1 - orderData?.discountPromocode / 100
-                    : 1)
+                    Number(orderData?.promocodePrice)))
               )}{" "}
               {all("sum")}
             </p>

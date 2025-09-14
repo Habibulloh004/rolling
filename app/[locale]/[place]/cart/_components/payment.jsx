@@ -177,7 +177,9 @@ const Payment = ({ apiTime, locale, place, auth }) => {
     try {
       setIsPaymentLoading(true);
       let totalAmount =
-        Number(totalSum) -
+        Number(totalSum * (orderData?.discountPromocode > 0
+          ? 1 - orderData?.discountPromocode / 100
+          : 1)) -
         (orderData?.pay_bonus ? Number(orderData?.pay_bonus) : 0);
       if (activeTab == "delivery") {
         totalAmount += Number(orderData?.delivery_price);
@@ -189,11 +191,6 @@ const Payment = ({ apiTime, locale, place, auth }) => {
       if (service == "waiter") {
         totalAmount = Number(totalAmount + (totalAmount * 10) / 100);
       }
-      if (orderData?.discountPromocode > 0) {
-        totalAmount = Number(
-          totalAmount - (totalAmount * orderData?.discountPromocode) / 100
-        );
-      }
       switch (orderData?.payment_method) {
         case "card":
           if (!selectCard && !selectCard?.cardNumber) {
@@ -204,8 +201,8 @@ const Payment = ({ apiTime, locale, place, auth }) => {
             id: getRandomDatePlusNumber(),
             expireDate: Number(
               selectCard?.expiryDate.split("/")[1] +
-                "" +
-                selectCard?.expiryDate.split("/")[0]
+              "" +
+              selectCard?.expiryDate.split("/")[0]
             ),
             cardNumber: selectCard?.cardNumber?.replace(/\s/g, ""),
             amount: totalAmount,
@@ -465,11 +462,10 @@ const Payment = ({ apiTime, locale, place, auth }) => {
                   key={item.id}
                   className={`relative w-[118px] h-full bg-transparent shadow-none rounded-[7px] border-[#004032] border-b-2 p-3 flex flex-col justify-start gap-1
                   ${paymentData && paymentData?.payment_id && "opacity-[0.5] "}
-                  ${
-                    orderData?.payment_method === item?.type
+                  ${orderData?.payment_method === item?.type
                       ? "border-2 font-semibold"
                       : ""
-                  }`}
+                    }`}
                 >
                   <Image
                     src={item.icon}
@@ -607,9 +603,8 @@ const Payment = ({ apiTime, locale, place, auth }) => {
                       {Array.from({ length: count }).map((_, index) => (
                         <div
                           key={index}
-                          className={`w-3 h-3 rounded-full ${
-                            current === index ? "bg-blue-500" : "bg-gray-400"
-                          }`}
+                          className={`w-3 h-3 rounded-full ${current === index ? "bg-blue-500" : "bg-gray-400"
+                            }`}
                         />
                       ))}
                     </div>
@@ -674,16 +669,16 @@ const Payment = ({ apiTime, locale, place, auth }) => {
                 </p>
                 <p className="font-normal textNormal3 leading-7 text-[#2E2E2E]">
                   {formatNumber(
-                    (Number(totalSum) -
+                    (Number(totalSum *
+                      (orderData?.discountPromocode > 0
+                        ? 1 - orderData?.discountPromocode / 100
+                        : 1)) -
                       Number(orderData?.pay_bonus) +
                       (activeTab == "delivery"
                         ? orderData?.delivery_price
                         : 0) -
                       (orderData?.promocodePrice > 0 &&
-                        Number(orderData?.promocodePrice))) *
-                      (orderData?.discountPromocode > 0
-                        ? 1 - orderData?.discountPromocode / 100
-                        : 1)
+                        Number(orderData?.promocodePrice)))
                   )}{" "}
                   {all("sum")}
                 </p>
@@ -724,11 +719,10 @@ const Payment = ({ apiTime, locale, place, auth }) => {
                           (paymentData && !paymentData?.success) ||
                           isDisabled
                         }
-                        className={`${
-                          (isPaymentLoading ||
-                            (paymentData && !paymentData?.success)) &&
+                        className={`${(isPaymentLoading ||
+                          (paymentData && !paymentData?.success)) &&
                           "opacity-[0.6]"
-                        } relative w-full h-10 md:h-12  rounded-xl`}
+                          } relative w-full h-10 md:h-12  rounded-xl`}
                       >
                         <div className="flex justify-center items-center gap-2">
                           {isPaymentLoading ? (

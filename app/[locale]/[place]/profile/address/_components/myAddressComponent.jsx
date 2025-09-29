@@ -57,7 +57,7 @@ export default function MyAddressComponent() {
                     {item.name}
                   </CardTitle>
                   <CardDescription
-                    className={"text-[#2E2E2E] textSmall2 font-semibold"}
+                    className={"text-[#2E2E2E] textSmall2 font-semibold line-clamp-3"}
                   >
                     {item.address}
                   </CardDescription>

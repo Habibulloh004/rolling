@@ -390,12 +390,12 @@ const EditAddress = () => {
               value={addressData.address}
               onChange={handleChangeInput}
               placeholder={tapHint}
-              className="text-base bg-transparent focus-visible:outline-none focus-visible:ring-0 border-none shadow-none cursor-pointer"
+              className="text-xs sm:text-base bg-transparent focus-visible:outline-none focus-visible:ring-0 border-none shadow-none cursor-pointer"
             />
           </div>
 
           {/* Hint under the address field */}
-          <p className="text-xs text-muted-foreground mt-1">{tapHint}</p>
+          <p className="text-xs sm:text-base text-muted-foreground mt-1">{tapHint}</p>
 
           {/* “Select on map” button placed under the address (Variant 1) */}
           <div className="md:hidden mt-2">
@@ -423,7 +423,7 @@ const EditAddress = () => {
                   value={addressData.buildingNumber}
                   onChange={handleChangeInput}
                   placeholder={buildingPH}
-                  className="w-full bg-transparent focus-visible:outline-none focus-visible:ring-0 border-none shadow-none"
+                  className="text-xs sm:text-base w-full bg-transparent focus-visible:outline-none focus-visible:ring-0 border-none shadow-none"
                 />
               </div>
             </div>
@@ -440,7 +440,7 @@ const EditAddress = () => {
                   value={addressData.entranceNumber}
                   onChange={handleChangeInput}
                   placeholder={entrancePH}
-                  className="w-full bg-transparent focus-visible:outline-none focus-visible:ring-0 border-none shadow-none"
+                  className="text-xs sm:text-base w-full bg-transparent focus-visible:outline-none focus-visible:ring-0 border-none shadow-none"
                 />
               </div>
             </div>
@@ -457,7 +457,7 @@ const EditAddress = () => {
                   value={addressData.floorNumber}
                   onChange={handleChangeInput}
                   placeholder={floorPH}
-                  className="w-full bg-transparent focus-visible:outline-none focus-visible:ring-0 border-none shadow-none"
+                  className="text-xs sm:text-base w-full bg-transparent focus-visible:outline-none focus-visible:ring-0 border-none shadow-none"
                 />
               </div>
             </div>
@@ -474,7 +474,7 @@ const EditAddress = () => {
                   value={addressData.apartmentNumber}
                   onChange={handleChangeInput}
                   placeholder={apartmentPH}
-                  className="w-full bg-transparent focus-visible:outline-none focus-visible:ring-0 border-none shadow-none"
+                  className="text-xs sm:text-base w-full bg-transparent focus-visible:outline-none focus-visible:ring-0 border-none shadow-none"
                 />
               </div>
             </div>
@@ -490,7 +490,7 @@ const EditAddress = () => {
               onChange={handleChangeInput}
               name="comment"
               placeholder={commentPH}
-              className="text-base bg-transparent focus-visible:outline-none focus-visible:ring-0 border-none shadow-none"
+              className="text-xs sm:text-base bg-transparent focus-visible:outline-none focus-visible:ring-0 border-none shadow-none"
             />
           </div>
 
@@ -520,13 +520,12 @@ const EditAddress = () => {
                 className="sm:rounded-none h-screen w-screen p-0"
               >
                 <DialogHeader>
-                  <DialogTitle className="text-start pl-10 pt-0 pb-2">
+                  <DialogTitle className="hidden text-start pl-10 pt-0 pb-2">
                     {dialogTitle}
                   </DialogTitle>
                   <DialogDescription className="px-10 pb-2 text-sm text-muted-foreground">
                     {dialogHint}
                   </DialogDescription>
-                  <h1 className="px-10 pb-2 text-sm text-muted-foreground">{addressData.address}</h1>
                   <div className="w-full h-full relative">
                     <MapContainer
                       center={
@@ -547,23 +546,29 @@ const EditAddress = () => {
                       <MapController location={location} />
                     </MapContainer>
 
-                    {/* Geolocate */}
-                    <Button
-                      aria-label="use my location"
-                      onClick={handleFoundLocation}
-                      className="flex bg-primary hover:bg-opacity-70 text-base gap-3 items-center text-white h-12 w-12 absolute top-[70%] rounded-full right-4 z-50"
-                    >
-                      <Navigation size={32} />
-                    </Button>
-
-                    {/* Confirm: Replace “+” with clear “Choose” */}
-                    <div className="w-full px-6 pb-6 absolute bottom-0 left-0 z-50">
-                      <Button
-                        onClick={handleConfirmLocation}
-                        className="w-full h-12 text-base"
-                      >
-                        {choose}
-                      </Button>
+                    <div className="pb-10 pt-4 bg-white w-full fixed bottom-0 left-0 z-[999]">
+                      {/* Confirm: Replace “+” with clear “Choose” */}
+                      <div className=" flex flex-col items-center gap-5 w-11/12 mx-auto">
+                        <h1 className="px-4 py-2 text-sm text-muted-foreground line-clamp-2">{addressData.address}</h1>
+                        <div className="w-full flex justify-between items-center gap-5 ">
+                          <div className="w-full rounded-full">
+                            <Button
+                              onClick={handleConfirmLocation}
+                              className="w-full h-12 text-base"
+                            >
+                              {choose}
+                            </Button>
+                          </div>
+                          {/* Geolocate */}
+                          <Button
+                            aria-label="use my location"
+                            onClick={handleFoundLocation}
+                            className="flex bg-primary hover:bg-opacity-70 text-base gap-3 items-center text-white h-12 w-12 rounded-full z-50"
+                          >
+                            <Navigation size={32} />
+                          </Button>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </DialogHeader>

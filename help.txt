@@ -1,5 +1,6 @@
 import sitemap, { generateSitemaps } from "../sitemap"; // Убедитесь, что оба импорта корректны
 
+
 function generateSitemapXml(urls) {
   const urlset = urls
     .map((urlObj) => {

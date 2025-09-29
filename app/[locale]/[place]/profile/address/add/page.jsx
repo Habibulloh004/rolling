@@ -549,7 +549,7 @@ const EditAddress = () => {
                     <div className="pb-10 pt-4 bg-white w-full fixed bottom-0 left-0 z-[999]">
                       {/* Confirm: Replace “+” with clear “Choose” */}
                       <div className=" flex flex-col items-center gap-5 w-11/12 mx-auto">
-                        <h1 className="px-4 py-2 text-sm text-muted-foreground line-clamp-2">{addressData.address}</h1>
+                        <div className="px-4 text-sm text-muted-foreground line-clamp-2">{addressData.address}</div>
                         <div className="w-full flex justify-between items-center gap-5 ">
                           <div className="w-full rounded-full">
                             <Button

@@ -309,7 +309,7 @@ const Order = ({
       } else {
         console.log({ products })
         const findProductPromotion = products?.filter((pr) => {
-          const conditions = orderData?.promocode?.params?.conditions;
+          const conditions = orderData?.promocode?.params?.conditions || [];
           if (conditions[0]?.type == 0 && conditions[0]?.active && promocode?.params?.result_type == 3) {
             return true;
           } else {

@@ -195,7 +195,7 @@ export async function getSpotsData() {
   return res;
 }
 
-export async function getClients() {
+export async function getClients({ params }) {
   const myHeaders = new Headers();
 
   const requestOptions = {
@@ -205,7 +205,7 @@ export async function getClients() {
   };
 
   const res = fetch(
-    `${posterUrl}/api/clients.getClients?token=${posterToken}`,
+    `${posterUrl}/api/clients.getClients?token=${posterToken}${params ? params : ""}`,
     requestOptions
   )
     .then((response) => response.json())

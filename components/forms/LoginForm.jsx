@@ -23,7 +23,6 @@ export default function LoginForm() {
   const RegisterValidation = UpdateLoginValidation();
   const t = useTranslations("Login");
   const register = useTranslations("Login.Form");
-  const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
@@ -36,25 +35,16 @@ export default function LoginForm() {
     },
   });
 
-  useEffect(() => {
-    async function getPosterClients() {
-      const clients = await getClients();
-      setUsers(clients);
-    }
-    getPosterClients();
-  }, []);
-
-  async function login(clients, loginData) {
+  async function login(loginData) {
     const formattedPhone = loginData.phone.replace("+", "");
-    const formattedPassword = `password ${loginData.password}`; // Add "password " to the user input password
-
-    for (const client of clients) {
+    const formattedPassword = `password ${loginData.password}`;
+    const getClient = await getClients({ params: `&phone=${formattedPhone}` })
+    console.log(getClient)
+    if (getClient?.length > 0) {
+      const client = getClient[0]
       const clientPhone = client.phone_number || "";
       let clientPassword = null;
-
-      // Attempt to parse the JSON part of the comment field
       try {
-        // Extract only the JSON object from the comment
         const jsonString = client.comment.match(/^\{.*?\}/)?.[0] || "{}";
         const commentData = JSON.parse(jsonString);
         clientPassword = commentData.password;
@@ -62,9 +52,7 @@ export default function LoginForm() {
         console.warn(
           `Skipping client ${client.lastname} due to invalid JSON in comment.`
         );
-        continue; // Skip this client if the JSON is invalid
       }
-
       // Check if phone and password match
       if (
         clientPhone === formattedPhone &&
@@ -89,7 +77,7 @@ export default function LoginForm() {
   const onSubmit = async (values) => {
     setIsLoading(true);
 
-    const result = await login(users, values);
+    const result = await login(values);
     if (result.success == false) {
       toast.error(all("logErr"));
     }
@@ -127,7 +115,6 @@ export default function LoginForm() {
         </div>
         <div className="flex w-full max-sm:flex-col items-center sm:justify-start gap-3 sm:items-center">
           <SubmitButton
-            disabled={users.length < 1}
             isLoading={isLoading}
             className="w-full sm:w-40 bg-white hover:bg-white"
           >

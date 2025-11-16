@@ -1,3 +1,5 @@
+"use client";
+
 import { Input } from "../ui/input";
 import PhoneInput from "react-phone-number-input";
 import {
@@ -19,6 +21,19 @@ import {
 } from "../ui/form";
 import { DatePicker } from "../ui/date-picker";
 import { rule } from "postcss";
+import { toast } from "sonner";
+
+const NUMERIC_PASSWORD_TOAST_INTERVAL = 10000; // 10 seconds
+let lastNumericPasswordToastTime = 0;
+
+const showNumericPasswordToast = (message) => {
+  const now = Date.now();
+  if (now - lastNumericPasswordToastTime < NUMERIC_PASSWORD_TOAST_INTERVAL) {
+    return;
+  }
+  lastNumericPasswordToastTime = now;
+  toast.error(message || "Password must contain digits only.");
+};
 
 export const FormFieldType = {
   INPUT: "input",
@@ -65,7 +80,9 @@ const RenderInput = ({ field, className, props, rules }) => {
           />
         </FormControl>
       );
-    case FormFieldType.PASSWORDINPUT:
+    case FormFieldType.PASSWORDINPUT: {
+      const enforceNumericPassword =
+        props.enforceNumericPassword ?? true;
       return (
         <FormControl>
           <PasswordInput
@@ -79,13 +96,20 @@ const RenderInput = ({ field, className, props, rules }) => {
             )}
             onChange={(e) => {
               const value = e.target.value;
-              if (/^\d*$/.test(value)) {
-                field.onChange(value); // Faqat raqam qabul qilish
+              if (!enforceNumericPassword) {
+                field.onChange(value);
+                return;
               }
+              const sanitizedValue = value.replace(/\D/g, "");
+              if (sanitizedValue !== value) {
+                showNumericPasswordToast(props.numericOnlyMessage);
+              }
+              field.onChange(sanitizedValue);
             }}
           />
         </FormControl>
       );
+    }
 
     case FormFieldType.TEXTAREA:
       return (

@@ -109,8 +109,9 @@ export default function LoginForm() {
             control={form.control}
             name="password"
             label={register("password")}
-            placeholder=""
+            placeholder={all("password_digits_placeholder")}
             inputClass="rounded-md border-[1px]"
+            numericOnlyMessage={all("password_digits_only")}
           />
         </div>
         <div className="flex w-full max-sm:flex-col items-center sm:justify-start gap-3 sm:items-center">

@@ -11,7 +11,6 @@ import NextTopLoader from "nextjs-toploader";
 import { Toaster } from "sonner";
 import Script from "next/script";
 import LoaderWrapper from "@/components/shared/loader-wrapper";
-import GoogleTagManager from "@/app/googleAnalytics";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -75,6 +74,28 @@ export default async function Layout({ children, params }) {
       <body
         className={`${poppins.className} antialiased min-h-screen flex flex-col`}
       >
+        <Script id="gtm-script" strategy="afterInteractive">
+          {`
+            (function(w,d,s,l,i){
+              w[l]=w[l]||[];
+              w[l].push({'gtm.start': new Date().getTime(), event:'gtm.js'});
+              var f=d.getElementsByTagName(s)[0],
+                  j=d.createElement(s),
+                  dl=l!='dataLayer'?'&l='+l:'';
+              j.async=true;
+              j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;
+              f.parentNode.insertBefore(j,f);
+            })(window,document,'script','dataLayer','GTM-M3LDW3FG');
+          `}
+        </Script>
+        <noscript>
+          <iframe
+            src="https://www.googletagmanager.com/ns.html?id=GTM-M3LDW3FG"
+            height="0"
+            width="0"
+            style={{ display: "none", visibility: "hidden" }}
+          ></iframe>
+        </noscript>
         <NextTopLoader
           color="hsl(138, 21%, 33%)"
           crawlSpeed={200}
@@ -125,15 +146,6 @@ export default async function Layout({ children, params }) {
             />
           </div>
         </noscript>
-        {/* Google Analytics Script */}
-        <noscript>
-          <iframe
-            src="https://www.googletagmanager.com/ns.html?id=GTM-M3LDW3FG"
-            height="0"
-            width="0"
-            style={{ display: "none", visibility: "hidden" }}
-          ></iframe>
-        </noscript>
 
         {/* <Script id="gtag-init" strategy="afterInteractive">
           {`
@@ -147,21 +159,6 @@ export default async function Layout({ children, params }) {
           `}
         </Script> */}
 
-        {/* Google Tag Manager Script */}
-        {/* <Script id="gtm-init" strategy="afterInteractive">
-          {`
-            (function(w,d,s,l,i){
-              w[l]=w[l]||[];
-              w[l].push({'gtm.start': new Date().getTime(), event:'gtm.js'});
-              var f=d.getElementsByTagName(s)[0],
-                  j=d.createElement(s),
-                  dl=l!='dataLayer'?'&l='+l:'';
-              j.async=true;
-              j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;
-              f.parentNode.insertBefore(j,f);
-            })(window,document,'script','dataLayer','GTM-M3LDW3FG');
-          `}
-        </Script>
         <Script id="yandex-metrika-init" strategy="afterInteractive">
           {`
     (function(m,e,t,r,i,k,a){
@@ -181,9 +178,8 @@ export default async function Layout({ children, params }) {
       webvisor:true
     });
   `}
-        </Script> */}
+        </Script> 
 
-        <GoogleTagManager />
         <Script
           type="application/ld+json"
           dangerouslySetInnerHTML={{

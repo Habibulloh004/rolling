@@ -52,12 +52,11 @@ import {
   sendSmsToUser,
 } from "@/actions";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useToast } from "@/hooks/use-toast";
 import { createClient } from "@/actions/post";
+import { toast } from "sonner";
 
 export default function RegisterForm() {
   const [open, setOpen] = useState(false);
-  const { toast } = useToast();
   const [clientGroup, setClientGroup] = useState("");
   const [registerBtnDisabled, setRegisterBtnDisabled] = useState(true);
   const [otpValues, setOtpValues] = useState("");
@@ -119,6 +118,7 @@ export default function RegisterForm() {
     });
 
     if (posterClient.error && posterClient.error == 167) {
+      toast.error(all("client_exists"));
       router.replace(`${getUrl(pathname)}/login`);
       setIsLoading(false);
       return;
@@ -148,10 +148,7 @@ export default function RegisterForm() {
 
   const checkNumber = async () => {
     if (otpValues != generatingValue) {
-      toast({
-        variant: "destructive",
-        title: all("sms_err"),
-      });
+      toast.error(all("sms_err"));
       return;
     }
     setOpen(false)
@@ -305,8 +302,10 @@ export default function RegisterForm() {
             fieldType={FormFieldType.PASSWORDINPUT}
             control={form.control}
             name="password"
-            label="Parol" // Labelni matn sifatida uzatish
+            label={register("password")} // Labelni matn sifatida uzatish
+            placeholder={all("password_digits_placeholder")}
             inputClass="rounded-md border-[1px]"
+            numericOnlyMessage={all("password_digits_only")}
           />
           <div className="sm:hidden flex items-center space-x-2">
             <Checkbox
@@ -447,10 +446,11 @@ export default function RegisterForm() {
             </DialogContent>
           </Dialog>
         </div>
+        {console.log(form.getValues("privacy_policy"))}
         <div className="flex w-full max-sm:flex-col items-center sm:justify-start gap-3 sm:items-center">
           <SubmitButton
             isLoading={isLoading}
-            disabled={registerBtnDisabled}
+            disabled={registerBtnDisabled || form.watch("privacy_policy") == false}
             className="w-full sm:w-40 bg-white hover:bg-white"
           >
             {t("register")}

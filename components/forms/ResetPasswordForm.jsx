@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Form } from "../ui/form";
 import CustomFormField, { FormFieldType } from "../shared/customFormField";
 import SubmitButton from "../shared/submitButton";
@@ -35,7 +35,7 @@ import { updateClient } from "@/actions/post";
 import { toast } from "sonner";
 
 export default function ResetPasswordForm() {
-  const [users, setUsers] = useState([]);
+  const [open, setOpen] = useState(false);
   const [resetPasswordBtnDisabled, setResetPasswordBtnDisabled] =
     useState(true);
   const [otpValues, setOtpValues] = useState("");
@@ -59,20 +59,25 @@ export default function ResetPasswordForm() {
     },
   });
 
-  useEffect(() => {
-    async function getPosterClients() {
-      const clients = await getClients();
-      setUsers(clients);
-    }
-    getPosterClients();
-  }, []);
-
   const phone = form.watch("phone");
 
-  async function login(clients, loginData) {
-    const formattedPhone = loginData.phone.replace("+", "");
+  const parseClientComment = (comment) => {
+    if (!comment) return {};
+    try {
+      const jsonString = comment.match(/^\{.*?\}/)?.[0] || comment;
+      return JSON.parse(jsonString);
+    } catch (error) {
+      console.warn("Failed to parse client comment JSON.", error);
+      return {};
+    }
+  };
 
-    for (const client of clients) {
+  async function login(loginData) {
+    const formattedPhone = loginData.phone.replace("+", "");
+    const clients = await getClients({ params: `&phone=${formattedPhone}` });
+    const client = clients?.[0];
+
+    if (client) {
       const clientPhone = client.phone_number || "";
 
       if (clientPhone == formattedPhone) {
@@ -84,13 +89,13 @@ export default function ResetPasswordForm() {
 
   const onSubmit = async (values) => {
     setIsLoading(true);
-    const { client, success } = await login(users, values);
+    const { client, success } = await login(values);
     if (success == false) {
       toast.error(all("client_err"));
       setIsLoading(false);
       return;
     }
-    const clientPassword = JSON.parse(client.comment);
+    const clientPassword = parseClientComment(client.comment);
     const updatedClient = {
       client_id: client.client_id,
       comment: JSON.stringify({
@@ -107,6 +112,7 @@ export default function ResetPasswordForm() {
       }),
       { expires: 7, secure: true }
     );
+    toast.success(all("password_reset_success"));
     router.replace(`${getUrl(pathname)}/login`);
     setIsLoading(false);
   };
@@ -117,10 +123,12 @@ export default function ResetPasswordForm() {
       toast.error(all("sms_err"));
       return;
     }
+    setOpen(false);
     setResetPasswordBtnDisabled(false);
   };
 
   const sendSms = async () => {
+    setOpen(true);
     const code = generateRandomFourDigitNumber();
     setGeneratingValue(code);
     const res = await sendSmsToUser(code, form.getValues("phone"));
@@ -150,7 +158,7 @@ export default function ResetPasswordForm() {
               } h-full flex justify-start items-end w-full`}
             >
               <div></div>
-              <AlertDialog>
+              <AlertDialog open={open}>
                 <AlertDialogTrigger asChild>
                   <div>
                     <Button
@@ -177,7 +185,7 @@ export default function ResetPasswordForm() {
                   <AlertDialogHeader>
                     <AlertDialogTitle className="text-xl text-center relative">
                       {optLang("title")}
-                      <AlertDialogCancel className="w-2 aspect-square absolute right-0 -top-2">
+                      <AlertDialogCancel className="w-2 aspect-square absolute right-0 -top-2" onClick={() => setOpen(false)}>
                         <X className="size-2" />
                       </AlertDialogCancel>
                     </AlertDialogTitle>
@@ -214,22 +222,24 @@ export default function ResetPasswordForm() {
             control={form.control}
             name="new_password"
             label={reset("new_password")}
-            placeholder=""
+            placeholder={all("password_digits_placeholder")}
             inputClass="rounded-md border-[1px]"
+            numericOnlyMessage={all("password_digits_only")}
           />
           <CustomFormField
             fieldType={FormFieldType.PASSWORDINPUT}
             control={form.control}
             name="confirm_password"
             label={reset("confirm_password")}
-            placeholder=""
+            placeholder={all("password_digits_placeholder")}
             inputClass="rounded-md border-[1px]"
+            numericOnlyMessage={all("password_digits_only")}
           />
         </div>
         <div className="flex w-full max-sm:flex-col items-center sm:justify-start gap-3 sm:items-center">
           <SubmitButton
             isLoading={isLoading}
-            disabled={resetPasswordBtnDisabled || users.length < 1}
+            disabled={resetPasswordBtnDisabled || isLoading}
             className="w-full sm:w-40 bg-white hover:bg-white"
           >
             {t("reset")}

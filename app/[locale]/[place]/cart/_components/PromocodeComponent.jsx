@@ -449,19 +449,92 @@ export default function PromoCodeDialog({
                 findPromo?.params?.result_type == 3
               ) {
                 //Discount promotion
-                setOrderData({
-                  ...orderData,
-                  promocode: resultPromo,
-                  discountPromocode: Number(findPromo?.params?.discount_value),
-                });
-                setPromotionDiscount(Number(findPromo?.params?.discount_value));
-                setPromoCode("");
-                setHovered(false);
-                setError(null);
-                toast(promocodeT("success"), {
-                  type: "success",
-                  duration: 2000,
-                });
+                const today = new Date();
+                const birthday = new Date(auth?.birthday);
+                const commentC = auth?.comment
+                  ? JSON.parse(auth?.comment)
+                  : null;
+                const promocodeName = String(
+                  findPromo?.name?.split("$")[1]
+                )
+                  .toLowerCase()
+                  .trim();
+                const isBirthdayPromo = promocodeName?.startsWith("bday");
+                const isFirstOrderPromo = promocodeName?.startsWith("first");
+
+                //Birthday
+                if (
+                  today.getMonth() === birthday.getMonth() &&
+                  today.getDate() === birthday.getDate() &&
+                  isBirthdayPromo
+                ) {
+                  setOrderData({
+                    ...orderData,
+                    promocode: resultPromo,
+                    discountPromocode: Number(findPromo?.params?.discount_value),
+                  });
+                  setPromotionDiscount(Number(findPromo?.params?.discount_value));
+                  setPromoCode("");
+                  setHovered(false);
+                  setError(null);
+                  toast(promocodeT("success"), {
+                    type: "success",
+                    duration: 2000,
+                  });
+                } else if (
+                  !(
+                    today.getMonth() === birthday.getMonth() &&
+                    today.getDate() === birthday.getDate()
+                  ) &&
+                  isBirthdayPromo
+                ) {
+                  setError({
+                    title: promocodeT("error_bday"),
+                    type: "invalid_code",
+                  });
+                }
+
+                //First Order
+                if (
+                  (commentC?.length == 0 || !commentC?.length) &&
+                  isFirstOrderPromo
+                ) {
+                  setOrderData({
+                    ...orderData,
+                    promocode: resultPromo,
+                    discountPromocode: Number(findPromo?.params?.discount_value),
+                  });
+                  setPromotionDiscount(Number(findPromo?.params?.discount_value));
+                  setPromoCode("");
+                  setHovered(false);
+                  setError(null);
+                  toast(promocodeT("success"), {
+                    type: "success",
+                    duration: 2000,
+                  });
+                } else if (commentC?.length > 0 && isFirstOrderPromo) {
+                  setError({
+                    title: promocodeT("error_first20"),
+                    type: "invalid_code",
+                  });
+                }
+
+                //Default (na first, na bday)
+                if (!isBirthdayPromo && !isFirstOrderPromo) {
+                  setOrderData({
+                    ...orderData,
+                    promocode: resultPromo,
+                    discountPromocode: Number(findPromo?.params?.discount_value),
+                  });
+                  setPromotionDiscount(Number(findPromo?.params?.discount_value));
+                  setPromoCode("");
+                  setHovered(false);
+                  setError(null);
+                  toast(promocodeT("success"), {
+                    type: "success",
+                    duration: 2000,
+                  });
+                }
               } else if (findPromo?.params?.result_type == 1) {
                 //Bonus product promotion
                 setAddingProducts(filterProducts);
@@ -599,6 +672,46 @@ export default function PromoCodeDialog({
 
   useEffect(() => {
     if (orderData?.promocode) {
+      // Promocode nomini olish va turini aniqlash
+      const promocodeName = String(orderData?.promocode?.name?.split("$")[1] || "")
+        .toLowerCase()
+        .trim();
+      const isFirstOrderPromo = promocodeName?.startsWith("first");
+      const isBirthdayPromo = promocodeName?.startsWith("bday");
+
+      // "first" promocode uchun - buyurtmalar sonini tekshirish
+      // auth?.comment - bu JSON string formatida buyurtmalar ro'yxati
+      if (isFirstOrderPromo) {
+        const orderCount = auth?.comment ? JSON.parse(auth?.comment) : null;
+        // Agar buyurtmalar soni 0 dan katta bo'lsa - bu birinchi buyurtma emas
+        // orderCount?.length == 0 yoki null bo'lsa - birinchi buyurtma
+        if (orderCount?.length > 0) {
+          handleRemovePromo();
+          return; // Boshqa tekshiruvlarni bajarmaslik
+        }
+      }
+
+      // "bday" promocode uchun - tug'ilgan kunni tekshirish
+      if (isBirthdayPromo) {
+        const clientBirthday = auth?.birthday;
+        if (clientBirthday) {
+          const today = new Date();
+          const birthday = new Date(clientBirthday);
+          const isBirthdayToday =
+            today.getDate() === birthday.getDate() &&
+            today.getMonth() === birthday.getMonth();
+          // Agar bugun tug'ilgan kun emas bo'lsa - promocode o'chirish
+          if (!isBirthdayToday) {
+            handleRemovePromo();
+            return;
+          }
+        } else {
+          // Tug'ilgan kun ma'lumoti yo'q bo'lsa ham o'chirish
+          handleRemovePromo();
+          return;
+        }
+      }
+
       // ORIGINAL (chegirmasiz) summani hisoblash - bu muhim!
       // totalSum chegirmadan KEYIN hisoblanadi, lekin biz asl summani tekshirishimiz kerak
       const originalSum = products?.reduce((sum, prd) => {
@@ -654,7 +767,7 @@ export default function PromoCodeDialog({
         }
       });
     }
-  }, [totalSum, products]);
+  }, [totalSum, products, auth]);
 
   return (
     <div className="space-y-2 md:space-y-4">

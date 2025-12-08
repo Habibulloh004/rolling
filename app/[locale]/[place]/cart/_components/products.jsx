@@ -41,20 +41,33 @@ const Products = ({ apiTime, locale, place }) => {
     }
     let productPrice = Number(product.price["1"]) / 100;
 
-    if (orderData?.promocode) {
+    // Faqat foizli chegirma (result_type == 3) va active shart bo'lganda narxni o'zgartirish
+    if (orderData?.promocode && orderData?.promocode?.params?.result_type == 3) {
       const conditions = orderData?.promocode?.params?.conditions;
-      if (orderData?.promocode?.params?.result_type == 3) {
+      const discountValue = Number(orderData?.promocode?.params?.discount_value);
+
+      // Faqat 0-100 oralig'ida bo'lgan foizli chegirmalarni qo'llash
+      if (discountValue > 0 && discountValue <= 100) {
         const findCond = conditions?.find((cd) => {
-          if (cd?.id == product?.product_id) {
-            return cd;
+          if (!cd?.active) return false;
+
+          // Barcha mahsulotlar (type 0)
+          if (cd?.type == 0) {
+            return true;
           }
+          // Kategoriya bo'yicha (type 1) - active bo'lganda barcha mahsulotlarga
+          if (cd?.type == 1) {
+            return true;
+          }
+          // Mahsulot bo'yicha (type 2)
+          if (cd?.type == 2 && String(cd?.id) === String(product?.product_id)) {
+            return true;
+          }
+          return false;
         });
 
-        if (findCond && findCond?.active) {
-          console.log("findCond", findCond);
-          productPrice =
-            (1 - orderData?.promocode?.params?.discount_value / 100) *
-            productPrice;
+        if (findCond) {
+          productPrice = productPrice * (1 - discountValue / 100);
         }
       }
     }
@@ -64,7 +77,6 @@ const Products = ({ apiTime, locale, place }) => {
   };
 
   useEffect(() => {
-    console.log({ orderData });
     const calculateTotals = async () => {
       let totalSum = 0;
 
@@ -93,12 +105,29 @@ const Products = ({ apiTime, locale, place }) => {
                 locale,
                 "name"
               );
+              // Faqat foizli chegirma (result_type == 3) va valid discount uchun
+              const isPercentDiscount = orderData?.promocode?.params?.result_type == 3;
+              const discountValue = Number(orderData?.promocode?.params?.discount_value);
+              const isValidDiscount = isPercentDiscount && discountValue > 0 && discountValue <= 100;
+
               const conditions = orderData?.promocode?.params?.conditions;
-              const findCond = conditions?.find((cd) => {
-                if (cd?.id == item?.product_id) {
-                  return cd;
+              const findCond = isValidDiscount ? conditions?.find((cd) => {
+                if (!cd?.active) return false;
+
+                // Barcha mahsulotlar (type 0)
+                if (cd?.type == 0) {
+                  return true;
                 }
-              });
+                // Kategoriya bo'yicha (type 1) - active bo'lganda barcha mahsulotlarga
+                if (cd?.type == 1) {
+                  return true;
+                }
+                // Mahsulot bo'yicha (type 2)
+                if (cd?.type == 2 && String(cd?.id) === String(item?.product_id)) {
+                  return true;
+                }
+                return false;
+              }) : null;
               return (
                 <div key={item.product_id} className="flex gap-2 md:gap-4 mr-4">
                   <Image
@@ -136,19 +165,14 @@ const Products = ({ apiTime, locale, place }) => {
                       )}
                     </div>
                     <div className="col-span-3 row-span-1 flex justify-between item-start sm:items-center">
-                      {findCond && findCond?.active ? (
+                      {findCond ? (
                         <div className="font-semibold textSmall2 leading-5 w-full">
                           <h1>
                             {" "}
                             {item?.price["1"]
                               ? `${formatNumber(
                                   (item.price["1"] / 100) *
-                                    (1 -
-                                      Number(
-                                        orderData?.promocode?.params
-                                          ?.discount_value
-                                      ) /
-                                        100)
+                                    (1 - discountValue / 100)
                                 )} ${all("sum")}`
                               : "Price not available"}
                           </h1>

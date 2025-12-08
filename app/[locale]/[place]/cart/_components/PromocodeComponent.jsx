@@ -42,8 +42,6 @@ export default function PromoCodeDialog({
   const [addingProducts, setAddingProducts] = useState([]);
   const [promotionPrice, setPromotionPrice] = useState(0);
   const [promotionDiscount, setPromotionDiscount] = useState(0);
-  console.log({ promotions });
-  console.log({ auth });
 
   const handleRemovePromo = () => {
     setOrderData({
@@ -78,7 +76,8 @@ export default function PromoCodeDialog({
       });
       return;
     }
-    let findPromo = promotions.find((promo) => {
+    const promotionList = Array.isArray(promotions) ? promotions : [];
+    let findPromo = promotionList.find((promo) => {
       const promoCodeFind = promo?.name?.split("$")[1];
       if (
         String(promoCodeFind).toLowerCase().trim() ===
@@ -101,7 +100,6 @@ export default function PromoCodeDialog({
         count: findPromo?.params?.bonus_products_pcs,
       }));
 
-    console.log({ filterProducts });
 
     if (findPromo) {
       //Only for auth users
@@ -114,14 +112,12 @@ export default function PromoCodeDialog({
       }
       let nameProducts = "";
       const conditionsProducts = findPromo?.params?.conditions;
-      console.log({ categoriesData, productsData });
       conditionsProducts?.forEach((condition) => {
         switch (condition?.type) {
           case 1: // Category
             const findP = categoriesData.find(
               (pr) => pr.category_id == condition?.id
             );
-            console.log({ findP });
             if (findP) {
               const localizedNameCategory = getLocalizedCategoryName(
                 findP?.category_name,
@@ -164,9 +160,8 @@ export default function PromoCodeDialog({
         switch (condition.type) {
           case 0: // All products
             if (totalSum >= condition?.sum / 100) {
-              console.log("All products promotion active");
               //Summa promotion
-              isCHeck = true; 
+              isCHeck = true;
               if (
                 findPromo?.params?.discount_value > 0 &&
                 findPromo?.params?.result_type == 2
@@ -210,16 +205,19 @@ export default function PromoCodeDialog({
                 const commentC = auth?.comment
                   ? JSON.parse(auth?.comment)
                   : null;
-                const promocodeName = String(findPromo?.name?.split("$")[1])
+                const promocodeName = String(
+                  findPromo?.name?.split("$")[1]
+                )
                   .toLowerCase()
                   .trim();
-                console.log({ findPromo, promocodeName });
+                const isBirthdayPromo = promocodeName?.startsWith("bday");
+                const isFirstOrderPromo = promocodeName?.startsWith("first");
 
                 //Birthday
                 if (
                   today.getMonth() === birthday.getMonth() &&
                   today.getDate() === birthday.getDate() &&
-                  promocodeName == "bday20"
+                  isBirthdayPromo
                 ) {
                   resultPromo = {
                     ...resultPromo,
@@ -238,7 +236,6 @@ export default function PromoCodeDialog({
                       ),
                     },
                   };
-                  console.log("birthday active");
                   setOrderData({
                     ...orderData,
                     promocode: resultPromo,
@@ -259,7 +256,7 @@ export default function PromoCodeDialog({
                 } else if (
                   (today.getMonth() !== birthday.getMonth() ||
                     today.getDate() !== birthday.getDate()) &&
-                  promocodeName == "bday20"
+                  isBirthdayPromo
                 ) {
                   setError({
                     title: promocodeT("error_bday"),
@@ -270,7 +267,7 @@ export default function PromoCodeDialog({
                 //First Order
                 if (
                   (commentC?.length == 0 || !commentC?.length) &&
-                  promocodeName == "first20"
+                  isFirstOrderPromo
                 ) {
                   resultPromo = {
                     ...resultPromo,
@@ -306,15 +303,14 @@ export default function PromoCodeDialog({
                     type: "success",
                     duration: 2000,
                   });
-                } else if (commentC?.length > 0 && promocodeName == "first20") {
+                } else if (commentC?.length > 0 && isFirstOrderPromo) {
                   setError({
                     title: promocodeT("error_first20"),
                     type: "invalid_code",
                   });
                 }
-
                 //Default
-                if (promocodeName != "bday20" && promocodeName != "first20") {
+                if (!isBirthdayPromo && !isFirstOrderPromo) {
                   resultPromo = {
                     ...resultPromo,
                     params: {
@@ -388,22 +384,56 @@ export default function PromoCodeDialog({
             }
             break;
           case 1: // Category
-            const findCategoryData = products?.find(
-              (prd) => prd?.menu_category_id == condition.id
+            // categoriesData dan condition.id ga mos kategoriyani topish
+            const targetCategory = categoriesData?.find(
+              (cat) => String(cat?.category_id) === String(condition.id)
             );
+            console.log("Target category:", targetCategory);
 
-            const allSummaCategory =
-              (findCategoryData?.price["1"] / 100) * findCategoryData?.count;
-            if (findCategoryData && allSummaCategory >= condition?.sum / 100) {
-              console.log("Category promotion active");
+            // Shu kategoriyaga tegishli mahsulotlarni topish
+            const categoryProducts = products?.filter((prd) => {
+              // menu_category_id orqali (targetCategory dan)
+              if (targetCategory && String(prd?.menu_category_id) === String(targetCategory?.menu_category_id)) {
+                return true;
+              }
+              // yoki to'g'ridan-to'g'ri condition.id bilan
+              if (String(prd?.menu_category_id) === String(condition.id)) {
+                return true;
+              }
+              return false;
+            });
+            console.log("Found category products:", categoryProducts?.length);
+
+            // BARCHA mahsulotlar summasini hisoblash
+            const allSummaCategory = categoryProducts?.reduce((sum, prd) => {
+              return sum + (prd?.price["1"] / 100) * prd?.count;
+            }, 0) || 0;
+
+            if (categoryProducts?.length > 0 && allSummaCategory >= condition?.sum / 100) {
               isCHeck = true;
+              // resultPromo ga active: true qo'shish
+              resultPromo = {
+                ...resultPromo,
+                params: {
+                  ...resultPromo.params,
+                  conditions: resultPromo?.params?.conditions?.map((cond) => {
+                    if (cond?.id == condition?.id && cond?.type == 1) {
+                      return {
+                        ...cond,
+                        active: true,
+                      };
+                    }
+                    return cond;
+                  }),
+                },
+              };
               if (
                 findPromo?.params?.discount_value > 0 &&
                 findPromo?.params?.result_type == 2
               ) {
                 setOrderData({
                   ...orderData,
-                  promocode: findPromo,
+                  promocode: resultPromo,
                   promocodePrice: findPromo?.params?.discount_value / 100,
                 });
                 setPromoCode("");
@@ -421,7 +451,7 @@ export default function PromoCodeDialog({
                 //Discount promotion
                 setOrderData({
                   ...orderData,
-                  promocode: findPromo,
+                  promocode: resultPromo,
                   discountPromocode: Number(findPromo?.params?.discount_value),
                 });
                 setPromotionDiscount(Number(findPromo?.params?.discount_value));
@@ -437,7 +467,7 @@ export default function PromoCodeDialog({
                 setAddingProducts(filterProducts);
                 setProductsData([...products, ...filterProducts]);
                 setError(null);
-                setOrderData({ ...orderData, promocode: findPromo });
+                setOrderData({ ...orderData, promocode: resultPromo });
                 toast(promocodeT("success"), {
                   type: "success",
                   duration: 2000,
@@ -462,7 +492,6 @@ export default function PromoCodeDialog({
               (findProductsData?.price["1"] / 100) * findProductsData?.count;
             if (findProductsData && allSummaProducts >= condition?.sum / 100) {
               isCHeck = true;
-              console.log("Products promotion active");
               if (
                 findPromo?.params?.discount_value > 0 &&
                 findPromo?.params?.result_type == 2
@@ -570,39 +599,52 @@ export default function PromoCodeDialog({
 
   useEffect(() => {
     if (orderData?.promocode) {
+      // ORIGINAL (chegirmasiz) summani hisoblash - bu muhim!
+      // totalSum chegirmadan KEYIN hisoblanadi, lekin biz asl summani tekshirishimiz kerak
+      const originalSum = products?.reduce((sum, prd) => {
+        if (prd?.promocode) return sum; // Bonus mahsulotlarni o'tkazib yuborish
+        return sum + (prd?.price["1"] / 100) * (prd?.count || 0);
+      }, 0) || 0;
+
       orderData?.promocode?.params?.conditions?.forEach((condition) => {
-        if (!condition?.active) return; // Skip already active conditions
+        if (!condition?.active) return; // Skip inactive conditions
         switch (condition?.type) {
           case 0: // All products
-            if (totalSum < condition?.sum / 100) {
+            // ORIGINAL summani tekshirish, chegirmali emas!
+            if (originalSum < condition?.sum / 100) {
               handleRemovePromo();
             }
             break;
-          // case 1: // Category
-          //   const findCategoryData = products?.find(
-          //     (prd) => prd?.menu_category_id == condition.id
-          //   );
-          //   let allSummaCategory =
-          //     (findCategoryData?.price["1"] / 100) * findCategoryData?.count;
-          //   if (!allSummaCategory) {
-          //     allSummaCategory = 0;
-          //   }
-          //   console.log({ findCategoryData, allSummaCategory });
-          //   if (allSummaCategory < condition?.sum / 100) {
-          //     handleRemovePromo();
-          //   }
-          //   break;
+          case 1: // Category
+            const targetCategory = categoriesData?.find(
+              (cat) => String(cat?.category_id) === String(condition.id)
+            );
+            const categoryProductsEffect = products?.filter((prd) => {
+              if (prd?.promocode) return false; // Bonus mahsulotlarni o'tkazib yuborish
+              if (targetCategory && String(prd?.menu_category_id) === String(targetCategory?.menu_category_id)) {
+                return true;
+              }
+              if (String(prd?.menu_category_id) === String(condition.id)) {
+                return true;
+              }
+              return false;
+            });
+            // ORIGINAL narx bilan hisoblash
+            const allSummaCategoryEffect = categoryProductsEffect?.reduce((sum, prd) => {
+              return sum + (prd?.price["1"] / 100) * (prd?.count || 0);
+            }, 0) || 0;
+            if (allSummaCategoryEffect < condition?.sum / 100) {
+              handleRemovePromo();
+            }
+            break;
           case 2: // Product
             const findProductsData = products?.find(
-              (prd) => prd?.product_id == condition.id
+              (prd) => prd?.product_id == condition.id && !prd?.promocode
             );
-
-            let allSummaProducts =
-              (findProductsData?.price["1"] / 100) * findProductsData?.count;
-            if (!allSummaProducts) {
-              allSummaProducts = 0;
-            }
-            console.log({ allSummaProducts, findProductsData });
+            // ORIGINAL narx bilan hisoblash
+            const allSummaProducts = findProductsData
+              ? (findProductsData?.price["1"] / 100) * (findProductsData?.count || 0)
+              : 0;
             if (allSummaProducts < condition?.sum / 100) {
               handleRemovePromo();
             }
@@ -612,11 +654,11 @@ export default function PromoCodeDialog({
         }
       });
     }
-  }, [totalSum]);
+  }, [totalSum, products]);
 
   return (
     <div className="space-y-2 md:space-y-4">
-      <Dialog open={isOpen} onOpenChange={() => {}}>
+      <Dialog open={isOpen} onOpenChange={() => { }}>
         <DialogTrigger asChild>
           {orderData?.promocode ? (
             <div
@@ -682,8 +724,8 @@ export default function PromoCodeDialog({
           <DialogHeader>
             <DialogTitle className="text-2xl w-full text-start">
               {addingProducts?.length > 0 ||
-              promotionPrice > 0 ||
-              promotionDiscount > 0 ? (
+                promotionPrice > 0 ||
+                promotionDiscount > 0 ? (
                 <h1>{promocodeT("titleDialogAdd")}</h1>
               ) : (
                 <h1>{promocodeT("titleDialog")}</h1>
@@ -729,8 +771,8 @@ export default function PromoCodeDialog({
                             <p className="font-semibold textSmall2 leading-5 w-full">
                               {item?.price["1"]
                                 ? `${formatNumber(item.price["1"] / 100)} ${all(
-                                    "sum"
-                                  )}`
+                                  "sum"
+                                )}`
                                 : "Price not available"}
                             </p>
                           </div>
@@ -801,9 +843,8 @@ export default function PromoCodeDialog({
                 <Input
                   placeholder={promocodeT("input_pls")}
                   value={promoCode}
-                  className={`h-12 ${
-                    error ? "border-red-500 focus-visible:ring-red-500" : ""
-                  }`}
+                  className={`h-12 ${error ? "border-red-500 focus-visible:ring-red-500" : ""
+                    }`}
                   onChange={(e) => {
                     setPromoCode(e.target.value);
                     setError(null);

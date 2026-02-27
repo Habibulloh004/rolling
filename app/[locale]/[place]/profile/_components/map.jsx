@@ -6,8 +6,7 @@ import "leaflet/dist/leaflet.css";
 
 const Map = ({ longitude: lng, latitude: lat, address }) => {
   const userMarker = new Icon({
-    iconUrl:
-      "https://rolling.uz/_next/image?url=%2Ficons%2F1.png&w=96&q=75",
+    iconUrl: "/icons/1.png",
     iconSize: [50, 70],
   });
 

@@ -4,7 +4,6 @@ const withNextIntl = createNextIntlPlugin();
 
 export default withNextIntl({
   experimental: {
-    runtime: "edge", // Ensure Edge runtime compatibility
     serverActions: {
       bodySizeLimit: "50mb",
     },
@@ -16,10 +15,10 @@ export default withNextIntl({
   images: {
     unoptimized: true,
     domains: [
-      "https://vm4983125.25ssd.had.wf:5000",
-      "https://www.shutterstock.com",
-      "https://joinposter.com",
-      "https://rolling-202741958960.asia-south1.run.app",
+      "vm4983125.25ssd.had.wf",
+      "www.shutterstock.com",
+      "joinposter.com",
+      "rolling-202741958960.asia-south1.run.app",
     ],
     remotePatterns: [
       {

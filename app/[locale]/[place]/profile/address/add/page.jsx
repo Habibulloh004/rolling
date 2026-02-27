@@ -115,10 +115,10 @@ const CenterMarker = ({ searchParams }) => {
           style={{
             width: "50px",
             height: "70px",
-            backgroundImage:
-              'url("https://rolling.uz/_next/image?url=%2Ficons%2F1.png&w=96&q=75")',
+            backgroundImage: 'url("/icons/1.png")',
             backgroundSize: "contain",
             backgroundRepeat: "no-repeat",
+            backgroundPosition: "center",
           }}
         />
       </div>
@@ -196,7 +196,7 @@ const EditAddress = () => {
         address: addressRes?.display_name || prev.address,
       }));
     } catch (error) {
-      console.log(error);
+      toast.warning(addressT("geolocation") || geoWarn);
     }
   };
 
@@ -224,7 +224,6 @@ const EditAddress = () => {
       },
       (error) => {
         toast.warning(addressT("geolocation") || geoWarn);
-        console.error("Geolocation error:", error);
       },
       { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
     );

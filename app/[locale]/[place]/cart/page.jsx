@@ -21,6 +21,7 @@ import {
   getLocalizedProduct,
 } from "@/lib/utils";
 import Card from "@/components/shared/card";
+import { getSafeApiTime } from "@/lib/safe-api-time";
 
 export const metadata = {
   title: "Ваш заказ в Rolling Sushi | Проверьте корзину перед оплатой",
@@ -49,7 +50,7 @@ const Basket = async ({ params, searchParams }) => {
     path,
     searchParamsData,
     all,
-    timeData,
+    apiTime,
   ] = await Promise.all([
     getTranslations("Cart"),
     ApiService.getPosterData("menu.getProducts", "", 7200),
@@ -59,9 +60,8 @@ const Basket = async ({ params, searchParams }) => {
     params,
     searchParams,
     getTranslations("All"),
-    fetch(`${process.env.NEXT_PUBLIC_URL_RENDER}/get_time`),
+    getSafeApiTime(process.env.NEXT_PUBLIC_URL_RENDER),
   ]);
-  const apiTime = await timeData?.json();
   console.log("🚀 ~ file: page.jsx:40 ~ Basket ~ promotions:", promotions);
 
   let spotData;

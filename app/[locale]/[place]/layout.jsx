@@ -11,6 +11,7 @@ import NextTopLoader from "nextjs-toploader";
 import { Toaster } from "sonner";
 import Script from "next/script";
 import LoaderWrapper from "@/components/shared/loader-wrapper";
+import { getSafeApiTime } from "@/lib/safe-api-time";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -33,19 +34,17 @@ export const metadata = {
 };
 
 export default async function Layout({ children, params }) {
-  const [param, categoriesData, productsData, timeData] = await Promise.all([
+  const [param, categoriesData, productsData, timeDataRes] = await Promise.all([
     params,
     ApiService.getPosterData("menu.getCategories", "", 86400),
     ApiService.getPosterData("menu.getProducts", "", 7200),
-    fetch(`${process.env.NEXT_PUBLIC_URL_RENDER}/get_time`),
+    getSafeApiTime(process.env.NEXT_PUBLIC_URL_RENDER),
   ]);
 
   // Validate the locale
   if (!routing.locales.includes(param.locale)) {
     notFound();
   }
-
-  const timeDataRes = await timeData?.json();
 
   let spotData = [];
   if (param.place === "branch") {
@@ -72,6 +71,7 @@ export default async function Layout({ children, params }) {
         <link rel="icon" href="/favicon.ico" type="image/x-icon" />
       </head>
       <body
+        suppressHydrationWarning
         className={`${poppins.className} antialiased min-h-screen flex flex-col`}
       >
         <Script id="gtm-script" strategy="afterInteractive">

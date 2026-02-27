@@ -77,7 +77,10 @@ export default function Header({
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [openSearch, setOpenSearch] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const defaultTime = { closed_time: "23:00", opened_time: "10:00" };
+  const isDev = process.env.NODE_ENV === "development";
+  const defaultTime = isDev
+    ? { closed_time: "23:59", opened_time: "00:00" }
+    : { closed_time: "23:00", opened_time: "10:00" };
   const [showBackTop, setShowBackTop] = useState(false);
 
   useEffect(() => {
@@ -144,6 +147,7 @@ export default function Header({
     let openedTime = defaultTime.opened_time;
 
     if (
+      !isDev &&
       apiTime?.opened_time &&
       apiTime?.opened_time !== null &&
       apiTime?.opened_time !== "" &&

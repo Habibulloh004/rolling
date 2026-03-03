@@ -80,6 +80,21 @@ const Payment = ({ apiTime, locale, place, auth }) => {
   const [attemptsCount, setAttempts] = useState(0);
   const total = useTranslations("Cart.Total");
   const { client } = useClientStore();
+  const originalProductsSum = products?.reduce((sum, product) => {
+    if (product?.promocode) return sum;
+    return sum + (Number(product?.price?.["1"] || 0) / 100) * Number(product?.count || 0);
+  }, 0);
+  const promoDiscountAmount =
+    orderData?.discountPromocode > 0
+      ? Math.max(Number(originalProductsSum) - Number(totalSum), 0)
+      : orderData?.promocodePrice > 0
+        ? Number(orderData?.promocodePrice)
+        : 0;
+  const payableTotal =
+    Number(totalSum) -
+    Number(orderData?.pay_bonus || 0) +
+    (activeTab == "delivery" ? Number(orderData?.delivery_price || 0) : 0) -
+    (orderData?.promocodePrice > 0 ? Number(orderData?.promocodePrice) : 0);
 
   const pay = [
     {
@@ -177,9 +192,7 @@ const Payment = ({ apiTime, locale, place, auth }) => {
     try {
       setIsPaymentLoading(true);
       let totalAmount =
-        Number(totalSum * (orderData?.discountPromocode > 0
-          ? 1 - orderData?.discountPromocode / 100
-          : 1)) -
+        Number(totalSum) -
         (orderData?.pay_bonus ? Number(orderData?.pay_bonus) : 0);
       if (activeTab == "delivery") {
         totalAmount += Number(orderData?.delivery_price);
@@ -614,72 +627,62 @@ const Payment = ({ apiTime, locale, place, auth }) => {
             )}
           </div>
           <div className="w-full lg:hidden flex flex-col gap-y-4">
-            <div className="w-full flex justify-between">
+            <div className="w-full grid grid-cols-[minmax(0,1fr)_auto] gap-3 items-start">
               <p className="font-medium textSmall3 leading-5 text-[#2E2E2E] text-start md:text-end">
                 {service == "self" ? total("total") : total("products_sum")}{" "}
               </p>
-              <p className="font-normal textNormal2 leading-7 text-[#2E2E2E]">
-                {formatNumber(totalSum)} {all("sum")}
+              <p className="font-normal textNormal2 leading-7 text-[#2E2E2E] text-right">
+                {formatNumber(originalProductsSum)} {all("sum")}
               </p>
             </div>
             {orderData?.promocodePrice > 0 && (
-              <div className="w-full flex justify-between">
+              <div className="w-full grid grid-cols-[minmax(0,1fr)_auto] gap-3 items-start">
                 <p className="font-medium textSmall3 leading-5 text-[#2E2E2E] text-start md:text-end">
                   {promocodeT("titleDialog")}
                 </p>
-                <p className="text-primary font-normal textNormal2 leading-7 text-[#2E2E2E]">
+                <p className="text-primary font-normal textNormal2 leading-7 text-[#2E2E2E] text-right">
                   -{formatNumber(orderData?.promocodePrice)} {all("sum")}
                 </p>
               </div>
             )}
             {orderData?.discountPromocode > 0 && (
-              <div className="w-full flex justify-between">
+              <div className="w-full grid grid-cols-[minmax(0,1fr)_auto] gap-3 items-start">
                 <p className="font-medium textSmall3 leading-5 text-[#2E2E2E] text-start md:text-end">
                   {promocodeT("titleDialog")}
                 </p>
-                <p className="text-primary font-normal textNormal2 leading-7 text-[#2E2E2E]">
-                  {formatNumber(orderData?.discountPromocode)}% {all("disc")}
-                </p>
+                <div className="text-primary font-normal textNormal2 leading-6 text-[#2E2E2E] text-right">
+                  <p>{formatNumber(orderData?.discountPromocode)}% {all("disc")}</p>
+                  <p>-{formatNumber(promoDiscountAmount)} {all("sum")}</p>
+                </div>
               </div>
             )}
             {activeTab === "delivery" && (
-              <div className="w-full flex justify-between">
+              <div className="w-full grid grid-cols-[minmax(0,1fr)_auto] gap-3 items-start">
                 <p className="font-medium textSmall3 leading-5 text-[#2E2E2E] text-start md:text-end">
                   {total("delivery")}
                 </p>
-                <p className="font-normal textNormal2 leading-7 text-[#2E2E2E]">
+                <p className="font-normal textNormal2 leading-7 text-[#2E2E2E] text-right">
                   {formatNumber(orderData?.delivery_price)} {all("sum")}
                 </p>
               </div>
             )}
             {activeTab !== "spot" && (
-              <div className="w-full flex justify-between">
+              <div className="w-full grid grid-cols-[minmax(0,1fr)_auto] gap-3 items-start">
                 <p className="font-medium textSmall3 leading-5 text-[#2E2E2E] text-start md:text-end">
                   {total("bonus")}
                 </p>
-                <p className="font-normal textNormal2 leading-7 text-[#2E2E2E]">
+                <p className="font-normal textNormal2 leading-7 text-[#2E2E2E] text-right">
                   {formatNumber(Number(orderData?.pay_bonus))} {all("sum")}
                 </p>
               </div>
             )}
             {activeTab !== "spot" && (
-              <div className="w-full flex justify-between">
+              <div className="w-full grid grid-cols-[minmax(0,1fr)_auto] gap-3 items-start">
                 <p className="font-medium textSmall3 leading-5 text-[#2E2E2E] text-start md:text-end">
                   {total("total")}
                 </p>
-                <p className="font-normal textNormal3 leading-7 text-[#2E2E2E]">
-                  {formatNumber(
-                    (Number(totalSum *
-                      (orderData?.discountPromocode > 0
-                        ? 1 - orderData?.discountPromocode / 100
-                        : 1)) -
-                      Number(orderData?.pay_bonus) +
-                      (activeTab == "delivery"
-                        ? orderData?.delivery_price
-                        : 0) -
-                      (orderData?.promocodePrice > 0 &&
-                        Number(orderData?.promocodePrice)))
-                  )}{" "}
+                <p className="font-normal textNormal3 leading-7 text-[#2E2E2E] text-right">
+                  {formatNumber(payableTotal)}{" "}
                   {all("sum")}
                 </p>
               </div>

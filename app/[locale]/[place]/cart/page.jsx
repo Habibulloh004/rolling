@@ -135,6 +135,7 @@ const Basket = async ({ params, searchParams }) => {
             locale={locale}
             auth={auth}
             place={path.place}
+            categoriesData={categories.response}
           />
           <section className="lg:hidden w-full mt-5 space-y-3 pb-4">
             <div className="w-11/12 sm:w-full mx-auto flex justify-between items-center gap-3">

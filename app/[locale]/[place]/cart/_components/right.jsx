@@ -22,6 +22,7 @@ const Right = ({
         locale={locale}
         auth={auth}
         place={place}
+        categoriesData={categoriesData}
       />
       <div className="h-[1px] bg-foreground/10 w-full" />
       <Order

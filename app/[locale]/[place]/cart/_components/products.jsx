@@ -15,7 +15,7 @@ import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 
-const Products = ({ apiTime, locale, place }) => {
+const Products = ({ apiTime, locale, place, categoriesData = [] }) => {
   const searchParams = useSearchParams();
   const spot = searchParams.get("spot");
   const table_id = searchParams.get("table_id");
@@ -35,41 +35,56 @@ const Products = ({ apiTime, locale, place }) => {
   const handleDecrementCount = (item) => {
     decrementCount(item?.product_id);
   };
+  const getPercentDiscount = () => {
+    const promo = orderData?.promocode;
+    const rawDiscount = Number(promo?.params?.discount_value);
+    if (promo?.params?.result_type != 3) return 0;
+    if (!Number.isFinite(rawDiscount) || rawDiscount <= 0) return 0;
+    return Math.min(rawDiscount, 100);
+  };
+
+  const isCategoryConditionMatch = (condition, product) => {
+    const byMenuCategoryId =
+      String(product?.menu_category_id) === String(condition?.id);
+    if (byMenuCategoryId) return true;
+
+    const targetCategory = categoriesData?.find(
+      (cat) => String(cat?.category_id) === String(condition?.id)
+    );
+
+    if (!targetCategory) return false;
+    return (
+      String(product?.menu_category_id) === String(targetCategory?.menu_category_id)
+    );
+  };
+
+  const isDiscountAppliedToProduct = (product) => {
+    const promo = orderData?.promocode;
+    const discount = getPercentDiscount();
+    if (!promo || !discount) return false;
+
+    const conditions = promo?.params?.conditions || [];
+    return conditions?.some((condition) => {
+      if (!condition?.active) return false;
+      if (condition?.type == 0) return true;
+      if (condition?.type == 1 || condition?.type == 2) {
+        const categoryMatch = isCategoryConditionMatch(condition, product);
+        const productMatch =
+          String(condition?.id) === String(product?.product_id);
+        return categoryMatch || productMatch;
+      }
+      return false;
+    });
+  };
+
   const calculateProductTotal = (product) => {
     if (!product || !product.price || !product.count) {
       return 0;
     }
     let productPrice = Number(product.price["1"]) / 100;
-
-    // Faqat foizli chegirma (result_type == 3) va active shart bo'lganda narxni o'zgartirish
-    if (orderData?.promocode && orderData?.promocode?.params?.result_type == 3) {
-      const conditions = orderData?.promocode?.params?.conditions;
-      const discountValue = Number(orderData?.promocode?.params?.discount_value);
-
-      // Faqat 0-100 oralig'ida bo'lgan foizli chegirmalarni qo'llash
-      if (discountValue > 0 && discountValue <= 100) {
-        const findCond = conditions?.find((cd) => {
-          if (!cd?.active) return false;
-
-          // Barcha mahsulotlar (type 0)
-          if (cd?.type == 0) {
-            return true;
-          }
-          // Kategoriya bo'yicha (type 1) - active bo'lganda barcha mahsulotlarga
-          if (cd?.type == 1) {
-            return true;
-          }
-          // Mahsulot bo'yicha (type 2)
-          if (cd?.type == 2 && String(cd?.id) === String(product?.product_id)) {
-            return true;
-          }
-          return false;
-        });
-
-        if (findCond) {
-          productPrice = productPrice * (1 - discountValue / 100);
-        }
-      }
+    const discountValue = getPercentDiscount();
+    if (discountValue && isDiscountAppliedToProduct(product)) {
+      productPrice = productPrice * (1 - discountValue / 100);
     }
 
     const count = product.count || 0;
@@ -105,29 +120,9 @@ const Products = ({ apiTime, locale, place }) => {
                 locale,
                 "name"
               );
-              // Faqat foizli chegirma (result_type == 3) va valid discount uchun
-              const isPercentDiscount = orderData?.promocode?.params?.result_type == 3;
-              const discountValue = Number(orderData?.promocode?.params?.discount_value);
-              const isValidDiscount = isPercentDiscount && discountValue > 0 && discountValue <= 100;
-
-              const conditions = orderData?.promocode?.params?.conditions;
-              const findCond = isValidDiscount ? conditions?.find((cd) => {
-                if (!cd?.active) return false;
-
-                // Barcha mahsulotlar (type 0)
-                if (cd?.type == 0) {
-                  return true;
-                }
-                // Kategoriya bo'yicha (type 1) - active bo'lganda barcha mahsulotlarga
-                if (cd?.type == 1) {
-                  return true;
-                }
-                // Mahsulot bo'yicha (type 2)
-                if (cd?.type == 2 && String(cd?.id) === String(item?.product_id)) {
-                  return true;
-                }
-                return false;
-              }) : null;
+              const discountValue = getPercentDiscount();
+              const findCond =
+                discountValue > 0 && isDiscountAppliedToProduct(item);
               return (
                 <div key={item.product_id} className="flex gap-2 md:gap-4 mr-4">
                   <Image

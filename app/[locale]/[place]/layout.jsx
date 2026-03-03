@@ -12,6 +12,7 @@ import { Toaster } from "sonner";
 import Script from "next/script";
 import LoaderWrapper from "@/components/shared/loader-wrapper";
 import { getSafeApiTime } from "@/lib/safe-api-time";
+import { cookies } from "next/headers";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -53,6 +54,22 @@ export default async function Layout({ children, params }) {
 
   // Retrieve messages for the specified locale
   const messages = await getMessages(param.locale);
+  const cookieStore = await cookies();
+  const rawClientCookie = cookieStore.get("client")?.value;
+  let initialClient = null;
+
+  if (rawClientCookie) {
+    try {
+      initialClient = JSON.parse(rawClientCookie);
+    } catch {
+      try {
+        initialClient = JSON.parse(decodeURIComponent(rawClientCookie));
+      } catch {
+        initialClient = null;
+      }
+    }
+  }
+
   return (
     <html lang={param.locale} suppressHydrationWarning>
       <head>
@@ -118,6 +135,7 @@ export default async function Layout({ children, params }) {
             locale={param.locale}
             spotData={spotData}
             apiTime={timeDataRes}
+            initialClient={initialClient}
           />
           <main className="grow">
             {/* <LoaderWrapper> */}

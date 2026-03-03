@@ -52,6 +52,7 @@ export default function Header({
   products: productsData,
   categories,
   apiTime,
+  initialClient = null,
 }) {
   const { client } = useClientStore();
   const searchParams = useSearchParams();
@@ -68,9 +69,7 @@ export default function Header({
   const { initializeOrderData, paymentData } = useOrderStore();
   const { initializeProducts } = useProductStore();
   const [isOpen, setisOpen] = useState(true);
-  const [cl, setCl] = useState(
-    Cookies.get("client") && JSON.parse(Cookies.get("client"))
-  );
+  const [cl, setCl] = useState(initialClient);
   const SearchText = useTranslations("Search");
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredCategories, setFilteredCategories] = useState([]);
@@ -136,6 +135,17 @@ export default function Header({
   }, [searchTerm, categories, productsData]);
 
   useEffect(() => {
+    const cookieClient = Cookies.get("client");
+    if (cookieClient) {
+      try {
+        setCl(JSON.parse(cookieClient));
+      } catch {
+        setCl(null);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
     initializeFavorites();
     initializeProducts();
     initializeOrderData();
@@ -186,6 +196,15 @@ export default function Header({
   useEffect(() => {
     setCl(client);
   }, [client]);
+
+  const authHref = cl
+    ? `${getUrl(pathName)}/profile`
+    : `${getUrl(pathName)}/login`;
+  const authLabel = cl
+    ? cl.firstname && cl.firstname.length > 0
+      ? cl.firstname
+      : cl.lastname || "-"
+    : allT("sign_in");
 
   useEffect(() => {
     if (spot && table_id && table_num && !service && param.place == "branch") {
@@ -295,10 +314,7 @@ export default function Header({
                 );
               })}
               <Link
-                href={`${cl
-                  ? `${getUrl(pathName)}/profile`
-                  : `${getUrl(pathName)}/login`
-                  }`}
+                href={authHref}
                 onClick={toggleOpen}
                 className="flex-shrink-0 flex items-center gap-2 w-full"
               >
@@ -314,11 +330,7 @@ export default function Header({
                   className={`${`${pathName}/profile` == pathName ? "font-semibold" : ""
                     }`}
                 >
-                  {cl
-                    ? cl.firstname && cl.firstname.length > 0
-                      ? cl.firstname
-                      : cl.lastname || "-"
-                    : allT("sign_in")}
+                  {authLabel}
                 </p>
               </Link>
               <div className="flex justify-start items-center w-10/12">
@@ -419,10 +431,7 @@ export default function Header({
                 </Link>
               ))}
               <Link
-                href={`${cl
-                  ? `${getUrl(pathName)}/profile`
-                  : `${getUrl(pathName)}/login`
-                  }`}
+                href={authHref}
                 onClick={toggleOpen}
                 className="flex-shrink-0 flex items-center gap-2"
               >
@@ -438,11 +447,7 @@ export default function Header({
                   className={`${`${pathName}/profile` == pathName ? "font-semibold" : ""
                     }`}
                 >
-                  {cl
-                    ? cl.firstname && cl.firstname.length > 0
-                      ? cl.firstname
-                      : cl.lastname || "-"
-                    : allT("sign_in")}
+                  {authLabel}
                 </p>
               </Link>
             </nav>

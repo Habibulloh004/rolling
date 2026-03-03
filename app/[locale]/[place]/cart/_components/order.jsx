@@ -116,6 +116,21 @@ const Order = ({
   const defaultTime = isDev
     ? { closed_time: "23:59", opened_time: "00:00" }
     : { closed_time: "23:00", opened_time: "10:00" };
+  const originalProductsSum = products?.reduce((sum, product) => {
+    if (product?.promocode) return sum;
+    return sum + (Number(product?.price?.["1"] || 0) / 100) * Number(product?.count || 0);
+  }, 0);
+  const promoDiscountAmount =
+    orderData?.discountPromocode > 0
+      ? Math.max(Number(originalProductsSum) - Number(totalSum), 0)
+      : orderData?.promocodePrice > 0
+        ? Number(orderData?.promocodePrice)
+        : 0;
+  const payableTotal =
+    Number(totalSum) -
+    Number(orderData?.pay_bonus || 0) +
+    (activeTab == "delivery" ? Number(orderData?.delivery_price || 0) : 0) -
+    (orderData?.promocodePrice > 0 ? Number(orderData?.promocodePrice) : 0);
 
   const handleSetBonus = () => {
     setOrderData({ ...orderData, pay_bonus: Number(bonus) });
@@ -311,17 +326,42 @@ const Order = ({
           },
         ];
       } else {
-        console.log({ products })
+        console.log({ products });
+        const isCategoryMatch = (condition, product) => {
+          if (String(product?.menu_category_id) === String(condition?.id)) {
+            return true;
+          }
+          const targetCategory = categoriesData?.find(
+            (cat) => String(cat?.category_id) === String(condition?.id)
+          );
+          if (!targetCategory) return false;
+          return (
+            String(product?.menu_category_id) ===
+            String(targetCategory?.menu_category_id)
+          );
+        };
+
+        const isConditionMatched = (condition, product) => {
+          if (!condition?.active) return false;
+          if (condition?.type == 0) return true;
+
+          // Some Poster setups use legacy type mapping, so we support both.
+          if (condition?.type == 1 || condition?.type == 2) {
+            const productMatch =
+              String(condition?.id) === String(product?.product_id);
+            const categoryMatch = isCategoryMatch(condition, product);
+            return productMatch || categoryMatch;
+          }
+
+          return false;
+        };
+
         const findProductPromotion = products?.filter((pr) => {
           const conditions = orderData?.promocode?.params?.conditions || [];
-          if (conditions[0]?.type == 0 && conditions[0]?.active && promocode?.params?.result_type == 3) {
-            return true;
-          } else {
-            const findPrdCon = conditions?.find(
-              (cdp) => cdp?.type == 2 && cdp?.id == pr?.product_id && cdp?.active
-            );
-            return findPrdCon
-          }
+          if (promocode?.params?.result_type != 3) return false;
+          return conditions?.some((condition) =>
+            isConditionMatched(condition, pr)
+          );
         });
         console.log({ findProductPromotion });
         filterPromocode = [
@@ -339,9 +379,7 @@ const Order = ({
       }
       console.log(filterPromocode);
 
-      let totalAmount = Number(totalSum * (orderData?.discountPromocode > 0
-        ? 1 - orderData?.discountPromocode / 100
-        : 1)) - (pay_bonus ? Number(pay_bonus) : 0);
+      let totalAmount = Number(totalSum) - (pay_bonus ? Number(pay_bonus) : 0);
 
       if (activeTab == "delivery") {
         totalAmount += Number(delivery_price);
@@ -890,70 +928,61 @@ const Order = ({
   return (
     <div className="w-full flex flex-col lg:pt-6 gap-5">
       <div className="max-lg:hidden flex flex-col gap-y-4">
-        <div className="w-full flex justify-between">
+        <div className="w-full grid grid-cols-[minmax(0,1fr)_260px] gap-3 items-center">
           <p className="font-medium textSmall3 leading-5 text-[#2E2E2E] text-start md:text-end">
             {service == "self" ? total("total") : total("products_sum")}{" "}
           </p>
-          <p className="font-normal textNormal2 leading-7 text-[#2E2E2E]">
-            {formatNumber(totalSum)} {all("sum")}
+          <p className="font-normal textNormal2 leading-7 text-[#2E2E2E] text-right">
+            {formatNumber(originalProductsSum)} {all("sum")}
           </p>
         </div>
         {orderData?.promocodePrice > 0 && (
-          <div className="w-full flex justify-between">
+          <div className="w-full grid grid-cols-[minmax(0,1fr)_260px] gap-3 items-center">
             <p className="font-medium textSmall3 leading-5 text-[#2E2E2E] text-start md:text-end">
               {promocodeT("titleDialog")}
             </p>
-            <p className="text-primary font-normal textNormal2 leading-7 text-[#2E2E2E]">
+            <p className="text-primary font-normal textNormal2 leading-7 text-[#2E2E2E] text-right">
               -{formatNumber(orderData?.promocodePrice)} {all("sum")}
             </p>
           </div>
         )}
         {orderData?.discountPromocode > 0 && (
-          <div className="w-full flex justify-between">
+          <div className="w-full grid grid-cols-[minmax(0,1fr)_260px] gap-3 items-center">
             <p className="font-medium textSmall3 leading-5 text-[#2E2E2E] text-start md:text-end">
               {promocodeT("titleDialog")}
             </p>
-            <p className="text-primary font-normal textNormal2 leading-7 text-[#2E2E2E]">
-              {formatNumber(orderData?.discountPromocode)}% {all("disc")}
+            <p className="text-primary font-normal textNormal2 leading-7 text-[#2E2E2E] text-right whitespace-nowrap">
+              {formatNumber(orderData?.discountPromocode)}% {all("disc")} · -{formatNumber(promoDiscountAmount)} {all("sum")}
             </p>
           </div>
         )}
         {activeTab === "delivery" && (
-          <div className="w-full flex justify-between">
+          <div className="w-full grid grid-cols-[minmax(0,1fr)_260px] gap-3 items-center">
             <p className="font-medium textSmall3 leading-5 text-[#2E2E2E] text-start md:text-end">
               {total("delivery")}
             </p>
-            <p className="font-normal textNormal2 leading-7 text-[#2E2E2E]">
+            <p className="font-normal textNormal2 leading-7 text-[#2E2E2E] text-right">
               {formatNumber(orderData?.delivery_price)} {all("sum")}
             </p>
           </div>
         )}
         {activeTab !== "spot" && (
-          <div className="w-full flex justify-between">
+          <div className="w-full grid grid-cols-[minmax(0,1fr)_260px] gap-3 items-center">
             <p className="font-medium textSmall3 leading-5 text-[#2E2E2E] text-start md:text-end">
               {total("bonus")}
             </p>
-            <p className="font-normal textNormal2 leading-7 text-[#2E2E2E]">
+            <p className="font-normal textNormal2 leading-7 text-[#2E2E2E] text-right">
               {formatNumber(Number(orderData?.pay_bonus))} {all("sum")}
             </p>
           </div>
         )}
         {activeTab !== "spot" && (
-          <div className="w-full flex justify-between">
+          <div className="w-full grid grid-cols-[minmax(0,1fr)_260px] gap-3 items-center">
             <p className="font-medium textSmall3 leading-5 text-[#2E2E2E] text-start md:text-end">
               {total("total")}
             </p>
-            <p className="font-normal textNormal3 leading-7 text-[#2E2E2E]">
-              {formatNumber(
-                (Number(totalSum *
-                  (orderData?.discountPromocode > 0
-                    ? 1 - orderData?.discountPromocode / 100
-                    : 1)) -
-                  Number(orderData?.pay_bonus) +
-                  (activeTab == "delivery" ? orderData?.delivery_price : 0) -
-                  (orderData?.promocodePrice > 0 &&
-                    Number(orderData?.promocodePrice)))
-              )}{" "}
+            <p className="font-normal textNormal3 leading-7 text-[#2E2E2E] text-right">
+              {formatNumber(payableTotal)}{" "}
               {all("sum")}
             </p>
           </div>

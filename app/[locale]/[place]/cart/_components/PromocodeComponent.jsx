@@ -43,6 +43,25 @@ export default function PromoCodeDialog({
   const [promotionPrice, setPromotionPrice] = useState(0);
   const [promotionDiscount, setPromotionDiscount] = useState(0);
 
+  const resolveConditionType = (condition) => {
+    if (!condition) return -1;
+    if (condition?.type == 0) return 0;
+
+    const conditionId = String(condition?.id);
+    const hasProductId = productsData?.some(
+      (product) => String(product?.product_id) === conditionId
+    );
+    const hasCategoryId = categoriesData?.some(
+      (category) =>
+        String(category?.category_id) === conditionId ||
+        String(category?.menu_category_id) === conditionId
+    );
+
+    if (hasCategoryId && !hasProductId) return 1;
+    if (hasProductId && !hasCategoryId) return 2;
+    return Number(condition?.type);
+  };
+
   const handleRemovePromo = () => {
     setOrderData({
       ...orderData,
@@ -113,7 +132,8 @@ export default function PromoCodeDialog({
       let nameProducts = "";
       const conditionsProducts = findPromo?.params?.conditions;
       conditionsProducts?.forEach((condition) => {
-        switch (condition?.type) {
+        const conditionType = resolveConditionType(condition);
+        switch (conditionType) {
           case 1: // Category
             const findP = categoriesData.find(
               (pr) => pr.category_id == condition?.id
@@ -156,8 +176,9 @@ export default function PromoCodeDialog({
       let resultPromo = findPromo;
 
       conditionsProducts?.forEach((condition) => {
+        const conditionType = resolveConditionType(condition);
         // if (isCHeck) return; // If already checked, skip further checks
-        switch (condition.type) {
+        switch (conditionType) {
           case 0: // All products
             if (totalSum >= condition?.sum / 100) {
               //Summa promotion
@@ -620,9 +641,7 @@ export default function PromoCodeDialog({
                 setOrderData({
                   ...orderData,
                   promocode: resultPromo,
-                  discountPromocodeProduct: Number(
-                    findPromo?.params?.discount_value
-                  ),
+                  discountPromocode: Number(findPromo?.params?.discount_value),
                 });
                 setPromotionDiscount(Number(findPromo?.params?.discount_value));
                 setPromoCode("");
@@ -720,8 +739,9 @@ export default function PromoCodeDialog({
       }, 0) || 0;
 
       orderData?.promocode?.params?.conditions?.forEach((condition) => {
+        const conditionType = resolveConditionType(condition);
         if (!condition?.active) return; // Skip inactive conditions
-        switch (condition?.type) {
+        switch (conditionType) {
           case 0: // All products
             // ORIGINAL summani tekshirish, chegirmali emas!
             if (originalSum < condition?.sum / 100) {
@@ -839,9 +859,9 @@ export default function PromoCodeDialog({
               {addingProducts?.length > 0 ||
                 promotionPrice > 0 ||
                 promotionDiscount > 0 ? (
-                <h1>{promocodeT("titleDialogAdd")}</h1>
+                promocodeT("titleDialogAdd")
               ) : (
-                <h1>{promocodeT("titleDialog")}</h1>
+                promocodeT("titleDialog")
               )}
             </DialogTitle>
             <DialogDescription />

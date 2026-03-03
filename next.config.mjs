@@ -13,7 +13,7 @@ export default withNextIntl({
     },
   },
   images: {
-    unoptimized: true,
+    unoptimized: false,
     domains: [
       "vm4983125.25ssd.had.wf",
       "www.shutterstock.com",

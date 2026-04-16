@@ -1,4 +1,4 @@
-const VERSION = "v11";
+const VERSION = "v12";
 const STATIC_CACHE = `rolling-static-${VERSION}`;
 const ASSET_CACHE = `rolling-assets-${VERSION}`;
 

@@ -35,6 +35,7 @@ import {
 import PromoCodeDialog from "./PromocodeComponent";
 import { getLocalizedProduct } from "@/lib/utils";
 import {
+  calculateDistanceKm,
   getBranchBySpotId,
   getBranchDisplayAddress,
   getBranchDisplayName,
@@ -131,6 +132,7 @@ const Order = ({
   const isAuthorized = Boolean(resolvedAuth?.client_id);
   const [isSuccess, setIsSuccess] = useState(false);
   const [branchConfigs, setBranchConfigs] = useState([]);
+  const [posterSpots, setPosterSpots] = useState([]);
   const branchApiUrl = (
     process.env.NEXT_PUBLIC_ROLLING_BACK_URL ||
     process.env.NEXT_PUBLIC_URL ||
@@ -167,6 +169,47 @@ const Order = ({
       return [];
     }
   }, [branchApiUrl]);
+
+  const fetchPosterSpots = useCallback(async () => {
+    try {
+      const response = await fetch("/api/poster/spots", { cache: "no-store" });
+      if (!response.ok) return [];
+      const raw = await response.json();
+      const normalized = Array.isArray(raw?.data?.response)
+        ? raw.data.response
+        : Array.isArray(raw?.response)
+          ? raw.response
+          : Array.isArray(raw)
+            ? raw
+            : [];
+      setPosterSpots(normalized);
+      return normalized;
+    } catch {
+      setPosterSpots([]);
+      return [];
+    }
+  }, []);
+
+  const resolveNearestPosterSpot = useCallback(
+    (spots) => {
+      if (!Array.isArray(spots) || spots.length === 0) return null;
+
+      const lat = Number(orderData?.lat || 0);
+      const lng = Number(orderData?.lng || 0);
+      if (!lat || !lng) return spots[0] || null;
+
+      const sorted = spots
+        .map((spot) => ({
+          spot,
+          distance: calculateDistanceKm(lat, lng, spot?.lat, spot?.lng),
+        }))
+        .filter((item) => Number.isFinite(item.distance))
+        .sort((a, b) => a.distance - b.distance);
+
+      return sorted[0]?.spot || spots[0] || null;
+    },
+    [orderData?.lat, orderData?.lng]
+  );
 
   const resolveDeliveryBranchFromConfigs = useCallback(
     (configs) => {
@@ -230,19 +273,20 @@ const Order = ({
   useEffect(() => {
     let cancelled = false;
 
-    const loadBranchConfigs = async () => {
+    const loadBranchConfigsAndSpots = async () => {
       const normalized = await fetchBranchConfigs();
       if (cancelled) return;
       if (!Array.isArray(normalized)) {
         setBranchConfigs([]);
       }
+      await fetchPosterSpots();
     };
 
-    loadBranchConfigs();
+    loadBranchConfigsAndSpots();
     return () => {
       cancelled = true;
     };
-  }, [fetchBranchConfigs]);
+  }, [fetchBranchConfigs, fetchPosterSpots]);
 
   const emptyOrderState = {
     spot_id: 0,
@@ -337,19 +381,34 @@ const Order = ({
       ? resolveCurrentBranchConfig()
       : null;
     if (!selectedBranchConfig && activeTab !== "delivery") return;
+    const fallbackDeliverySpot =
+      activeTab === "delivery" && !selectedBranchConfig
+        ? resolveNearestPosterSpot(posterSpots)
+        : null;
 
     const next = { ...orderData };
     let changed = false;
 
-    const nextSpotId = Number(selectedBranchConfig?.spotId || orderData?.spot_id || 0);
+    const nextSpotId = Number(
+      selectedBranchConfig?.spotId ||
+        fallbackDeliverySpot?.spot_id ||
+        orderData?.spot_id ||
+        0
+    );
     if (nextSpotId && Number(orderData?.spot_id || 0) !== nextSpotId) {
       next.spot_id = nextSpotId;
       changed = true;
     }
 
-    const localizedName = getBranchDisplayName(selectedBranchConfig, locale);
-    const localizedAddress = getBranchDisplayAddress(selectedBranchConfig, locale);
-    const branchPhone = getBranchPhone(selectedBranchConfig);
+    const localizedName =
+      getBranchDisplayName(selectedBranchConfig, locale) ||
+      String(fallbackDeliverySpot?.name || "").trim();
+    const localizedAddress =
+      getBranchDisplayAddress(selectedBranchConfig, locale) ||
+      String(fallbackDeliverySpot?.address || "").trim();
+    const branchPhone =
+      getBranchPhone(selectedBranchConfig) ||
+      String(fallbackDeliverySpot?.phone || "").trim();
 
     if (localizedName && orderData?.spot_name !== localizedName) {
       next.spot_name = localizedName;
@@ -381,8 +440,10 @@ const Order = ({
     branchConfigs,
     locale,
     orderData,
+    posterSpots,
     resolveDeliveryFee,
     resolveCurrentBranchConfig,
+    resolveNearestPosterSpot,
     setOrderData,
   ]);
 
@@ -396,6 +457,14 @@ const Order = ({
       activeTab === "delivery"
         ? resolveDeliveryBranchFromConfigs(runtimeBranchConfigs)
         : resolveCurrentBranchConfig();
+    const runtimePosterSpots =
+      Array.isArray(posterSpots) && posterSpots.length > 0
+        ? posterSpots
+        : await fetchPosterSpots();
+    const nearestPosterSpot =
+      activeTab === "delivery"
+        ? resolveNearestPosterSpot(runtimePosterSpots)
+        : null;
 
     if (isOrderingClosedByBranchConfig(selectedBranchConfig)) {
       toast.error(total("note"));
@@ -465,6 +534,7 @@ const Order = ({
       const effectiveSpotId = Number(
         spotIdSpot ||
           effectiveBranchConfig?.spotId ||
+          nearestPosterSpot?.spot_id ||
           spot_id ||
           1
       );
@@ -636,17 +706,20 @@ const Order = ({
         "";
       const branchName =
         getBranchDisplayName(effectiveBranchConfig, locale) ||
+        (nearestPosterSpot?.name && String(nearestPosterSpot?.name).trim()) ||
         (spot_name && String(spot_name).trim()) ||
         (spotDataFilial?.response?.name && String(spotDataFilial?.response?.name).trim()) ||
         "";
       const branchAddress =
         getBranchDisplayAddress(effectiveBranchConfig, locale) ||
+        (nearestPosterSpot?.address && String(nearestPosterSpot?.address).trim()) ||
         (orderData?.spot_address && String(orderData?.spot_address).trim()) ||
         (spotDataFilial?.response?.address &&
           String(spotDataFilial?.response?.address).trim()) ||
         "";
       const branchPhone =
         getBranchPhone(effectiveBranchConfig) ||
+        (nearestPosterSpot?.phone && String(nearestPosterSpot?.phone).trim()) ||
         (orderData?.spot_phone && String(orderData?.spot_phone).trim()) ||
         (spotDataFilial?.response?.phone &&
           String(spotDataFilial?.response?.phone).trim()) ||
@@ -697,10 +770,14 @@ const Order = ({
         branch_latitude:
           effectiveBranchConfig?.location?.latitude != null
             ? Number(effectiveBranchConfig.location.latitude)
+            : nearestPosterSpot?.lat != null
+              ? Number(nearestPosterSpot.lat)
             : null,
         branch_longitude:
           effectiveBranchConfig?.location?.longitude != null
             ? Number(effectiveBranchConfig.location.longitude)
+            : nearestPosterSpot?.lng != null
+              ? Number(nearestPosterSpot.lng)
             : null,
         promoCode: promoCodeValue,
         promoDiscountAmount,

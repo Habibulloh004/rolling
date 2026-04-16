@@ -16,8 +16,12 @@ async function proxyPoster(request, pathSegments) {
     ? pathSegments.filter(Boolean).join("/")
     : "";
   const query = request.nextUrl.search || "";
+  const currentOrigin = request.nextUrl.origin.replace(/\/+$/, "");
 
   for (const baseUrl of backendBaseUrls) {
+    if (baseUrl === currentOrigin) {
+      continue;
+    }
     const targetUrl = `${baseUrl}/api/poster/${normalizedPath}${query}`;
     try {
       const response = await fetch(targetUrl, {
@@ -31,6 +35,9 @@ async function proxyPoster(request, pathSegments) {
             : await request.text(),
         cache: "no-store",
       });
+      if (!response.ok) {
+        continue;
+      }
 
       const raw = await response.text();
       return new NextResponse(raw, {

@@ -13,11 +13,18 @@ export const dynamic = "force-dynamic";
 
 export async function GET(request) {
   const query = request.nextUrl.search || "";
+  const currentOrigin = request.nextUrl.origin.replace(/\/+$/, "");
 
   for (const baseUrl of backendBaseUrls) {
+    if (baseUrl === currentOrigin) {
+      continue;
+    }
     const targetUrl = `${baseUrl}/api/branches${query}`;
     try {
       const response = await fetch(targetUrl, { cache: "no-store" });
+      if (!response.ok) {
+        continue;
+      }
       const raw = await response.text();
 
       return new NextResponse(raw, {

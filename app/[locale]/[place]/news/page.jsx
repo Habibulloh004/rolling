@@ -24,11 +24,22 @@ export const metadata = {
 const News = async ({ params }) => {
   const [param, bannersData, newsT] = await Promise.all([
     params,
-    getData("/banner/get_banners", 86400),
+    getData("/api/banners"),
     getTranslations("NewsPage"),
   ]);
 
-  const banners = bannersData.banners;
+  const banners = (bannersData?.banners || []).map((banner) => {
+    if (!banner.imageUrl) {
+      const lang = banner.lang || param.locale;
+      const webImage = banner.platforms?.web?.imageUrls?.[lang];
+      const mobileImage = banner.platforms?.mobile?.imageUrls?.[lang];
+      return {
+        ...banner,
+        imageUrl: webImage || mobileImage || null,
+      };
+    }
+    return banner;
+  });
   return (
     <Container className={`w-full flex-col items-start pb-4 mt-5`}>
       <h1 className="w-11/12 mx-auto text-muted text-xl md:text-2xl font-semibold">

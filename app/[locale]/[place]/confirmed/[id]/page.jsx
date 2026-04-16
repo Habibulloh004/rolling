@@ -16,18 +16,75 @@ import {
   getLocalizedProduct,
 } from "@/lib/utils";
 import Card from "@/components/shared/card";
+import { cacheDurations } from "@/lib/cache-config";
+import { url } from "@/lib/utils";
 
-const Confirmed = async ({ params }) => {
-  const [param, locale, orderText, productsData, spotsData, all, promotions] =
+const normalizeIdentifier = (value) =>
+  String(value ?? "")
+    .trim()
+    .replace(/^#/, "");
+
+const resolveDisplayOrderId = async (paramId, queryOrderId = null) => {
+  const queryCandidate = normalizeIdentifier(queryOrderId);
+  if (queryCandidate) return queryCandidate;
+
+  const id = normalizeIdentifier(paramId);
+  if (!id) return "";
+
+  try {
+    const baseUrl = String(
+      process.env.NEXT_PUBLIC_ROLLING_BACK_URL ||
+        process.env.NEXT_PUBLIC_URL ||
+        url ||
+        ""
+    ).replace(/\/+$/, "");
+    if (!baseUrl) return id;
+
+    const response = await fetch(`${baseUrl}/api/transaction/${id}`, {
+      cache: "no-store",
+    });
+    if (!response.ok) return id;
+    const transaction = await response.json();
+    const candidates = [
+      transaction?.LinkedOrderNumber,
+      transaction?.linkedOrderNumber,
+      transaction?.PosterIncomingOrderId,
+      transaction?.posterIncomingOrderId,
+      transaction?.PosterTransactionId,
+      transaction?.posterTransactionId,
+      transaction?.OrderId,
+      transaction?.order_id,
+      transaction?.orderId,
+    ];
+    for (const candidate of candidates) {
+      const normalized = normalizeIdentifier(candidate);
+      if (normalized) return normalized;
+    }
+  } catch {}
+
+  return id;
+};
+
+const Confirmed = async ({ params, searchParams }) => {
+  const [param, query, locale, orderText, productsData, spotsData, all, promotions] =
     await Promise.all([
       params,
+      searchParams,
       getLocale(),
       getTranslations("Order.Item"),
-      ApiService.getPosterData("menu.getProducts", "", 7200),
-      ApiService.getPosterData("access.getSpots", "", 604800),
+      ApiService.getPosterData("menu.getProducts", "", cacheDurations.products),
+      ApiService.getPosterData("access.getSpots", "", cacheDurations.spots),
       getTranslations("All"),
-      ApiService.getPosterData("clients.getPromotions", "", 600),
+      ApiService.getPosterData(
+        "clients.getPromotions",
+        "",
+        cacheDurations.promotions
+      ),
     ]);
+  const displayOrderId = await resolveDisplayOrderId(
+    param?.id,
+    query?.order_id || query?.orderId
+  );
   const products = productsData?.response?.filter((item) => {
     const findIngr = item?.ingredients?.find(
       (ingr) => ingr?.ingredient_id == 211
@@ -46,7 +103,7 @@ const Confirmed = async ({ params }) => {
   return (
     <Container className="w-11/12 pt-3 md:pt-8 flex flex-col ">
       <h1 className="font-bold  text-primary textNormal4 text-start w-full">
-        {orderText("title")} - № {param.id}
+        {orderText("title")} - № {displayOrderId || param?.id}
       </h1>
       <p
         className="hidden lg:block textSmall4 font-normal text-[#004032] pt-4"
@@ -61,6 +118,7 @@ const Confirmed = async ({ params }) => {
         promotions={promotions}
         locale={locale}
         param={param}
+        fallbackTransactionId={query?.transaction_id || query?.transactionId || null}
         productsData={productsData?.response}
         spotsData={spotsData?.response}
       />

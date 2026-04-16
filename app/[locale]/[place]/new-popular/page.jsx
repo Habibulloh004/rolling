@@ -8,6 +8,7 @@ import {
   getLocalizedCategoryName,
   getLocalizedProduct,
 } from "@/lib/utils";
+import { toPublicProduct } from "@/lib/public-menu-data";
 
 export const metadata = {
   title:
@@ -23,29 +24,31 @@ export const metadata = {
   },
 };
 
-const ColdRolls = async ({ params, searchParams }) => {
-  const [locale, all, path, products, searchParamsData] = await Promise.all([
+const ColdRolls = async ({ params }) => {
+  const [locale, all, path, products] = await Promise.all([
     getLocale(),
     getTranslations("All"),
     params,
-    ApiService.getPosterData("menu.getProducts", "", 7200),
-    searchParams,
+    ApiService.getPosterData("menu.getProducts", ""),
   ]);
-  const productsData = products.response.filter((item) => {
-    const findIngr = item?.ingredients?.find(
-      (ingr) => ingr?.ingredient_id == 211
-    );
-    if (
-      item.photo_origin != null &&
-      item?.menu_category_id != 0 &&
-      findIngr &&
-      item?.hidden == 0
-    ) {
-      return true;
-    } else {
-      return false;
-    }
-  });
+  const productsData = (products.response || [])
+    .filter((item) => {
+      const findIngr = item?.ingredients?.find(
+        (ingr) => ingr?.ingredient_id == 211
+      );
+      if (
+        item.photo_origin != null &&
+        item?.menu_category_id != 0 &&
+        findIngr &&
+        item?.hidden == 0
+      ) {
+        return true;
+      } else {
+        return false;
+      }
+    })
+    .map(toPublicProduct)
+    .filter(Boolean);
 
   return (
     <Container className="w-11/12 flex flex-col pt-5 space-y-3">
@@ -80,16 +83,12 @@ const ColdRolls = async ({ params, searchParams }) => {
             return (
               <div key={i} className={`w-full h-full`}>
                 <Card
-                  defaultHref={
-                    path?.place !== "branch"
-                      ? `/${locale}/${path.place}/category/${item?.menu_category_id}-${linkNameCategory}/product/${item?.product_id}-${linkNameProduct}`
-                      : `/${locale}/${path.place}/category/${item?.menu_category_id}-${linkNameCategory}/product/${item?.product_id}-${linkNameProduct}?spot=${spot}&table_id=${table_id}&table_num=${table_num}&service=${service}`
-                  }
+                  defaultHref={`/${locale}/${path.place}/category/${item?.menu_category_id}-${linkNameCategory}/product/${item?.product_id}-${linkNameProduct}`}
                   locale={locale}
                   item={item}
                   localizedDesc={localizedDesc}
                   localizedName={localizedName}
-                  photo={item.photo_origin}
+                  photo={item.photo_origin || item.photo}
                   price={item.price["1"] / 100}
                 />
               </div>

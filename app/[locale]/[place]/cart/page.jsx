@@ -1,27 +1,11 @@
 import Container from "@/components/shared/container";
-import React from "react";
-import Products from "./_components/products";
-import Order from "./_components/order";
-import Payment from "./_components/payment";
-import Right from "./_components/right";
-import Left from "./_components/left";
 import { getLocale, getTranslations } from "next-intl/server";
 import { ApiService } from "@/service/api.services";
-import CartSidebar from "./_components/sidebar";
 import { cookies } from "next/headers";
-import Head from "next/head";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-} from "@/components/ui/carousel";
-import {
-  formatText,
-  getLocalizedCategoryName,
-  getLocalizedProduct,
-} from "@/lib/utils";
-import Card from "@/components/shared/card";
+import { getLocalizedProduct } from "@/lib/utils";
 import { getSafeApiTime } from "@/lib/safe-api-time";
+import { cacheDurations } from "@/lib/cache-config";
+import CartResponsive from "./_components/CartResponsive";
 
 export const metadata = {
   title: "Ваш заказ в Rolling Sushi | Проверьте корзину перед оплатой",
@@ -37,8 +21,11 @@ export const metadata = {
 };
 
 const Basket = async ({ params, searchParams }) => {
+  const path = await params;
+  const searchParamsData = await searchParams;
   const cookieStore = await cookies();
   const cookiesData = cookieStore.get("client");
+
   const auth = cookiesData ? JSON.parse(cookiesData.value) : {};
 
   const [
@@ -47,29 +34,31 @@ const Basket = async ({ params, searchParams }) => {
     categories,
     promotions,
     locale,
-    path,
-    searchParamsData,
     all,
     apiTime,
   ] = await Promise.all([
     getTranslations("Cart"),
-    ApiService.getPosterData("menu.getProducts", "", 7200),
-    ApiService.getPosterData("menu.getCategories", "", 7200),
-    ApiService.getPosterData("clients.getPromotions", "", 600),
+    ApiService.getPosterData("menu.getProducts", "", cacheDurations.products),
+    ApiService.getPosterData(
+      "menu.getCategories",
+      "",
+      cacheDurations.categories
+    ),
+    ApiService.getPosterData(
+      "clients.getPromotions",
+      "",
+      cacheDurations.promotions
+    ),
     getLocale(),
-    params,
-    searchParams,
     getTranslations("All"),
     getSafeApiTime(process.env.NEXT_PUBLIC_URL_RENDER),
   ]);
-  console.log("🚀 ~ file: page.jsx:40 ~ Basket ~ promotions:", promotions);
-
   let spotData;
   if (path.place === "branch") {
     spotData = await ApiService.getPosterData(
       "spots.getSpot",
       `&spot_id=${searchParamsData.spot}`,
-      604800
+      cacheDurations.spots
     );
   }
   const productsIng = products?.response?.filter((item) => {
@@ -95,177 +84,19 @@ const Basket = async ({ params, searchParams }) => {
         <h1 className="w-full text-primary font-bold font-Poppins leading-10 text-start textNormal4">
           {cart("title")}
         </h1>
-        {/* Desktop version */}
-        <div className="hidden lg:grid lg:grid-cols-2 lg:gap-16 w-full">
-          <Left
-            apiTime={apiTime}
-            auth={auth}
-            place={path.place}
-            locale={locale}
-            spotData={spotData}
-            searchParamsData={searchParamsData}
-          />
-          <Right
-            apiTime={apiTime}
-            promotions={promotions}
-            auth={auth}
-            products={products.response
-              .filter((c) => c.menu_category_id != 0)
-              .slice(0, 10)}
-            locale={locale}
-            place={path.place}
-            spotData={spotData}
-            searchParamsData={searchParamsData}
-            productsData={products.response}
-            categoriesData={categories.response}
-          />
-        </div>
-        {/* Mobile version */}
-        <div className="lg:hidden w-full space-y-2">
-          <CartSidebar
-            apiTime={apiTime}
-            auth={auth}
-            locale={locale}
-            place={path.place}
-            spotData={spotData}
-            searchParamsData={searchParamsData}
-          />
-          <Products
-            apiTime={apiTime}
-            locale={locale}
-            auth={auth}
-            place={path.place}
-            categoriesData={categories.response}
-          />
-          <section className="lg:hidden w-full mt-5 space-y-3 pb-4">
-            <div className="w-11/12 sm:w-full mx-auto flex justify-between items-center gap-3">
-              <h1 className="font-bold text-primary textNormal4 w-full">
-                {all("cart_ingredient")}
-              </h1>
-            </div>
-            <Carousel
-              className="relative w-full text-foreground mt-5 md:mt-10 "
-              paginate={"false"}
-            >
-              {/* <div className="absolute -right-1 -top-4 w-2 h-48 bg-[#F5F5F5] z-50 shadow-custom" /> */}
-              <CarouselContent className="relative">
-                {productsIng?.map((item, i) => {
-                  const localizedName = getLocalizedProduct(
-                    item.product_production_description,
-                    locale,
-                    "name"
-                  );
-                  const localizedDesc = getLocalizedProduct(
-                    item.product_production_description,
-                    locale,
-                    "desc"
-                  );
-                  const linkNameCategory = formatText(
-                    getLocalizedCategoryName(item.category_name, "en")
-                  );
-                  const linkNameProduct = formatText(
-                    getLocalizedProduct(
-                      item.product_production_description,
-                      "en",
-                      "name"
-                    )
-                  );
-                  return (
-                    <CarouselItem
-                      key={i}
-                      className={`basis-[40%] sm:basis-[30%] md:basis-[20%] lg:basis-[15%] p-0 mx-2 ${
-                        i == 0 && "max-sm:ml-8 max-md:ml-16 ml-8"
-                      }`}
-                    >
-                      <Card
-                        locale={locale}
-                        item={item}
-                        defaultHref={`/${locale}/${path.place}/category/${item?.menu_category_id}-${linkNameCategory}/product/${item?.product_id}-${linkNameProduct}`}
-                        localizedDesc={localizedDesc}
-                        localizedName={localizedName}
-                        photo={item.photo_origin}
-                        price={item?.price["1"] / 100}
-                      />
-                    </CarouselItem>
-                  );
-                })}
-              </CarouselContent>
-            </Carousel>
-          </section>
-          <Payment
-            apiTime={apiTime}
-            locale={locale}
-            place={path.place}
-            auth={auth}
-          />
-          <Order
-            categoriesData={categories.response}
-            apiTime={apiTime}
-            promotions={promotions}
-            auth={auth}
-            searchParamsData={searchParamsData}
-            locale={locale}
-            productsData={products.response}
-            place={path.place}
-            spotDataFilial={spotData}
-          />
-        </div>
-        {/* Carousel for popular categories */}
-        <section className="max-lg:hidden w-full mt-5 space-y-3 pb-4">
-          <div className="w-11/12 sm:w-full mx-auto flex justify-between items-center gap-3">
-            <h1 className="font-bold text-primary textNormal4 w-full">
-              {all("cart_ingredient")}
-            </h1>
-          </div>
-          <Carousel
-            className="relative w-full text-foreground mt-5 md:mt-10 "
-            paginate={"false"}
-          >
-            {/* <div className="absolute -right-1 -top-4 w-2 h-48 bg-[#F5F5F5] z-50 shadow-custom" /> */}
-            <CarouselContent className="relative">
-              {productsIng?.map((item, i) => {
-                const localizedName = getLocalizedProduct(
-                  item.product_production_description,
-                  locale,
-                  "name"
-                );
-                const localizedDesc = getLocalizedProduct(
-                  item.product_production_description,
-                  locale,
-                  "desc"
-                );
-                const linkNameCategory = formatText(
-                  getLocalizedCategoryName(item.category_name, "en")
-                );
-                const linkNameProduct = formatText(
-                  getLocalizedProduct(
-                    item.product_production_description,
-                    "en",
-                    "name"
-                  )
-                );
-                return (
-                  <CarouselItem
-                    key={i}
-                    className={`basis-[40%] sm:basis-[30%] md:basis-[20%] lg:basis-[15%] p-0 mx-2 ${
-                      i == 0 && "max-sm:ml-8 max-md:ml-16 ml-8"
-                    }`}
-                  >
-                    <Card
-                      locale={locale}
-                      item={item}
-                      defaultHref={`/${locale}/${path.place}/category/${item?.menu_category_id}-${linkNameCategory}/product/${item?.product_id}-${linkNameProduct}`}
-                      localizedName={localizedName}
-                      localizedDesc={localizedDesc}
-                      photo={item.photo_origin}
-                      price={item?.price["1"] / 100}
-                    />
-                  </CarouselItem>
-                );
-              })}
-            </CarouselContent>
-          </Carousel>
-        </section>
+        <CartResponsive
+          apiTime={apiTime}
+          auth={auth}
+          path={path}
+          locale={locale}
+          spotData={spotData}
+          searchParamsData={searchParamsData}
+          promotions={promotions}
+          productsData={products.response}
+          categoriesData={categories.response}
+          productsIng={productsIng}
+          cartIngredientLabel={all("cart_ingredient")}
+        />
       </Container>
     </>
   );

@@ -10,6 +10,12 @@ import {
   navItems,
   translateTextSpot,
 } from "@/lib/utils";
+import Card from "@/components/shared/card";
+import {
+  getProductDisplayName,
+  getProductSearchText,
+  getProductSlugBaseName,
+} from "@/lib/search-utils";
 import { ArrowUp, Search } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Image from "next/legacy/image";
@@ -30,11 +36,15 @@ import {
 } from "@/store";
 import Link from "next/link";
 import LngChange from "./lngChange";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "../ui/button";
 import Cookies from "js-cookie";
 import Marquee from "../ui/marquee";
+import {
+  invalidateClientRequestCaches,
+  loadCachedJson,
+} from "@/lib/client-request-cache";
 import {
   Sheet,
   SheetContent,
@@ -44,13 +54,15 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Input } from "../ui/input";
+import { Skeleton } from "../ui/skeleton";
+import AuthPhoneFlowForm from "../forms/AuthPhoneFlowForm";
+
+const SEARCH_LOAD_TIMEOUT_MS = 20000;
 
 export default function Header({
   locale,
   param,
   spotData,
-  products: productsData,
-  categories,
   apiTime,
   initialClient = null,
 }) {
@@ -60,7 +72,7 @@ export default function Header({
   const table_id = searchParams.get("table_id");
   const table_num = searchParams.get("table_num");
   const service = searchParams.get("service");
-  const pathName = usePathname();
+  const pathName = usePathname() || "";
   const navbar = useTranslations("Navbar");
   const allT = useTranslations("All");
   const t = useTranslations("HomePage");
@@ -72,19 +84,37 @@ export default function Header({
   const [cl, setCl] = useState(initialClient);
   const SearchText = useTranslations("Search");
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredCategories, setFilteredCategories] = useState([]);
-  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
+  const [searchCatalog, setSearchCatalog] = useState({
+    categories: [],
+    products: [],
+  });
+  const [isSearchLoading, setIsSearchLoading] = useState(false);
   const [openSearch, setOpenSearch] = useState(false);
+  const [openAuthModal, setOpenAuthModal] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const isDev = process.env.NODE_ENV === "development";
   const defaultTime = isDev
     ? { closed_time: "23:59", opened_time: "00:00" }
     : { closed_time: "23:00", opened_time: "10:00" };
   const [showBackTop, setShowBackTop] = useState(false);
+  const cartHref =
+    param?.place !== "branch"
+      ? `${getUrl(pathName)}/cart`
+      : `${getUrl(
+          pathName
+        )}/cart?spot=${spot}&table_id=${table_id}&table_num=${table_num}&service=${service}`;
+
+  useEffect(() => {
+    const timerId = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm.trim().toLowerCase());
+    }, 500);
+    return () => clearTimeout(timerId);
+  }, [searchTerm]);
 
   useEffect(() => {
     const onScroll = () => {
-      setShowBackTop(window.scrollY > 350); // 350px dan keyin ko‘rsin
+      setShowBackTop(window.scrollY > 350); // 350px dan keyin ko’rsin
     };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -105,34 +135,131 @@ export default function Header({
   }, []);
 
   useEffect(() => {
-    if (searchTerm.trim() === "") {
-      setFilteredCategories([]);
-      setFilteredProducts([]);
+    const onCacheRevalidate = (event) => {
+      const resources = event?.detail?.resources || [];
+      if (!Array.isArray(resources)) {
+        return;
+      }
+
+      if (
+        resources.includes("categories") ||
+        resources.includes("products") ||
+        resources.includes("promotions")
+      ) {
+        invalidateClientRequestCaches(["poster:header-search"]);
+        setSearchCatalog({ categories: [], products: [] });
+      }
+    };
+
+    window.addEventListener("rolling:cache-revalidate", onCacheRevalidate);
+    return () =>
+      window.removeEventListener("rolling:cache-revalidate", onCacheRevalidate);
+  }, []);
+
+  useEffect(() => {
+    if (!openSearch) {
       return;
     }
 
-    setFilteredCategories(
-      categories?.filter(
-        (category) =>
-          String(category?.category_name)
-            ?.toLowerCase()
-            ?.includes(String(searchTerm?.toLowerCase())) &&
-          category?.category_hidden == 0 &&
-          category?.category_id != 0
-      )
-    );
+    let cancelled = false;
 
-    setFilteredProducts(
-      productsData?.filter(
+    async function loadSearchCatalog() {
+      let timeoutId;
+      try {
+        setIsSearchLoading(true);
+        const data = await Promise.race([
+          loadCachedJson({
+            cacheKey: `poster:header-search:${locale}`,
+            url: "/api/header-search",
+            validatePayload: (payload) =>
+              Array.isArray(payload?.categories) &&
+              Array.isArray(payload?.products),
+            onRevalidate: (freshData) => {
+              if (cancelled) {
+                return;
+              }
+
+              setSearchCatalog({
+                categories: freshData?.categories || [],
+                products: freshData?.products || [],
+              });
+            },
+            requestInit: {
+              cache: "no-store",
+            },
+          }),
+          new Promise((_, reject) => {
+            timeoutId = setTimeout(() => {
+              reject(new Error("Header search request timed out"));
+            }, SEARCH_LOAD_TIMEOUT_MS);
+          }),
+        ]);
+
+        if (!cancelled) {
+          setSearchCatalog({
+            categories: data?.categories || [],
+            products: data?.products || [],
+          });
+        }
+      } catch (error) {
+        // Keep previously loaded data on transient network errors/timeouts.
+      } finally {
+        if (timeoutId) {
+          clearTimeout(timeoutId);
+        }
+        if (!cancelled) {
+          setIsSearchLoading(false);
+        }
+      }
+    }
+
+    loadSearchCatalog();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [locale, openSearch]);
+
+  const hasSearchData =
+    searchCatalog.categories.length > 0 || searchCatalog.products.length > 0;
+  const isSearchStale =
+    (isSearchLoading && !hasSearchData) ||
+    debouncedSearchTerm !== searchTerm.trim().toLowerCase();
+  const filteredCategories = useMemo(() => {
+    if (!debouncedSearchTerm) {
+      return [];
+    }
+
+    return (
+      searchCatalog.categories?.filter((category) => {
+        if (category?.category_hidden == 0 && category?.category_id != 0) {
+          const raw = String(category?.category_name ?? "");
+          const allNames = ["ru", "uz", "en"]
+            .map((lng) => getLocalizedCategoryName(raw, lng))
+            .filter(Boolean)
+            .join(" ")
+            .toLowerCase();
+          return allNames.includes(debouncedSearchTerm);
+        }
+        return false;
+      }) || []
+    );
+  }, [debouncedSearchTerm, searchCatalog.categories]);
+
+  const filteredProducts = useMemo(() => {
+    if (!debouncedSearchTerm) {
+      return [];
+    }
+
+    return (
+      searchCatalog.products?.filter(
         (product) =>
-          String(product?.product_production_description)
-            ?.toLowerCase()
-            ?.includes(String(searchTerm?.toLowerCase())) &&
+          getProductSearchText(product).includes(debouncedSearchTerm) &&
           product?.hidden == 0 &&
           product?.menu_category_id != 0
-      )
+      ) || []
     );
-  }, [searchTerm, categories, productsData]);
+  }, [debouncedSearchTerm, searchCatalog.products]);
 
   useEffect(() => {
     const cookieClient = Cookies.get("client");
@@ -152,7 +279,6 @@ export default function Header({
   }, []);
 
   useEffect(() => {
-    console.log(apiTime);
     let closedTime = defaultTime.closed_time;
     let openedTime = defaultTime.opened_time;
 
@@ -169,8 +295,17 @@ export default function Header({
       openedTime = apiTime?.opened_time;
     }
 
-    const [closedHour, closedMinute] = closedTime.split(":").map(Number);
-    const [openedHour, openedMinute] = openedTime.split(":").map(Number);
+    const safeClosedTime =
+      typeof closedTime === "string" && closedTime.includes(":")
+        ? closedTime
+        : defaultTime.closed_time;
+    const safeOpenedTime =
+      typeof openedTime === "string" && openedTime.includes(":")
+        ? openedTime
+        : defaultTime.opened_time;
+
+    const [closedHour, closedMinute] = safeClosedTime.split(":").map(Number);
+    const [openedHour, openedMinute] = safeOpenedTime.split(":").map(Number);
 
     const currentTime = new Date();
     const hours = currentTime.getHours();
@@ -197,9 +332,7 @@ export default function Header({
     setCl(client);
   }, [client]);
 
-  const authHref = cl
-    ? `${getUrl(pathName)}/profile`
-    : `${getUrl(pathName)}/login`;
+  const authHref = `${getUrl(pathName)}/profile`;
   const authLabel = cl
     ? cl.firstname && cl.firstname.length > 0
       ? cl.firstname
@@ -225,7 +358,9 @@ export default function Header({
   }, [spot, table_id, table_num, service]);
 
   const wrapWithLink = (text, words, loc) => {
-    const parts = text.split(new RegExp(`(${words.join("|")})`, "g"));
+    const parts = String(text || "").split(
+      new RegExp(`(${words.join("|")})`, "g")
+    );
     return parts.map((part, index) =>
       words.includes(part) ? (
         <Link
@@ -251,6 +386,13 @@ export default function Header({
     ["Зарегистрируйтесь", "Register", "Hozir ro'yxatdan o'ting"],
     param.locale
   );
+  const selectedSpotName = translateTextSpot(
+    spotData?.response?.find((sp) => sp.spot_id == spot)?.name,
+    locale
+  );
+  const selectedSpotLabel = String(selectedSpotName || "")
+    .replace(/^Rolling Sushi -\s*/i, "")
+    .trim();
 
   return (
     <>
@@ -313,26 +455,48 @@ export default function Header({
                   </Link>
                 );
               })}
-              <Link
-                href={authHref}
-                onClick={toggleOpen}
-                className="flex-shrink-0 flex items-center gap-2 w-full"
-              >
-                <Image
-                  src={`/assets/accountIcon.webp`}
-                  alt={`Account icon`}
-                  loading="eager"
-                  width={33}
-                  height={33}
-                  className=""
-                />
-                <p
-                  className={`${`${pathName}/profile` == pathName ? "font-semibold" : ""
-                    }`}
+              {cl ? (
+                <Link
+                  href={authHref}
+                  onClick={toggleOpen}
+                  className="flex-shrink-0 flex items-center gap-2 w-full"
                 >
-                  {authLabel}
-                </p>
-              </Link>
+                  <Image
+                    src={`/assets/accountIcon.webp`}
+                    alt={`Account icon`}
+                    loading="eager"
+                    width={33}
+                    height={33}
+                    className=""
+                  />
+                  <p
+                    className={`${
+                      `${pathName}/profile` == pathName ? "font-semibold" : ""
+                    }`}
+                  >
+                    {authLabel}
+                  </p>
+                </Link>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => {
+                    toggleOpen();
+                    setOpenAuthModal(true);
+                  }}
+                  className="flex-shrink-0 flex items-center gap-2 w-full text-left"
+                >
+                  <Image
+                    src={`/assets/accountIcon.webp`}
+                    alt={`Account icon`}
+                    loading="eager"
+                    width={33}
+                    height={33}
+                    className=""
+                  />
+                  <p>{authLabel}</p>
+                </button>
+              )}
               <div className="flex justify-start items-center w-10/12">
                 <LngChange param={param} />
               </div>
@@ -430,26 +594,45 @@ export default function Header({
                   </p>
                 </Link>
               ))}
-              <Link
-                href={authHref}
-                onClick={toggleOpen}
-                className="flex-shrink-0 flex items-center gap-2"
-              >
-                <Image
-                  src={`/assets/accountIcon.webp`}
-                  alt={`Account icon`}
-                  width={30}
-                  height={30}
-                  className=""
-                  loading="eager"
-                />
-                <p
-                  className={`${`${pathName}/profile` == pathName ? "font-semibold" : ""
-                    }`}
+              {cl ? (
+                <Link
+                  href={authHref}
+                  onClick={toggleOpen}
+                  className="flex-shrink-0 flex items-center gap-2"
                 >
-                  {authLabel}
-                </p>
-              </Link>
+                  <Image
+                    src={`/assets/accountIcon.webp`}
+                    alt={`Account icon`}
+                    width={30}
+                    height={30}
+                    className=""
+                    loading="eager"
+                  />
+                  <p
+                    className={`${
+                      `${pathName}/profile` == pathName ? "font-semibold" : ""
+                    }`}
+                  >
+                    {authLabel}
+                  </p>
+                </Link>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setOpenAuthModal(true)}
+                  className="flex-shrink-0 flex items-center gap-2"
+                >
+                  <Image
+                    src={`/assets/accountIcon.webp`}
+                    alt={`Account icon`}
+                    width={30}
+                    height={30}
+                    className=""
+                    loading="eager"
+                  />
+                  <p>{authLabel}</p>
+                </button>
+              )}
             </nav>
           )}
 
@@ -472,17 +655,16 @@ export default function Header({
 
             <div className="flex items-center space-x-3">
               {param.place !== "branch" && (
-                <Sheet open={openSearch}>
-                  <SheetTrigger>
-                    <div
-                      onClick={() => setOpenSearch(true)}
+                <Sheet open={openSearch} onOpenChange={setOpenSearch}>
+                  <SheetTrigger asChild>
+                    <button
+                      type="button"
                       className="w-full relative bg-white p-2 rounded-md"
                     >
                       <Search className="text-gray-400 size-5 xl:size-7 text-primary" />
-                    </div>
+                    </button>
                   </SheetTrigger>
                   <SheetContent
-                    onClose={() => setOpenSearch(false)}
                     className={"h-[80vh] p-0"}
                     side="bottom"
                   >
@@ -510,15 +692,28 @@ export default function Header({
                           <h2 className="textSmall5 font-semibold text-gray-700">
                             {SearchText("search_pr")}
                           </h2>
-                          {filteredProducts.length > 0 ? (
-                            <ul className="max-md:flex flex-col gap-3 md:space-x-3 md:space-y-3">
-                              {filteredProducts?.map((product, index) => {
-                                const localizedName = getLocalizedProduct(
-                                  String(
-                                    product.product_production_description
-                                  ),
+                          {isSearchStale && debouncedSearchTerm ? (
+                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                              {Array.from({ length: 4 }).map((_, i) => (
+                                <div key={i} className="bg-white rounded-md p-2 space-y-2">
+                                  <Skeleton className="w-full aspect-square rounded-sm" />
+                                  <Skeleton className="h-4 w-3/4" />
+                                  <Skeleton className="h-3 w-1/2" />
+                                  <Skeleton className="h-4 w-1/3" />
+                                </div>
+                              ))}
+                            </div>
+                          ) : filteredProducts.length > 0 ? (
+                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                              {filteredProducts.map((product, index) => {
+                                const localizedName = getProductDisplayName(
+                                  product,
+                                  locale
+                                );
+                                const localizedDesc = getLocalizedProduct(
+                                  product?.product_production_description,
                                   locale,
-                                  "name"
+                                  "desc"
                                 );
                                 const linkNameCategory = formatText(
                                   getLocalizedCategoryName(
@@ -527,41 +722,47 @@ export default function Header({
                                   )
                                 );
                                 const linkNameProducts = formatText(
-                                  getLocalizedProduct(
-                                    String(
-                                      product?.product_production_description
-                                    ),
-                                    "en",
-                                    "name"
-                                  )
+                                  getProductSlugBaseName(product)
                                 );
                                 return (
-                                  <Link
+                                  <div
+                                    key={`search-${product.product_id}-${index}`}
                                     onClick={() => setOpenSearch(false)}
-                                    href={
-                                      param?.place !== "branch"
-                                        ? `/${locale}/${param.place}/category/${product.menu_category_id}-${linkNameCategory}/product/${product.product_id}-${linkNameProducts}`
-                                        : `/${locale}/${param.place}/category/${product.menu_category_id}-${linkNameCategory}/product/${product.product_id}-${linkNameProducts}?spot=${spot}&table_id=${table_id}&table_num=${table_num}&service=${service}`
-                                    }
-                                    key={index}
-                                    className="inline-block p-3 textSmall3 bg-gray-100 rounded-md shadow"
                                   >
-                                    {localizedName}
-                                  </Link>
+                                    <Card
+                                      defaultHref={
+                                        param?.place !== "branch"
+                                          ? `/${locale}/${param.place}/category/${product.menu_category_id}-${linkNameCategory}/product/${product.product_id}-${linkNameProducts}`
+                                          : `/${locale}/${param.place}/category/${product.menu_category_id}-${linkNameCategory}/product/${product.product_id}-${linkNameProducts}?spot=${spot}&table_id=${table_id}&table_num=${table_num}&service=${service}`
+                                      }
+                                      locale={locale}
+                                      item={product}
+                                      localizedName={localizedName}
+                                      localizedDesc={localizedDesc}
+                                      photo={product.photo_origin || product.photo}
+                                      price={product.price?.["1"] ? product.price["1"] / 100 : 0}
+                                    />
+                                  </div>
                                 );
                               })}
-                            </ul>
-                          ) : (
+                            </div>
+                          ) : debouncedSearchTerm ? (
                             <p className="text-gray-500">
                               {SearchText("not_search_pr")}
                             </p>
-                          )}
+                          ) : null}
                         </div>
                         <div className="w-full space-y-2">
                           <h2 className="textSmall5 font-semibold text-gray-700">
                             {SearchText("search_ct")}
                           </h2>
-                          {filteredCategories.length > 0 ? (
+                          {isSearchStale && debouncedSearchTerm ? (
+                            <div className="flex flex-wrap gap-3">
+                              {Array.from({ length: 3 }).map((_, i) => (
+                                <Skeleton key={i} className="h-10 w-24 rounded-md" />
+                              ))}
+                            </div>
+                          ) : filteredCategories.length > 0 ? (
                             <ul className="max-md:flex max-md:flex-col gap-3 md:space-x-3 md:space-y-3">
                               {filteredCategories.map((category, index) => {
                                 const linkNameCategory = formatText(
@@ -590,11 +791,11 @@ export default function Header({
                                 );
                               })}
                             </ul>
-                          ) : (
+                          ) : debouncedSearchTerm ? (
                             <p className="text-gray-500">
                               {SearchText("not_search_ct")}
                             </p>
-                          )}
+                          ) : null}
                         </div>
                       </div>
                     </div>
@@ -631,13 +832,7 @@ export default function Header({
                 }}
               >
                 <Link
-                  href={
-                    param?.place !== "branch"
-                      ? `${getUrl(pathName)}/cart`
-                      : `${getUrl(
-                        pathName
-                      )}/cart?spot=${spot}&table_id=${table_id}&table_num=${table_num}&service=${service}`
-                  }
+                  href={cartHref}
                   className="flex items-center hover:text-gray-200"
                 >
                   <span className="hidden md:block">
@@ -665,10 +860,7 @@ export default function Header({
             <DialogContent className="bg-transparent border-none shadow-none md:max-w-2xl w-11/12 sm:w-full focus:ring-0 focus:outline-none">
               <DialogHeader>
                 <DialogTitle className="hidden bg-white px-4 py-3 rounded-md text-center leading-9">
-                  {translateTextSpot(
-                    spotData?.response?.find((sp) => sp.spot_id == spot)?.name,
-                    locale
-                  )?.split("Rolling Sushi -")}
+                  {selectedSpotLabel}
                   {allT("spot")} {allT("table")} № {table_num}
                 </DialogTitle>
                 <DialogDescription className="hidden">
@@ -677,10 +869,7 @@ export default function Header({
               </DialogHeader>
               <div className="bg-white flex justify-between items-center gap-1 px-2">
                 <h1 className="px-4 py-3 rounded-md md:text-center leading-9 font-bold textNormal3 text-thin">
-                  {translateTextSpot(
-                    spotData?.response?.find((sp) => sp.spot_id == spot)?.name,
-                    locale
-                  ).split("Rolling Sushi -")}
+                  {selectedSpotLabel}
                   {allT("spot")} <br className="sm:hidden" />
                   {allT("table")} № {table_num}
                 </h1>
@@ -764,14 +953,8 @@ export default function Header({
             className="bg-white sm:hidden fixed justify-center items-center w-full bottom-0 z-40 p-2"
           >
             <Link
-              href={
-                param?.place !== "branch"
-                  ? `${getUrl(pathName)}/cart`
-                  : `${getUrl(
-                    pathName
-                  )}/cart?spot=${spot}&table_id=${table_id}&table_num=${table_num}&service=${service}`
-              }
-              className="w-11/12  mx-auto block"
+              href={cartHref}
+              className="w-11/12 mx-auto block"
             >
               <div className="bg-primary w-full text-sm flex items-center justify-between px-4 py-4 rounded-[999px] text-white font-semibold shadow-lg">
                 <span className="bg-white text-primary w-6 h-6 flex items-center justify-center rounded-full text-sm font-bold">
@@ -817,13 +1000,7 @@ export default function Header({
               className="max-sm:hidden fixed bottom-4 right-4 z-40"
             >
               <Link
-                href={
-                  param?.place !== "branch"
-                    ? `${getUrl(pathName)}/cart`
-                    : `${getUrl(
-                      pathName
-                    )}/cart?spot=${spot}&table_id=${table_id}&table_num=${table_num}&service=${service}`
-                }
+                href={cartHref}
                 className="flex items-center relative"
               >
                 <div className="relative group">
@@ -854,16 +1031,26 @@ export default function Header({
             </div>
           </>
         )}
-      {param?.place !== "branch" && !cl && (
-        <div className={cn(`bg-secondary text-primary text-center`)}>
-          <div className="max-xl:block hidden max-sm:text-xs">
-            <Marquee pauseOnHover className="[--duration:20s]">
-              <p>{introText}</p>
-            </Marquee>
-          </div>
-          <p className="hidden xl:block py-2">{introText}</p>
-        </div>
-      )}
+      <Dialog open={openAuthModal} onOpenChange={setOpenAuthModal}>
+        <DialogContent
+          className="max-w-lg w-11/12 no-scrollbar bg-primary-modal text-white overflow-y-scroll py-5 focus:outline-none border-0 rounded-sm sm:rounded-md"
+          mark="false"
+        >
+          <DialogHeader className={""}>
+            <DialogTitle className="max-sm:hidden textSmall3 text-white">
+              {allT("sign_in")}
+            </DialogTitle>
+            <div className="sm:hidden text-white w-full">
+              <h1 className="textNormal4 font-[400]">{allT("sign_in")}</h1>
+            </div>
+          </DialogHeader>
+          <AuthPhoneFlowForm
+            onAuthSuccess={() => {
+              setOpenAuthModal(false);
+            }}
+          />
+        </DialogContent>
+      </Dialog>
       {/* Back-to-Top (floating) */}
       {/* Back-to-Top — cartdagi wave bilan */}
       {showBackTop && (
@@ -904,13 +1091,6 @@ export default function Header({
         .animate-wave {
           animation: wave 2s infinite ease-in-out;
         }
-        @keyframes wave {
-           0%   { transform: scale(1);   opacity: 0.75; }
-           50%  { transform: scale(1.1); opacity: 0.5; }
-           100% { transform: scale(1);   opacity: 0.75; }
-        }
-      .animate-wave { animation: wave 2s infinite ease-in-out; }
-
       `}</style>
 
     </>

@@ -22,34 +22,66 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import Card from "@/components/shared/card";
+import { toPublicCategory, toPublicProduct } from "@/lib/public-menu-data";
+import { notFound } from "next/navigation";
+import { shouldIncludeProduct } from "@/lib/product-visibility";
+
+function parseSlugId(value) {
+  const rawId = String(value || "").split("-")[0];
+  const id = Number(rawId);
+  return Number.isInteger(id) && id > 0 ? id : 0;
+}
+
+export async function generateStaticParams() {
+  const { response: categories = [] } = await ApiService.getPosterData(
+    "menu.getCategories",
+    ""
+  );
+
+  return ["uz", "ru", "en"].flatMap((locale) =>
+    ["web", "branch"].flatMap((place) =>
+      categories
+        .filter((item) => item?.category_id && item?.category_hidden != "1")
+        .map((item) => ({
+          locale,
+          place,
+          category: `${item.category_id}-${formatText(
+            getLocalizedCategoryName(item.category_name, "en")
+          )}`,
+        }))
+    )
+  );
+}
 
 export async function generateMetadata({ params }) {
   const [path, allT] = await Promise.all([params, getTranslations("All")]);
-  const { response: category } = await ApiService.getPosterData(
+  const targetCategoryId = parseSlugId(path?.category);
+  if (!targetCategoryId) {
+    return {
+      title: `Category - ${allT("city")}`,
+    };
+  }
+  const { response: rawCategory } = await ApiService.getPosterData(
     `menu.getCategory`,
-    `&category_id=${path.category.split("-")[0]}`,
-    86400
+    `&category_id=${targetCategoryId}`
   );
+  const category = toPublicCategory(rawCategory);
+  const categoryName = getLocalizedCategoryName(
+    category?.category_name ?? "",
+    path.locale
+  ).replace(".", "");
 
   return {
-    title: `${
-      getLocalizedCategoryName(category.category_name, path.locale).replace(
-        ".",
-        ""
-      ) || "Category title"
-    } - ${allT("city")}`,
-    description: extractDescription(category.category_name),
-    keywords: extractKeywords(category.category_name),
+    title: `${categoryName || "Category title"} - ${allT("city")}`,
+    description: extractDescription(category?.category_name ?? ""),
+    keywords: extractKeywords(category?.category_name ?? ""),
     openGraph: {
       url: `https://rolling.uz/${generateUrl(path)}`,
-      title: `${
-        getLocalizedCategoryName(category.category_name, path.locale).replace(
-          ".",
-          ""
-        ) || "Category title"
-      }`,
-      description: extractDescription(category.category_name),
-      images: [`${posterUrl}${category.category_photo_origin}`], // You can add images if necessary
+      title: `${categoryName || "Category title"}`,
+      description: extractDescription(category?.category_name ?? ""),
+      images: category?.category_photo_origin
+        ? [`${posterUrl}${category.category_photo_origin}`]
+        : [],
     },
     alternates: {
       canonical: `https://rolling.uz/${generateUrl(path)}`,
@@ -57,13 +89,8 @@ export async function generateMetadata({ params }) {
     structuredData: {
       "@context": "https://schema.org",
       "@type": "Product",
-      name: `${
-        getLocalizedCategoryName(category.category_name, path.locale).replace(
-          ".",
-          ""
-        ) || "Category title"
-      }`,
-      description: extractDescription(category.category_name),
+      name: `${categoryName || "Category title"}`,
+      description: extractDescription(category?.category_name ?? ""),
       // offers: {
       //   "@type": "Offer",
       //   priceCurrency: "USD",
@@ -74,13 +101,8 @@ export async function generateMetadata({ params }) {
       "script:ld+json": JSON.stringify({
         "@context": "https://schema.org",
         "@type": "Product",
-        name: `${
-          getLocalizedCategoryName(category.category_name, path.locale).replace(
-            ".",
-            ""
-          ) || "Category title"
-        }`,
-        description: extractDescription(category.category_name),
+        name: `${categoryName || "Category title"}`,
+        description: extractDescription(category?.category_name ?? ""),
         // offers: {
         //   "@type": "Offer",
         //   priceCurrency: "USD",
@@ -91,28 +113,45 @@ export async function generateMetadata({ params }) {
   };
 }
 
-export default async function CategoryItems({ params, searchParams }) {
-  const [locale, all, path, searchParamsData] = await Promise.all([
+export default async function CategoryItems({ params }) {
+  const [locale, all, path] = await Promise.all([
     getLocale(),
     getTranslations("All"),
     params,
-    searchParams,
   ]);
-  const { spot, table_id, table_num, service } = searchParamsData;
+  const targetCategoryId = parseSlugId(path?.category);
+  if (!targetCategoryId) {
+    notFound();
+  }
 
-  const { response: categoryItems } = await ApiService.getPosterData(
-    `menu.getProducts`,
-    `&category_id=${path.category}`,
-    7200
-  );
-  const { response: category } = await ApiService.getPosterData(
-    `menu.getCategory`,
-    `&category_id=${path.category}`,
-    86400
-  );
-  const products = categoryItems.filter(
-    (c) => c.photo != null && c?.hidden == 0
-  );
+  const [{ response: categoryItems }, { response: rawCategory }, { response: allCategories }] =
+    await Promise.all([
+      ApiService.getPosterData("menu.getProducts", ""),
+      ApiService.getPosterData("menu.getCategory", `&category_id=${targetCategoryId}`),
+      ApiService.getPosterData("menu.getCategories", ""),
+    ]);
+  const category = toPublicCategory(rawCategory) ?? {
+    category_name: "",
+  };
+
+  // Collect subcategory IDs whose parent is the target category
+  const matchingCategoryIds = new Set([targetCategoryId]);
+  for (const c of allCategories || []) {
+    const parentId = Number(c?.parent_category || 0);
+    const childId = Number(c?.category_id || 0);
+    if (parentId === targetCategoryId && childId > 0) {
+      matchingCategoryIds.add(childId);
+    }
+  }
+
+  const products = (categoryItems || [])
+    .filter((item) =>
+      shouldIncludeProduct(item, {
+        requirePhoto: true,
+      }) && matchingCategoryIds.has(Number(item?.menu_category_id))
+    )
+    .map(toPublicProduct)
+    .filter(Boolean);
   const categoryName = getLocalizedCategoryName(category.category_name, locale);
   
   return (
@@ -121,11 +160,7 @@ export default async function CategoryItems({ params, searchParams }) {
         <BreadcrumbList>
           <BreadcrumbItem>
             <BreadcrumbLink
-              href={
-                path?.place !== "branch"
-                  ? `/${locale}/${path?.place}/category`
-                  : `/${locale}/${path?.place}/category?spot=${spot}&table_id=${table_id}&table_num=${table_num}&service=${service}`
-              }
+              href={`/${locale}/${path?.place}/category`}
             >
               <h1 className="font-bold textSmall3">{all("categories")}</h1>
             </BreadcrumbLink>
@@ -163,16 +198,12 @@ export default async function CategoryItems({ params, searchParams }) {
           return (
             <div key={i} className={`w-full h-full`}>
               <Card
-                defaultHref={
-                  path?.place !== "branch"
-                    ? `/${locale}/${path.place}/category/${item?.menu_category_id}-${linkNameCategory}/product/${item?.product_id}-${linkNameProduct}`
-                    : `/${locale}/${path.place}/category/${item?.menu_category_id}-${linkNameCategory}/product/${item?.product_id}-${linkNameProduct}?spot=${spot}&table_id=${table_id}&table_num=${table_num}&service=${service}`
-                }
+                defaultHref={`/${locale}/${path.place}/category/${item?.menu_category_id}-${linkNameCategory}/product/${item?.product_id}-${linkNameProduct}`}
                 locale={locale}
                 item={item}
                 localizedDesc={localizedDesc}
                 localizedName={localizedName}
-                photo={item.photo_origin}
+                photo={item.photo_origin || item.photo}
                 price={item.price["1"] / 100}
               />
             </div>

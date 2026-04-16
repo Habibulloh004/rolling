@@ -11,40 +11,93 @@ import {
 } from "@/lib/utils";
 import { ApiService } from "@/service/api.services";
 import { getLocale, getTranslations } from "next-intl/server";
+import { notFound } from "next/navigation";
 import React from "react";
 import ProductPageClient from "./_component/ProductPageClient";
+import { toPublicProduct } from "@/lib/public-menu-data";
 
-export const revalidate = 7200;
+function parseSlugId(value) {
+  const rawId = String(value || "").split("-")[0];
+  const id = Number(rawId);
+  return Number.isInteger(id) && id > 0 ? id : 0;
+}
+
+function getProductName(productData, locale) {
+  return (
+    getLocalizedProduct(
+      productData?.product_production_description,
+      locale,
+      "name"
+    ) ||
+    productData?.product_name ||
+    ""
+  );
+}
+
+async function loadProductFromCategoryFeed(path) {
+  const productId = parseSlugId(path?.product);
+  const categoryId = parseSlugId(path?.category);
+
+  if (!productId) {
+    return null;
+  }
+
+  const { response: productData } = await ApiService.getPosterData(
+    "menu.getProduct",
+    `&product_id=${productId}`
+  );
+
+  const normalizedProduct = toPublicProduct(productData);
+  if (!normalizedProduct) {
+    return null;
+  }
+
+  if (
+    categoryId &&
+    Number(normalizedProduct?.menu_category_id) !== Number(categoryId)
+  ) {
+    return null;
+  }
+
+  return normalizedProduct;
+}
 
 // 🔹 Statik sahifalar ro'yxatini generatsiya qilish
 export async function generateStaticParams() {
-  // 1. Barcha kategoriyalarni oling
-  const { response: categories } = await ApiService.getPosterData(
-    "menu.getCategories", // yoki qanday API bo'lsa
-    "",
-    7200
-  );
-  
   // 2. Barcha productlarni oling
-  const { response: products } = await ApiService.getPosterData(
+  const { response: products = [] } = await ApiService.getPosterData(
     "menu.getProducts",
-    "",
-    7200
+    ""
   );
 
-  const locales = ['en', 'uz', 'ru'];
-  const places = ['branch', 'web'];
+  const locales = ["en", "uz", "ru"];
+  const places = ["branch", "web"];
   
   const allParams = [];
   
-  locales.forEach(locale => {
-    places.forEach(place => {
-      products.forEach(product => {
+  locales.forEach((locale) => {
+    places.forEach((place) => {
+      products
+        .filter(
+          (product) =>
+            product?.product_id &&
+            product?.menu_category_id &&
+            product?.hidden == 0
+        )
+        .forEach((product) => {
+          const englishName = getLocalizedProduct(
+            product.product_production_description,
+            "en",
+            "name"
+          );
+
         allParams.push({
           locale,
           place,
-          category: `${product.menu_category_id}-${formatText(product.category_name || "")}`,
-          product: `${product.product_id}-${formatText(product.name || "")}`,
+          category: `${product.menu_category_id}-${formatText(
+            getLocalizedCategoryName(product.category_name, "en")
+          )}`,
+          product: `${product.product_id}-${formatText(englishName || product.product_name || "")}`,
         });
       });
     });
@@ -56,31 +109,36 @@ export async function generateStaticParams() {
 // 🔹 SEO metadata
 export async function generateMetadata({ params }) {
   const [path, allT] = await Promise.all([params, getTranslations("All")]);
-  const { response: productData } = await ApiService.getPosterData(
-    "menu.getProduct",
-    `&product_id=${path.product.split("-")[0]}`,
-    7200
-  );
+  if (!parseSlugId(path?.product) || !parseSlugId(path?.category)) {
+    return {
+      title: `Product - ${allT("buy")}`,
+    };
+  }
+  const publicProductData = await loadProductFromCategoryFeed(path);
+
+  if (!publicProductData) {
+    return {
+      title: `Product - ${allT("buy")}`,
+    };
+  }
+
+  const localizedName = getProductName(publicProductData, path.locale);
 
   return {
-    title: `${getLocalizedProduct(
-      productData.product_production_description,
-      path.locale,
-      "name"
-    ).replace(".", "") || "Product title"} - ${allT("buy")}`,
-    description: extractDescription(productData.product_production_description),
-    keywords: extractKeywords(productData.product_production_description),
+    title: `${localizedName.replace(".", "") || "Product title"} - ${allT(
+      "buy"
+    )}`,
+    description: extractDescription(publicProductData.product_production_description),
+    keywords: extractKeywords(publicProductData.product_production_description),
     openGraph: {
       url: `https://rolling.uz/${generateUrl(path)}`,
-      title: `${getLocalizedProduct(
-        productData.product_production_description,
-        path.locale,
-        "name"
-      ).replace(".", "") || "Product title"}`,
+      title: `${localizedName.replace(".", "") || "Product title"}`,
       description: extractDescription(
-        productData.product_production_description
+        publicProductData.product_production_description
       ),
-      images: [`${posterUrl}${productData.photo_origin}`],
+      images: publicProductData.photo_origin
+        ? [`${posterUrl}${publicProductData.photo_origin}`]
+        : [],
     },
     alternates: {
       canonical: `https://rolling.uz/${generateUrl(path)}`,
@@ -96,23 +154,23 @@ export default async function ProductPage({ params }) {
     getTranslations("All"),
   ]);
 
-  const { response: productData } = await ApiService.getPosterData(
-    "menu.getProduct",
-    `&product_id=${path.product.split("-")[0]}`,
-    7200
-  );
+  if (!parseSlugId(path?.product) || !parseSlugId(path?.category)) {
+    notFound();
+  }
 
-  const localizedName = getLocalizedProduct(
-    productData.product_production_description,
-    locale,
-    "name"
-  );
+  const publicProductData = await loadProductFromCategoryFeed(path);
+
+  if (!publicProductData) {
+    notFound();
+  }
+
+  const localizedName = getProductName(publicProductData, locale);
   const localizedNameCategory = getLocalizedCategoryName(
-    productData.category_name,
+    publicProductData.category_name,
     locale
   );
   const localizedDesc = getLocalizedProduct(
-    productData.product_production_description,
+    publicProductData.product_production_description,
     locale,
     "desc"
   );
@@ -128,7 +186,7 @@ export default async function ProductPage({ params }) {
       locale={locale}
       path={path}
       translations={translations}
-      productData={productData}
+      productData={publicProductData}
       localizedName={localizedName}
       localizedDesc={localizedDesc}
       localizedNameCategory={localizedNameCategory}

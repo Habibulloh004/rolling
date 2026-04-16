@@ -11,6 +11,13 @@ import {
 import Cards from "./reviews/_components/cards";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
+import {
+  toPublicCategory,
+  toPublicProduct,
+  toSearchCategory,
+  toSearchProduct,
+} from "@/lib/public-menu-data";
+import { shouldIncludeProduct } from "@/lib/product-visibility";
 const TitleComponent = dynamic(() => import("./_components/titleComponent"), {
   ssr: true,
 });
@@ -37,26 +44,32 @@ export const metadata = {
     en: "https://rollingsushi.uz/en/web",
   },
 };
-export default async function HomePage({ params, searchParams }) {
+
+export const revalidate = 7200;
+
+export async function generateStaticParams() {
+  return ["uz", "ru", "en"].flatMap((locale) =>
+    ["web", "branch"].map((place) => ({ locale, place }))
+  );
+}
+
+export default async function HomePage({ params }) {
   // await sleep(10000);
+  const path = await params;
   const [
     allT,
     bannersData,
     // reviewsData,
     categoriesData,
     productsData,
-    searchParamsData,
     locale,
-    path,
   ] = await Promise.all([
     getTranslations("All"),
-    getData("/banner/get_banners", 86400),
+    getData(`/api/banners?lang=${path.locale}&platform=web&resolve=true`),
     // getData("/poster/google", 86400),
-    ApiService.getPosterData("menu.getCategories", "", 86400),
-    ApiService.getPosterData("menu.getProducts", "", 7200),
-    searchParams,
+    ApiService.getPosterData("menu.getCategories", ""),
+    ApiService.getPosterData("menu.getProducts", ""),
     getLocale(),
-    params,
   ]);
 
   const reviewsData = [
@@ -423,51 +436,66 @@ export default async function HomePage({ params, searchParams }) {
       time: "05.01.2024",
     },
   ];
-  let spotData;
-  if (path.place === "branch") {
-    spotData = await ApiService.getPosterData(
-      "spots.getSpot",
-      `&spot_id=${searchParamsData.spot}`,
-      604800
-    );
-  }
-
-  const banners = bannersData.banners;
-  const categories = categoriesData.response.filter(
-    (item) =>
-      item.category_photo != null &&
-      item.category_hidden != "1" &&
-      item?.category_id != 0
-  );
-  const products = productsData.response.filter((item) => {
-    const findIngr = item?.ingredients?.find(
-      (ingr) => ingr?.ingredient_id == 211
-    );
-    if (
-      item.photo_origin != null &&
-      item?.menu_category_id != 0 &&
-      findIngr &&
-      item?.hidden == 0
-    ) {
-      return true;
-    } else {
-      return false;
+  const banners = (bannersData?.banners || []).map((banner) => {
+    if (!banner.imageUrl) {
+      const webImage = banner.platforms?.web?.imageUrls?.[path.locale];
+      const mobileImage = banner.platforms?.mobile?.imageUrls?.[path.locale];
+      const deeplink = banner.platforms?.web?.deeplinks?.[path.locale] || banner.platforms?.mobile?.deeplinks?.[path.locale];
+      return {
+        ...banner,
+        imageUrl: webImage || mobileImage || null,
+        path: banner.path || deeplink || null,
+      };
     }
-  });
+    return banner;
+  }).filter((banner) => banner.imageUrl);
+  const categories = (categoriesData.response || [])
+    .filter(
+      (item) =>
+        item.category_photo != null &&
+        item.category_hidden != "1" &&
+        item?.category_id != 0
+    )
+    .map(toPublicCategory)
+    .filter(Boolean);
+  const products = (productsData.response || [])
+    .filter((item) =>
+      shouldIncludeProduct(item, {
+        requirePhoto: true,
+        requirePopularIngredient: true,
+      })
+    )
+    .map(toPublicProduct)
+    .slice(0, 12)
+    .filter(Boolean);
 
   return (
     <Container className={"w-full flex-col pb-10"}>
       {path.place == "branch" && (
         <TitleComponent
-          searchParamsData={searchParamsData}
-          products={productsData?.response}
-          categories={categories}
           locale={locale}
           path={path}
-          spotData={spotData}
+          initialSearchCatalog={{
+            categories: (categoriesData.response || [])
+              .map(toSearchCategory)
+              .filter(
+                (category) =>
+                  category &&
+                  Number(category.category_hidden) === 0 &&
+                  Number(category.category_id) !== 0
+              ),
+            products: (productsData.response || [])
+              .map(toSearchProduct)
+              .filter(
+                (product) =>
+                  product &&
+                  Number(product.hidden) === 0 &&
+                  Number(product.menu_category_id) !== 0
+              ),
+          }}
         />
       )}
-      {path.place != "branch" && <Banner path={path} banners={banners} />}
+      {path.place != "branch" && <Banner banners={banners} />}
       <Categories categories={categories} locale={locale} path={path} />
       <Popular products={products} locale={locale} path={path} />
       {reviewsData?.length > 0 && (

@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useMemo } from "react";
 import {
   Card,
   CardContent,
@@ -16,13 +16,17 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import CustomImage from "@/components/shared/customImage";
-import { url } from "@/lib/utils";
+import { posterUrl } from "@/lib/utils";
 import { useTranslations } from "next-intl";
 import { DialogTitle } from "@radix-ui/react-dialog";
 import Link from "next/link";
 
 // Function to convert HTML to React components with Tailwind classes
 const htmlToReact = (htmlString) => {
+  if (typeof document === "undefined" || !htmlString) {
+    return htmlString || "";
+  }
+
   const temp = document.createElement("div");
   temp.innerHTML = htmlString;
 
@@ -125,7 +129,10 @@ const htmlToReact = (htmlString) => {
 const PromotionCards = ({ param, item }) => {
   const allT = useTranslations("All");
 
-  const fullContent = htmlToReact(item.description);
+  const fullContent = useMemo(
+    () => htmlToReact(item.description),
+    [item.description]
+  );
 
   return (
     <main className="w-full flex justify-center items-center">
@@ -134,15 +141,17 @@ const PromotionCards = ({ param, item }) => {
           <div className="relative aspect-[15/5]">
             <CustomImage
               src={
-                item?.id ? `${url}/banner/get_banner/${item.id}` : "/empty.jpg"
+                item?.imageUrl ? item.imageUrl : "/empty.jpg"
               }
               alt="news-img"
               className="w-full h-full object-cover"
+              sizes="(max-width: 1024px) 90vw, 45vw"
+              quality={80}
             />
           </div>
           <div className="p-6">
             <CardDescription className="text-primary textNormal">
-              {allT(`${item.subtitle}`)}
+              {item.subtitle}
             </CardDescription>
             <CardTitle className="textSmall4 tracking-wider pt-3">
               {item.title}
@@ -161,13 +170,17 @@ const PromotionCards = ({ param, item }) => {
                 <DialogTitle as="div" />
                 <div className="text-xs w-[90vw] md:w-[70vw] md:text-base font-normal text-start">
                   <div>{fullContent}</div>
-                  <br />
-                  <Link
-                    href={`/${param.locale}/${param.place}${item.path}`}
-                    className="text-blue-500 underline mt-2 inline-block"
-                  >
-                    {allT("goto")}
-                  </Link>
+                  {item.path && (
+                    <>
+                      <br />
+                      <Link
+                        href={`/${param.locale}/${param.place}${item.path}`}
+                        className="text-blue-500 underline mt-2 inline-block"
+                      >
+                        {allT("goto")}
+                      </Link>
+                    </>
+                  )}
                 </div>
               </DialogHeader>
             </DialogContent>

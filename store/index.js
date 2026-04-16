@@ -1,8 +1,17 @@
 import Cookies from "js-cookie";
 import { create } from "zustand";
 
+function safeJsonParse(value) {
+  if (!value) return null;
+  try {
+    return JSON.parse(value);
+  } catch {
+    return null;
+  }
+}
+
 export const useClientStore = create((set) => ({
-  client: Cookies.get("client") ? JSON.parse(Cookies.get("client")) : null,
+  client: safeJsonParse(Cookies.get("client")),
   setClient: (data) => set(() => ({ client: data })),
 }));
 
@@ -207,7 +216,7 @@ export const useOrderStore = create((set) => ({
     products: [],
     payment_method: "",
     total: 0,
-    delivery_price: 10000,
+    delivery_price: 0,
     lng: 0,
     lat: 0,
     client: null,
@@ -225,6 +234,19 @@ export const useOrderStore = create((set) => ({
   totalSum: 0,
   paymentData: null,
   selectCard: null,
+  pendingOnlinePayment: null,
+  setPendingOnlinePayment: (data) => {
+    set(() => {
+      localStorage.setItem("pendingOnlinePayment", JSON.stringify(data));
+      return { pendingOnlinePayment: data };
+    });
+  },
+  clearPendingOnlinePayment: () => {
+    set(() => {
+      localStorage.removeItem("pendingOnlinePayment");
+      return { pendingOnlinePayment: null };
+    });
+  },
   setSelectCard: (data) => {
     set((state) => {
       localStorage.setItem("selectCard", JSON.stringify(data));
@@ -276,10 +298,24 @@ export const useOrderStore = create((set) => ({
           address: "",
           client_addresses_id: null,
         };
-    set({ orderData: { ...parsedOrderData, delivery_price: 10000 } });
+    set({
+      orderData: {
+        ...parsedOrderData,
+        delivery_price:
+          typeof parsedOrderData?.delivery_price === "number"
+            ? parsedOrderData.delivery_price
+            : Number(parsedOrderData?.delivery_price || 0),
+      },
+    });
     set({ totalSum: totalSum || 0 });
     set({ paymentData: paymentData ? JSON.parse(paymentData) : null });
     set({ selectCard: selectCard ? JSON.parse(selectCard) : null });
+    const pendingOnlinePayment = localStorage.getItem("pendingOnlinePayment");
+    set({
+      pendingOnlinePayment: pendingOnlinePayment
+        ? JSON.parse(pendingOnlinePayment)
+        : null,
+    });
   },
   resetOrder: () => {
     set({
@@ -290,7 +326,7 @@ export const useOrderStore = create((set) => ({
         products: [],
         payment_method: "",
         total: 0,
-        delivery_price: 10000,
+        delivery_price: 0,
         lng: 0,
         lat: 0,
         client: null,

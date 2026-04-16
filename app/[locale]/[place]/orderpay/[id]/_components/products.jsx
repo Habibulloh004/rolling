@@ -35,11 +35,16 @@ const Products = ({ promotionData, isLoading, products, locale }) => {
                   ?.slice()
                   ?.reverse()
                   ?.map((item, i) => {
-                    const localizedName = getLocalizedProduct(
+                    const localizedNameValue = getLocalizedProduct(
                       item.product_production_description,
                       locale,
                       "name"
                     );
+                    const localizedName =
+                      localizedNameValue ||
+                      item?.name ||
+                      item?.backend_name ||
+                      "Product";
                     let activePromocode = false;
                     let resultPromo = null;
                     promotionData?.params?.conditions?.forEach((condition) => {
@@ -137,10 +142,14 @@ const Products = ({ promotionData, isLoading, products, locale }) => {
                               </div>
                             ) : (
                               <p className="font-semibold textSmall2 leading-5">
-                                {item?.price["1"]
+                                {item?.price?.["1"]
                                   ? `${formatNumber(
                                       item.price["1"] / 100
                                     )} ${all("sum")}`
+                                  : Number(item?.unit_price || 0) > 0
+                                    ? `${formatNumber(
+                                        Number(item.unit_price)
+                                      )} ${all("sum")}`
                                   : "Price not available"}
                               </p>
                             )}

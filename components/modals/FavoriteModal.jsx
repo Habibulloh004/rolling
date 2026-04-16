@@ -57,9 +57,10 @@ const Card = ({ item, localizedName }) => {
     <div className="relative w-full bg-white rounded-md p-2 space-y-2">
       <div className="relative w-full aspect-square overflow-hidden bg-secondary rounded-sm">
         <CustomImage
-          src={`${posterUrl}${item.category_photo}`}
+          src={`${posterUrl}${item.category_photo || item.category_photo_origin}`}
           className="w-full h-full"
           alt={`${localizedName}`}
+          sizes="(max-width: 768px) 50vw, 200px"
         />
         <div
           onClick={() => setLike(!like)}

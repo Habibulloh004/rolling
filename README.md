@@ -18,6 +18,24 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## Environment Flag (Development)
+
+To disable delivery price in local development, add this to `.env.local`:
+
+```bash
+NEXT_PUBLIC_DISABLE_DELIVERY_PRICE_IN_DEV=true
+```
+
+This flag is ignored in production builds.
+
+To refresh order history automatically, configure polling interval (milliseconds):
+
+```bash
+NEXT_PUBLIC_ORDER_HISTORY_REFRESH_MS=30000
+```
+
+Default is `30000` (30s). Minimum allowed is `5000` (5s).
+
 You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.

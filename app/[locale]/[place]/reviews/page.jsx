@@ -3,11 +3,6 @@ import { getTranslations } from "next-intl/server";
 import Link from "next/link";
 import React, { Fragment } from "react";
 import Cards from "./_components/cards";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-} from "@/components/ui/carousel";
 import { getData } from "@/service";
 
 export const metadata = {
@@ -403,33 +398,16 @@ const Reviews = async ({ params }) => {
           {allT("sendReview")}
         </Link>
       </div>
-      <Carousel
-        className="relative w-full text-foreground mt-5 md:mt-10 "
-        paginate={"false"}
-        opts={{
-          align: "center",
-        }}
-      >
-        <CarouselContent className="relative">
-          {[...reviewData]
-            .sort(() => Math.random() - 0.5) // Tasodifiy tartiblash
-            .map((item, i) => {
-              if (item.rating < 4) return;
-              return (
-                <CarouselItem
-                  key={i}
-                  className={`basis-[80%] sm:basis-[45%] lg:basis-[45%] xl:basis-[30%] p-0 mx-2 ${
-                    i == 0 && "max-sm:ml-8 max-md:ml-16 ml-8"
-                  }`}
-                >
-                  <a href="https://g.co/kgs/YJy7TYy" target="_blank">
-                    <Cards data={item} />
-                  </a>
-                </CarouselItem>
-              );
-            })}
-        </CarouselContent>
-      </Carousel>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 w-full mt-5 md:mt-10 max-md:px-4">
+        {[...reviewData]
+          .sort(() => Math.random() - 0.5)
+          .filter((item) => item.rating >= 4)
+          .map((item, i) => (
+            <a key={`${item.id}-${i}`} href="https://g.co/kgs/YJy7TYy" target="_blank">
+              <Cards data={item} />
+            </a>
+          ))}
+      </div>
     </Container>
   );
 };

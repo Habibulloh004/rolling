@@ -2,13 +2,21 @@
 import { Button } from "@/components/ui/button";
 import { Mail, PhoneCallIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { translateTextSpot, translateTextSpotAddress } from "@/lib/utils";
-import MapContact from "./map-contact";
-import { toast } from "sonner"
-import { AlertDialog } from "@/components/ui/alert-dialog";
+import { toast } from "sonner";
+
+const MapContact = dynamic(() => import("./map-contact"), {
+  ssr: false,
+  loading: () => (
+    <div className="flex h-full items-center justify-center text-sm text-gray-500">
+      Loading map...
+    </div>
+  ),
+});
 
 const ClientContact = ({ spotData, locale }) => {
   const contactT = useTranslations("Contact");
@@ -60,9 +68,9 @@ const ClientContact = ({ spotData, locale }) => {
         action: {
           label: "Undo",
         },
-      })
+      });
     } catch (err) {
-     console.log(err);
+      console.log(err);
     }
 
     document.body.removeChild(input); // Inputni olib tashlash
@@ -157,9 +165,9 @@ const ClientContact = ({ spotData, locale }) => {
             )}
           </div>
           <Button
-          aria-label={`contact share`}
+            aria-label={`contact share`}
             className="w-full max-w-96 h-11 hover:bg-primary"
-            onClick={() =>  handleShare(Number(address.lng), Number(address.lat))}
+            onClick={() => handleShare(Number(address.lng), Number(address.lat))}
           >
             {contactT("btnShare")}
           </Button>

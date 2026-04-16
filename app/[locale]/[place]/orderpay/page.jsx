@@ -3,16 +3,19 @@ import { Button } from "@/components/ui/button";
 import { getLocale, getTranslations } from "next-intl/server";
 import Link from "next/link";
 import React from "react";
-import OrderDataComponent from "./_components/orderDataComponent";
+import OrderDataComponent from "../order/_components/orderDataComponent";
 import { getAllOrders } from "@/actions";
+import { ApiService } from "@/service/api.services";
+import { cacheDurations } from "@/lib/cache-config";
 
 export default async function Order({ params }) {
-  const [locale, path, orderText, all, allOrders] = await Promise.all([
+  const [locale, path, orderText, all, allOrders, productsData] = await Promise.all([
     getLocale(),
     params,
     getTranslations("Order"),
     getTranslations("All"),
     getAllOrders(),
+    ApiService.getPosterData("menu.getProducts", "", cacheDurations.products),
   ]);
   return (
     <Container className={"flex flex-col pt-8 w-11/12 gap-5"}>
@@ -31,7 +34,12 @@ export default async function Order({ params }) {
           </Button>
         </Link>
       </div>
-      <OrderDataComponent locale={locale} path={path} />
+      <OrderDataComponent
+        locale={locale}
+        path={path}
+        backendOrders={allOrders?.orders || []}
+        productsData={productsData?.response || []}
+      />
     </Container>
   );
 }

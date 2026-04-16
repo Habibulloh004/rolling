@@ -5,6 +5,7 @@ import { getLocale, getTranslations } from "next-intl/server";
 import Link from "next/link";
 import OrderItemComponent from "./_components/orderItemComponent";
 import { ApiService } from "@/service/api.services";
+import { cacheDurations } from "@/lib/cache-config";
 
 export default async function OrderList({ params }) {
   const [locale, path, orderText, productsData, spotsData, promotions] =
@@ -12,9 +13,13 @@ export default async function OrderList({ params }) {
       getLocale(),
       params,
       getTranslations("Order"),
-      ApiService.getPosterData("menu.getProducts", "", 7200),
-      ApiService.getPosterData("access.getSpots", "", 604800),
-      ApiService.getPosterData("clients.getPromotions", "", 600),
+      ApiService.getPosterData("menu.getProducts", "", cacheDurations.products),
+      ApiService.getPosterData("access.getSpots", "", cacheDurations.spots),
+      ApiService.getPosterData(
+        "clients.getPromotions",
+        "",
+        cacheDurations.promotions
+      ),
     ]);
   return (
     <Container className={"w-11/12 py-5 flex flex-col gap-5"}>

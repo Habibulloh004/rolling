@@ -150,7 +150,7 @@ export default function ProfileComponent({ client }) {
                 {item.title}
               </Link>
             ))}
-            <Link href={`${getUrl(pathName)}/login`} className="w-full">
+            <Link href={`${getUrl(pathName)}`} className="w-full">
               <Button
                 aria-label={`prof client`}
                 onClick={() => {
@@ -217,7 +217,7 @@ export default function ProfileComponent({ client }) {
               {item.title}
             </Link>
           ))}
-          <Link href={`${getUrl(pathName)}/login`} className="w-full">
+          <Link href={`${getUrl(pathName)}`} className="w-full">
             <Button
               aria-label={`prof logout`}
               onClick={() => {

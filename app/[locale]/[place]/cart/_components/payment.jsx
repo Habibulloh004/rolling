@@ -44,6 +44,12 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 
+const isDeliveryPriceDisabledInDev =
+  process.env.NODE_ENV !== "production" &&
+  String(process.env.NEXT_PUBLIC_DISABLE_DELIVERY_PRICE_IN_DEV || "false")
+    .trim()
+    .toLowerCase() === "true";
+
 const Payment = ({ apiTime, locale, place, auth }) => {
   const promocodeT = useTranslations("Order.Promocode");
   const searchParams = useSearchParams();
@@ -80,6 +86,8 @@ const Payment = ({ apiTime, locale, place, auth }) => {
   const [attemptsCount, setAttempts] = useState(0);
   const total = useTranslations("Cart.Total");
   const { client } = useClientStore();
+  const resolvedAuth = client?.client_id ? client : auth;
+  const isAuthorized = Boolean(resolvedAuth?.client_id);
   const originalProductsSum = products?.reduce((sum, product) => {
     if (product?.promocode) return sum;
     return sum + (Number(product?.price?.["1"] || 0) / 100) * Number(product?.count || 0);
@@ -90,19 +98,19 @@ const Payment = ({ apiTime, locale, place, auth }) => {
       : orderData?.promocodePrice > 0
         ? Number(orderData?.promocodePrice)
         : 0;
+  const deliveryPriceForCurrentOrder =
+    activeTab == "delivery"
+      ? isDeliveryPriceDisabledInDev
+        ? 0
+        : Number(orderData?.delivery_price || 0)
+      : 0;
   const payableTotal =
     Number(totalSum) -
     Number(orderData?.pay_bonus || 0) +
-    (activeTab == "delivery" ? Number(orderData?.delivery_price || 0) : 0) -
+    deliveryPriceForCurrentOrder -
     (orderData?.promocodePrice > 0 ? Number(orderData?.promocodePrice) : 0);
 
   const pay = [
-    {
-      id: 1,
-      icon: `/assets/card.svg`,
-      text: paymentText("card"),
-      type: "card",
-    },
     {
       id: 2,
       icon: `/assets/cash.webp`,
@@ -110,7 +118,7 @@ const Payment = ({ apiTime, locale, place, auth }) => {
       type: "cash",
     },
     { id: 3, icon: `/assets/payme.webp`, text: "PayMe", type: "payme" },
-    // { id: 4, icon: `/assets/click.webp`, text: "Click", type: "click" },
+    { id: 4, icon: `/assets/click.webp`, text: "Click", type: "click" },
   ];
 
   const handleSelectPayment = (item) => {
@@ -154,24 +162,16 @@ const Payment = ({ apiTime, locale, place, auth }) => {
       toast.error(paymentText1("note"));
       return;
     }
+    if (!isAuthorized) {
+      toast.error(all("no_auth"));
+      return;
+    }
     if (totalSum <= 0) {
       toast.error(all("products_empty"));
       return;
     }
     if (products.length == 0) {
       toast.error(all("products_empty"));
-      return;
-    }
-    if (!orderData?.phone && !auth?.client_id) {
-      toast.error(all("phone_empty"));
-      return;
-    }
-    if (orderData?.phone && orderData?.phone?.length != 13) {
-      toast.error(all("phone_empty"));
-      return;
-    }
-    if (!orderData?.phone && spot) {
-      toast.error(all("phone_empty"));
       return;
     }
 
@@ -195,7 +195,7 @@ const Payment = ({ apiTime, locale, place, auth }) => {
         Number(totalSum) -
         (orderData?.pay_bonus ? Number(orderData?.pay_bonus) : 0);
       if (activeTab == "delivery") {
-        totalAmount += Number(orderData?.delivery_price);
+        totalAmount += deliveryPriceForCurrentOrder;
       }
       if (orderData?.promocodePrice > 0) {
         totalAmount = Number(totalAmount - orderData?.promocodePrice);

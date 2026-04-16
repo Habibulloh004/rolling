@@ -55,6 +55,7 @@
     "no_active": "Currently inactive",
     "no_auth": "For registered users only",
     "no_auth1": "For registered users only",
+    "cart_auth_required": "Please sign in before creating an order.",
     "products_empty": "You have not selected a product!",
     "phone_empty": "Phone number does not exist!",
     "order_empty": "No orders available.",
@@ -376,13 +377,22 @@
     "product_title": "Products",
     "payment_method": "Payment Method",
     "show_order": "Track Order",
+    "filter_all": "All",
+    "filter_active": "Active",
+    "filter_completed": "Completed",
+    "filter_cancelled": "Cancelled",
     "comment": "Leave a Review",
     "your_order": "Your Order",
     "OrderStatus": {
+      "pending": "Pending",
       "confirmed": "Accepted",
       "cooking": "In preparation",
       "in-deliver": "On the Way",
-      "finished": "Delivered"
+      "finished": "Delivered",
+      "ready-pickup": "Ready for pickup",
+      "taken": "Taken",
+      "cancelled": "Cancelled",
+      "refund_notice": "The paid amount will be refunded to your account within 3 business days."
     },
     "Promocode": {
       "title": "I have a promo code",

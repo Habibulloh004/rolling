@@ -19,9 +19,8 @@ export function ResetPasswordModal() {
           <DialogTitle className="max-sm:hidden textSmall3 text-white">
             {login("title")}
           </DialogTitle>
-          <div className="sm:hidden text-white w-full flex justify-between items-center gap-2">
+          <div className="sm:hidden text-white w-full">
             <h1 className="textNormal4 font-[400]">{login("title")}</h1>
-            <p>lang</p>
           </div>
         </DialogHeader>
         <ResetPasswordForm />

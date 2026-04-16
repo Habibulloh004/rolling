@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
+    "dev": "env -u NODE_OPTIONS -u npm_config_node_options next dev -H 0.0.0.0 -p 3000",
+    "build": "env -u NODE_OPTIONS -u npm_config_node_options next build",
+    "start": "env -u NODE_OPTIONS -u npm_config_node_options next start -H 0.0.0.0 -p 3000",
+    "lint": "env -u NODE_OPTIONS -u npm_config_node_options next lint",
     "postinstall": "npm rebuild sharp",
     "prod": "npm run build && npm start"
   },
@@ -41,7 +41,7 @@
     "leaflet": "^1.9.4",
     "lottie-react": "^2.4.1",
     "lucide-react": "^0.468.0",
-    "next": "15.1.11",
+    "next": "^15.5.14",
     "next-intl": "^3.26.3",
     "next-themes": "^0.4.4",
     "nextjs-toploader": "^3.7.15",

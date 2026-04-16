@@ -64,12 +64,15 @@ const Categories = ({ categories, locale, path }) => {
                   <div className="w-full max-sm:max-h-32 aspect-square relative rounded-[20px] md:rounded-[40px] overflow-hidden">
                     <CustomImage
                       src={
-                        item?.category_photo_origin
-                          ? `${posterUrl}${item?.category_photo_origin}`
+                        item?.category_photo || item?.category_photo_origin
+                          ? `${posterUrl}${
+                              item?.category_photo || item?.category_photo_origin
+                            }`
                           : "/empty.jpg"
                       }
                       className="w-full h-full object-cover aspect-square"
                       alt={`${localizedName}`}
+                      sizes="(max-width: 640px) 30vw, (max-width: 1024px) 20vw, 14vw"
                     />
                   </div>
                   <h1 className="text-center textSmall3 font-bold">
@@ -103,12 +106,15 @@ const Categories = ({ categories, locale, path }) => {
                   <div className="w-full max-sm:max-h-32 aspect-square relative rounded-[20px] md:rounded-[40px] overflow-hidden">
                     <CustomImage
                       src={
-                        item?.category_photo_origin
-                          ? `${posterUrl}${item?.category_photo_origin}`
+                        item?.category_photo || item?.category_photo_origin
+                          ? `${posterUrl}${
+                              item?.category_photo || item?.category_photo_origin
+                            }`
                           : "/empty.jpg"
                       }
                       className="w-full h-full object-cover aspect-square"
                       alt={`${localizedName}`}
+                      sizes="(max-width: 640px) 30vw, (max-width: 1024px) 20vw, 14vw"
                     />
                   </div>
                   <h1 className="text-center textSmall3 font-bold">

@@ -10,7 +10,7 @@ import {
 import { lngItems } from "@/lib/utils"; // Til elementlari ro'yxati
 import { useLocale } from "next-intl"; // Hozirgi tilni aniqlash uchun hook
 import { usePathname, useRouter } from "@/i18n/routing"; // Router va Pathname uchun
-import Image from "next/legacy/image"; // Rasm uchun komponent
+import Image from "next/image"; // Rasm uchun komponent
 import { useSearchParams } from "next/navigation"; // Query parametrlarni olish uchun
 
 const LngChange = () => {
@@ -46,14 +46,17 @@ const LngChange = () => {
       }}
     >
       {/* Til tanlash trigger */}
-      <SelectTrigger className="bg-foreground/5 md:bg-white xl:h-11 text-black border-none w-20 focus:outline-none cursor-pointer">
+      <SelectTrigger className="bg-foreground/5 md:bg-white xl:h-11 h-11 text-black border-none w-20 focus:outline-none cursor-pointer px-3 [&>span]:flex [&>span]:h-full [&>span]:items-center">
         <SelectValue asChild>
-          <Image
-            src={findLocale?.icon} // Hozirgi til ikonkasi
-            alt={findLocale?.title} // Hozirgi til nomi
-            width={30}
-            height={25}
-          />
+          <span className="flex h-full items-center">
+            <Image
+              src={findLocale?.icon}
+              alt={findLocale?.title}
+              width={30}
+              height={25}
+              className="block object-contain"
+            />
+          </span>
         </SelectValue>
       </SelectTrigger>
 
@@ -67,6 +70,7 @@ const LngChange = () => {
                 alt={item.title}
                 width={30}
                 height={25}
+                className="block object-contain"
               />
               <span
                 className={item.locale === "ru" ? "text-[13px]" : "text-sm"}

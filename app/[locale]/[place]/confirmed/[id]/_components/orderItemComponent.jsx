@@ -12,16 +12,16 @@ import {
 } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useTranslations } from "use-intl";
 import confetti from "canvas-confetti";
-import { set } from "date-fns";
 
 export default function OrderItemComponent({
   spotsData,
   productsData,
   locale,
   param,
+  fallbackTransactionId = null,
   promotions = [],
 }) {
   const orderText = useTranslations("Order.Item");
@@ -31,6 +31,66 @@ export default function OrderItemComponent({
   const [orderData, setOrderData] = useState();
   const [isLoading, setIsLoading] = useState(true);
   const [promotionData, setPromotionData] = useState();
+  const asNumber = (value, fallback = 0) => {
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : fallback;
+  };
+  const normalizeServiceType = (order) => {
+    const rawType = String(order?.type || "").toLowerCase();
+    if (rawType.includes("delivery")) return "delivery";
+    if (rawType.includes("take_away") || rawType.includes("pickup")) return "take_away";
+    if (rawType.includes("spot")) return "spot";
+    const mode = asNumber(order?.service_mode ?? order?.serviceMode, 0);
+    if (mode === 3) return "delivery";
+    if (mode === 2) return "take_away";
+    if (mode === 1) return "spot";
+    return rawType || "delivery";
+  };
+  const getOrderTotals = (order) => {
+    const products = Array.isArray(order?.products) ? order.products : [];
+    const productsFromItems = products.reduce((sum, item) => {
+      const count = Number(item?.count ?? item?.amount ?? item?.quantity ?? 0);
+      const fallbackUnit =
+        Number(item?.price?.["1"] || 0) > 0
+          ? Number(item.price["1"]) / 100
+          : Number(item?.unit_price || item?.price || 0);
+      const lineTotal = Number(item?.total_price || 0);
+      const safeLineTotal =
+        lineTotal > 0
+          ? lineTotal
+          : (Number.isFinite(fallbackUnit) ? fallbackUnit : 0) *
+            (Number.isFinite(count) ? count : 0);
+      return sum + (Number.isFinite(safeLineTotal) ? safeLineTotal : 0);
+    }, 0);
+
+    const totalFromOrder = Number(order?.payed_sum || order?.all_price || 0) / 100;
+    const deliveryRaw = Number(order?.delivery_fee || order?.delivery_price || order?.deliveryFee || 0);
+    const isDelivery = String(order?.type || "").includes("delivery");
+
+    const productsSum =
+      productsFromItems > 0
+        ? productsFromItems
+        : Math.max(0, totalFromOrder - (isDelivery ? Math.max(0, deliveryRaw) : 0));
+
+    const deliverySum = isDelivery
+      ? deliveryRaw > 0
+        ? deliveryRaw
+        : Math.max(0, totalFromOrder - productsSum)
+      : 0;
+
+    const totalSum =
+      totalFromOrder > 0 ? totalFromOrder : Math.max(0, productsSum + deliverySum);
+
+    return { productsSum, deliverySum, totalSum };
+  };
+  const getLocalOrder = (orderId) => {
+    try {
+      const list = JSON.parse(localStorage.getItem("orderList") || "[]");
+      return list.find((item) => String(item?.order_id) === String(orderId)) || null;
+    } catch {
+      return null;
+    }
+  };
   const handleSuccess = () => {
     const duration = 2 * 1000;
     const animationEnd = Date.now() + duration;
@@ -59,70 +119,185 @@ export default function OrderItemComponent({
     }, 250);
   };
 
-  useEffect(() => {
-    const fetchAddress = async () => {
-      try {
-        const order = await getOrder(param.id);
-        console.log({ order });
-        if (order) {
-          const products = JSON.parse(order?.products);
-          const match = order?.comment?.match(/Промокод:\s*(\S+)/);
-          if (match) {
-            const promoCode = match[1];
-            const promo = promotions?.response?.find((prm) => {
-              const promoFind = prm?.name?.split("$")[1].toLowerCase().trim();
-              return promoFind === promoCode.toLowerCase();
-            });
-            setPromotionData(promo);
+  const fetchAddress = useCallback(async () => {
+    try {
+      let order = await getOrder(param.id);
+      if ((!order || typeof order !== "object") && fallbackTransactionId) {
+        order = await getOrder(fallbackTransactionId);
+      }
+      if (!order || typeof order !== "object") {
+        order = getLocalOrder(param.id) || getLocalOrder(fallbackTransactionId);
+      }
+      if (order) {
+        const products = (() => {
+          if (typeof order?.products === "string") {
+            try {
+              const parsed = JSON.parse(order.products || "[]");
+              return Array.isArray(parsed) ? parsed : [];
+            } catch {
+              return [];
+            }
           }
+          if (Array.isArray(order?.products)) return order.products;
+          if (Array.isArray(order?.items)) return order.items;
+          return [];
+        })();
+        const match = order?.comment?.match(/Промокод:\s*(\S+)/);
+        if (match) {
+          const promoCode = match[1];
+          const promo = promotions?.response?.find((prm) => {
+            const promoFind = prm?.name?.split("$")[1].toLowerCase().trim();
+            return promoFind === promoCode.toLowerCase();
+          });
+          setPromotionData(promo);
+        }
 
-          const orderedProducts = products
-            .map((orderItem) => {
-              const product = productsData?.find(
-                (prod) => prod.product_id == orderItem.product_id
-              );
-              if (product) {
-                return {
-                  ...product,
-                  count: orderItem.amount,
-                };
-              }
-              return null;
-            })
-            .filter(Boolean);
+        const orderedProducts = products
+          .map((orderItem) => {
+            const itemProductId = orderItem?.product_id ?? orderItem?.menuItemId ?? 0;
+            const itemCount = asNumber(
+              orderItem?.amount ?? orderItem?.count ?? orderItem?.quantity,
+              0
+            );
+            const itemUnitPrice = asNumber(
+              orderItem?.unit_price ?? orderItem?.price,
+              0
+            );
+            const product = productsData?.find(
+              (prod) => prod.product_id == itemProductId
+            );
+            if (product) {
+              return {
+                ...product,
+                count: itemCount,
+                unit_price: itemUnitPrice,
+                price:
+                  product?.price && typeof product.price === "object"
+                    ? product.price
+                    : { 1: Math.round(itemUnitPrice * 100) },
+              };
+            }
+            return {
+              product_id: itemProductId,
+              count: itemCount,
+              name: String(orderItem?.name || ""),
+              backend_name: String(orderItem?.name || ""),
+              product_production_description: `*** *** *** ${String(orderItem?.name || "")} *** ${String(orderItem?.name || "")} *** ${String(orderItem?.name || "")}`,
+              photo_origin: "",
+              price: {
+                1: Math.round(itemUnitPrice * 100),
+              },
+              unit_price: itemUnitPrice,
+            };
+          })
+          .filter(Boolean);
 
-          const location = order?.client_address.split(",");
+        const location = String(order?.client_address || "0,0").split(",");
+        let resolvedAddress = order?.address || order?.deliveryAddress || "";
+        if (location.length >= 2 && Number(location[0]) && Number(location[1])) {
           const res = await fetch(
             `https://nominatim.openstreetmap.org/reverse?lat=${String(
               location[0]
             )}&lon=${String(location[1])}&format=json&accept-language=${locale}`
           );
           const addressRes = await res.json();
-
-          if (order?.spot_id != 0) {
-            const spot = spotsData?.find((s) => s.spot_id == order?.spot_id);
-            setOrderData({
-              ...order,
-              address: String(addressRes?.display_name),
-              products: orderedProducts,
-              spotData: spot,
-            });
-          } else {
-            setOrderData({
-              ...order,
-              address: String(addressRes?.display_name),
-              products: orderedProducts,
-            });
-          }
+          resolvedAddress = String(addressRes?.display_name || resolvedAddress);
         }
-      } catch (error) {
-      } finally {
-        setIsLoading(false);
+
+        if (order?.spot_id != 0) {
+          const resolvedSpotId =
+            order?.spot_id ?? order?.posterSpotId ?? order?.branch?.id ?? 0;
+          const spot = spotsData?.find((s) => s.spot_id == resolvedSpotId);
+          setOrderData({
+            ...order,
+            address: resolvedAddress,
+            spot_id: resolvedSpotId,
+            type: normalizeServiceType(order),
+            address_comment:
+              order?.address_comment ?? order?.deliveryAddressComment ?? null,
+            delivery_fee:
+              order?.delivery_fee ??
+              order?.delivery_price ??
+              order?.deliveryFee ??
+              0,
+            all_price:
+              order?.all_price ??
+              Math.round(
+                (asNumber(order?.subtotal, 0) + asNumber(order?.deliveryFee, 0)) * 100
+              ),
+            payed_sum:
+              order?.payed_sum ?? Math.round(asNumber(order?.total, 0) * 100),
+            products: orderedProducts,
+            spotData: spot,
+          });
+        } else {
+          setOrderData({
+            ...order,
+            address: resolvedAddress,
+            type: normalizeServiceType(order),
+            address_comment:
+              order?.address_comment ?? order?.deliveryAddressComment ?? null,
+            delivery_fee:
+              order?.delivery_fee ??
+              order?.delivery_price ??
+              order?.deliveryFee ??
+              0,
+            all_price:
+              order?.all_price ??
+              Math.round(
+                (asNumber(order?.subtotal, 0) + asNumber(order?.deliveryFee, 0)) * 100
+              ),
+            payed_sum:
+              order?.payed_sum ?? Math.round(asNumber(order?.total, 0) * 100),
+            products: orderedProducts,
+          });
+        }
+
         handleSuccess();
       }
-    };
+    } catch (error) {
+    } finally {
+      setIsLoading(false);
+    }
+  }, [fallbackTransactionId, locale, param.id, productsData, promotions?.response, spotsData]);
+
+  useEffect(() => {
     fetchAddress();
-  }, []);
+  }, [fetchAddress]);
+
+  useEffect(() => {
+    const normalizeId = (value) =>
+      String(value ?? "")
+        .trim()
+        .replace(/^#/, "")
+        .toLowerCase();
+
+    const onOrderUpdate = (event) => {
+      const payloadOrder = event?.detail?.order;
+      if (!payloadOrder) {
+        return;
+      }
+
+      const targetId = normalizeId(param.id);
+      const incomingIds = [
+        payloadOrder?.id,
+        payloadOrder?.orderNumber,
+        payloadOrder?.order_id,
+      ]
+        .map(normalizeId)
+        .filter(Boolean);
+
+      if (incomingIds.includes(targetId)) {
+        fetchAddress();
+      }
+    };
+
+    window.addEventListener("rolling:order-update", onOrderUpdate);
+    return () =>
+      window.removeEventListener("rolling:order-update", onOrderUpdate);
+  }, [fetchAddress, param.id]);
+
+  const totals = getOrderTotals(orderData);
 
   return (
     <div className="w-full lg:w-11/12 mx-auto flex flex-col lg:grid grid-cols-2 gap-5 lg:gap-20 mt-4 lg:mt-10">
@@ -149,11 +324,16 @@ export default function OrderItemComponent({
                 ?.slice()
                 ?.reverse()
                 ?.map((item) => {
-                  const localizedName = getLocalizedProduct(
+                  const localizedNameValue = getLocalizedProduct(
                     item.product_production_description,
                     locale,
                     "name"
                   );
+                  const localizedName =
+                    localizedNameValue ||
+                    item?.name ||
+                    item?.backend_name ||
+                    "Product";
                   let activePromocode = false;
                   let resultPromo = null;
                   promotionData?.params?.conditions?.forEach((condition) => {
@@ -245,10 +425,14 @@ export default function OrderItemComponent({
                             </div>
                           ) : (
                             <p className="font-semibold textSmall2 leading-5">
-                              {item?.price["1"]
+                              {item?.price?.["1"]
                                 ? `${formatNumber(item.price["1"] / 100)} ${all(
                                     "sum"
                                   )}`
+                                : Number(item?.unit_price || 0) > 0
+                                  ? `${formatNumber(
+                                      Number(item.unit_price)
+                                    )} ${all("sum")}`
                                 : "Price not available"}
                             </p>
                           )}
@@ -299,13 +483,17 @@ export default function OrderItemComponent({
                     <div>
                       <p className="font-semibold textSmall3">
                         {translateTextSpot(
-                          orderData?.spotData?.spot_name,
+                          orderData?.spotData?.spot_name ||
+                            orderData?.spotData?.name ||
+                            orderData?.branch_name,
                           locale
                         )}
                       </p>
                       <p className="text-thin font-[500] textSmall2 mt-2">
                         {translateTextSpotAddress(
-                          orderData?.spotData?.spot_adress,
+                          orderData?.spotData?.spot_adress ||
+                            orderData?.spotData?.address ||
+                            orderData?.branch_address,
                           locale
                         )}
                       </p>
@@ -342,10 +530,7 @@ export default function OrderItemComponent({
                   {total("products_sum")}
                 </p>
                 <p className="font-normal textNormal2 text-[#2E2E2E]">
-                  {formatNumber(
-                    orderData?.all_price / 100 -
-                      (orderData?.type?.includes("delivery") ? 10000 : 0)
-                  )}{" "}
+                  {formatNumber(totals.productsSum)}{" "}
                   {all("sum")}
                 </p>
               </div>
@@ -382,7 +567,7 @@ export default function OrderItemComponent({
                     {total("bonus")}
                   </p>
                   <p className="font-normal textNormal2 text-[#2E2E2E]">
-                    {formatNumber(orderData?.payed_bonus / 100)} {all("sum")}
+                    {formatNumber(Number(orderData?.payed_bonus || 0) / 100)} {all("sum")}
                   </p>
                 </div>
               )}
@@ -392,7 +577,7 @@ export default function OrderItemComponent({
                     {total("delivery")}
                   </p>
                   <p className="font-normal textNormal2 text-[#2E2E2E]">
-                    {formatNumber(10000)} {all("sum")}
+                    {formatNumber(totals.deliverySum)} {all("sum")}
                   </p>
                 </div>
               )}
@@ -402,7 +587,7 @@ export default function OrderItemComponent({
                   {total("total")}
                 </p>
                 <p className="font-medium textNormal3 text-[#2E2E2E]">
-                  {formatNumber(orderData?.payed_sum / 100)}
+                  {formatNumber(totals.totalSum)}
                   {all("sum")}
                 </p>
               </div>

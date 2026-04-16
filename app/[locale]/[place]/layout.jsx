@@ -3,16 +3,15 @@ import { getMessages, getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import { Poppins } from "next/font/google";
-import "../../globals.css";
 import Header from "@/components/shared/header";
 import Footer from "@/components/shared/footer";
 import { ApiService } from "@/service/api.services";
 import NextTopLoader from "nextjs-toploader";
 import { Toaster } from "sonner";
 import Script from "next/script";
-import LoaderWrapper from "@/components/shared/loader-wrapper";
 import { getSafeApiTime } from "@/lib/safe-api-time";
-import { cookies } from "next/headers";
+import PwaRegister from "@/components/shared/pwa-register";
+import RealtimeUpdatesBridge from "@/components/shared/realtimeUpdatesBridge";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -32,14 +31,36 @@ export const metadata = {
     ru: "https://rollingsushi.uz/ru/web",
     en: "https://rollingsushi.uz/en/web",
   },
+  manifest: "/manifest.webmanifest",
+  icons: {
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/pwa-192x192.png", sizes: "192x192", type: "image/png" },
+      { url: "/pwa-512x512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Rolling Sushi",
+  },
 };
 
+export const viewport = {
+  themeColor: "#5b8a69",
+};
+
+export async function generateStaticParams() {
+  return ["uz", "ru", "en"].flatMap((locale) =>
+    ["web", "branch"].map((place) => ({ locale, place }))
+  );
+}
+
 export default async function Layout({ children, params }) {
-  const [param, categoriesData, productsData, timeDataRes] = await Promise.all([
+  const [param, timeDataRes] = await Promise.all([
     params,
-    ApiService.getPosterData("menu.getCategories", "", 86400),
-    ApiService.getPosterData("menu.getProducts", "", 7200),
-    getSafeApiTime(process.env.NEXT_PUBLIC_URL_RENDER),
+    getSafeApiTime(process.env.NEXT_PUBLIC_URL),
   ]);
 
   // Validate the locale
@@ -49,48 +70,15 @@ export default async function Layout({ children, params }) {
 
   let spotData = [];
   if (param.place === "branch") {
-    spotData = await ApiService.getPosterData("spots.getSpots", "", 604800);
+    spotData = await ApiService.getPosterData("spots.getSpots", "");
   }
 
   // Retrieve messages for the specified locale
   const messages = await getMessages(param.locale);
-  const cookieStore = await cookies();
-  const rawClientCookie = cookieStore.get("client")?.value;
-  let initialClient = null;
-
-  if (rawClientCookie) {
-    try {
-      initialClient = JSON.parse(rawClientCookie);
-    } catch {
-      try {
-        initialClient = JSON.parse(decodeURIComponent(rawClientCookie));
-      } catch {
-        initialClient = null;
-      }
-    }
-  }
 
   return (
-    <html lang={param.locale} suppressHydrationWarning>
-      <head>
-        <meta name="yandex-verification" content="2eb6c0631cdd4d80" />
-        <meta httpEquiv="Content-Type" content="text/html; charset=UTF-8" />
-        <link
-          rel="shortcut icon"
-          href="../../favicon.ico"
-          type="image/x-icon"
-        />
-        <link
-          rel="shortcut icon"
-          href="/assets/favicon.ico"
-          type="image/x-icon"
-        />
-        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-      </head>
-      <body
-        suppressHydrationWarning
-        className={`${poppins.className} antialiased min-h-screen flex flex-col`}
-      >
+    <div className={`${poppins.className} antialiased min-h-screen flex flex-col`}>
+        <PwaRegister />
         <Script id="gtm-script" strategy="afterInteractive">
           {`
             (function(w,d,s,l,i){
@@ -128,14 +116,12 @@ export default async function Layout({ children, params }) {
           showAtBottom={false}
         />
         <NextIntlClientProvider locale={param.locale} messages={messages}>
+          <RealtimeUpdatesBridge />
           <Header
-            categories={categoriesData?.response}
-            products={productsData?.response}
             param={param}
             locale={param.locale}
             spotData={spotData}
             apiTime={timeDataRes}
-            initialClient={initialClient}
           />
           <main className="grow">
             {/* <LoaderWrapper> */}
@@ -226,7 +212,6 @@ export default async function Layout({ children, params }) {
             }),
           }}
         />
-      </body>
-    </html>
+    </div>
   );
 }

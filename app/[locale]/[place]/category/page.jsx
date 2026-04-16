@@ -16,22 +16,21 @@ export const metadata = {
 };
 
 export const experimental_ppr = true;
+export const revalidate = 7200;
 
 export async function generateStaticParams() {
-  return [
-    { locale: "uz", place: "web" },
-    { locale: "ru", place: "web" },
-    { locale: "en", place: "web" },
-  ];
+  return ["uz", "ru", "en"].flatMap((locale) =>
+    ["web", "branch"].map((place) => ({ locale, place }))
+  );
 }
 
-export default async function Page({ params, searchParams }) {
-  const [path, searchParamsData] = await Promise.all([params, searchParams]);
+export default async function Page({ params }) {
+  const path = await params;
 
   return (
     <Container className="w-full mx-auto flex flex-col pt-5 gap-5">
-      <CategoryComponent searchParamsData={searchParamsData} path={path} />
-      <PopularComponent searchParamsData={searchParamsData} path={path} />
+      <CategoryComponent path={path} />
+      <PopularComponent path={path} />
     </Container>
   );
 }

@@ -55,6 +55,7 @@
     "no_active": "Hozirda faol emas",
     "no_auth": "Faqat ro'yxatdan o'tgan foydalanuvchilar uchun",
     "no_auth1": "Faqat ro'yxatdan o'tgan foydalanuvchilar uchun",
+    "cart_auth_required": "Buyurtma berishdan oldin akkauntga kirish kerak.",
     "products_empty": "Siz mahsulot tanlamadingiz!",
     "phone_empty": "Telefon raqam mavjud emas!",
     "order_empty": "Buyurtmalar mavjud emas.",
@@ -376,13 +377,22 @@
     "product_title": "Mahsulotlar",
     "payment_method": "Toʻlov turi",
     "show_order": "Buyurtmani ko'rish",
+    "filter_all": "Barchasi",
+    "filter_active": "Faol",
+    "filter_completed": "Yakunlangan",
+    "filter_cancelled": "Bekor qilingan",
     "comment": "Fikr bildirish",
     "your_order": "Sizning buyurtmangiz",
     "OrderStatus": {
+      "pending": "Kutilmoqda",
       "confirmed": "Qabul qilingan",
       "cooking": "Tayyorlanmoqda",
       "in-deliver": "Yo'lda",
-      "finished": "Yetkazib berildi"
+      "finished": "Yetkazib berildi",
+      "ready-pickup": "Olib ketishga tayyor",
+      "taken": "Olib ketildi",
+      "cancelled": "Bekor qilindi",
+      "refund_notice": "To'langan mablag' 3 ish kuni ichida hisobingizga qaytariladi."
     },
     "Promocode": {
       "title": "Menda promo-kod bor",

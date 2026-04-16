@@ -1,23 +1,15 @@
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { cn, translateTextSpot } from "@/lib/utils";
+import { translateTextSpot } from "@/lib/utils";
 import { useOrderStore, useStore } from "@/store";
 import Image from "next/image";
 import React, { useEffect } from "react";
 import { useTranslations } from "use-intl";
-import PhoneInput from "react-phone-number-input";
-import "react-phone-number-input/style.css";
 const Spot = ({ apiTime, place, locale, spotData, searchParamsData }) => {
   const spotText = useTranslations("Cart.Spot");
   const allT = useTranslations("All");
-  const profileT = useTranslations("Profile");
   const { spot, table_id, table_num, service } = searchParamsData;
   const { setActiveTab } = useStore();
   const { orderData, setOrderData } = useOrderStore();
-
-  const handleChangePhone = (value) => {
-    setOrderData({ ...orderData, phone: value });
-  };
 
   useEffect(() => {
     if (place == "web") {
@@ -60,24 +52,6 @@ const Spot = ({ apiTime, place, locale, spotData, searchParamsData }) => {
             />
             {allT("table")} № {table_num}
           </p>
-        </div>
-        <p className="text-[#A098AE] font-normal textSmall3 pt-2">
-          {profileT("phone")}
-        </p>
-        <div className="lg:w-2/3 flex w-full justify-between pt-2 md:gap-2">
-          <PhoneInput
-            country="UZ"
-            defaultCountry="UZ"
-            placeholder=""
-            international
-            withCountryCallingCode
-            value={orderData?.phone || ""}
-            onChange={handleChangePhone}
-            className={cn("input-phone-cart rounded-md w-full")}
-            style={{ borderColor: "white" }}
-            countryCallingCodeEditable={false}
-            focusInputOnCountrySelection
-          />
         </div>
       </div>
     </div>

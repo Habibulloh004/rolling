@@ -7,18 +7,18 @@ import {
   createOrderPoster,
   PaymeCheckout,
   updateClient,
+  verifyPaymentTransaction,
 } from "@/actions/post";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { formatCreatedAt, formatNumber } from "@/lib/utils";
 import { ApiService } from "@/service/api.services";
-import { useOrderStore, useProductStore, useStore } from "@/store";
-import axios from "axios";
+import { useClientStore, useOrderStore, useProductStore, useStore } from "@/store";
 import { ChevronRight, Ticket } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useTranslations } from "use-intl";
 import {
@@ -33,6 +33,24 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import PromoCodeDialog from "./PromocodeComponent";
+import { getLocalizedProduct } from "@/lib/utils";
+import {
+  getBranchBySpotId,
+  getBranchDeliveryFee,
+  getBranchDisplayAddress,
+  getBranchDisplayName,
+  getBranchPhone,
+  isBranchAvailableForOrdering,
+  normalizeBranchConfigs,
+  selectNearestBranch,
+} from "@/lib/branch-config";
+import { openPaymentUrl } from "@/lib/payment-launch";
+
+const isDeliveryPriceDisabledInDev =
+  process.env.NODE_ENV !== "production" &&
+  String(process.env.NEXT_PUBLIC_DISABLE_DELIVERY_PRICE_IN_DEV || "false")
+    .trim()
+    .toLowerCase() === "true";
 
 const DiscountBadge = ({ auth }) => {
   return (
@@ -83,12 +101,12 @@ const Order = ({
   place,
   productsData,
   categoriesData,
-  apiTime,
 }) => {
   const all = useTranslations("All");
   const promocodeT = useTranslations("Order.Promocode");
   const total = useTranslations("Cart.Total");
   const { activeTab, isDisabled, setIsDisabled } = useStore();
+  const { client } = useClientStore();
   const [isLoading, setIsLoading] = useState(false);
   const [bonus, setBonus] = useState(0);
   const [activeBonus, setActiveBonus] = useState(false);
@@ -100,6 +118,9 @@ const Order = ({
     paymentData,
     setPaymentData,
     setSelectCard,
+    pendingOnlinePayment,
+    setPendingOnlinePayment,
+    clearPendingOnlinePayment,
   } = useOrderStore();
   const { products, setProductsData } = useProductStore();
   const {
@@ -111,11 +132,15 @@ const Order = ({
   } = searchParamsData;
   const router = useRouter();
   const paymentText = useTranslations("Cart.Payment");
+  const resolvedAuth = client?.client_id ? client : auth;
+  const isAuthorized = Boolean(resolvedAuth?.client_id);
   const [isSuccess, setIsSuccess] = useState(false);
-  const isDev = process.env.NODE_ENV === "development";
-  const defaultTime = isDev
-    ? { closed_time: "23:59", opened_time: "00:00" }
-    : { closed_time: "23:00", opened_time: "10:00" };
+  const [branchConfigs, setBranchConfigs] = useState([]);
+  const branchApiUrl = (
+    process.env.NEXT_PUBLIC_ROLLING_BACK_URL ||
+    process.env.NEXT_PUBLIC_URL ||
+    ""
+  ).replace(/\/+$/, "");
   const originalProductsSum = products?.reduce((sum, product) => {
     if (product?.promocode) return sum;
     return sum + (Number(product?.price?.["1"] || 0) / 100) * Number(product?.count || 0);
@@ -132,6 +157,39 @@ const Order = ({
     (activeTab == "delivery" ? Number(orderData?.delivery_price || 0) : 0) -
     (orderData?.promocodePrice > 0 ? Number(orderData?.promocodePrice) : 0);
 
+  const resolveDeliveryBranch = useCallback(() => {
+    if (!Array.isArray(branchConfigs) || branchConfigs.length === 0) return null;
+    const lat = Number(orderData?.lat || 0);
+    const lng = Number(orderData?.lng || 0);
+    if (!lat || !lng) {
+      return (
+        branchConfigs.find((item) => isBranchAvailableForOrdering(item)) ||
+        branchConfigs[0] ||
+        null
+      );
+    }
+
+    return selectNearestBranch(branchConfigs, lat, lng, { preferOpen: true });
+  }, [branchConfigs, orderData?.lat, orderData?.lng]);
+
+  const resolveCurrentBranchConfig = useCallback(() => {
+    if (!Array.isArray(branchConfigs) || branchConfigs.length === 0) return null;
+
+    if (spotIdSpot) {
+      return getBranchBySpotId(branchConfigs, spotIdSpot);
+    }
+
+    if (activeTab === "pickup") {
+      return getBranchBySpotId(branchConfigs, orderData?.spot_id);
+    }
+
+    if (activeTab === "delivery") {
+      return resolveDeliveryBranch();
+    }
+
+    return null;
+  }, [activeTab, branchConfigs, orderData?.spot_id, resolveDeliveryBranch, spotIdSpot]);
+
   const handleSetBonus = () => {
     setOrderData({ ...orderData, pay_bonus: Number(bonus) });
     setBonus(0);
@@ -143,67 +201,183 @@ const Order = ({
     setActiveBonus(false);
   };
 
-  const handleCheckTime = () => {
-    console.log({ apiTime });
-    let closedTime = defaultTime.closed_time;
-    let openedTime = defaultTime.opened_time;
+  useEffect(() => {
+    let cancelled = false;
 
-    if (
-      !isDev &&
-      apiTime?.opened_time &&
-      apiTime?.opened_time !== null &&
-      apiTime?.opened_time !== "" &&
-      apiTime?.closed_time &&
-      apiTime?.closed_time !== null &&
-      apiTime?.closed_time !== ""
-    ) {
-      closedTime = apiTime?.closed_time;
-      openedTime = apiTime?.opened_time;
-    }
+    const loadBranchConfigs = async () => {
+      if (!branchApiUrl) return;
+      try {
+        const res = await fetch(`${branchApiUrl}/api/branches`);
+        if (!res.ok) return;
+        const data = await res.json();
+        if (cancelled) return;
+        const normalized = normalizeBranchConfigs(data);
+        setBranchConfigs(Array.isArray(normalized) ? normalized : []);
+      } catch (error) {
+        if (!cancelled) {
+          setBranchConfigs([]);
+        }
+      }
+    };
 
-    const [closedHour, closedMinute] = closedTime.split(":").map(Number);
-    const [openedHour, openedMinute] = openedTime.split(":").map(Number);
+    loadBranchConfigs();
+    return () => {
+      cancelled = true;
+    };
+  }, [branchApiUrl]);
 
-    const currentTime = new Date();
-    const hours = currentTime.getHours();
-    const minutes = currentTime.getMinutes();
-    console.log({ hours, minutes });
-    const currentMinutes = hours * 60 + minutes;
-    const openedMinutes = openedHour * 60 + openedMinute;
-    const closedMinutes = closedHour * 60 + closedMinute;
-
-    let isDisabled;
-
-    if (openedMinutes <= closedMinutes) {
-      isDisabled =
-        currentMinutes < openedMinutes || currentMinutes >= closedMinutes;
-    } else {
-      isDisabled =
-        currentMinutes < openedMinutes && currentMinutes >= closedMinutes;
-    }
-
-    setIsDisabled(isDisabled);
-    return isDisabled;
+  const emptyOrderState = {
+    spot_id: 0,
+    spot_name: "",
+    phone: "",
+    products: [],
+    payment_method: "",
+    total: 0,
+    delivery_price: 0,
+    lng: 0,
+    lat: 0,
+    client: null,
+    pay_cash: null,
+    pay_card: null,
+    pay_click: null,
+    pay_payme: null,
+    pay_uzum: null,
+    pay_bonus: null,
+    promocode: null,
+    comment: "",
+    address: "",
+    client_addresses_id: null,
   };
 
+  const resetOrderAndCart = () => {
+    setOrderData(emptyOrderState);
+    setSelectCard(null);
+    setPaymentData(null);
+    setProductsData([]);
+  };
+
+  const isOrderingClosedByBranchConfig = useCallback(
+    (selectedBranchConfig = null) => {
+      if (!Array.isArray(branchConfigs) || branchConfigs.length === 0) {
+        return false;
+      }
+
+      const hasAnyOpenBranch = branchConfigs.some((branch) =>
+        isBranchAvailableForOrdering(branch)
+      );
+      if (!hasAnyOpenBranch) {
+        return true;
+      }
+
+      if (activeTab === "delivery") {
+        const deliveryBranch =
+          selectedBranchConfig || resolveDeliveryBranch() || branchConfigs[0];
+        return !isBranchAvailableForOrdering(deliveryBranch);
+      }
+
+      if (spotIdSpot) {
+        const spotBranch =
+          selectedBranchConfig || getBranchBySpotId(branchConfigs, spotIdSpot);
+        return !spotBranch || !isBranchAvailableForOrdering(spotBranch);
+      }
+
+      if (activeTab === "pickup" && !Number(orderData?.spot_id || 0)) {
+        return false;
+      }
+
+      const targetBranch = selectedBranchConfig || resolveCurrentBranchConfig();
+      if (!targetBranch) return false;
+      return !isBranchAvailableForOrdering(targetBranch);
+    },
+    [
+      activeTab,
+      branchConfigs,
+      orderData?.spot_id,
+      resolveCurrentBranchConfig,
+      resolveDeliveryBranch,
+      spotIdSpot,
+    ]
+  );
+
+  useEffect(() => {
+    const updateAvailability = () => {
+      const selectedBranchConfig = resolveCurrentBranchConfig();
+      const isClosed = isOrderingClosedByBranchConfig(selectedBranchConfig);
+      setIsDisabled(isClosed);
+    };
+
+    updateAvailability();
+    const timer = setInterval(updateAvailability, 30_000);
+    return () => clearInterval(timer);
+  }, [isOrderingClosedByBranchConfig, resolveCurrentBranchConfig, setIsDisabled]);
+
+  useEffect(() => {
+    if (!Array.isArray(branchConfigs) || branchConfigs.length === 0) return;
+
+    const selectedBranchConfig = resolveCurrentBranchConfig();
+    if (!selectedBranchConfig) return;
+
+    const next = { ...orderData };
+    let changed = false;
+
+    const nextSpotId = Number(selectedBranchConfig?.spotId || orderData?.spot_id || 0);
+    if (nextSpotId && Number(orderData?.spot_id || 0) !== nextSpotId) {
+      next.spot_id = nextSpotId;
+      changed = true;
+    }
+
+    const localizedName = getBranchDisplayName(selectedBranchConfig, locale);
+    const localizedAddress = getBranchDisplayAddress(selectedBranchConfig, locale);
+    const branchPhone = getBranchPhone(selectedBranchConfig);
+
+    if (localizedName && orderData?.spot_name !== localizedName) {
+      next.spot_name = localizedName;
+      changed = true;
+    }
+    if (localizedAddress && orderData?.spot_address !== localizedAddress) {
+      next.spot_address = localizedAddress;
+      changed = true;
+    }
+    if (branchPhone && orderData?.spot_phone !== branchPhone) {
+      next.spot_phone = branchPhone;
+      changed = true;
+    }
+
+    const expectedDeliveryFee =
+      activeTab === "delivery"
+        ? isDeliveryPriceDisabledInDev
+          ? 0
+          : getBranchDeliveryFee(selectedBranchConfig)
+        : 0;
+    if (Number(orderData?.delivery_price || 0) !== Number(expectedDeliveryFee || 0)) {
+      next.delivery_price = Number(expectedDeliveryFee || 0);
+      changed = true;
+    }
+
+    if (changed) {
+      setOrderData(next);
+    }
+  }, [
+    activeTab,
+    branchConfigs,
+    locale,
+    orderData,
+    resolveCurrentBranchConfig,
+    setOrderData,
+  ]);
+
   const handleSubmit = async () => {
-    if (handleCheckTime()) {
+    const selectedBranchConfig = resolveCurrentBranchConfig();
+    if (isOrderingClosedByBranchConfig(selectedBranchConfig)) {
+      toast.error(total("note"));
       return;
     }
     if (products.length == 0) {
       toast.error(all("products_empty"));
       return;
     }
-    if (!orderData?.phone && !auth?.client_id) {
-      toast.error(all("phone_empty"));
-      return;
-    }
-    if (orderData?.phone && orderData?.phone.length != 13) {
-      toast.error(all("phone_empty"));
-      return;
-    }
-    if (!orderData?.phone && spotIdSpot) {
-      toast.error(all("phone_empty"));
+    if (!isAuthorized) {
+      toast.error(all("no_auth"));
       return;
     }
 
@@ -253,18 +427,56 @@ const Order = ({
         promocode,
       } = orderData;
       setIsLoading(true);
+      const effectiveBranchConfig =
+        selectedBranchConfig ||
+        getBranchBySpotId(
+          branchConfigs,
+          spotIdSpot || (activeTab === "pickup" ? spot_id : null)
+        );
+      const effectiveSpotId = Number(
+        spotIdSpot ||
+          effectiveBranchConfig?.spotId ||
+          spot_id ||
+          1
+      );
+      const effectiveDeliveryPrice =
+        activeTab === "delivery"
+          ? Number(
+              isDeliveryPriceDisabledInDev
+                ? 0
+                : effectiveBranchConfig
+                ? getBranchDeliveryFee(effectiveBranchConfig)
+                : delivery_price || 0
+            )
+          : 0;
       const filterProductsAbdugani = products?.map((p) => {
+        const productName =
+          p?.product_name ||
+          p?.name ||
+          getLocalizedProduct(p?.product_production_description, locale, "name") ||
+          `Product ${p?.product_id}`;
         return {
           product_id: +p.product_id,
           amount: +p.count,
+          product_name: productName,
+          name: productName,
+          price: Number(p?.price?.["1"] || 0) / 100,
         };
       });
       const filterProductsSpot = products
         ?.filter((pr) => !pr?.promocode)
         ?.map((p) => {
+          const productName =
+            p?.product_name ||
+            p?.name ||
+            getLocalizedProduct(p?.product_production_description, locale, "name") ||
+            `Product ${p?.product_id}`;
           return {
             product_id: +p.product_id,
             count: +p.count,
+            product_name: productName,
+            name: productName,
+            price: Number(p?.price?.["1"] || 0) / 100,
           };
         });
 
@@ -305,11 +517,10 @@ const Order = ({
       if (spotIdSpot) {
         commentSpot = `${commentSpot ? commentSpot : ""
           }\nНомер стола : ${table_num} \nТип услуги : ${service == "self" ? "самообслуживание" : "официант"
-          }\nНомер телефона : ${phone}`;
-      } else if (!auth?.client_id) {
-        commentSpot = `${commentSpot}\nНомер телефона : ${phone}`;
+          }`;
       }
       commentSpot = `${commentSpot}\nТип заказа: Через веб-сайт`;
+      commentSpot = `${commentSpot}\nИсточник: Веб-сайт`;
 
       let filterPromocode = null;
       if (promocode && promocode?.params?.result_type == 1) {
@@ -382,7 +593,7 @@ const Order = ({
       let totalAmount = Number(totalSum) - (pay_bonus ? Number(pay_bonus) : 0);
 
       if (activeTab == "delivery") {
-        totalAmount += Number(delivery_price);
+        totalAmount += effectiveDeliveryPrice;
       }
 
       if (orderData?.promocodePrice > 0) {
@@ -392,56 +603,123 @@ const Order = ({
       if (service == "waiter") {
         totalAmount = Number(totalAmount + (totalAmount * 10) / 100);
       }
+      const normalizedPhone =
+        (phone && String(phone).trim()) ||
+        (resolvedAuth?.phone_number ? `+${resolvedAuth?.phone_number}` : "") ||
+        "";
+      const branchName =
+        getBranchDisplayName(effectiveBranchConfig, locale) ||
+        (spot_name && String(spot_name).trim()) ||
+        (spotDataFilial?.response?.name && String(spotDataFilial?.response?.name).trim()) ||
+        "";
+      const branchAddress =
+        getBranchDisplayAddress(effectiveBranchConfig, locale) ||
+        (orderData?.spot_address && String(orderData?.spot_address).trim()) ||
+        (spotDataFilial?.response?.address &&
+          String(spotDataFilial?.response?.address).trim()) ||
+        "";
+      const branchPhone =
+        getBranchPhone(effectiveBranchConfig) ||
+        (orderData?.spot_phone && String(orderData?.spot_phone).trim()) ||
+        (spotDataFilial?.response?.phone &&
+          String(spotDataFilial?.response?.phone).trim()) ||
+        "";
+      const firstName =
+        resolvedAuth?.firstname ||
+        resolvedAuth?.first_name ||
+        resolvedAuth?.client_name ||
+        resolvedAuth?.name ||
+        "";
+      const lastName = resolvedAuth?.lastname || resolvedAuth?.last_name || "";
+      const promoCodeValue =
+        promocode?.name && String(promocode?.name).includes("$")
+          ? String(promocode?.name).split("$")[1]
+          : null;
+      const promoDiscountAmount =
+        orderData?.promocodePrice > 0 ? Number(orderData?.promocodePrice) : null;
+      const promoDiscountPercentage =
+        orderData?.discountPromocode > 0 ? Number(orderData?.discountPromocode) : null;
+      const normalizedPromotions = promocode ? filterPromocode : null;
 
       let deliveryData = {
         address_comment,
-        all_price: Number((+totalSum + +delivery_price) * 100),
+        address,
+        all_price: Number((+totalSum + +effectiveDeliveryPrice) * 100),
         client_address: `${lat || 0},${lng || 0}`,
-        client_id: auth?.client_id ? auth.client_id : "25562",
+        client_id: resolvedAuth?.client_id ? resolvedAuth.client_id : "25562",
         comment: commentSpot,
         created_at: formatCreatedAt(),
         payed_bonus: pay_bonus ? Number(pay_bonus) * 100 : 0,
         payed_sum: Number(Math.round(totalAmount)) * 100,
         payment: payment_method == "cash" ? "cash" : "creditCard",
-        phone: auth?.client_id ? `+${auth?.phone_number}` : "+998771052018",
+        phone: normalizedPhone,
+        first_name: firstName,
+        last_name: lastName,
+        language: locale,
         products: JSON.stringify(filterProductsAbdugani),
-        promotion: "no",
-        spot_id: 0,
+        promotion: normalizedPromotions,
+        promotions: normalizedPromotions,
+        spot_id: effectiveSpotId,
+        spot_name: branchName,
+        spot_address: branchAddress,
+        spot_phone: branchPhone,
+        branch_id: String(effectiveSpotId),
+        promoCode: promoCodeValue,
+        promoDiscountAmount,
+        promoDiscountPercentage,
         status: "",
         type: "delivery",
-        promocode: promocode ? JSON.stringify(filterPromocode) : "",
+        promocode: promoCodeValue,
       };
 
       let pickupData = {
         address_comment: "no",
         all_price: Number(totalSum * 100),
         client_address: `41.316421,69.247890`,
-        client_id: auth?.client_id ? auth?.client_id : "25562",
+        client_id: resolvedAuth?.client_id ? resolvedAuth?.client_id : "25562",
         comment: commentSpot,
         created_at: formatCreatedAt(),
         payed_bonus: pay_bonus ? Number(pay_bonus) * 100 : 0,
         payed_sum: Number(Math.round(totalAmount)) * 100,
         payment: payment_method == "cash" ? "cash" : "creditCard",
-        phone: auth?.client_id ? `+${auth?.phone_number}` : "+998771052018",
+        phone: normalizedPhone,
+        first_name: firstName,
+        last_name: lastName,
+        language: locale,
         products: JSON.stringify(filterProductsAbdugani),
-        promotion: "no",
-        spot_id: Number(spot_id),
+        promotion: normalizedPromotions,
+        promotions: normalizedPromotions,
+        spot_id: effectiveSpotId,
+        spot_name: branchName,
+        spot_address: branchAddress,
+        spot_phone: branchPhone,
+        branch_id: String(effectiveSpotId),
+        promoCode: promoCodeValue,
+        promoDiscountAmount,
+        promoDiscountPercentage,
         status: "",
-        type: `take_away ${spot_name}`,
-        promocode: promocode ? JSON.stringify(filterPromocode) : "",
+        type: `take_away ${branchName || spot_name}`,
+        promocode: promoCodeValue,
       };
 
       let spotData = {
-        phone: spotIdSpot
-          ? "+998771244444"
-          : auth?.client_id
-            ? `+${auth?.phone_number}`
-            : "+998771052018",
+        phone: normalizedPhone,
+        first_name: firstName,
+        last_name: lastName,
+        spot_name: branchName,
+        spot_address: branchAddress,
+        spot_phone: branchPhone,
+        branch_id: String(effectiveSpotId),
+        language: locale,
         products: filterProductsSpot,
         service_mode: spotIdSpot ? 1 : 2,
-        spot_id: Number(spotIdSpot ? spotIdSpot : Number(spot_id)),
+        spot_id: effectiveSpotId,
         comment: commentSpot,
-        promotion: promocode ? filterPromocode : null,
+        promotion: normalizedPromotions,
+        promotions: normalizedPromotions,
+        promoCode: promoCodeValue,
+        promoDiscountAmount,
+        promoDiscountPercentage,
       };
 
       if (address && !spotIdSpot) {
@@ -457,8 +735,10 @@ const Order = ({
       let commentClient;
       let clinetGroupId;
 
-      if (auth?.client_id) {
-        const commentC = auth?.comment ? JSON.parse(auth?.comment) : null;
+      if (resolvedAuth?.client_id) {
+        const commentC = resolvedAuth?.comment
+          ? JSON.parse(resolvedAuth?.comment)
+          : null;
         if (Number(commentC?.length) > 0) {
           commentClient = {
             password: commentC?.password,
@@ -479,230 +759,116 @@ const Order = ({
         }
       }
       if (payment_method == "payme" || payment_method == "click") {
+        // Determine order details and service mode based on context
+        let orderDetails, serviceMode, draftOrder;
         if (spotIdSpot) {
-          let dataPay = {
-            orderDetails: {
-              ...spotData,
-              service_mode: 1,
-              service,
-              spot_name: spotDataFilial?.response?.name,
-            },
-            amount: Math?.round(totalAmount),
-            status: payment_method == "payme" ? 0 : 1,
-            provider: payment_method,
-            url: `https://rolling.uz/${locale}/${place}/cart?spot=${spotIdSpot}&table_id=${table_id}&table_num=${table_num}&service=${service}&confirm=true`,
+          orderDetails = {
+            ...spotData,
+            service,
+            spot_name: spotDataFilial?.response?.name,
           };
-          if (auth?.client_id) {
-            dataPay.userId = auth?.client_id;
-          }
-          let res;
-          switch (payment_method) {
-            case "payme":
-              res = await PaymeCheckout(dataPay);
-              break;
-            case "click":
-              res = await ClickCheckout(dataPay);
-              break;
-          }
-          console.log({ res });
-          if (res) {
-            window.open(res.url, "_blank");
-            // const nowOrder = {
-            //   ...deliveryData,
-            //   response: res,
-            // };
-            // orderList.push(nowOrder);
-            // localStorage.setItem("orderList", JSON.stringify(orderList));
-            setPaymentData(null);
-            setOrderData({
-              spot_id: 0,
-              spot_name: "",
-              phone: "",
-              products: [],
-              payment_method: "",
-              total: 0,
-              lng: 0,
-              lat: 0,
-              delivery_price: 10000,
-              client: null,
-              pay_cash: null,
-              pay_card: null,
-              pay_click: null,
-              pay_payme: null,
-              pay_uzum: null,
-              pay_bonus: null,
-              promocode: null,
-              comment: "",
-              address: "",
-              client_addresses_id: null,
+          serviceMode = 1;
+          draftOrder = { ...spotData };
+        } else if (activeTab == "pickup") {
+          orderDetails = pickupData;
+          serviceMode = 2;
+          draftOrder = { ...pickupData };
+        } else {
+          orderDetails = deliveryData;
+          serviceMode = 3;
+          draftOrder = { ...deliveryData };
+        }
+
+        // Build checkout payload
+        const baseUrl = `https://rolling.uz/${locale}/${place}`;
+        const returnUrl = spotIdSpot
+          ? `${baseUrl}/cart?spot=${spotIdSpot}&table_id=${table_id}&table_num=${table_num}&service=${service}&confirm=true`
+          : `${baseUrl}/confirmedpay`;
+
+        const dataPay = {
+          orderDetails: {
+            ...orderDetails,
+            service_mode: serviceMode,
+          },
+          amount: Math.round(totalAmount),
+          status: payment_method === "payme" ? 0 : 1,
+          provider: payment_method,
+          url: returnUrl,
+        };
+        if (resolvedAuth?.client_id) {
+          dataPay.userId = resolvedAuth.client_id;
+        }
+
+        // Call the appropriate checkout endpoint
+        const res =
+          payment_method === "payme"
+            ? await PaymeCheckout(dataPay)
+            : await ClickCheckout(dataPay);
+
+        console.log({ res });
+
+        if (res?.url) {
+          const transactionId = String(res.order_id || res.orderId || "");
+
+          // Store pending payment state — DO NOT clear cart yet
+          setPendingOnlinePayment({
+            provider: payment_method,
+            transactionId,
+            amount: totalAmount,
+            orderId: transactionId,
+            createdAt: Date.now(),
+            checkoutUrl: res.url,
+          });
+
+          // Save order to localStorage for later retrieval
+          orderList.push({
+            ...draftOrder,
+            order_id: transactionId,
+            payment_type: payment_method,
+            type: spotIdSpot ? "spot" : activeTab === "pickup" ? "take_away" : "delivery",
+            status: "pending",
+            created_at: new Date().toISOString(),
+            all_price: Math.round(totalAmount * 100),
+            payed_sum: Math.round(totalAmount * 100),
+          });
+          localStorage.setItem("orderList", JSON.stringify(orderList));
+
+          // Fire analytics
+          window.dataLayer?.push({
+            event: "purchase",
+            ecommerce: {
+              transaction_id: transactionId,
+              value: totalAmount,
+              currency: "UZS",
+              items: orderDetails?.products || spotData?.products,
+            },
+          });
+
+          if (spotIdSpot) {
+            // Spot order: open payment directly (still in user gesture context)
+            openPaymentUrl(payment_method, res.url, {
+              fallbackToCurrentTab: true,
             });
-            setSelectCard(null);
-            setProductsData([]);
-            window.dataLayer?.push({
-              event: "purchase",
-              ecommerce: {
-                transaction_id: Math.floor(100000 + Math.random() * 900000),
-                value: totalAmount, // umumiy narx
-                currency: "UZS", // valyuta
-                items: spotData?.products,
-              },
+          } else {
+            // Web order: navigate to confirmedpay page.
+            // Desktop: auto-opens payment in new tab.
+            // Mobile: shows a "Pay" button the user taps to open the app
+            //         (intent:// and Universal Links require a real <a> tap).
+            router.push(
+              `/${locale}/${place}/confirmedpay/${transactionId}?autostart=1&provider=${payment_method}`
+            );
+          }
+
+          // Update client loyalty if authenticated
+          if (resolvedAuth?.client_id) {
+            await updateClient({
+              client_id: resolvedAuth?.client_id,
+              comment: JSON.stringify(commentClient),
+              client_groups_id_client: clinetGroupId,
             });
           }
         } else {
-          if (activeTab == "pickup") {
-            let dataPay = {
-              orderDetails: {
-                ...pickupData,
-                service_mode: 3,
-              },
-              amount: Math?.round(totalAmount),
-              status: payment_method == "payme" ? 0 : 1,
-              provider: payment_method,
-              url: `https://rolling.uz/${locale}/${place}/confirmedpay`,
-            };
-            if (auth?.client_id) {
-              dataPay.userId = auth?.client_id;
-            }
-            let res;
-            switch (payment_method) {
-              case "payme":
-                res = await PaymeCheckout(dataPay);
-                break;
-              case "click":
-                res = await ClickCheckout(dataPay);
-                break;
-            }
-            console.log({ res });
-            if (res) {
-              router.push(res.url);
-              // router.push(`/${locale}/${place}/confirmedpay/${res?.order_id}`);
-              const nowOrder = {
-                ...pickupData,
-                order_id: res.order_id,
-                payment_type: payment_method,
-              };
-              orderList.push(nowOrder);
-              localStorage.setItem("orderList", JSON.stringify(orderList));
-              setOrderData({
-                spot_id: 0,
-                spot_name: "",
-                delivery_price: 10000,
-                phone: "",
-                products: [],
-                payment_method: "",
-                total: 0,
-                lng: 0,
-                lat: 0,
-                client: null,
-                pay_cash: null,
-                pay_card: null,
-                pay_click: null,
-                pay_payme: null,
-                pay_uzum: null,
-                pay_bonus: null,
-                comment: "",
-                address: "",
-                promocode: null,
-                client_addresses_id: null,
-              });
-              setSelectCard(null);
-              setPaymentData(null);
-              setProductsData([]);
-              window.dataLayer?.push({
-                event: "purchase",
-                ecommerce: {
-                  transaction_id: Math.floor(100000 + Math.random() * 900000),
-                  value: totalAmount, // umumiy narx
-                  currency: "UZS", // valyuta
-                  items: spotData?.products,
-                },
-              });
-              if (auth?.client_id) {
-                await updateClient({
-                  client_id: auth?.client_id,
-                  comment: JSON.stringify(commentClient),
-                  client_groups_id_client: clinetGroupId,
-                });
-              }
-              toast.success(all("order_created"));
-            }
-          } else if (activeTab == "delivery") {
-            let dataPay = {
-              orderDetails: { ...deliveryData, service_mode: 2 },
-              amount: Math?.round(totalAmount),
-              status: payment_method == "payme" ? 0 : 1,
-              provider: payment_method,
-              url: `https://rolling.uz/${locale}/${place}/confirmedpay`,
-            };
-            if (auth?.client_id) {
-              dataPay.userId = auth?.client_id;
-            }
-            let res;
-            switch (payment_method) {
-              case "payme":
-                res = await PaymeCheckout(dataPay);
-                break;
-              case "click":
-                res = await ClickCheckout(dataPay);
-                break;
-            }
-            console.log({ res });
-            console.log("dataPay", JSON.stringify(dataPay));
-
-            if (res) {
-              router.push(res.url);
-              // router.push(`/${locale}/${place}/confirmedpay/${res?.order_id}`);
-              setOrderData({
-                spot_id: 0,
-                delivery_price: 10000,
-                spot_name: "",
-                phone: "",
-                products: [],
-                payment_method: "",
-                total: 0,
-                lng: 0,
-                lat: 0,
-                client: null,
-                pay_cash: null,
-                pay_card: null,
-                pay_click: null,
-                pay_payme: null,
-                pay_uzum: null,
-                pay_bonus: null,
-                comment: "",
-                address: "",
-                promocode: null,
-                client_addresses_id: null,
-              });
-              const nowOrder = {
-                ...deliveryData,
-                order_id: res?.order_id,
-                payment_type: payment_method,
-              };
-              setPaymentData(null);
-              orderList.push(nowOrder);
-              localStorage.setItem("orderList", JSON.stringify(orderList));
-              setProductsData([]);
-              setSelectCard(null);
-              toast.success(all("order_created"));
-              window.dataLayer?.push({
-                event: "purchase",
-                ecommerce: {
-                  transaction_id: Math.floor(100000 + Math.random() * 900000),
-                  value: totalAmount, // umumiy narx
-                  currency: "UZS", // valyuta
-                  items: spotData?.products,
-                },
-              });
-              if (auth?.client_id) {
-                await updateClient({
-                  client_id: auth?.client_id,
-                  comment: JSON.stringify(commentClient),
-                  client_groups_id_client: clinetGroupId,
-                });
-              }
-            }
-          }
+          toast.error(all("order_error") || "Payment initialization failed");
         }
       } else {
         if (spotIdSpot) {
@@ -710,69 +876,36 @@ const Order = ({
           console.log(res);
 
           if (res?.response) {
-            const { transaction_id } = res?.response;
+            const transactionId = String(
+              res?.order_id ||
+                res?.response?.incoming_order_id ||
+                res?.response?.transaction_id ||
+                ""
+            );
 
             const nowOrder = {
-              ...deliveryData,
-              response: res,
+              ...spotData,
+              order_id: transactionId,
+              payment_type: payment_method,
+              type: "spot",
+              status: "pending",
+              created_at: new Date().toISOString(),
+              all_price: Math.round(totalAmount * 100),
+              payed_sum: Math.round(totalAmount * 100),
+              response: res?.response || res,
             };
-            const message = `
-📦 Новый заказ! №${transaction_id}
-🛒 Название филиал: ${spotDataFilial?.response?.name}
-📞 Телефон: +998771244444
-💵 Сумма заказа: ${formatNumber(
-              service == "waiter"
-                ? Number(totalSum + (totalSum * 10) / 100)
-                : Number(totalSum)
-            )} сум
-💳 Метод оплаты: ${orderData?.payment_method == "cash"
-                ? "Наличные"
-                : "Карта (Оплачено)"
-              }
-🛍 Тип заказа: Заведения
-✏️ Комментарий: ${commentSpot}`.trim();
-
-            await axios.get(
-              `https://api.telegram.org/bot7051935328:AAFJxJAVsRTPxgj3rrHWty1pEUlMkBgg9_o/sendMessage?chat_id=-1002211902296&text=${encodeURIComponent(
-                message
-              )}`
-            );
 
             orderList.push(nowOrder);
             localStorage.setItem("orderList", JSON.stringify(orderList));
-            setPaymentData(null);
-            setOrderData({
-              spot_id: 0,
-              spot_name: "",
-              phone: "",
-              products: [],
-              payment_method: "",
-              total: 0,
-              lng: 0,
-              lat: 0,
-              delivery_price: 10000,
-              client: null,
-              pay_cash: null,
-              pay_card: null,
-              pay_click: null,
-              pay_payme: null,
-              pay_uzum: null,
-              pay_bonus: null,
-              promocode: null,
-              comment: "",
-              address: "",
-              client_addresses_id: null,
-            });
-            setSelectCard(null);
-            setProductsData([]);
+            resetOrderAndCart();
             toast.success(all("order_created"));
             setIsSuccess(true);
             window.dataLayer?.push({
               event: "purchase",
               ecommerce: {
-                transaction_id: transaction_id,
-                value: totalAmount, // umumiy narx
-                currency: "UZS", // valyuta
+                transaction_id: transactionId,
+                value: totalAmount,
+                currency: "UZS",
                 items: spotData?.products,
               },
             });
@@ -789,34 +922,10 @@ const Order = ({
               };
               orderList.push(nowOrder);
               localStorage.setItem("orderList", JSON.stringify(orderList));
-              setOrderData({
-                spot_id: 0,
-                spot_name: "",
-                delivery_price: 10000,
-                phone: "",
-                products: [],
-                payment_method: "",
-                total: 0,
-                lng: 0,
-                lat: 0,
-                client: null,
-                pay_cash: null,
-                pay_card: null,
-                pay_click: null,
-                pay_payme: null,
-                pay_uzum: null,
-                pay_bonus: null,
-                comment: "",
-                address: "",
-                promocode: null,
-                client_addresses_id: null,
-              });
-              setSelectCard(null);
-              setPaymentData(null);
-              setProductsData([]);
-              if (auth?.client_id) {
+              resetOrderAndCart();
+              if (resolvedAuth?.client_id) {
                 await updateClient({
-                  client_id: auth?.client_id,
+                  client_id: resolvedAuth?.client_id,
                   comment: JSON.stringify(commentClient),
                   client_groups_id_client: clinetGroupId,
                 });
@@ -825,8 +934,8 @@ const Order = ({
                 event: "purchase",
                 ecommerce: {
                   transaction_id: res?.order_id,
-                  value: totalAmount, // umumiy narx
-                  currency: "UZS", // valyuta
+                  value: totalAmount,
+                  currency: "UZS",
                   items: spotData?.products,
                 },
               });
@@ -836,52 +945,28 @@ const Order = ({
           } else if (activeTab == "delivery") {
             const res = await createOrder(deliveryData);
             if (res?.order_id) {
-              setOrderData({
-                spot_id: 0,
-                delivery_price: 10000,
-                spot_name: "",
-                phone: "",
-                products: [],
-                payment_method: "",
-                total: 0,
-                lng: 0,
-                lat: 0,
-                client: null,
-                pay_cash: null,
-                pay_card: null,
-                pay_click: null,
-                pay_payme: null,
-                pay_uzum: null,
-                pay_bonus: null,
-                comment: "",
-                address: "",
-                promocode: null,
-                client_addresses_id: null,
-              });
               const nowOrder = {
                 ...deliveryData,
                 order_id: res.order_id,
                 payment_type: payment_method,
               };
-              setPaymentData(null);
               orderList.push(nowOrder);
               localStorage.setItem("orderList", JSON.stringify(orderList));
-              setProductsData([]);
-              setSelectCard(null);
+              resetOrderAndCart();
               toast.success(all("order_created"));
               router.push(`/${locale}/${place}/confirmed/${res?.order_id}`);
               window.dataLayer?.push({
                 event: "purchase",
                 ecommerce: {
                   transaction_id: res?.order_id,
-                  value: totalAmount, // umumiy narx
-                  currency: "UZS", // valyuta
+                  value: totalAmount,
+                  currency: "UZS",
                   items: spotData?.products,
                 },
               });
-              if (auth?.client_id) {
+              if (resolvedAuth?.client_id) {
                 await updateClient({
-                  client_id: auth?.client_id,
+                  client_id: resolvedAuth?.client_id,
                   comment: JSON.stringify(commentClient),
                   client_groups_id_client: clinetGroupId,
                 });
@@ -917,9 +1002,38 @@ const Order = ({
   }, [totalSum]);
 
   useEffect(() => {
-    if (confirm) {
-      toast.success(all("order_created"));
-      setIsSuccess(true);
+    if (confirm && pendingOnlinePayment?.transactionId) {
+      // Spot order returned from payment provider — verify transaction
+      const verifySpotPayment = async () => {
+        setIsLoading(true);
+        try {
+          const { result } = await verifyPaymentTransaction(
+            pendingOnlinePayment.transactionId
+          );
+          if (result === "paid") {
+            clearPendingOnlinePayment();
+            resetOrderAndCart();
+            toast.success(all("order_created"));
+            setIsSuccess(true);
+          } else if (result === "cancelled") {
+            clearPendingOnlinePayment();
+            toast.error(all("payment_cancelled") || "Payment was cancelled");
+          } else {
+            toast.warning(
+              all("payment_pending") ||
+                "Payment is still being processed. Please wait."
+            );
+          }
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      verifySpotPayment();
+    } else if (confirm) {
+      toast.warning(
+        all("payment_pending") ||
+          "Payment is still being processed. Please check again."
+      );
     }
   }, []);
 
@@ -1023,7 +1137,7 @@ const Order = ({
               aria-label={`sign in`}
               disabled={paymentData && paymentData?.payment_id}
               onClick={() => {
-                if (auth?.client_id) {
+                if (isAuthorized) {
                   setActiveBonus(true);
                 } else {
                   toast.error(
@@ -1055,7 +1169,7 @@ const Order = ({
                 <ChevronRight />
               </p>
             </Button>
-            {activeBonus && auth?.client_id && (
+            {activeBonus && isAuthorized && (
               <div className="flex-col w-full p-5 border-[1px] shadow-md rounded-xl mt-3">
                 <div className="w-full flex justify-between gap-2">
                   <div className="flex flex-col items-center gap-4">
@@ -1063,10 +1177,10 @@ const Order = ({
                       {total("have_bonus")}
                     </p>
                     <p className="textSmall5">
-                      {formatNumber(Number(auth.bonus / 100))} {all("sum")}
+                      {formatNumber(Number(resolvedAuth?.bonus / 100))} {all("sum")}
                     </p>
                   </div>
-                  <DiscountBadge auth={auth} />
+                  <DiscountBadge auth={resolvedAuth} />
                 </div>
                 <div className="mt-[7px]">
                   <p className="text-[#373737] pb-1 font-medium">
@@ -1078,7 +1192,10 @@ const Order = ({
 
                       value = value.replace(/[^0-9]/g, "");
 
-                      const maxBonus = Math.min(auth?.bonus / 100, totalSum);
+                      const maxBonus = Math.min(
+                        Number(resolvedAuth?.bonus || 0) / 100,
+                        totalSum
+                      );
                       value = Math.min(Number(value), maxBonus);
 
                       setBonus(value);

@@ -95,7 +95,7 @@ const Popular = ({ products = [], locale, path }) => {
                   localizedDesc={localizedDesc}
                   locale={locale}
                   item={item}
-                  photo={item.photo}
+                  photo={item.photo_origin || item.photo}
                   localizedName={
                     localizedName
                       ? localizedName

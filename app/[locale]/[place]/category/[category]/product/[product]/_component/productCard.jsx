@@ -6,7 +6,7 @@ import { cn, formatNumber, posterUrl, truncateText } from "@/lib/utils";
 import { useProductStore, useStore } from "@/store";
 import { Heart, Minus, Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 export default function ProductCard({
   localizedDesc,
@@ -14,18 +14,15 @@ export default function ProductCard({
   productData,
   place,
 }) {
-  const [isFavorites, setIsFavorites] = useState([]);
-  const { products, setProducts, incrementCount, decrementCount } =
-    useProductStore();
-  const { setFavorites } = useStore();
+  const productImage = productData?.photo_origin || productData?.photo;
+  const productPrice = Number(productData?.price?.["1"] || 0) / 100;
+  const favorites = useStore((state) => state.favorites);
+  const setFavorites = useStore((state) => state.setFavorites);
+  const products = useProductStore((state) => state.products);
+  const setProducts = useProductStore((state) => state.setProducts);
+  const incrementCount = useProductStore((state) => state.incrementCount);
+  const decrementCount = useProductStore((state) => state.decrementCount);
   const all = useTranslations("All");
-
-  useEffect(() => {
-    // Ensure localStorage is accessed only in the browser
-    const storedFavorites =
-      JSON.parse(localStorage.getItem("isFavorites")) || [];
-    setIsFavorites(storedFavorites);
-  }, []);
 
   const handleAddProduct = () => {
     setProducts(productData);
@@ -40,21 +37,20 @@ export default function ProductCard({
   };
 
   const handleAddFavorite = () => {
-    const favorite = isFavorites.find(
+    const favorite = favorites.find(
       (f) => f.product_id === productData.product_id
     );
 
     let updatedFavorites;
 
     if (!favorite) {
-      updatedFavorites = [...isFavorites, productData];
+      updatedFavorites = [...favorites, productData];
     } else {
-      updatedFavorites = isFavorites.filter(
+      updatedFavorites = favorites.filter(
         (f) => f.product_id !== productData.product_id
       );
     }
 
-    setIsFavorites(updatedFavorites);
     setFavorites(updatedFavorites);
     localStorage.setItem("isFavorites", JSON.stringify(updatedFavorites));
   };
@@ -62,8 +58,7 @@ export default function ProductCard({
   const findProduct = products.find(
     (pr) => pr.product_id == productData.product_id
   );
-
-  const favorite = isFavorites.find(
+  const favorite = favorites.find(
     (f) => f.product_id === productData.product_id
   );
 
@@ -87,12 +82,13 @@ export default function ProductCard({
         <div className="aspect-square relative rounded-md overflow-hidden bg-secondary">
           <CustomImage
             src={
-              productData?.photo_origin
-                ? `${posterUrl}${productData.photo_origin}`
-                : "/empty.jpg"
+              productImage ? `${posterUrl}${productImage}` : "/empty.jpg"
             }
+            cacheKey={`product:${productData?.product_id}`}
             alt="text"
+            priority
             className="w-full h-full object-cover md:object-contain"
+            sizes="(max-width: 768px) 100vw, (max-width: 1280px) 40vw, 500px"
           />
         </div>
       </section>
@@ -104,12 +100,12 @@ export default function ProductCard({
           <p
             className="textSmall"
             dangerouslySetInnerHTML={{
-              __html: localizedDesc.replace(/\./g, ".<br />"),
+              __html: (localizedDesc || "").replace(/\./g, ".<br />"),
             }}
           ></p>
 
           <h2 className="text-primary font-bold textNormal5">
-            {formatNumber(productData.price["1"] / 100)} сум
+            {formatNumber(productPrice)} сум
           </h2>
         </div>
         <div className="flex justify-end items-center gap-5 col-span-2">

@@ -63,12 +63,15 @@ export function CategoryModal({ categories, locale }) {
                 <div className="w-32 h-32 relative rounded-[40px] overflow-hidden">
                   <CustomImage
                     src={
-                      item?.category_photo_origin
-                        ? `${posterUrl}${item.category_photo_origin}`
+                      item?.category_photo || item?.category_photo_origin
+                        ? `${posterUrl}${
+                            item.category_photo || item.category_photo_origin
+                          }`
                         : "/empty.jpg"
                     }
                     className="w-full h-full object-cover"
                     alt={`${localizedName}`}
+                    sizes="128px"
                   />
                 </div>
                 <h1 className="font-bold textSmall2 text-thin text-center">
@@ -147,12 +150,15 @@ const Card = ({ item, localizedName }) => {
       <div className="relative w-full aspect-square overflow-hidden bg-secondary rounded-sm">
         <CustomImage
           src={
-            item?.category_photo_origin
-              ? `${posterUrl}${item.category_photo_origin}`
+            item?.category_photo || item?.category_photo_origin
+              ? `${posterUrl}${
+                  item.category_photo || item.category_photo_origin
+                }`
               : "/empty.jpg"
           }
           className="w-full h-full"
           alt={`${localizedName}`}
+          sizes="(max-width: 768px) 50vw, 200px"
         />
         <div
           onClick={() => setLike(!like)}

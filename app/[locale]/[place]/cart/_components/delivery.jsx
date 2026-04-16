@@ -15,14 +15,10 @@ import {
 import { useOrderStore, useStore } from "@/store";
 import Link from "next/link";
 import { Textarea } from "@/components/ui/textarea";
-import { cn } from "@/lib/utils";
-import PhoneInput from "react-phone-number-input";
-import "react-phone-number-input/style.css";
 
 const Delivery = ({ locale, auth, clientData, place }) => {
   const [addressData, setAddressData] = useState([]);
   const deliveryText = useTranslations("Cart.Delivery");
-  const profileT = useTranslations("Profile");
   const cartText = useTranslations("Cart");
   const all = useTranslations("All");
   const { orderData, setOrderData, paymentData } = useOrderStore();
@@ -56,10 +52,6 @@ const Delivery = ({ locale, auth, clientData, place }) => {
 
   const handleSelectModal = () => {
     setModalAdd(true);
-  };
-
-  const handleChangePhone = (value) => {
-    setOrderData({ ...orderData, phone: value });
   };
 
   useEffect(() => {
@@ -170,28 +162,6 @@ const Delivery = ({ locale, auth, clientData, place }) => {
           <p className="text-[#A098AE] text-normal textSmall2">
             {orderData?.address_comment}
           </p>
-        )}
-        {!auth?.client_id && (
-          <div>
-            <p className="text-[#A098AE] font-normal textSmall3 pt-2">
-              {profileT("phone")}
-            </p>
-            <div className="lg:w-2/3 flex w-full justify-between pt-2 md:gap-2">
-              <PhoneInput
-                country="UZ"
-                defaultCountry="UZ"
-                placeholder=""
-                international
-                withCountryCallingCode
-                value={orderData?.phone}
-                onChange={handleChangePhone}
-                className={cn("input-phone-cart rounded-md w-full")}
-                style={{ borderColor: "white" }}
-                countryCallingCodeEditable={false}
-                focusInputOnCountrySelection
-              />
-            </div>
-          </div>
         )}
         <div className="flex w-full items-center justify-between pt-2 md:gap-2">
           <div className="w-full lg:w-2/3 flex flex-col gap-1">

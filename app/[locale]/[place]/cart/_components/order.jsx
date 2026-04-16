@@ -18,7 +18,7 @@ import { ChevronRight, Ticket } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { useTranslations } from "use-intl";
 import {
@@ -138,6 +138,13 @@ const Order = ({
     process.env.NEXT_PUBLIC_URL ||
     ""
   ).replace(/\/+$/, "");
+  const backendBases = useMemo(
+    () =>
+      [branchApiUrl, ""].filter(
+        (base, index, list) => list.indexOf(base) === index
+      ),
+    [branchApiUrl]
+  );
   const originalProductsSum = products?.reduce((sum, product) => {
     if (product?.promocode) return sum;
     return sum + (Number(product?.price?.["1"] || 0) / 100) * Number(product?.count || 0);
@@ -155,40 +162,47 @@ const Order = ({
     (orderData?.promocodePrice > 0 ? Number(orderData?.promocodePrice) : 0);
 
   const fetchBranchConfigs = useCallback(async () => {
-    if (!branchApiUrl) return [];
-    try {
-      const res = await fetch(`${branchApiUrl}/api/branches`);
-      if (!res.ok) return [];
-      const data = await res.json();
-      const normalized = normalizeBranchConfigs(data);
-      const parsed = Array.isArray(normalized) ? normalized : [];
-      setBranchConfigs(parsed);
-      return parsed;
-    } catch {
-      setBranchConfigs([]);
-      return [];
+    for (const base of backendBases) {
+      try {
+        const res = await fetch(`${base}/api/branches`, { cache: "no-store" });
+        if (!res.ok) continue;
+        const data = await res.json();
+        const normalized = normalizeBranchConfigs(data);
+        const parsed = Array.isArray(normalized) ? normalized : [];
+        setBranchConfigs(parsed);
+        return parsed;
+      } catch {
+        continue;
+      }
     }
-  }, [branchApiUrl]);
+    setBranchConfigs([]);
+    return [];
+  }, [backendBases]);
 
   const fetchPosterSpots = useCallback(async () => {
-    try {
-      const response = await fetch("/api/poster/spots", { cache: "no-store" });
-      if (!response.ok) return [];
-      const raw = await response.json();
-      const normalized = Array.isArray(raw?.data?.response)
-        ? raw.data.response
-        : Array.isArray(raw?.response)
-          ? raw.response
-          : Array.isArray(raw)
-            ? raw
-            : [];
-      setPosterSpots(normalized);
-      return normalized;
-    } catch {
-      setPosterSpots([]);
-      return [];
+    for (const base of backendBases) {
+      try {
+        const response = await fetch(`${base}/api/poster/spots`, {
+          cache: "no-store",
+        });
+        if (!response.ok) continue;
+        const raw = await response.json();
+        const normalized = Array.isArray(raw?.data?.response)
+          ? raw.data.response
+          : Array.isArray(raw?.response)
+            ? raw.response
+            : Array.isArray(raw)
+              ? raw
+              : [];
+        setPosterSpots(normalized);
+        return normalized;
+      } catch {
+        continue;
+      }
     }
-  }, []);
+    setPosterSpots([]);
+    return [];
+  }, [backendBases]);
 
   const resolveNearestPosterSpot = useCallback(
     (spots) => {

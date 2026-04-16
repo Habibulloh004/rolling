@@ -67,12 +67,12 @@ const DiscountBadge = ({ auth }) => {
       </div>
       <Image
         src={`${auth?.client_groups_discount == "10"
-          ? "/assets/Gold.png"
+          ? "/assets/Gold.webp"
           : auth?.client_groups_discount == "5"
-            ? "/assets/Silver.png"
+            ? "/assets/Silver.webp"
             : auth?.client_groups_discount == "3"
-              ? "/assets/Bronze.png"
-              : "/assets/Gold.png"
+              ? "/assets/Bronze.webp"
+              : "/assets/Gold.webp"
           }`}
         loading="eager"
         alt="gold"

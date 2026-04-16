@@ -18,7 +18,7 @@ import {
 } from "@/lib/search-utils";
 import { ArrowUp, Search } from "lucide-react";
 import { useTranslations } from "next-intl";
-import Image from "next/legacy/image";
+import Image from "next/image";
 import {
   Dialog,
   DialogContent,

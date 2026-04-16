@@ -22,7 +22,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslations } from "use-intl";
-import confetti from "canvas-confetti";
+const loadConfetti = () => import("canvas-confetti").then((m) => m.default);
 
 export default function OrderItemComponent({
   spotsData,
@@ -365,10 +365,11 @@ export default function OrderItemComponent({
     [activePendingPayment]
   );
 
-  const handleSuccess = () => {
+  const handleSuccess = async () => {
     if (hasSuccessCelebratedRef.current) return;
     hasSuccessCelebratedRef.current = true;
 
+    const confetti = await loadConfetti();
     const duration = 2 * 1000;
     const animationEnd = Date.now() + duration;
     const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };

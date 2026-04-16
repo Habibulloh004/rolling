@@ -12,8 +12,11 @@ const TeamCards = () => {
       <Card className="*:p-0 p-3 space-y-2 md:space-y-4">
         <CardHeader className="space-y-2 md:space-y-4">
           <img
-            src={`/assets/aboutCard.svg`}
+            src="/assets/aboutCard.webp"
             alt="news-img"
+            width={374}
+            height={192}
+            loading="lazy"
             className="w-full object-cover aspect-video rounded-md"
           />
           <div className="space-y-1">

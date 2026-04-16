@@ -13,7 +13,8 @@ import {
   CarouselItem,
 } from "@/components/ui/carousel";
 import { Button } from "@/components/ui/button";
-import MyMap from "../../_components/map";
+import dynamic from "next/dynamic";
+const MyMap = dynamic(() => import("../../_components/map"), { ssr: false });
 import { useTranslations } from "use-intl";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";

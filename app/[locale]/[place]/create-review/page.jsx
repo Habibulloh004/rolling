@@ -1,5 +1,5 @@
 import Container from "@/components/shared/container";
-import Image from "next/legacy/image";
+import Image from "next/image";
 import { getLocale, getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import OrderDataComponent from "./_components/orderDataComponent";

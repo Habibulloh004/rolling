@@ -55,12 +55,12 @@ export default async function Bonus() {
             <Image
               src={`${
                 client.client_groups_discount == "10"
-                  ? "/assets/Gold.png"
+                  ? "/assets/Gold.webp"
                   : client.client_groups_discount == "5"
-                  ? "/assets/Silver.png"
+                  ? "/assets/Silver.webp"
                   : client.client_groups_discount == "3"
-                  ? "/assets/Bronze.png"
-                  : "/assets/Gold.png"
+                  ? "/assets/Bronze.webp"
+                  : "/assets/Gold.webp"
               }`}
               alt="gold"
               width={400}

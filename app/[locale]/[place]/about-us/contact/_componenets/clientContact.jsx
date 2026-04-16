@@ -91,7 +91,7 @@ const ClientContact = ({ spotData, locale }) => {
 
       <div className="flex justify-center py-8 lg:hidden">
         <Image
-          src={`/assets/aboutLogo.svg`}
+          src="/assets/aboutLogo.webp"
           alt="about logo"
           width={500}
           height={100}
@@ -177,7 +177,7 @@ const ClientContact = ({ spotData, locale }) => {
         <div className="lg:w-1/3 flex flex-col mt-5 lg:mt-0">
           <div className="hidden lg:flex justify-center pb-6">
             <Image
-              src={`/assets/aboutLogo.svg`}
+              src="/assets/aboutLogo.webp"
               alt="about logo"
               width={500}
               height={100}

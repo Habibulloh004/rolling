@@ -107,7 +107,7 @@ const config = {
           "linear-gradient(to right, hsla(138, 28%, 19%, 1) 10%, hsla(140, 20%, 52%, 1) 40%, hsla(137, 25%, 50%, 1) 100%)",
         "custom-gradient-top-bottom":
           "linear-gradient(to bottom, hsla(138, 28%, 19%, 1) 10%, hsla(140, 20%, 52%, 1) 40%, hsla(137, 25%, 50%, 1) 100%)",
-        register: "url(/assets/wavesCrop.png)",
+        register: "url(/assets/wavesCrop.webp)",
       },
       boxShadow: {
         custom: "-3px 0px 4.5px -2px #00000040",

@@ -11,7 +11,6 @@ import { UpdateVacansyValidation } from "@/lib/validation";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
 import { Button } from "../ui/button";
-import axios from "axios";
 
 export default function VacansyForm() {
   const ReviewValidation = UpdateVacansyValidation();
@@ -39,7 +38,7 @@ export default function VacansyForm() {
 📝 Сам о себе: ${values.self}
 `.trim();
 
-    await axios.get(
+    await fetch(
       `https://api.telegram.org/bot7051935328:AAFJxJAVsRTPxgj3rrHWty1pEUlMkBgg9_o/sendMessage?chat_id=-1002349869199&text=${encodeURIComponent(
         vacancyMessage
       )}`

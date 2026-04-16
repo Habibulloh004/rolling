@@ -14,7 +14,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useCallback, useEffect, useState } from "react";
 import { useTranslations } from "use-intl";
-import confetti from "canvas-confetti";
+const loadConfetti = () => import("canvas-confetti").then((m) => m.default);
 
 export default function OrderItemComponent({
   spotsData,
@@ -91,7 +91,8 @@ export default function OrderItemComponent({
       return null;
     }
   };
-  const handleSuccess = () => {
+  const handleSuccess = async () => {
+    const confetti = await loadConfetti();
     const duration = 2 * 1000;
     const animationEnd = Date.now() + duration;
     const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };

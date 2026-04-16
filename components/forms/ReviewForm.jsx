@@ -12,7 +12,6 @@ import { toast } from "sonner";
 import { useTranslations } from "next-intl";
 import { Button } from "../ui/button";
 import { Rating } from "react-simple-star-rating";
-import axios from "axios";
 import Cookies from "js-cookie";
 
 export default function ReviewForm({id}) {
@@ -61,7 +60,7 @@ export default function ReviewForm({id}) {
 📦 Order_id: ${id}
   `.trim();
 
-    await axios.get(
+    await fetch(
       `https://api.telegram.org/bot7051935328:AAFJxJAVsRTPxgj3rrHWty1pEUlMkBgg9_o/sendMessage?chat_id=-1002349869199&text=${encodeURIComponent(
         feedbackMessage
       )}`

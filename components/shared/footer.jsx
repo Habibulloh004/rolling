@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import Container from "./container";
-import Image from "next/legacy/image";
+import Image from "next/image";
 import { footItems } from "@/lib/utils";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";

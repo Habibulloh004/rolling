@@ -15,7 +15,8 @@ import RealtimeUpdatesBridge from "@/components/shared/realtimeUpdatesBridge";
 
 const poppins = Poppins({
   subsets: ["latin"],
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
 });
 
 export const metadata = {
@@ -79,7 +80,7 @@ export default async function Layout({ children, params }) {
   return (
     <div className={`${poppins.className} antialiased min-h-screen flex flex-col`}>
         <PwaRegister />
-        <Script id="gtm-script" strategy="afterInteractive">
+        <Script id="gtm-script" strategy="lazyOnload">
           {`
             (function(w,d,s,l,i){
               w[l]=w[l]||[];
@@ -163,7 +164,7 @@ export default async function Layout({ children, params }) {
           `}
         </Script> */}
 
-        <Script id="yandex-metrika-init" strategy="afterInteractive">
+        <Script id="yandex-metrika-init" strategy="lazyOnload">
           {`
     (function(m,e,t,r,i,k,a){
       m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};

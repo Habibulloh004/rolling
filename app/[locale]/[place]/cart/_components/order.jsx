@@ -141,7 +141,7 @@ const Order = ({
   ).replace(/\/+$/, "");
   const backendBases = useMemo(
     () =>
-      [branchApiUrl, ""].filter(
+      ["", branchApiUrl].filter(
         (base, index, list) => list.indexOf(base) === index
       ),
     [branchApiUrl]

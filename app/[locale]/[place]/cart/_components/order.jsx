@@ -11,7 +11,7 @@ import {
 } from "@/actions/post";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { formatCreatedAt, formatNumber } from "@/lib/utils";
+import { formatCreatedAt, formatNumber, url as defaultBackendUrl } from "@/lib/utils";
 import { ApiService } from "@/service/api.services";
 import { useClientStore, useOrderStore, useProductStore, useStore } from "@/store";
 import { ChevronRight, Ticket } from "lucide-react";
@@ -136,7 +136,8 @@ const Order = ({
   const branchApiUrl = (
     process.env.NEXT_PUBLIC_ROLLING_BACK_URL ||
     process.env.NEXT_PUBLIC_URL ||
-    ""
+    defaultBackendUrl ||
+    "https://adminrolling1.uz"
   ).replace(/\/+$/, "");
   const backendBases = useMemo(
     () =>

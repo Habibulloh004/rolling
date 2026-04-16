@@ -10,6 +10,7 @@ const normalizeBaseUrl = (value) => String(value || "").replace(/\/+$/, "");
 const apiBaseUrls = [
   normalizeBaseUrl(process.env.NEXT_PUBLIC_ROLLING_BACK_URL),
   normalizeBaseUrl(process.env.NEXT_PUBLIC_URL),
+  normalizeBaseUrl(url),
 ].filter(Boolean);
 const DEFAULT_FETCH_TIMEOUT_MS = 20000;
 

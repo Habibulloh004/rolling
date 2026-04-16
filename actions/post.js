@@ -49,6 +49,29 @@ const buildTelegramMapLink = (lat, lon) => {
   return `https://yandex.com/maps/?pt=${longitude},${latitude}&z=16&l=map`;
 };
 
+const toRadians = (value) => (value * Math.PI) / 180;
+
+const calculateDistanceKm = (fromLat, fromLon, toLat, toLon) => {
+  const lat1 = asNumber(fromLat, NaN);
+  const lon1 = asNumber(fromLon, NaN);
+  const lat2 = asNumber(toLat, NaN);
+  const lon2 = asNumber(toLon, NaN);
+
+  if (!Number.isFinite(lat1) || !Number.isFinite(lon1)) return null;
+  if (!Number.isFinite(lat2) || !Number.isFinite(lon2)) return null;
+
+  const earthRadiusKm = 6371;
+  const dLat = toRadians(lat2 - lat1);
+  const dLon = toRadians(lon2 - lon1);
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(toRadians(lat1)) *
+      Math.cos(toRadians(lat2)) *
+      Math.sin(dLon / 2) ** 2;
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return earthRadiusKm * c;
+};
+
 const resolveTelegramPaymentDescription = (paymentMethodId) => {
   switch (String(paymentMethodId || "").trim()) {
     case "1":
@@ -78,6 +101,25 @@ const resolveTelegramAddress = (payload) =>
   safeText(payload?.deliveryAddress) ??
   "Не указан";
 
+const normalizeTelegramOrderComment = (rawComment) => {
+  const comment = safeText(rawComment);
+  if (!comment) return "Не указан";
+
+  const filtered = comment
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .filter(
+      (line) =>
+        !line.startsWith("Тип оплаты") &&
+        !line.startsWith("Номер телефона") &&
+        !line.startsWith("Тип заказа: Через веб-сайт") &&
+        !line.startsWith("Источник:")
+    );
+
+  return filtered.length > 0 ? filtered.join("\n") : "Не указан";
+};
+
 const buildWebTelegramOrderMessage = ({ payload, response }) => {
   const orderNumber =
     safeText(response?.order?.orderNumber) ??
@@ -94,7 +136,12 @@ const buildWebTelegramOrderMessage = ({ payload, response }) => {
   const orderType = resolveTelegramOrderType(payload?.serviceMode);
   const orderAmount = Math.max(
     0,
-    asNumber(payload?.subtotal, 0) + asNumber(payload?.deliveryPrice, 0) - asNumber(payload?.discount, 0)
+    asNumber(
+      payload?.subtotal,
+      asNumber(payload?.total, 0) -
+        asNumber(payload?.deliveryPrice, 0) +
+        asNumber(payload?.discount, 0)
+    )
   );
   const totalToPay = Math.max(0, asNumber(payload?.total, orderAmount));
   const bonuses = Math.max(0, asNumber(payload?.loyaltyPointsUsed, 0));
@@ -102,24 +149,31 @@ const buildWebTelegramOrderMessage = ({ payload, response }) => {
   const mapLink =
     buildTelegramMapLink(payload?.deliveryLatitude, payload?.deliveryLongitude) ||
     "Не указан";
+  const distanceKm = calculateDistanceKm(
+    payload?.branchLatitude,
+    payload?.branchLongitude,
+    payload?.deliveryLatitude,
+    payload?.deliveryLongitude
+  );
+  const distanceText = Number.isFinite(distanceKm)
+    ? `${distanceKm.toFixed(1).replace(".", ",")} км`
+    : "Не указан";
   const addressComment =
     safeText(payload?.deliveryAddressComment) ??
     safeText(payload?.deliveryInstructions) ??
     "Не указан";
   const ordersCompleted = Math.max(0, asNumber(payload?.userOrderCount, 0));
-  const summary = [
-    `Тип оплаты : ${paymentDescription}`,
-    `Номер телефона : ${phone}`,
-    "Тип заказа: Через веб-сайт",
-  ].join("\n");
+  const orderComment = normalizeTelegramOrderComment(payload?.comment);
 
   const lines = [
     `📦 Новый заказ №${orderNumber}`,
-    `🛒 Название филиал: ${branchName}`,
+    `🛒 Филиал: ${branchName}`,
     `📞 Телефон: ${phone}`,
     `🏠 Адрес: ${address}`,
-    `🔗 [Посмотреть на карте] ${mapLink}`,
-    "🗺️ Расстояние: Не указан",
+    mapLink === "Не указан"
+      ? "🔗 Карта: Не указан"
+      : `🔗 [Посмотреть на карте] ${mapLink}`,
+    `🗺️ Расстояние: ${distanceText}`,
     `💵 Сумма заказа: ${formatTelegramAmount(orderAmount)}`,
     `💳 Метод оплаты: ${paymentDescription}`,
     `🎁 Бонусы: ${formatTelegramAmount(bonuses)}`,
@@ -127,7 +181,7 @@ const buildWebTelegramOrderMessage = ({ payload, response }) => {
     `🛍 Тип заказа: ${orderType}`,
     "📲 Источник: Веб-сайт",
     `🚚 Доставка: ${formatTelegramAmount(deliveryFee)}`,
-    `✏️ Комментарий: ${summary}`,
+    `✏️ Комментарий к заказу: ${orderComment}`,
     `📦 Количество заказов: ${ordersCompleted}`,
     `✏️ Комментарий к адресу: ${addressComment}`,
   ];
@@ -395,6 +449,8 @@ const normalizeOrderPayload = (data = {}) => {
     branchName,
     branchAddress,
     branchPhone,
+    branchLatitude: data?.branchLatitude ?? data?.branch_latitude ?? null,
+    branchLongitude: data?.branchLongitude ?? data?.branch_longitude ?? null,
   };
 };
 

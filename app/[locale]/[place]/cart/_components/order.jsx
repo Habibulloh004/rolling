@@ -36,7 +36,6 @@ import PromoCodeDialog from "./PromocodeComponent";
 import { getLocalizedProduct } from "@/lib/utils";
 import {
   getBranchBySpotId,
-  getBranchDeliveryFee,
   getBranchDisplayAddress,
   getBranchDisplayName,
   getBranchPhone,
@@ -46,11 +45,7 @@ import {
 } from "@/lib/branch-config";
 import { openPaymentUrl } from "@/lib/payment-launch";
 
-const isDeliveryPriceDisabledInDev =
-  process.env.NODE_ENV !== "production" &&
-  String(process.env.NEXT_PUBLIC_DISABLE_DELIVERY_PRICE_IN_DEV || "false")
-    .trim()
-    .toLowerCase() === "true";
+const DEFAULT_DELIVERY_PRICE = 15000;
 
 const DiscountBadge = ({ auth }) => {
   return (
@@ -195,6 +190,14 @@ const Order = ({
     return resolveDeliveryBranchFromConfigs(branchConfigs);
   }, [branchConfigs, resolveDeliveryBranchFromConfigs]);
 
+  const resolveDeliveryFee = useCallback(
+    (branchConfig) => {
+      const branchFee = Number(branchConfig?.delivery?.fee);
+      return Number.isFinite(branchFee) ? branchFee : DEFAULT_DELIVERY_PRICE;
+    },
+    []
+  );
+
   const resolveCurrentBranchConfig = useCallback(() => {
     if (!Array.isArray(branchConfigs) || branchConfigs.length === 0) return null;
 
@@ -327,10 +330,13 @@ const Order = ({
   }, [isOrderingClosedByBranchConfig, resolveCurrentBranchConfig, setIsDisabled]);
 
   useEffect(() => {
-    if (!Array.isArray(branchConfigs) || branchConfigs.length === 0) return;
+    const hasBranchConfigs = Array.isArray(branchConfigs) && branchConfigs.length > 0;
+    if (!hasBranchConfigs && activeTab !== "delivery") return;
 
-    const selectedBranchConfig = resolveCurrentBranchConfig();
-    if (!selectedBranchConfig) return;
+    const selectedBranchConfig = hasBranchConfigs
+      ? resolveCurrentBranchConfig()
+      : null;
+    if (!selectedBranchConfig && activeTab !== "delivery") return;
 
     const next = { ...orderData };
     let changed = false;
@@ -360,9 +366,7 @@ const Order = ({
 
     const expectedDeliveryFee =
       activeTab === "delivery"
-        ? isDeliveryPriceDisabledInDev
-          ? 0
-          : getBranchDeliveryFee(selectedBranchConfig)
+        ? resolveDeliveryFee(selectedBranchConfig)
         : 0;
     if (Number(orderData?.delivery_price || 0) !== Number(expectedDeliveryFee || 0)) {
       next.delivery_price = Number(expectedDeliveryFee || 0);
@@ -377,6 +381,7 @@ const Order = ({
     branchConfigs,
     locale,
     orderData,
+    resolveDeliveryFee,
     resolveCurrentBranchConfig,
     setOrderData,
   ]);
@@ -391,11 +396,6 @@ const Order = ({
       activeTab === "delivery"
         ? resolveDeliveryBranchFromConfigs(runtimeBranchConfigs)
         : resolveCurrentBranchConfig();
-
-    if (activeTab === "delivery" && !selectedBranchConfig) {
-      toast.error(all("order_error"));
-      return;
-    }
 
     if (isOrderingClosedByBranchConfig(selectedBranchConfig)) {
       toast.error(total("note"));
@@ -471,11 +471,9 @@ const Order = ({
       const effectiveDeliveryPrice =
         activeTab === "delivery"
           ? Number(
-              isDeliveryPriceDisabledInDev
-                ? 0
-                : effectiveBranchConfig
-                ? getBranchDeliveryFee(effectiveBranchConfig)
-                : delivery_price || 0
+              effectiveBranchConfig
+                ? resolveDeliveryFee(effectiveBranchConfig)
+                : Number(delivery_price || DEFAULT_DELIVERY_PRICE)
             )
           : 0;
       const filterProductsAbdugani = products?.map((p) => {
@@ -674,6 +672,9 @@ const Order = ({
         address_comment,
         address,
         all_price: Number((+totalSum + +effectiveDeliveryPrice) * 100),
+        delivery_price: Number(effectiveDeliveryPrice || 0),
+        delivery_latitude: Number(lat || 0) || null,
+        delivery_longitude: Number(lng || 0) || null,
         client_address: `${lat || 0},${lng || 0}`,
         client_id: resolvedAuth?.client_id ? resolvedAuth.client_id : "25562",
         comment: commentSpot,
@@ -693,6 +694,14 @@ const Order = ({
         spot_address: branchAddress,
         spot_phone: branchPhone,
         branch_id: String(effectiveSpotId),
+        branch_latitude:
+          effectiveBranchConfig?.location?.latitude != null
+            ? Number(effectiveBranchConfig.location.latitude)
+            : null,
+        branch_longitude:
+          effectiveBranchConfig?.location?.longitude != null
+            ? Number(effectiveBranchConfig.location.longitude)
+            : null,
         promoCode: promoCodeValue,
         promoDiscountAmount,
         promoDiscountPercentage,

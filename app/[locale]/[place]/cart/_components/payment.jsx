@@ -44,12 +44,6 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 
-const isDeliveryPriceDisabledInDev =
-  process.env.NODE_ENV !== "production" &&
-  String(process.env.NEXT_PUBLIC_DISABLE_DELIVERY_PRICE_IN_DEV || "false")
-    .trim()
-    .toLowerCase() === "true";
-
 const Payment = ({ apiTime, locale, place, auth }) => {
   const promocodeT = useTranslations("Order.Promocode");
   const searchParams = useSearchParams();
@@ -100,9 +94,7 @@ const Payment = ({ apiTime, locale, place, auth }) => {
         : 0;
   const deliveryPriceForCurrentOrder =
     activeTab == "delivery"
-      ? isDeliveryPriceDisabledInDev
-        ? 0
-        : Number(orderData?.delivery_price || 0)
+      ? Number(orderData?.delivery_price || 0)
       : 0;
   const payableTotal =
     Number(totalSum) -

@@ -157,20 +157,43 @@ const Order = ({
     (activeTab == "delivery" ? Number(orderData?.delivery_price || 0) : 0) -
     (orderData?.promocodePrice > 0 ? Number(orderData?.promocodePrice) : 0);
 
-  const resolveDeliveryBranch = useCallback(() => {
-    if (!Array.isArray(branchConfigs) || branchConfigs.length === 0) return null;
-    const lat = Number(orderData?.lat || 0);
-    const lng = Number(orderData?.lng || 0);
-    if (!lat || !lng) {
-      return (
-        branchConfigs.find((item) => isBranchAvailableForOrdering(item)) ||
-        branchConfigs[0] ||
-        null
-      );
+  const fetchBranchConfigs = useCallback(async () => {
+    if (!branchApiUrl) return [];
+    try {
+      const res = await fetch(`${branchApiUrl}/api/branches`);
+      if (!res.ok) return [];
+      const data = await res.json();
+      const normalized = normalizeBranchConfigs(data);
+      const parsed = Array.isArray(normalized) ? normalized : [];
+      setBranchConfigs(parsed);
+      return parsed;
+    } catch {
+      setBranchConfigs([]);
+      return [];
     }
+  }, [branchApiUrl]);
 
-    return selectNearestBranch(branchConfigs, lat, lng, { preferOpen: true });
-  }, [branchConfigs, orderData?.lat, orderData?.lng]);
+  const resolveDeliveryBranchFromConfigs = useCallback(
+    (configs) => {
+      if (!Array.isArray(configs) || configs.length === 0) return null;
+      const lat = Number(orderData?.lat || 0);
+      const lng = Number(orderData?.lng || 0);
+      if (!lat || !lng) {
+        return (
+          configs.find((item) => isBranchAvailableForOrdering(item)) ||
+          configs[0] ||
+          null
+        );
+      }
+
+      return selectNearestBranch(configs, lat, lng, { preferOpen: true });
+    },
+    [orderData?.lat, orderData?.lng]
+  );
+
+  const resolveDeliveryBranch = useCallback(() => {
+    return resolveDeliveryBranchFromConfigs(branchConfigs);
+  }, [branchConfigs, resolveDeliveryBranchFromConfigs]);
 
   const resolveCurrentBranchConfig = useCallback(() => {
     if (!Array.isArray(branchConfigs) || branchConfigs.length === 0) return null;
@@ -205,18 +228,10 @@ const Order = ({
     let cancelled = false;
 
     const loadBranchConfigs = async () => {
-      if (!branchApiUrl) return;
-      try {
-        const res = await fetch(`${branchApiUrl}/api/branches`);
-        if (!res.ok) return;
-        const data = await res.json();
-        if (cancelled) return;
-        const normalized = normalizeBranchConfigs(data);
-        setBranchConfigs(Array.isArray(normalized) ? normalized : []);
-      } catch (error) {
-        if (!cancelled) {
-          setBranchConfigs([]);
-        }
+      const normalized = await fetchBranchConfigs();
+      if (cancelled) return;
+      if (!Array.isArray(normalized)) {
+        setBranchConfigs([]);
       }
     };
 
@@ -224,7 +239,7 @@ const Order = ({
     return () => {
       cancelled = true;
     };
-  }, [branchApiUrl]);
+  }, [fetchBranchConfigs]);
 
   const emptyOrderState = {
     spot_id: 0,
@@ -367,7 +382,21 @@ const Order = ({
   ]);
 
   const handleSubmit = async () => {
-    const selectedBranchConfig = resolveCurrentBranchConfig();
+    const runtimeBranchConfigs =
+      Array.isArray(branchConfigs) && branchConfigs.length > 0
+        ? branchConfigs
+        : await fetchBranchConfigs();
+
+    const selectedBranchConfig =
+      activeTab === "delivery"
+        ? resolveDeliveryBranchFromConfigs(runtimeBranchConfigs)
+        : resolveCurrentBranchConfig();
+
+    if (activeTab === "delivery" && !selectedBranchConfig) {
+      toast.error(all("order_error"));
+      return;
+    }
+
     if (isOrderingClosedByBranchConfig(selectedBranchConfig)) {
       toast.error(total("note"));
       return;
@@ -430,7 +459,7 @@ const Order = ({
       const effectiveBranchConfig =
         selectedBranchConfig ||
         getBranchBySpotId(
-          branchConfigs,
+          runtimeBranchConfigs,
           spotIdSpot || (activeTab === "pickup" ? spot_id : null)
         );
       const effectiveSpotId = Number(
